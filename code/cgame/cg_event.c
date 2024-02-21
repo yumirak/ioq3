@@ -787,19 +787,19 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 				switch(item->giTag)
 				{
 					case PW_QUAD:
-						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.quadPickupVo);
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_ANNOUNCER, cgs.media.quadPickupVo);
 						break;
 					case PW_BATTLESUIT:
-						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.battleSuitPickupVo);
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_ANNOUNCER, cgs.media.battleSuitPickupVo);
 						break;
 					case PW_HASTE:
-						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.hastePickupVo);
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_ANNOUNCER, cgs.media.hastePickupVo);
 						break;
 					case PW_INVIS:
-						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.invisibilityPickupVo);
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_ANNOUNCER, cgs.media.invisibilityPickupVo);
 						break;
 					case PW_REGEN:
-						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.regenPickupVo);
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_ANNOUNCER, cgs.media.regenPickupVo);
 						break;
 					default:
 					{
@@ -807,7 +807,7 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 							CG_Printf("^3FIXME powerup pickup vo played without announcer disabled check\n");
 						}
 						//CG_Printf("item: %s\n", item->pickup_name);
-						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, trap_S_RegisterSound(item->pickup_sound, qfalse));
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_ANNOUNCER, trap_S_RegisterSound(item->pickup_sound, qfalse));
 					}
 				}
 			}
