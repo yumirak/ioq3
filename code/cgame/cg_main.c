@@ -200,6 +200,7 @@ vmCvar_t	cg_recordSPDemoName;
 vmCvar_t	cg_obeliskRespawnDelay;
 #endif
 vmCvar_t		cg_announcer;
+vmCvar_t		cg_lightningStyle;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -322,6 +323,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_oldRocket, "cg_oldRocket", "1", CVAR_ARCHIVE},
 	{ &cg_oldPlasma, "cg_oldPlasma", "1", CVAR_ARCHIVE},
 	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE},
+	{ &cg_lightningStyle, "cg_lightningStyle", "0", CVAR_ARCHIVE},
 	{ &cg_announcer, "cg_announcer", "1", CVAR_ARCHIVE | CVAR_LATCH}, //FIXME: reload announcer without snd_restart ?
 
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }

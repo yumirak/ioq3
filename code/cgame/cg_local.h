@@ -1245,7 +1245,7 @@ extern  vmCvar_t		cg_recordSPDemoName;
 extern	vmCvar_t		cg_obeliskRespawnDelay;
 #endif
 extern	vmCvar_t		cg_announcer;
-
+extern	vmCvar_t		cg_lightningStyle;
 //
 // cg_main.c
 //
