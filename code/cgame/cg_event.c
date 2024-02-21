@@ -782,10 +782,35 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			}
 			item = &bg_itemlist[ index ];
 			// powerup pickups are global
-			if( item->pickup_sound ) {
-				trap_S_StartSound (NULL, cg.snap->ps.clientNum, CHAN_AUTO, trap_S_RegisterSound( item->pickup_sound, qfalse ) );
+			if (item->pickup_sound) {
+				//trap_S_StartSound (NULL, cg.snap->ps.clientNum, CHAN_AUTO, trap_S_RegisterSound( item->pickup_sound, qfalse ) );
+				switch(item->giTag)
+				{
+					case PW_QUAD:
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.quadPickupVo);
+						break;
+					case PW_BATTLESUIT:
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.battleSuitPickupVo);
+						break;
+					case PW_HASTE:
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.hastePickupVo);
+						break;
+					case PW_INVIS:
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.invisibilityPickupVo);
+						break;
+					case PW_REGEN:
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, cgs.media.regenPickupVo);
+						break;
+					default:
+					{
+						if (!Q_stricmpn(item->pickup_sound, "sound/vo", strlen("sound/vo"))) {
+							CG_Printf("^3FIXME powerup pickup vo played without announcer disabled check\n");
+						}
+						//CG_Printf("item: %s\n", item->pickup_name);
+						trap_S_StartSound(NULL, cg.snap->ps.clientNum, CHAN_AUTO, trap_S_RegisterSound(item->pickup_sound, qfalse));
+					}
+				}
 			}
-
 			// show icon and name on status bar
 			if ( es->number == cg.snap->ps.clientNum ) {
 				CG_ItemPickup( index );

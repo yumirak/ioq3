@@ -199,6 +199,7 @@ vmCvar_t	cg_recordSPDemo;
 vmCvar_t	cg_recordSPDemoName;
 vmCvar_t	cg_obeliskRespawnDelay;
 #endif
+vmCvar_t		cg_announcer;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -320,7 +321,9 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_oldRail, "cg_oldRail", "1", CVAR_ARCHIVE},
 	{ &cg_oldRocket, "cg_oldRocket", "1", CVAR_ARCHIVE},
 	{ &cg_oldPlasma, "cg_oldPlasma", "1", CVAR_ARCHIVE},
-	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE}
+	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE},
+	{ &cg_announcer, "cg_announcer", "1", CVAR_ARCHIVE | CVAR_LATCH}, //FIXME: reload announcer without snd_restart ?
+
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -379,6 +382,7 @@ CG_UpdateCvars
 */
 void CG_UpdateCvars( void ) {
 	int			i;
+
 	cvarTable_t	*cv;
 
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
@@ -527,8 +531,146 @@ static void CG_RegisterItemSounds( int itemNum ) {
 		}
 	}
 }
+/*
+=================
+CG_RegisterAnnouncerSounds
+=================
+*/
+static void CG_RegisterAnnouncerSounds (void)
+{
+	int i;
+	const char *baseDir;
+
+	switch(cg_announcer.integer)
+	{
+		case 1:
+			baseDir = "sound/vo_evil";
+			break;
+		case 2:
+			baseDir = "sound/vo";
+			break;
+		case 3:
+			baseDir = "sound/vo_female";
+			break;
+		default:
+			baseDir = "sound/vo_evil";
+			break;
+	}
+
+	cgs.media.oneMinuteSound = trap_S_RegisterSound( va("%s/1_minute.wav", baseDir), qtrue );
+	cgs.media.fiveMinuteSound = trap_S_RegisterSound( va("%s/5_minute.wav", baseDir), qtrue );
+	cgs.media.suddenDeathSound = trap_S_RegisterSound( va("%s/sudden_death.wav", baseDir), qtrue );
+	cgs.media.oneFragSound = trap_S_RegisterSound( va("%s/1_frag.wav", baseDir), qtrue );
+	cgs.media.twoFragSound = trap_S_RegisterSound( va("%s/2_frags.wav", baseDir), qtrue );
+	cgs.media.threeFragSound = trap_S_RegisterSound( va("%s/3_frags.wav", baseDir), qtrue );
+	cgs.media.count3Sound = trap_S_RegisterSound( va("%s/three.wav", baseDir), qtrue );
+	cgs.media.count2Sound = trap_S_RegisterSound( va("%s/two.wav", baseDir), qtrue );
+	cgs.media.count1Sound = trap_S_RegisterSound( va("%s/one.wav", baseDir), qtrue );
+	cgs.media.countFightSound = trap_S_RegisterSound( va("%s/fight.wav", baseDir), qtrue );
+	cgs.media.countGoSound = trap_S_RegisterSound(va("%s/go.ogg", baseDir), qtrue);
+	cgs.media.countBiteSound = trap_S_RegisterSound(va("%s/bite.ogg", baseDir), qtrue);
+	cgs.media.countPrepareSound = trap_S_RegisterSound( va("%s/prepare_to_fight.wav", baseDir), qtrue );
+	cgs.media.countPrepareTeamSound = trap_S_RegisterSound( va("%s/prepare_your_team.wav", baseDir), qtrue );
+
+	if ( cgs.gametype >= GT_TEAM || cg_buildScript.integer ) {
+		cgs.media.redLeadsSound = trap_S_RegisterSound( va("%s/red_leads.wav", baseDir), qtrue );
+		cgs.media.blueLeadsSound = trap_S_RegisterSound( va("%s/blue_leads.wav", baseDir), qtrue );
+		cgs.media.teamsTiedSound = trap_S_RegisterSound( va("%s/teams_tied.wav", baseDir), qtrue );
+
+		cgs.media.redScoredSound = trap_S_RegisterSound( va("%s/red_scores.wav", baseDir), qtrue );
+		cgs.media.blueScoredSound = trap_S_RegisterSound( va("%s/blue_scores.wav", baseDir), qtrue );
+
+		cgs.media.redWinsSound = trap_S_RegisterSound(va("%s/red_wins.ogg", baseDir), qtrue);
+		cgs.media.blueWinsSound = trap_S_RegisterSound(va("%s/blue_wins.ogg", baseDir), qtrue);
+
+		cgs.media.yourTeamScoredSound = trap_S_RegisterSound(va("%s/your_team_scores.ogg", baseDir), qtrue);
+		cgs.media.enemyTeamScoredSound = trap_S_RegisterSound(va("%s/enemy_scores.ogg", baseDir), qtrue);
+
+		cgs.media.redWinsRoundSound = trap_S_RegisterSound(va("%s/red_wins_round.ogg", baseDir), qtrue);
+		cgs.media.blueWinsRoundSound = trap_S_RegisterSound(va("%s/blue_wins_round.ogg", baseDir), qtrue);
+
+		cgs.media.roundBeginsInSound = trap_S_RegisterSound(va("%s/round_begins_in.ogg", baseDir), qtrue);
+		cgs.media.roundDrawSound = trap_S_RegisterSound(va("%s/round_draw.ogg", baseDir), qtrue);
+		cgs.media.thirtySecondWarningSound = trap_S_RegisterSound(va("%s/30_second_warning.ogg", baseDir), qtrue);
+
+		cgs.media.lastStandingSound = trap_S_RegisterSound(va("%s/last_standing.ogg", baseDir), qtrue);
+		cgs.media.attackFlagSound = trap_S_RegisterSound(va("%s/attack_the_flag.ogg", baseDir), qtrue);
+		cgs.media.defendFlagSound = trap_S_RegisterSound(va("%s/defend_the_flag.ogg", baseDir), qtrue);
+		cgs.media.perfectSound = trap_S_RegisterSound(va("%s/perfect.ogg", baseDir), qtrue);
+		cgs.media.roundOverSound = trap_S_RegisterSound(va("%s/round_over.ogg", baseDir), qtrue);
+		cgs.media.aLostSound = trap_S_RegisterSound(va("%s/a_lost.ogg", baseDir), qtrue);
+		cgs.media.bLostSound = trap_S_RegisterSound(va("%s/b_lost.ogg", baseDir), qtrue);
+		cgs.media.cLostSound = trap_S_RegisterSound(va("%s/c_lost.ogg", baseDir), qtrue);
+		cgs.media.dLostSound = trap_S_RegisterSound(va("%s/d_lost.ogg", baseDir), qtrue);
+		cgs.media.eLostSound = trap_S_RegisterSound(va("%s/e_lost.ogg", baseDir), qtrue);
+		cgs.media.aCapturedSound = trap_S_RegisterSound(va("%s/a_captured.ogg", baseDir), qtrue);
+		cgs.media.bCapturedSound = trap_S_RegisterSound(va("%s/b_captured.ogg", baseDir), qtrue);
+		cgs.media.cCapturedSound = trap_S_RegisterSound(va("%s/c_captured.ogg", baseDir), qtrue);
+		cgs.media.dCapturedSound = trap_S_RegisterSound(va("%s/d_captured.ogg", baseDir), qtrue);
+		cgs.media.eCapturedSound = trap_S_RegisterSound(va("%s/e_captured.ogg", baseDir), qtrue);
 
 
+		if ((cgs.gametype == GT_CTF  /*|| cgs.gametype == GT_1FCTF
+			||  cgs.gametype == GT_CTFS  ||  cgs.gametype == GT_NTF*/)
+			|| cg_buildScript.integer)
+		{
+			cgs.media.redFlagReturnedSound = trap_S_RegisterSound( va("%s/red_flag_returned.wav", baseDir), qtrue );
+			cgs.media.blueFlagReturnedSound = trap_S_RegisterSound( va("%s/blue_flag_returned.wav", baseDir), qtrue );
+			cgs.media.yourFlagReturnedSound = trap_S_RegisterSound(va("%s/your_flag_returned.ogg", baseDir), qtrue);
+			cgs.media.enemyFlagReturnedSound = trap_S_RegisterSound(va("%s/enemy_flag_returned.ogg", baseDir), qtrue);
+
+			cgs.media.enemyTookYourFlagSound = trap_S_RegisterSound( va("%s/the_enemy_has_flag.wav", baseDir), qtrue );
+			cgs.media.yourTeamTookEnemyFlagSound = trap_S_RegisterSound( va("%s/your_team_has_flag.wav", baseDir), qtrue );
+
+			cgs.media.youHaveFlagSound = trap_S_RegisterSound( va("%s/you_have_flag.wav", baseDir), qtrue );
+			cgs.media.holyShitSound = trap_S_RegisterSound(va("%s/holy_shit.wav", baseDir), qtrue);
+		}
+	}
+
+	cgs.media.deniedSound = trap_S_RegisterSound( va("%s/denied.wav", baseDir), qtrue );
+	cgs.media.assistSound = trap_S_RegisterSound( va("%s/assist.wav", baseDir), qtrue );
+	cgs.media.defendSound = trap_S_RegisterSound( va("%s/defense.wav", baseDir), qtrue );
+
+	// new ql rewards
+	for (i = 0;  i < NUM_REWARD_VARIATIONS;  i++) {
+		cgs.media.impressiveSound[i] = trap_S_RegisterSound(va("%s/impressive%d.wav", baseDir, i + 1), qtrue);
+		cgs.media.excellentSound[i] = trap_S_RegisterSound(va("%s/excellent%d.wav", baseDir, i + 1), qtrue);
+		cgs.media.humiliationSound[i] = trap_S_RegisterSound(va("%s/humiliation%d.wav", baseDir, i + 1), qtrue);
+		cgs.media.comboKillRewardSound[i] = trap_S_RegisterSound(va("%s/combokill%d.ogg", baseDir, i + 1), qfalse);
+		cgs.media.rampageRewardSound[i] = trap_S_RegisterSound(va("%s/rampage%d.ogg", baseDir, i + 1), qfalse);
+		cgs.media.revengeRewardSound[i] = trap_S_RegisterSound(va("%s/revenge%d.ogg", baseDir, i + 1), qfalse);
+		cgs.media.midAirRewardSound[i] = trap_S_RegisterSound(va("%s/midair%d.ogg", baseDir, i + 1), qfalse);
+	}
+	cgs.media.firstImpressiveSound = trap_S_RegisterSound( va("%s/first_impressive.wav", baseDir), qtrue );
+	cgs.media.firstExcellentSound = trap_S_RegisterSound( va("%s/first_excellent.wav", baseDir), qtrue );
+	cgs.media.firstHumiliationSound = trap_S_RegisterSound( va("%s/first_gauntlet.wav", baseDir), qtrue );
+
+	cgs.media.damageRewardSound = trap_S_RegisterSound(va("%s/damage.ogg", baseDir), qfalse);
+	cgs.media.firstFragRewardSound = trap_S_RegisterSound(va("%s/first_frag.ogg", baseDir), qfalse);
+	cgs.media.accuracyRewardSound = trap_S_RegisterSound(va("%s/accuracy.ogg", baseDir), qfalse);
+	cgs.media.perfectRewardSound = trap_S_RegisterSound(va("%s/perfect.ogg", baseDir), qfalse);
+	cgs.media.perforatedRewardSound = trap_S_RegisterSound(va("%s/perforated.ogg", baseDir), qfalse);
+	cgs.media.quadGodRewardSound = trap_S_RegisterSound(va("%s/quad_god.ogg", baseDir), qfalse);
+	cgs.media.headshotRewardSound = trap_S_RegisterSound(va("%s/headshot.ogg", baseDir), qfalse);
+
+	cgs.media.takenLeadSound = trap_S_RegisterSound( va("%s/lead_taken.wav", baseDir), qtrue);
+	cgs.media.tiedLeadSound = trap_S_RegisterSound( va("%s/lead_tied.wav", baseDir), qtrue);
+	cgs.media.lostLeadSound = trap_S_RegisterSound( va("%s/lead_lost.wav", baseDir), qtrue);
+
+	cgs.media.voteNow = trap_S_RegisterSound( va("%s/vote_now.wav", baseDir), qtrue);
+	cgs.media.votePassed = trap_S_RegisterSound( va("%s/vote_passed.wav", baseDir), qtrue);
+	cgs.media.voteFailed = trap_S_RegisterSound( va("%s/vote_failed.wav", baseDir), qtrue);
+
+	cgs.media.winnerSound = trap_S_RegisterSound( va("%s/you_win.wav", baseDir), qfalse );
+	cgs.media.loserSound = trap_S_RegisterSound( va("%s/you_lose.wav", baseDir), qfalse );
+
+	// powerup pickups
+	cgs.media.quadPickupVo = trap_S_RegisterSound(va("%s/quad_damage.ogg", baseDir), qtrue);
+	cgs.media.battleSuitPickupVo = trap_S_RegisterSound(va("%s/battlesuit.ogg", baseDir), qtrue);
+	cgs.media.hastePickupVo = trap_S_RegisterSound(va("%s/haste.ogg", baseDir), qtrue);
+	cgs.media.invisibilityPickupVo = trap_S_RegisterSound(va("%s/invisibility.ogg", baseDir), qtrue);
+	cgs.media.regenPickupVo = trap_S_RegisterSound(va("%s/regeneration.ogg", baseDir), qtrue);
+}
 /*
 =================
 CG_RegisterSounds
@@ -547,31 +689,10 @@ static void CG_RegisterSounds( void ) {
 	CG_LoadVoiceChats();
 #endif
 
-	cgs.media.oneMinuteSound = trap_S_RegisterSound( "sound/feedback/1_minute.wav", qtrue );
-	cgs.media.fiveMinuteSound = trap_S_RegisterSound( "sound/feedback/5_minute.wav", qtrue );
-	cgs.media.suddenDeathSound = trap_S_RegisterSound( "sound/feedback/sudden_death.wav", qtrue );
-	cgs.media.oneFragSound = trap_S_RegisterSound( "sound/feedback/1_frag.wav", qtrue );
-	cgs.media.twoFragSound = trap_S_RegisterSound( "sound/feedback/2_frags.wav", qtrue );
-	cgs.media.threeFragSound = trap_S_RegisterSound( "sound/feedback/3_frags.wav", qtrue );
-	cgs.media.count3Sound = trap_S_RegisterSound( "sound/feedback/three.wav", qtrue );
-	cgs.media.count2Sound = trap_S_RegisterSound( "sound/feedback/two.wav", qtrue );
-	cgs.media.count1Sound = trap_S_RegisterSound( "sound/feedback/one.wav", qtrue );
-	cgs.media.countFightSound = trap_S_RegisterSound( "sound/feedback/fight.wav", qtrue );
-	cgs.media.countPrepareSound = trap_S_RegisterSound( "sound/feedback/prepare.wav", qtrue );
-#ifdef MISSIONPACK
-	cgs.media.countPrepareTeamSound = trap_S_RegisterSound( "sound/feedback/prepare_team.wav", qtrue );
-#endif
 
 	if ( cgs.gametype >= GT_TEAM || cg_buildScript.integer ) {
 
 		cgs.media.captureAwardSound = trap_S_RegisterSound( "sound/teamplay/flagcapture_yourteam.wav", qtrue );
-		cgs.media.redLeadsSound = trap_S_RegisterSound( "sound/feedback/redleads.wav", qtrue );
-		cgs.media.blueLeadsSound = trap_S_RegisterSound( "sound/feedback/blueleads.wav", qtrue );
-		cgs.media.teamsTiedSound = trap_S_RegisterSound( "sound/feedback/teamstied.wav", qtrue );
-		cgs.media.hitTeamSound = trap_S_RegisterSound( "sound/feedback/hit_teammate.wav", qtrue );
-
-		cgs.media.redScoredSound = trap_S_RegisterSound( "sound/teamplay/voc_red_scores.wav", qtrue );
-		cgs.media.blueScoredSound = trap_S_RegisterSound( "sound/teamplay/voc_blue_scores.wav", qtrue );
 
 		cgs.media.captureYourTeamSound = trap_S_RegisterSound( "sound/teamplay/flagcapture_yourteam.wav", qtrue );
 		cgs.media.captureOpponentSound = trap_S_RegisterSound( "sound/teamplay/flagcapture_opponent.wav", qtrue );
@@ -582,35 +703,15 @@ static void CG_RegisterSounds( void ) {
 		cgs.media.takenYourTeamSound = trap_S_RegisterSound( "sound/teamplay/flagtaken_yourteam.wav", qtrue );
 		cgs.media.takenOpponentSound = trap_S_RegisterSound( "sound/teamplay/flagtaken_opponent.wav", qtrue );
 
-		if ( cgs.gametype == GT_CTF || cg_buildScript.integer ) {
-			cgs.media.redFlagReturnedSound = trap_S_RegisterSound( "sound/teamplay/voc_red_returned.wav", qtrue );
-			cgs.media.blueFlagReturnedSound = trap_S_RegisterSound( "sound/teamplay/voc_blue_returned.wav", qtrue );
-			cgs.media.enemyTookYourFlagSound = trap_S_RegisterSound( "sound/teamplay/voc_enemy_flag.wav", qtrue );
-			cgs.media.yourTeamTookEnemyFlagSound = trap_S_RegisterSound( "sound/teamplay/voc_team_flag.wav", qtrue );
-		}
-
 #ifdef MISSIONPACK
 		if ( cgs.gametype == GT_1FCTF || cg_buildScript.integer ) {
-			// FIXME: get a replacement for this sound ?
 			cgs.media.neutralFlagReturnedSound = trap_S_RegisterSound( "sound/teamplay/flagreturn_opponent.wav", qtrue );
+			// FIXME: not in QL
 			cgs.media.yourTeamTookTheFlagSound = trap_S_RegisterSound( "sound/teamplay/voc_team_1flag.wav", qtrue );
 			cgs.media.enemyTookTheFlagSound = trap_S_RegisterSound( "sound/teamplay/voc_enemy_1flag.wav", qtrue );
 		}
-
-		if ( cgs.gametype == GT_1FCTF || cgs.gametype == GT_CTF || cg_buildScript.integer ) {
-			cgs.media.youHaveFlagSound = trap_S_RegisterSound( "sound/teamplay/voc_you_flag.wav", qtrue );
-			cgs.media.holyShitSound = trap_S_RegisterSound("sound/feedback/voc_holyshit.wav", qtrue);
-		}
-
-		if ( cgs.gametype == GT_OBELISK || cg_buildScript.integer ) {
-			cgs.media.yourBaseIsUnderAttackSound = trap_S_RegisterSound( "sound/teamplay/voc_base_attack.wav", qtrue );
-		}
-#else
-		cgs.media.youHaveFlagSound = trap_S_RegisterSound( "sound/teamplay/voc_you_flag.wav", qtrue );
-		cgs.media.holyShitSound = trap_S_RegisterSound("sound/feedback/voc_holyshit.wav", qtrue);
 #endif
 	}
-
 	cgs.media.tracerSound = trap_S_RegisterSound( "sound/weapons/machinegun/buletby1.wav", qfalse );
 	cgs.media.selectSound = trap_S_RegisterSound( "sound/weapons/change.wav", qfalse );
 	cgs.media.wearOffSound = trap_S_RegisterSound( "sound/items/wearoff.wav", qfalse );
@@ -646,34 +747,9 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.talkSound = trap_S_RegisterSound( "sound/player/talk.wav", qfalse );
 	cgs.media.landSound = trap_S_RegisterSound( "sound/player/land1.wav", qfalse);
 
-	cgs.media.hitSound = trap_S_RegisterSound( "sound/feedback/hit.wav", qfalse );
-#ifdef MISSIONPACK
-	cgs.media.hitSoundHighArmor = trap_S_RegisterSound( "sound/feedback/hithi.wav", qfalse );
-	cgs.media.hitSoundLowArmor = trap_S_RegisterSound( "sound/feedback/hitlo.wav", qfalse );
-#endif
-
-	cgs.media.impressiveSound = trap_S_RegisterSound( "sound/feedback/impressive.wav", qtrue );
-	cgs.media.excellentSound = trap_S_RegisterSound( "sound/feedback/excellent.wav", qtrue );
-	cgs.media.deniedSound = trap_S_RegisterSound( "sound/feedback/denied.wav", qtrue );
-	cgs.media.humiliationSound = trap_S_RegisterSound( "sound/feedback/humiliation.wav", qtrue );
-	cgs.media.assistSound = trap_S_RegisterSound( "sound/feedback/assist.wav", qtrue );
-	cgs.media.defendSound = trap_S_RegisterSound( "sound/feedback/defense.wav", qtrue );
-#ifdef MISSIONPACK
-	cgs.media.firstImpressiveSound = trap_S_RegisterSound( "sound/feedback/first_impressive.wav", qtrue );
-	cgs.media.firstExcellentSound = trap_S_RegisterSound( "sound/feedback/first_excellent.wav", qtrue );
-	cgs.media.firstHumiliationSound = trap_S_RegisterSound( "sound/feedback/first_gauntlet.wav", qtrue );
-#endif
-
-	cgs.media.takenLeadSound = trap_S_RegisterSound( "sound/feedback/takenlead.wav", qtrue);
-	cgs.media.tiedLeadSound = trap_S_RegisterSound( "sound/feedback/tiedlead.wav", qtrue);
-	cgs.media.lostLeadSound = trap_S_RegisterSound( "sound/feedback/lostlead.wav", qtrue);
-
-#ifdef MISSIONPACK
-	cgs.media.voteNow = trap_S_RegisterSound( "sound/feedback/vote_now.wav", qtrue);
-	cgs.media.votePassed = trap_S_RegisterSound( "sound/feedback/vote_passed.wav", qtrue);
-	cgs.media.voteFailed = trap_S_RegisterSound( "sound/feedback/vote_failed.wav", qtrue);
-#endif
-
+	for (i = 0;  i < 4;  i++) {
+		cgs.media.hitSound[i] = trap_S_RegisterSound(va( "sound/feedback/hit%d.ogg", i ), qfalse);
+	}
 	cgs.media.watrInSound = trap_S_RegisterSound( "sound/player/watr_in.wav", qfalse);
 	cgs.media.watrOutSound = trap_S_RegisterSound( "sound/player/watr_out.wav", qfalse);
 	cgs.media.watrUnSound = trap_S_RegisterSound( "sound/player/watr_un.wav", qfalse);
@@ -730,7 +806,6 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.sfx_ric1 = trap_S_RegisterSound ("sound/weapons/machinegun/ric1.wav", qfalse);
 	cgs.media.sfx_ric2 = trap_S_RegisterSound ("sound/weapons/machinegun/ric2.wav", qfalse);
 	cgs.media.sfx_ric3 = trap_S_RegisterSound ("sound/weapons/machinegun/ric3.wav", qfalse);
-	//cgs.media.sfx_railg = trap_S_RegisterSound ("sound/weapons/railgun/railgf1a.wav", qfalse);
 	cgs.media.sfx_rockexp = trap_S_RegisterSound ("sound/weapons/rocket/rocklx1a.wav", qfalse);
 	cgs.media.sfx_plasmaexp = trap_S_RegisterSound ("sound/weapons/plasma/plasmx1a.wav", qfalse);
 #ifdef MISSIONPACK
@@ -745,8 +820,6 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.kamikazeExplodeSound = trap_S_RegisterSound( "sound/items/kam_explode.wav", qfalse );
 	cgs.media.kamikazeImplodeSound = trap_S_RegisterSound( "sound/items/kam_implode.wav", qfalse );
 	cgs.media.kamikazeFarSound = trap_S_RegisterSound( "sound/items/kam_explode_far.wav", qfalse );
-	cgs.media.winnerSound = trap_S_RegisterSound( "sound/feedback/voc_youwin.wav", qfalse );
-	cgs.media.loserSound = trap_S_RegisterSound( "sound/feedback/voc_youlose.wav", qfalse );
 
 	cgs.media.wstbimplSound = trap_S_RegisterSound("sound/weapons/proxmine/wstbimpl.wav", qfalse);
 	cgs.media.wstbimpmSound = trap_S_RegisterSound("sound/weapons/proxmine/wstbimpm.wav", qfalse);
@@ -760,7 +833,6 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.hgrenb1aSound = trap_S_RegisterSound("sound/weapons/grenade/hgrenb1a.wav", qfalse);
 	cgs.media.hgrenb2aSound = trap_S_RegisterSound("sound/weapons/grenade/hgrenb2a.wav", qfalse);
 
-#ifdef MISSIONPACK
 	trap_S_RegisterSound("sound/player/james/death1.wav", qfalse );
 	trap_S_RegisterSound("sound/player/james/death2.wav", qfalse );
 	trap_S_RegisterSound("sound/player/james/death3.wav", qfalse );
@@ -786,8 +858,6 @@ static void CG_RegisterSounds( void ) {
 	trap_S_RegisterSound("sound/player/janet/drown.wav", qfalse );
 	trap_S_RegisterSound("sound/player/janet/fall1.wav", qfalse );
 	trap_S_RegisterSound("sound/player/janet/taunt.wav", qfalse );
-#endif
-
 }
 
 
@@ -1908,6 +1978,7 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	CG_LoadingString( "sounds" );
 
 	CG_RegisterSounds();
+	CG_RegisterAnnouncerSounds ();
 
 	CG_LoadingString( "graphics" );
 

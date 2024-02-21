@@ -322,7 +322,7 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 			trap_S_StartLocalSound( cgs.media.hitSound, CHAN_LOCAL_SOUND );
 		}
 #else
-		trap_S_StartLocalSound( cgs.media.hitSound, CHAN_LOCAL_SOUND );
+		trap_S_StartLocalSound( cgs.media.hitSound[1], CHAN_LOCAL_SOUND );
 #endif
 	} else if ( ps->persistant[PERS_HITS] < ops->persistant[PERS_HITS] ) {
 		trap_S_StartLocalSound( cgs.media.hitTeamSound, CHAN_LOCAL_SOUND );
@@ -349,43 +349,37 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 		//Com_Printf("capture\n");
 	}
 	if (ps->persistant[PERS_IMPRESSIVE_COUNT] != ops->persistant[PERS_IMPRESSIVE_COUNT]) {
-#ifdef MISSIONPACK
+
 		if (ps->persistant[PERS_IMPRESSIVE_COUNT] == 1) {
 			sfx = cgs.media.firstImpressiveSound;
 		} else {
-			sfx = cgs.media.impressiveSound;
+			sfx = cgs.media.impressiveSound[rand() % NUM_REWARD_VARIATIONS];
 		}
-#else
-		sfx = cgs.media.impressiveSound;
-#endif
+
 		pushReward(sfx, cgs.media.medalImpressive, ps->persistant[PERS_IMPRESSIVE_COUNT]);
 		reward = qtrue;
 		//Com_Printf("impressive\n");
 	}
 	if (ps->persistant[PERS_EXCELLENT_COUNT] != ops->persistant[PERS_EXCELLENT_COUNT]) {
-#ifdef MISSIONPACK
+
 		if (ps->persistant[PERS_EXCELLENT_COUNT] == 1) {
 			sfx = cgs.media.firstExcellentSound;
 		} else {
-			sfx = cgs.media.excellentSound;
+			sfx = cgs.media.excellentSound[rand() % NUM_REWARD_VARIATIONS];
 		}
-#else
-		sfx = cgs.media.excellentSound;
-#endif
+
 		pushReward(sfx, cgs.media.medalExcellent, ps->persistant[PERS_EXCELLENT_COUNT]);
 		reward = qtrue;
 		//Com_Printf("excellent\n");
 	}
 	if (ps->persistant[PERS_GAUNTLET_FRAG_COUNT] != ops->persistant[PERS_GAUNTLET_FRAG_COUNT]) {
-#ifdef MISSIONPACK
+
 		if (ps->persistant[PERS_GAUNTLET_FRAG_COUNT] == 1) {
 			sfx = cgs.media.firstHumiliationSound;
 		} else {
-			sfx = cgs.media.humiliationSound;
+			sfx = cgs.media.humiliationSound[rand() % NUM_REWARD_VARIATIONS];
 		}
-#else
-		sfx = cgs.media.humiliationSound;
-#endif
+
 		pushReward(sfx, cgs.media.medalGauntlet, ps->persistant[PERS_GAUNTLET_FRAG_COUNT]);
 		reward = qtrue;
 		//Com_Printf("gauntlet frag\n");
@@ -408,7 +402,7 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 		}
 		else if ((ps->persistant[PERS_PLAYEREVENTS] & PLAYEREVENT_GAUNTLETREWARD) !=
 				(ops->persistant[PERS_PLAYEREVENTS] & PLAYEREVENT_GAUNTLETREWARD)) {
-			trap_S_StartLocalSound( cgs.media.humiliationSound, CHAN_ANNOUNCER );
+			trap_S_StartLocalSound( cgs.media.humiliationSound[rand() % NUM_REWARD_VARIATIONS], CHAN_ANNOUNCER );
 		}
 		else if ((ps->persistant[PERS_PLAYEREVENTS] & PLAYEREVENT_HOLYSHIT) !=
 				(ops->persistant[PERS_PLAYEREVENTS] & PLAYEREVENT_HOLYSHIT)) {

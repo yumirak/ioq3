@@ -91,6 +91,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define DEFAULT_REDTEAM_NAME		"Stroggs"
 #define DEFAULT_BLUETEAM_NAME		"Pagans"
 
+#define NUM_REWARD_VARIATIONS 3
+
 typedef enum {
 	FOOTSTEP_NORMAL,
 	FOOTSTEP_BOOT,
@@ -855,9 +857,9 @@ typedef struct {
 	sfxHandle_t obeliskHitSound2;
 	sfxHandle_t obeliskHitSound3;
 	sfxHandle_t	obeliskRespawnSound;
+#endif
 	sfxHandle_t	winnerSound;
 	sfxHandle_t	loserSound;
-#endif
 	sfxHandle_t	gibSound;
 	sfxHandle_t	gibBounce1Sound;
 	sfxHandle_t	gibBounce2Sound;
@@ -879,19 +881,32 @@ typedef struct {
 	sfxHandle_t twoFragSound;
 	sfxHandle_t oneFragSound;
 
-	sfxHandle_t hitSound;
+	sfxHandle_t hitSound[4];
 	sfxHandle_t hitSoundHighArmor;
 	sfxHandle_t hitSoundLowArmor;
 	sfxHandle_t hitTeamSound;
-	sfxHandle_t impressiveSound;
-	sfxHandle_t excellentSound;
+	sfxHandle_t impressiveSound[NUM_REWARD_VARIATIONS];
+	sfxHandle_t excellentSound[NUM_REWARD_VARIATIONS];
 	sfxHandle_t deniedSound;
-	sfxHandle_t humiliationSound;
+	sfxHandle_t humiliationSound[NUM_REWARD_VARIATIONS];
 	sfxHandle_t assistSound;
 	sfxHandle_t defendSound;
 	sfxHandle_t firstImpressiveSound;
 	sfxHandle_t firstExcellentSound;
 	sfxHandle_t firstHumiliationSound;
+
+	// new ql rewards
+	sfxHandle_t comboKillRewardSound[NUM_REWARD_VARIATIONS];
+	sfxHandle_t damageRewardSound;
+	sfxHandle_t firstFragRewardSound;
+	sfxHandle_t accuracyRewardSound;
+	sfxHandle_t perfectRewardSound;
+	sfxHandle_t perforatedRewardSound;
+	sfxHandle_t quadGodRewardSound;
+	sfxHandle_t rampageRewardSound[NUM_REWARD_VARIATIONS];
+	sfxHandle_t revengeRewardSound[NUM_REWARD_VARIATIONS];
+	sfxHandle_t midAirRewardSound[NUM_REWARD_VARIATIONS];
+	sfxHandle_t headshotRewardSound;
 
 	sfxHandle_t takenLeadSound;
 	sfxHandle_t tiedLeadSound;
@@ -919,35 +934,65 @@ typedef struct {
 	sfxHandle_t redLeadsSound;
 	sfxHandle_t blueLeadsSound;
 	sfxHandle_t teamsTiedSound;
+	sfxHandle_t yourTeamScoredSound;
+	sfxHandle_t enemyTeamScoredSound;
+	sfxHandle_t redWinsSound;
+	sfxHandle_t blueWinsSound;
+	sfxHandle_t redWinsRoundSound;
+	sfxHandle_t blueWinsRoundSound;
+	sfxHandle_t roundBeginsInSound;
+	sfxHandle_t roundDrawSound;
+	sfxHandle_t thirtySecondWarningSound;
 
 	sfxHandle_t	captureYourTeamSound;
 	sfxHandle_t	captureOpponentSound;
 	sfxHandle_t	returnYourTeamSound;
 	sfxHandle_t	returnOpponentSound;
+
 	sfxHandle_t	takenYourTeamSound;
 	sfxHandle_t	takenOpponentSound;
 
 	sfxHandle_t redFlagReturnedSound;
 	sfxHandle_t blueFlagReturnedSound;
-#ifdef MISSIONPACK
+	sfxHandle_t yourFlagReturnedSound;
+	sfxHandle_t enemyFlagReturnedSound;
+//#ifdef MISSIONPACK
 	sfxHandle_t neutralFlagReturnedSound;
-#endif
+//#endif
 	sfxHandle_t	enemyTookYourFlagSound;
 	sfxHandle_t yourTeamTookEnemyFlagSound;
 	sfxHandle_t	youHaveFlagSound;
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	sfxHandle_t	enemyTookTheFlagSound;
 	sfxHandle_t yourTeamTookTheFlagSound;
 	sfxHandle_t yourBaseIsUnderAttackSound;
-#endif
+//#endif
 	sfxHandle_t holyShitSound;
+	sfxHandle_t lastStandingSound;
+	sfxHandle_t attackFlagSound;
+	sfxHandle_t defendFlagSound;
+	sfxHandle_t perfectSound;
+	sfxHandle_t roundOverSound;
+	sfxHandle_t aLostSound;
+	sfxHandle_t bLostSound;
+	sfxHandle_t cLostSound;
+	sfxHandle_t dLostSound;
+	sfxHandle_t eLostSound;
+	sfxHandle_t aCapturedSound;
+	sfxHandle_t bCapturedSound;
+	sfxHandle_t cCapturedSound;
+	sfxHandle_t dCapturedSound;
+	sfxHandle_t eCapturedSound;
 
 	// tournament sounds
 	sfxHandle_t	count3Sound;
 	sfxHandle_t	count2Sound;
 	sfxHandle_t	count1Sound;
 	sfxHandle_t	countFightSound;
+	sfxHandle_t countGoSound;
+	sfxHandle_t countBiteSound;
 	sfxHandle_t	countPrepareSound;
+	sfxHandle_t	countPrepareTeamSound;
 
 #ifdef MISSIONPACK
 	// new stuff
@@ -960,7 +1005,7 @@ typedef struct {
 	qhandle_t retrieveShader;
 	qhandle_t escortShader;
 	qhandle_t flagShaders[3];
-	sfxHandle_t	countPrepareTeamSound;
+
 
 	sfxHandle_t ammoregenSound;
 	sfxHandle_t doublerSound;
@@ -981,6 +1026,15 @@ typedef struct {
 	sfxHandle_t	wstbimpmSound;
 	sfxHandle_t	wstbimpdSound;
 	sfxHandle_t	wstbactvSound;
+
+	sfxHandle_t killBeep[8];
+
+	// announcer
+	sfxHandle_t quadPickupVo;
+	sfxHandle_t battleSuitPickupVo;
+	sfxHandle_t hastePickupVo;
+	sfxHandle_t invisibilityPickupVo;
+	sfxHandle_t regenPickupVo;
 
 } cgMedia_t;
 
@@ -1190,6 +1244,7 @@ extern  vmCvar_t		cg_recordSPDemo;
 extern  vmCvar_t		cg_recordSPDemoName;
 extern	vmCvar_t		cg_obeliskRespawnDelay;
 #endif
+extern	vmCvar_t		cg_announcer;
 
 //
 // cg_main.c
