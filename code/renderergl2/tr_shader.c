@@ -2009,6 +2009,12 @@ static qboolean ParseShader( char **text )
 			ParseSort( text );
 			continue;
 		}
+		else if ( !Q_stricmp( token, "novlcollapse" ) )
+		{
+			// new in quakelive
+			shader.noVertexLightingCollapse = qtrue;
+			continue;
+		}
 		else
 		{
 			ri.Printf( PRINT_WARNING, "WARNING: unknown general shader parameter '%s' in '%s'\n", token, shader.name );
@@ -3197,7 +3203,7 @@ static shader_t *FinishShader( void ) {
 	//
 	// if we are in r_vertexLight mode, never use a lightmap texture
 	//
-	if ( stage > 1 && ( (r_vertexLight->integer && !r_uiFullScreen->integer) || glConfig.hardwareType == GLHW_PERMEDIA2 ) ) {
+	if ( stage > 1 && ( (r_vertexLight->integer && !r_uiFullScreen->integer) || glConfig.hardwareType == GLHW_PERMEDIA2 ) &&  !shader.noVertexLightingCollapse) {
 		VertexLightingCollapse();
 		hasLightmapStage = qfalse;
 	}
