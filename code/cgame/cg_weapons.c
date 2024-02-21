@@ -913,6 +913,9 @@ static void CG_CalculateWeaponPosition( vec3_t origin, vec3_t angles ) {
 	VectorCopy( cg.refdef.vieworg, origin );
 	VectorCopy( cg.refdefViewAngles, angles );
 
+	if(cg_drawGun.integer > 1)
+		return;
+
 	// on odd legs, invert some angles
 	if ( cg.bobcycle & 1 ) {
 		scale = -cg.xyspeed;
@@ -1257,13 +1260,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	VectorCopy(parent->origin, gun.origin);
 
 	VectorMA(gun.origin, lerped.origin[0], parent->axis[0], gun.origin);
-
-	// Make weapon appear left-handed for 2 and centered for 3
-	if(ps && cg_drawGun.integer == 2)
-		VectorMA(gun.origin, -lerped.origin[1], parent->axis[1], gun.origin);
-	else if(!ps || cg_drawGun.integer != 3)
-	       	VectorMA(gun.origin, lerped.origin[1], parent->axis[1], gun.origin);
-
+	VectorMA(gun.origin, lerped.origin[1], parent->axis[1], gun.origin);
 	VectorMA(gun.origin, lerped.origin[2], parent->axis[2], gun.origin);
 
 	MatrixMultiply(lerped.axis, ((refEntity_t *)parent)->axis, gun.axis);
