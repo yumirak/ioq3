@@ -1906,10 +1906,15 @@ static void CG_DrawCrosshair(void)
 	CG_AdjustFrom640( &x, &y, &w, &h );
 
 	ca = cg_drawCrosshair.integer;
-	if (ca < 0) {
-		ca = 0;
+	if (ca <= 0) {
+		return;
 	}
-	hShader = cgs.media.crosshairShader[ ca % NUM_CROSSHAIRS ];
+	ca = ca % NUM_CROSSHAIRS;
+	if (ca == 0) {
+		return;
+	}
+	// indexed at 1
+	hShader = cgs.media.crosshairShader[ca];
 
 	trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef.width - w), 
 		y + cg.refdef.y + 0.5 * (cg.refdef.height - h), 
@@ -1958,10 +1963,15 @@ static void CG_DrawCrosshair3D(void)
 	}
 
 	ca = cg_drawCrosshair.integer;
-	if (ca < 0) {
-		ca = 0;
+	if (ca <= 0) {
+		return;
+    }
+	ca = ca % NUM_CROSSHAIRS;
+	if (ca == 0) {
+		return;
 	}
-	hShader = cgs.media.crosshairShader[ ca % NUM_CROSSHAIRS ];
+	// indexed at 1
+	hShader = cgs.media.crosshairShader[ca];
 
 	// Use a different method rendering the crosshair so players don't see two of them when
 	// focusing their eyes at distant objects with high stereo separation
