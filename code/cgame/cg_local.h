@@ -872,8 +872,6 @@ typedef struct {
 	sfxHandle_t oneFragSound;
 
 	sfxHandle_t hitSound[4];
-	sfxHandle_t hitSoundHighArmor;
-	sfxHandle_t hitSoundLowArmor;
 	sfxHandle_t hitTeamSound;
 	sfxHandle_t impressiveSound[NUM_REWARD_VARIATIONS];
 	sfxHandle_t excellentSound[NUM_REWARD_VARIATIONS];
@@ -1236,6 +1234,7 @@ extern	vmCvar_t		cg_obeliskRespawnDelay;
 #endif
 extern	vmCvar_t		cg_announcer;
 extern	vmCvar_t		cg_lightningStyle;
+extern	vmCvar_t		cg_hitBeep;
 //
 // cg_main.c
 //

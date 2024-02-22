@@ -299,9 +299,8 @@ CG_CheckLocalSounds
 */
 void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 	int			highScore, reward;
-#ifdef MISSIONPACK
-	int			health, armor;
-#endif
+	int			health, armor, damage;
+	int 		index;
 	sfxHandle_t sfx;
 
 	// don't play the sounds if the player just changed teams
@@ -311,19 +310,39 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 
 	// hit changes
 	if ( ps->persistant[PERS_HITS] > ops->persistant[PERS_HITS] ) {
-#ifdef MISSIONPACK
 		armor  = ps->persistant[PERS_ATTACKEE_ARMOR] & 0xff;
 		health = ps->persistant[PERS_ATTACKEE_ARMOR] >> 8;
-		if (armor > 50 ) {
-			trap_S_StartLocalSound( cgs.media.hitSoundHighArmor, CHAN_LOCAL_SOUND );
-		} else if (armor || health > 100) {
-			trap_S_StartLocalSound( cgs.media.hitSoundLowArmor, CHAN_LOCAL_SOUND );
-		} else {
-			trap_S_StartLocalSound( cgs.media.hitSound, CHAN_LOCAL_SOUND );
+		damage = ps->persistant[PERS_DAMAGE] - ops->persistant[PERS_DAMAGE];
+		switch(cg_hitBeep.integer)
+		{
+			case 1: // low to high pitch
+			{
+				index = Com_Clamp(0, 3, damage / 20);
+				trap_S_StartLocalSound( cgs.media.hitSound[ index ], CHAN_LOCAL_SOUND );
+				break;
+			}
+			case 2: // high to low pitch
+			{
+				index = Com_Clamp(0, 3, damage / 20);
+				index = 3 - index;
+				trap_S_StartLocalSound( cgs.media.hitSound[ index ], CHAN_LOCAL_SOUND );
+				break;
+			}
+			case 3: // Team Arena pitch
+			{
+				if (armor > 50 ) {
+					trap_S_StartLocalSound( cgs.media.hitSound[0], CHAN_LOCAL_SOUND );
+				} else if (armor || health > 100) {
+					trap_S_StartLocalSound( cgs.media.hitSound[1], CHAN_LOCAL_SOUND );
+				} else {
+					trap_S_StartLocalSound( cgs.media.hitSound[2], CHAN_LOCAL_SOUND );
+				}
+				break;
+			}
+			default: // Q3A static pitch
+				trap_S_StartLocalSound( cgs.media.hitSound[1], CHAN_LOCAL_SOUND );
+				break;
 		}
-#else
-		trap_S_StartLocalSound( cgs.media.hitSound[1], CHAN_LOCAL_SOUND );
-#endif
 	} else if ( ps->persistant[PERS_HITS] < ops->persistant[PERS_HITS] ) {
 		trap_S_StartLocalSound( cgs.media.hitTeamSound, CHAN_LOCAL_SOUND );
 	}
