@@ -148,7 +148,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define MODELINDEX_NAILGUN			49
 #define MODELINDEX_PROXLAUNCHER		50
 #define MODELINDEX_CHAINGUN			51
-
+#define MODELINDEX_ARMORJACKET      52
 
 //
 #define WEAPONINDEX_GAUNTLET			1
