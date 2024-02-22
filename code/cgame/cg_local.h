@@ -780,8 +780,6 @@ typedef struct {
 
 	// special effects models
 	qhandle_t	teleportEffectModel;
-	qhandle_t	teleportEffectShader;
-
 	qhandle_t	deathEffectShader;
 
 #ifdef MISSIONPACK
