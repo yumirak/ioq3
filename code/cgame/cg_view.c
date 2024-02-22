@@ -476,6 +476,7 @@ static int CG_CalcFov( void ) {
 	float	zoomFov;
 	float	f;
 	int		inwater;
+	float	baseAspect, aspect, desiredFov; // cg_fovAdjust
 
 	if ( cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
 		// if in intermission, use a fixed value
@@ -515,6 +516,15 @@ static int CG_CalcFov( void ) {
 				fov_x = zoomFov + f * ( fov_x - zoomFov );
 			}
 		}
+	}
+	if ( cg_fovAdjust.integer ) {
+		// Based on LordHavoc's code for Darkplaces
+		// http://www.quakeworld.nu/forum/topic/53/what-does-your-qw-look-like/page/30
+		baseAspect = 0.75f; // 3/4
+		aspect = (float)cg.refdef.width/(float)cg.refdef.height;
+		desiredFov = fov_x;
+
+		fov_x = atan2( tan( desiredFov * M_PI / 360.0f ) * baseAspect * aspect, 1 ) * 360.0f / M_PI;
 	}
 
 	x = cg.refdef.width / tan( fov_x / 360 * M_PI );
