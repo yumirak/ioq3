@@ -224,7 +224,27 @@ int Pickup_Ammo (gentity_t *ent, gentity_t *other)
 		quantity = ent->item->quantity;
 	}
 
-	Add_Ammo (other, ent->item->giTag, quantity);
+	if (!Q_stricmp(ent->item->classname, "ammo_pack")) {
+		int i;
+
+		for (i = 0;  i < bg_numItems;  i++) {
+			const gitem_t *item;
+
+			item = &bg_itemlist[i];
+			if (item->giType != IT_AMMO) {
+				// skip
+				continue;
+			}
+			if (!Q_stricmp(item->classname, "ammo_pack")) {
+				// skip
+				continue;
+			}
+
+			Add_Ammo(other, item->giTag, item->quantity);
+		}
+	} else {
+		Add_Ammo (other, ent->item->giTag, quantity);
+	}
 
 	return RESPAWN_AMMO;
 }

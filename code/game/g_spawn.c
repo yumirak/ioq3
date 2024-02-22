@@ -180,6 +180,7 @@ void SP_team_redobelisk( gentity_t *ent );
 void SP_team_neutralobelisk( gentity_t *ent );
 #endif
 void SP_item_botroam( gentity_t *ent ) { }
+void SP_ignore (gentity_t *ent) { }
 
 spawn_t	spawns[] = {
 	// info entities don't do anything at all, but provide positional
@@ -253,7 +254,7 @@ spawn_t	spawns[] = {
 	{"team_neutralobelisk", SP_team_neutralobelisk},
 #endif
 	{"item_botroam", SP_item_botroam},
-
+	//{"advertisement", SP_ignore},
 	{NULL, 0}
 };
 
@@ -398,15 +399,50 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 	int			i;
 	gentity_t	*ent;
 	char		*s, *value, *gametypeName;
-	static char *gametypeNames[] = {"ffa", "tournament", "single", "team", "ctf", "oneflag", "obelisk", "harvester"};
-
+	//static char *gametypeNames[] = {"ffa", "tournament", "single", "team", "ctf", "oneflag", "obelisk", "harvester"};
+	static char *gametypeNames[] = { "ffa", "tournament" /* ql now uses 'duel' so you need extra checks */, "race", "team" /* ql now uses 'tdm' so you need extra checks */, "ca", "ctf", "oneflag" /* ql now uses '1f' so you need extra checks */, "obelisk" /* ql now uses 'ob' so you need extra checks */, "harvester" /* ql now uses 'har' so you need extra checks */, "ft", "dom", "ad", "rr", "ntf" /* cpma never used */, "twovstwo" /* cpma never used */, "hm" /* cpma never used */, "single" };
 	// get the next free entity
 	ent = G_Spawn();
 
 	for ( i = 0 ; i < level.numSpawnVars ; i++ ) {
 		G_ParseField( level.spawnVars[i][0], level.spawnVars[i][1], ent );
 	}
-
+	switch(g_ammoPack.integer)
+	{
+		case 1:
+		{
+			if (!Q_stricmp(ent->classname, "ammo_pack")) {
+				// pass, add it
+			} else if (!Q_stricmpn(ent->classname, "ammo_", 5)) {
+				// ignore other types of ammo
+				ADJUST_AREAPORTAL();
+				G_FreeEntity( ent );
+				return;
+			}
+			break;
+		}
+		case 2:
+		{
+			// substitute ammo_ with ammo_pack
+			if (!Q_stricmp(ent->classname, "ammo_pack")) {
+				ADJUST_AREAPORTAL();
+				G_FreeEntity( ent );
+				return;
+			} else if (!Q_stricmpn(ent->classname, "ammo_", 5)) {
+				ent->classname = G_NewString("ammo_pack");
+			}
+			break;
+		}
+		default:
+		{
+			if (!Q_stricmp(ent->classname, "ammo_pack")) {
+				ADJUST_AREAPORTAL();
+				G_FreeEntity( ent );
+				return;
+			}
+			break;
+		}
+	}
 	// check for "notsingle" flag
 	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
 		G_SpawnInt( "notsingle", "0", &i );
@@ -432,29 +468,137 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 			return;
 		}
 	}
+	// quake live addition
+	if (G_SpawnString("not_gametype", NULL, &value)) {
+		qboolean isDigitString;
+		int i;
 
-#ifdef MISSIONPACK
+		// 2019-01-31 older quake live maps used numbers instead of
+		// strings for the gametypes.  Ex (2009 map):
+		//    qzca1.bsp:"not_gametype" "1"
+		//    qzca1.bsp:"not_gametype" "0 2 3 4 5"
+
+		// check for all digit string so you don't trip up with '1f'
+		isDigitString = qtrue;
+		for (i = 0;  i < strlen(value);  i++) {
+			if (!isdigit(value[i])  &&  value[i] != ' ') {
+				isDigitString = qfalse;
+				break;
+			}
+		}
+
+		if (isDigitString) {
+			if (g_gametype.integer >= 0  &&  g_gametype.integer <= 9) {
+				s = strstr(value, g_gametype.string);
+				if (s) {
+					ADJUST_AREAPORTAL();
+					G_FreeEntity(ent);
+					return;
+				}
+			} else {
+				// single player (not valid in ql) or gametypes that didn't exist when map was created (domination, red rover, etc..)
+
+				// pass
+			}
+		} else {  // string
+			if (g_gametype.integer >= GT_FFA && g_gametype.integer < GT_MAX_GAME_TYPE) {
+				gametypeName = gametypeNames[g_gametype.integer];
+
+				s = strstr(value, gametypeName);
+				if (!s) {
+					// try alternate quake live gametype names
+					switch(g_gametype.integer)
+					{
+						case GT_TEAM:
+							s = strstr(value, "tdm");
+							break;
+						case GT_TOURNAMENT:
+							s = strstr(value, "duel");
+							break;
+						case GT_HARVESTER:
+							s = strstr(value, "har");
+							break;
+						case GT_1FCTF:
+							s = strstr(value, "1f");
+							break;
+						case GT_OBELISK:
+						{
+							s = strstr(value, "ob");
+							// 2019-02-02 also 'overload', don't know if this is a map bug
+							// overgrowth.bsp:"gametype" "harvester, overload"
+							if (!s) {
+								s = strstr(value, "overload");
+							}
+							break;
+						}
+					}
+				}
+
+				if (s) {
+					//G_Printf("skipping item, in not_gametype string: '%s'\n", value);
+					ADJUST_AREAPORTAL();
+					G_FreeEntity(ent);
+					return;
+				}
+			}
+		}
+	}
+
 	G_SpawnInt( "notta", "0", &i );
 	if ( i ) {
 		ADJUST_AREAPORTAL();
 		G_FreeEntity( ent );
 		return;
 	}
-#else
+
 	G_SpawnInt( "notq3a", "0", &i );
 	if ( i ) {
 		ADJUST_AREAPORTAL();
 		G_FreeEntity( ent );
 		return;
 	}
-#endif
+
 
 	if( G_SpawnString( "gametype", NULL, &value ) ) {
+		// 2019-02-02 quake live sometimes uses comma separated list:
+		//    theoldendomain.bsp:"gametype" "ffa,tournament,single"
+		//    solid.bsp:"gametype" "ffa tdm ft"
+
 		if( g_gametype.integer >= GT_FFA && g_gametype.integer < GT_MAX_GAME_TYPE ) {
 			gametypeName = gametypeNames[g_gametype.integer];
 
 			s = strstr( value, gametypeName );
 			if( !s ) {
+				// try alternate quake live gametype names
+				switch(g_gametype.integer)
+				{
+					case GT_TEAM:
+						s = strstr(value, "tdm");
+						break;
+					case GT_TOURNAMENT:
+						s = strstr(value, "duel");
+						break;
+					case GT_HARVESTER:
+						s = strstr(value, "har");
+						break;
+					case GT_1FCTF:
+						s = strstr(value, "1f");
+						break;
+					case GT_OBELISK:
+					{
+						s = strstr(value, "ob");
+						// 2019-02-02 also 'overload', don't know if this is a map bug
+						// overgrowth.bsp:"gametype" "harvester, overload"
+						if (!s) {
+							s = strstr(value, "overload");
+						}
+						break;
+					}
+				}
+			}
+
+			if (!s) {
+				//G_Printf("skipping item, not in gametype string: '%s'\n", value);
 				ADJUST_AREAPORTAL();
 				G_FreeEntity( ent );
 				return;

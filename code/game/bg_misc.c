@@ -492,7 +492,19 @@ gitem_t	bg_itemlist[] =
 /* precache */ "",
 /* sounds */ ""
 	},
-
+	// ammo pack
+	{
+		"ammo_pack",
+		"sound/misc/am_pkup.wav",
+		{ "models/powerups/ammo/ammopack.md3", 0, 0, 0 },
+		"icons/ammo_pack",
+		"Ammo Pack",
+		0,
+		IT_AMMO,
+		0,
+		"",
+		""
+	},
 	//
 	// HOLDABLE ITEMS
 	//
