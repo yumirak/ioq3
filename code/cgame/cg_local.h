@@ -699,16 +699,7 @@ typedef struct {
 	qhandle_t	deferShader;
 
 	// gib explosions
-	qhandle_t	gibAbdomen;
-	qhandle_t	gibArm;
-	qhandle_t	gibChest;
-	qhandle_t	gibFist;
-	qhandle_t	gibFoot;
-	qhandle_t	gibForearm;
-	qhandle_t	gibIntestine;
-	qhandle_t	gibLeg;
-	qhandle_t	gibSkull;
-	qhandle_t	gibBrain;
+	qhandle_t	gibSphere;
 
 	qhandle_t	smoke2;
 
@@ -790,6 +781,9 @@ typedef struct {
 	// special effects models
 	qhandle_t	teleportEffectModel;
 	qhandle_t	teleportEffectShader;
+
+	qhandle_t	deathEffectShader;
+
 #ifdef MISSIONPACK
 	qhandle_t	kamikazeEffectModel;
 	qhandle_t	kamikazeShockWave;
@@ -860,10 +854,8 @@ typedef struct {
 #endif
 	sfxHandle_t	winnerSound;
 	sfxHandle_t	loserSound;
-	sfxHandle_t	gibSound;
-	sfxHandle_t	gibBounce1Sound;
-	sfxHandle_t	gibBounce2Sound;
-	sfxHandle_t	gibBounce3Sound;
+	sfxHandle_t	gibSound[4];
+	sfxHandle_t	gibBounceSound[4];
 	sfxHandle_t	teleInSound;
 	sfxHandle_t	teleOutSound;
 	sfxHandle_t	noAmmoSound;
@@ -1471,10 +1463,10 @@ void CG_LightningBoltBeam( vec3_t start, vec3_t end );
 #endif
 void CG_ScorePlum( int client, vec3_t org, int score );
 
-void CG_GibPlayer( vec3_t playerOrigin );
+void CG_GibPlayer(const centity_t *cent);
 void CG_BigExplode( vec3_t playerOrigin );
 
-void CG_Bleed( vec3_t origin, int entityNum );
+void CG_Bleed( const vec3_t origin,int entityNum);
 
 localEntity_t *CG_MakeExplosion( vec3_t origin, vec3_t dir,
 								qhandle_t hModel, qhandle_t shader, int msec,

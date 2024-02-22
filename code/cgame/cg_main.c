@@ -718,11 +718,10 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.selectSound = trap_S_RegisterSound( "sound/weapons/change.wav", qfalse );
 	cgs.media.wearOffSound = trap_S_RegisterSound( "sound/items/wearoff.wav", qfalse );
 	cgs.media.useNothingSound = trap_S_RegisterSound( "sound/items/use_nothing.wav", qfalse );
-	cgs.media.gibSound = trap_S_RegisterSound( "sound/player/gibsplt1.wav", qfalse );
-	cgs.media.gibBounce1Sound = trap_S_RegisterSound( "sound/player/gibimp1.wav", qfalse );
-	cgs.media.gibBounce2Sound = trap_S_RegisterSound( "sound/player/gibimp2.wav", qfalse );
-	cgs.media.gibBounce3Sound = trap_S_RegisterSound( "sound/player/gibimp3.wav", qfalse );
-
+	for (i = 0;  i < 4;  i++) {
+		cgs.media.gibSound[i] = trap_S_RegisterSound(va("sound/misc/electrogib_0%d.ogg", i + 1), qfalse);
+		cgs.media.gibBounceSound[i] = trap_S_RegisterSound(va("sound/misc/electrogib_bounce_0%d.ogg", i + 1), qfalse);
+	}
 #ifdef MISSIONPACK
 	cgs.media.useInvulnerabilitySound = trap_S_RegisterSound( "sound/items/invul_activate.wav", qfalse );
 	cgs.media.invulnerabilityImpactSound1 = trap_S_RegisterSound( "sound/items/invul_impact_01.wav", qfalse );
@@ -1030,22 +1029,13 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.machinegunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/m_shell.md3" );
 	cgs.media.shotgunBrassModel = trap_R_RegisterModel( "models/weapons2/shells/s_shell.md3" );
 
-	cgs.media.gibAbdomen = trap_R_RegisterModel( "models/gibs/abdomen.md3" );
-	cgs.media.gibArm = trap_R_RegisterModel( "models/gibs/arm.md3" );
-	cgs.media.gibChest = trap_R_RegisterModel( "models/gibs/chest.md3" );
-	cgs.media.gibFist = trap_R_RegisterModel( "models/gibs/fist.md3" );
-	cgs.media.gibFoot = trap_R_RegisterModel( "models/gibs/foot.md3" );
-	cgs.media.gibForearm = trap_R_RegisterModel( "models/gibs/forearm.md3" );
-	cgs.media.gibIntestine = trap_R_RegisterModel( "models/gibs/intestine.md3" );
-	cgs.media.gibLeg = trap_R_RegisterModel( "models/gibs/leg.md3" );
-	cgs.media.gibSkull = trap_R_RegisterModel( "models/gibs/skull.md3" );
-	cgs.media.gibBrain = trap_R_RegisterModel( "models/gibs/brain.md3" );
+	cgs.media.gibSphere = trap_R_RegisterModel("models/gibs/sphere.md3");
 
 	cgs.media.smoke2 = trap_R_RegisterModel( "models/weapons2/shells/s_shell.md3" );
 
 	cgs.media.balloonShader = trap_R_RegisterShader( "sprites/balloon3" );
 
-	cgs.media.bloodExplosionShader = trap_R_RegisterShader( "bloodExplosion" );
+	cgs.media.bloodExplosionShader = trap_R_RegisterShader("gfx/misc/tracer");
 
 	cgs.media.bulletFlashModel = trap_R_RegisterModel("models/weaphits/bullet.md3");
 	cgs.media.ringFlashModel = trap_R_RegisterModel("models/weaphits/ring02.md3");
@@ -1056,6 +1046,7 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.teleportEffectModel = trap_R_RegisterModel( "models/misc/telep.md3" );
 	cgs.media.teleportEffectShader = trap_R_RegisterShader( "teleportEffect" );
 #endif
+	cgs.media.deathEffectShader = trap_R_RegisterShader( "deathEffect" );
 #ifdef MISSIONPACK
 	cgs.media.kamikazeEffectModel = trap_R_RegisterModel( "models/weaphits/kamboom2.md3" );
 	cgs.media.kamikazeShockWave = trap_R_RegisterModel( "models/weaphits/kamwave.md3" );

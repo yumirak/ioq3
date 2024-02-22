@@ -118,32 +118,46 @@ CG_BloodTrail
 Leave expanding blood puffs behind gibs
 ================
 */
-void CG_BloodTrail( localEntity_t *le ) {
+static void CG_BloodTrail( const localEntity_t *le ) {
 	int		t;
 	int		t2;
 	int		step;
 	vec3_t	newOrigin;
 	localEntity_t	*blood;
+	qhandle_t	shader;
+	float radius;
+	vec4_t color;
 
-	step = 150;
+	shader = cgs.media.bloodExplosionShader;
+	color[0] = color[1] = color[2] = color[3] = 1.0;
+
+	radius = 5;//3.5;//cg_gibSparksSize.value;
+
+	step = 50; //cg_gibStepTime.integer;
 	t = step * ( (cg.time - cg.frametime + step ) / step );
 	t2 = step * ( cg.time / step );
 
 	for ( ; t <= t2; t += step ) {
 		BG_EvaluateTrajectory( &le->pos, t, newOrigin );
 
-		blood = CG_SmokePuff( newOrigin, vec3_origin, 
-					  20,		// radius
-					  1, 1, 1, 1,	// color
-					  2000,		// trailTime
-					  t,		// startTime
-					  0,		// fadeInTime
-					  0,		// flags
-					  cgs.media.bloodTrailShader );
-		// use the optimized version
-		blood->leType = LE_FALL_SCALE_FADE;
+		blood = CG_SmokePuff( newOrigin, vec3_origin,
+						radius,		// radius
+						color[0], color[1], color[2], color[3],
+						333,	// lifetime (cg_gibTime.integer / 3)
+						t,		// startTime
+						0,		// fadeInTime
+						0,		// flags
+						shader );
+		blood->leType = LE_MOVE_SCALE_FADE;
+		blood->leFlags = LEF_PUFF_DONT_SCALE;
 		// drop a total of 40 units over its lifetime
 		blood->pos.trDelta[2] = 40;
+		blood->refEntity.reType = RT_SPRITE;
+
+		VectorCopy( newOrigin, blood->refEntity.origin );
+		VectorCopy( newOrigin, blood->refEntity.oldorigin );
+		AxisCopy( axisDefault, blood->refEntity.axis );
+		blood->refEntity.rotation = 0;
 	}
 }
 
@@ -155,17 +169,24 @@ CG_FragmentBounceMark
 */
 void CG_FragmentBounceMark( localEntity_t *le, trace_t *trace ) {
 	int			radius;
-
-	if ( le->leMarkType == LEMT_BLOOD ) {
-
-		radius = 16 + (rand()&31);
-		CG_ImpactMark( cgs.media.bloodMarkShader, trace->endpos, trace->plane.normal, random()*360,
+	switch(le->leMarkType)
+	{
+		case LEMT_BLOOD:
+		{
+			radius = 5;
+			CG_ImpactMark( cgs.media.burnMarkShader, trace->endpos, trace->plane.normal, random()*360,
 			1,1,1,1, qtrue, radius, qfalse );
-	} else if ( le->leMarkType == LEMT_BURN ) {
-
-		radius = 8 + (rand()&15);
-		CG_ImpactMark( cgs.media.burnMarkShader, trace->endpos, trace->plane.normal, random()*360,
+			break;
+		}
+		case LEMT_BURN:
+		{
+			radius = 8 + (rand()&15);
+			CG_ImpactMark( cgs.media.burnMarkShader, trace->endpos, trace->plane.normal, random()*360,
 			1,1,1,1, qtrue, radius, qfalse );
+			break;
+		}
+		default:
+			break;
 	}
 
 
@@ -183,17 +204,8 @@ void CG_FragmentBounceSound( localEntity_t *le, trace_t *trace ) {
 	if ( le->leBounceSoundType == LEBS_BLOOD ) {
 		// half the gibs will make splat sounds
 		if ( rand() & 1 ) {
-			int r = rand()&3;
-			sfxHandle_t	s;
-
-			if ( r == 0 ) {
-				s = cgs.media.gibBounce1Sound;
-			} else if ( r == 1 ) {
-				s = cgs.media.gibBounce2Sound;
-			} else {
-				s = cgs.media.gibBounce3Sound;
-			}
-			trap_S_StartSound( trace->endpos, ENTITYNUM_WORLD, CHAN_AUTO, s );
+			int r = (rand()&3) + 1;
+			trap_S_StartSound( trace->endpos, ENTITYNUM_WORLD, CHAN_AUTO, cgs.media.gibBounceSound[r] );
 		}
 	} else if ( le->leBounceSoundType == LEBS_BRASS ) {
 
@@ -678,6 +690,7 @@ CG_AddInvulnerabilityJuiced
 */
 void CG_AddInvulnerabilityJuiced( localEntity_t *le ) {
 	int t;
+	centity_t cent;
 
 	t = cg.time - le->startTime;
 	if ( t > 3000 ) {
@@ -687,7 +700,11 @@ void CG_AddInvulnerabilityJuiced( localEntity_t *le ) {
 	}
 	if ( t > 5000 ) {
 		le->endTime = 0;
-		CG_GibPlayer( le->refEntity.origin );
+		//FIXME hack
+		memset(&cent, 0, sizeof(cent));
+		VectorCopy(le->refEntity.origin, cent.currentState.pos.trBase);
+		//CG_GibPlayer(cent);
+		CG_GibPlayer(&cent);
 	}
 	else {
 		trap_R_AddRefEntityToScene( &le->refEntity );

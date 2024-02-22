@@ -104,17 +104,14 @@ localEntity_t *CG_SmokePuff( const vec3_t p, const vec3_t vel,
 				   int fadeInTime,
 				   int leFlags,
 				   qhandle_t hShader ) {
-	static int	seed = 0x92;
 	localEntity_t	*le;
 	refEntity_t		*re;
-//	int fadeInTime = startTime + duration / 2;
 
 	le = CG_AllocLocalEntity();
 	le->leFlags = leFlags;
 	le->radius = radius;
 
 	re = &le->refEntity;
-	re->rotation = Q_random( &seed ) * 360;
 	re->radius = radius;
 	re->shaderTime = startTime / 1000.0f;
 
@@ -162,6 +159,34 @@ localEntity_t *CG_SmokePuff( const vec3_t p, const vec3_t vel,
 	return le;
 }
 
+static void CG_DeathEffect( const vec3_t org ) {
+	localEntity_t	*le;
+	refEntity_t		*re;
+
+	le = CG_AllocLocalEntity();
+	le->leFlags = 0;
+	le->leType = LE_SPRITE_EXPLOSION;
+	le->startTime = cg.time;
+	le->endTime = cg.time + 500;
+	le->lifeRate = 1.0 / ( le->endTime - le->startTime );
+
+	le->color[0] = le->color[1] = le->color[2] = le->color[3] = 1.0;
+
+	re = &le->refEntity;
+
+	re->reType = RT_SPRITE;
+	re->rotation = 0;
+	re->radius = 100;
+
+	re->shaderTime = cg.time / 1000.0f;
+
+	re->customShader = cgs.media.deathEffectShader;
+
+	AxisClear( re->axis );
+
+	VectorCopy( org, re->origin );
+	re->origin[2] += 16;
+}
 /*
 ==================
 CG_SpawnEffect
@@ -493,33 +518,40 @@ CG_Bleed
 This is the spurt of blood when a character gets hit
 =================
 */
-void CG_Bleed( vec3_t origin, int entityNum ) {
-	localEntity_t	*ex;
+void CG_Bleed( const vec3_t origin,int entityNum)
+{
+	localEntity_t *le;
+	qhandle_t shader;
+	float radius;
+	vec4_t color;
 
-	if ( !cg_blood.integer ) {
+	if (cg_blood.integer == 0) {
 		return;
 	}
 
-	ex = CG_AllocLocalEntity();
-	ex->leType = LE_EXPLOSION;
-
-	ex->startTime = cg.time;
-	ex->endTime = ex->startTime + 500;
-	
-	VectorCopy ( origin, ex->refEntity.origin);
-	ex->refEntity.reType = RT_SPRITE;
-	ex->refEntity.rotation = rand() % 360;
-	ex->refEntity.radius = 24;
-
-	ex->refEntity.customShader = cgs.media.bloodExplosionShader;
-
+	shader = cgs.media.bloodExplosionShader; // spark
+	color[0] = color[1] = color[2] = color[3] = 1.0;
+	radius = 8; //cg_impactSparksSize.value;
+	le = CG_SmokePuff(origin, vec3_origin, radius,
+						 color[0], color[1], color[2], color[3],
+						 250,		// lifetime (cg_impactSparksLifetime.integer)
+						 cg.time,  	// start time
+						 0,  		// fade in time
+						 0,  		// flags
+						 shader);
+	le->leType = LE_MOVE_SCALE_FADE;
+	le->leFlags = LEF_PUFF_DONT_SCALE;
+	le->pos.trDelta[2] = 128;//cg_impactSparksVelocity.value;
+	le->refEntity.reType = RT_SPRITE;
+	VectorCopy(origin, le->refEntity.origin);
+	VectorCopy(origin, le->refEntity.oldorigin);
+	AxisCopy(axisDefault, le->refEntity.axis);
+	le->refEntity.rotation = 0;
 	// don't show player's own blood in view
 	if ( entityNum == cg.snap->ps.clientNum ) {
-		ex->refEntity.renderfx |= RF_THIRD_PERSON;
+		le->refEntity.renderfx |= RF_THIRD_PERSON;
 	}
 }
-
-
 
 /*
 ==================
@@ -535,7 +567,7 @@ void CG_LaunchGib( vec3_t origin, vec3_t velocity, qhandle_t hModel ) {
 
 	le->leType = LE_FRAGMENT;
 	le->startTime = cg.time;
-	le->endTime = le->startTime + 5000 + random() * 3000;
+	le->endTime = le->startTime + 1000;//+ 5000 + random() * 3000;
 
 	VectorCopy( origin, re->origin );
 	AxisCopy( axisDefault, re->axis );
@@ -559,83 +591,67 @@ CG_GibPlayer
 Generated a bunch of gibs launching out from the bodies location
 ===================
 */
-#define	GIB_VELOCITY	250
-#define	GIB_JUMP		250
-void CG_GibPlayer( vec3_t playerOrigin ) {
+void CG_GibPlayer(const centity_t *cent)
+{
 	vec3_t	origin, velocity;
-
-	if ( !cg_blood.integer ) {
-		return;
-	}
-
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	if ( rand() & 1 ) {
-		CG_LaunchGib( origin, velocity, cgs.media.gibSkull );
-	} else {
-		CG_LaunchGib( origin, velocity, cgs.media.gibBrain );
-	}
+	int i;
+	float gibVelocity;
+	int gibJump;
+	vec3_t playerOrigin;
+	vec3_t newVelocity;
+	vec3_t randomVelocity;
+	float mix;
 
 	// allow gibs to be turned off for speed
-	if ( !cg_gibs.integer ) {
+	if (!cg_gibs.integer ||  !cg_blood.integer) {
 		return;
 	}
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibAbdomen );
+	VectorCopy(cent->currentState.pos.trBase, playerOrigin);
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibArm );
+	CG_DeathEffect(playerOrigin);
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibChest );
+	gibJump = 0; //cg_gibJump.value;
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibFist );
+	if (rand() % 1) {
+		gibJump = -gibJump;
+	}
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibFoot );
+	mix = 1.0; //cg_gibDirScale.value;
+	if (mix > 1.0) {
+		mix = 1.0;
+	}
+	if (mix < 0.0) {
+		mix = 0.0;
+	}
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibForearm );
+	for (i = 0;  i < 15;  i++) { // cg_gibs.integer
+		ByteToDir(cent->currentState.eventParm, velocity);
+		gibVelocity = 600; //cg_gibVelocity.value;
+		//cg_gibVelocityRandomness.value 250
+		VectorScale(velocity, gibVelocity + crandom() * 250, velocity);
+		VectorCopy(playerOrigin, origin);
+		VectorCopy(velocity, newVelocity);
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibIntestine );
+		randomVelocity[0] = crandom()*gibVelocity;
+		randomVelocity[1] = crandom()*gibVelocity;
+		randomVelocity[2] = gibJump + crandom()*gibVelocity;
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibLeg );
+		newVelocity[0] += crandom() * 250; //cg_gibRandomness.value;
+		newVelocity[1] += crandom() * 250; //cg_gibRandomness.value;
+		newVelocity[2] += crandom() * 0 + 0; //cg_gibRandomnessZ.value + gibJump;
 
-	VectorCopy( playerOrigin, origin );
-	velocity[0] = crandom()*GIB_VELOCITY;
-	velocity[1] = crandom()*GIB_VELOCITY;
-	velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
-	CG_LaunchGib( origin, velocity, cgs.media.gibLeg );
+		newVelocity[0] = newVelocity[0] * mix + randomVelocity[0] * (1.0 - mix);
+		newVelocity[1] = newVelocity[1] * mix + randomVelocity[1] * (1.0 - mix);
+		newVelocity[2] = newVelocity[2] * mix + randomVelocity[2] * (1.0 - mix);
+/*
+		origin[0] += crandom() * 0;//cg_gibOriginOffset.value;
+		origin[1] += crandom() * 0;//cg_gibOriginOffset.value;
+		origin[2] += crandom() * 0;//cg_gibOriginOffsetZ.value;
+*/
+		CG_LaunchGib(origin, newVelocity, cgs.media.gibSphere);
+	}
+	return;
 }
 
 /*
