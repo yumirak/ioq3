@@ -1748,12 +1748,13 @@ void Menu_Cache( void )
 	uis.charsetProp		= trap_R_RegisterShaderNoMip( "menu/art/font1_prop.tga" );
 	uis.charsetPropGlow	= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
 	uis.charsetPropB	= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
-	uis.cursor          = trap_R_RegisterShaderNoMip( "menu/art/3_cursor2" );
+	uis.cursor          = trap_R_RegisterShaderNoMip( "ui/assets/3_cursor3" );
 	uis.rb_on           = trap_R_RegisterShaderNoMip( "menu/art/switch_on" );
 	uis.rb_off          = trap_R_RegisterShaderNoMip( "menu/art/switch_off" );
 
 	uis.whiteShader = trap_R_RegisterShaderNoMip( "white" );
-	uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menuscreen" );
+	//uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menuscreen" );
+	uis.menuBackShader	= trap_R_RegisterShaderNoMip( "ui/assets/main_menu/content_background" );
 	uis.menuBackNoLogoShader = 0;
 
 	menu_in_sound	= trap_S_RegisterSound( "sound/misc/menu1.wav", qfalse );
@@ -1765,8 +1766,8 @@ void Menu_Cache( void )
 	// need a nonzero sound, make an empty sound for this
 	menu_null_sound = -1;
 
-	sliderBar = trap_R_RegisterShaderNoMip( "menu/art/slider2" );
-	sliderButton_0 = trap_R_RegisterShaderNoMip( "menu/art/sliderbutt_0" );
-	sliderButton_1 = trap_R_RegisterShaderNoMip( "menu/art/sliderbutt_1" );
+	sliderBar = trap_R_RegisterShaderNoMip( "ui/assets/slider2" );
+	sliderButton_0 = trap_R_RegisterShaderNoMip( "ui/assets/sliderbutt_1" );
+	sliderButton_1 = trap_R_RegisterShaderNoMip( "ui/assets/sliderbutt_1" );
 }
 	

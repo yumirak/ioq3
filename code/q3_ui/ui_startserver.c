@@ -44,14 +44,15 @@ START SERVER MENU *****
 #define GAMESERVER_FIGHT1		"menu/art/fight_1"
 #define GAMESERVER_UNKNOWNMAP	"menu/art/unknownmap"
 #define GAMESERVER_ARROWS		"menu/art/gs_arrows_0"
-#define GAMESERVER_ARROWSL		"menu/art/gs_arrows_l"
-#define GAMESERVER_ARROWSR		"menu/art/gs_arrows_r"
+#define GAMESERVER_ARROWSL		"ui/assets/leftbutton" //"menu/art/gs_arrows_l"
+#define GAMESERVER_ARROWSR		"ui/assets/rightbutton" //"menu/art/gs_arrows_r"
 
-#define MAX_MAPROWS		2
+// want to have 2 row 4 but this works
+#define MAX_MAPROWS		4
 #define MAX_MAPCOLS		2
-#define MAX_MAPSPERPAGE	4
+#define MAX_MAPSPERPAGE	(MAX_MAPROWS * MAX_MAPCOLS)
 
-#define MAX_NAMELENGTH	16
+#define MAX_NAMELENGTH			16
 #define ID_GAMETYPE				10
 #define ID_PICTURES				11	// 12, 13, 14
 #define ID_PREVPAGE				15
@@ -128,7 +129,8 @@ static int GametypeBits( char *string ) {
 			continue;
 		}
 
-		if( Q_stricmp( token, "tourney" ) == 0 ) {
+		if( Q_stricmp( token, "duel" ) == 0  ||
+			Q_stricmp( token, "tourney" ) == 0) { // tourney
 			bits |= 1 << GT_TOURNAMENT;
 			continue;
 		}
@@ -138,7 +140,8 @@ static int GametypeBits( char *string ) {
 			continue;
 		}
 
-		if( Q_stricmp( token, "team" ) == 0 ) {
+		if( Q_stricmp( token, "tdm" ) == 0 ||
+			Q_stricmp( token, "team") == 0) { // team
 			bits |= 1 << GT_TEAM;
 			continue;
 		}
@@ -434,8 +437,8 @@ static void StartServer_MenuInit( void ) {
 
 	for (i=0; i<MAX_MAPSPERPAGE; i++)
 	{
-		x =	(i % MAX_MAPCOLS) * (128+8) + 188;
-		y = (i / MAX_MAPROWS) * (128+8) + 96;
+		x = (640-MAX_MAPROWS*140)/2 + ( (i % MAX_MAPROWS) * 140 );
+		y = 96 + ( (i / MAX_MAPROWS) * 140 );
 
 		s_startserver.mappics[i].generic.type   = MTYPE_BITMAP;
 		s_startserver.mappics[i].generic.flags  = QMF_LEFT_JUSTIFY|QMF_INACTIVE;

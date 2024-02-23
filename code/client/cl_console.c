@@ -664,7 +664,12 @@ void Con_DrawSolidConsole( float frac ) {
 		y = 0;
 	}
 	else {
-		SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
+		//SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
+		color[0] = 0;
+		color[1] = 0;
+		color[2] = 0;
+		color[3] = 0.8;
+		SCR_FillRect( 0, 0, SCREEN_WIDTH, y, color );
 	}
 
 	color[0] = 1;
