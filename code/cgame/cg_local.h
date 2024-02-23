@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../renderercommon/tr_types.h"
 #include "../game/bg_public.h"
 #include "cg_public.h"
-
+#include "../qcommon/qfiles.h"  // MAX_MAP_ADVERTISEMENTS
 
 // The entire cgame module is unloaded and reloaded on each level change,
 // so there is NO persistant data between levels on the client side.
@@ -812,7 +812,14 @@ typedef struct {
 	qhandle_t	medalDefend;
 	qhandle_t	medalAssist;
 	qhandle_t	medalCapture;
-
+	// QL Ads
+	qhandle_t	adbox1x1;
+	qhandle_t	adbox1x1_trans;
+	qhandle_t	adbox2x1;
+	qhandle_t	adbox2x1_trans;
+	qhandle_t	adbox4x1;
+	qhandle_t	adbox8x1;
+	qhandle_t	adboxblack;
 	// sounds
 	sfxHandle_t	quadSound;
 	sfxHandle_t	tracerSound;
@@ -1120,6 +1127,12 @@ typedef struct {
 
 	// media
 	cgMedia_t		media;
+
+	qboolean		adsLoaded;
+	int 			numAds;
+	qboolean		transAds[MAX_MAP_ADVERTISEMENTS];  // transparent add
+	float 			adverts[MAX_MAP_ADVERTISEMENTS * 16];  // fu
+	char adShaders[MAX_MAP_ADVERTISEMENTS][MAX_QPATH];
 
 } cgs_t;
 
@@ -1444,7 +1457,7 @@ void	CG_ImpactMark( qhandle_t markShader,
 void	CG_InitLocalEntities( void );
 localEntity_t	*CG_AllocLocalEntity( void );
 void	CG_AddLocalEntities( void );
-
+void CG_AddRefEntity (const refEntity_t *re);
 //
 // cg_effects.c
 //
@@ -1701,7 +1714,7 @@ qboolean	trap_Key_IsDown( int keynum );
 int			trap_Key_GetCatcher( void );
 void		trap_Key_SetCatcher( int catcher );
 int			trap_Key_GetKey( const char *binding );
-
+void		trap_Get_Advertisements(int *num, float *verts, char shaders[][MAX_QPATH]);
 
 typedef enum {
   SYSTEM_PRINT,

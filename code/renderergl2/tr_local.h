@@ -1194,6 +1194,11 @@ typedef struct {
 
 	char		*entityString;
 	char		*entityParsePoint;
+
+	int                     numAds;
+	dadvertisement_t ads[MAX_MAP_ADVERTISEMENTS];
+	int adsLightmap[MAX_MAP_ADVERTISEMENTS];
+	char adShaders[MAX_MAP_ADVERTISEMENTS][MAX_QPATH];
 } world_t;
 
 
@@ -2503,5 +2508,5 @@ size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality,
 void RE_TakeVideoFrame( int width, int height,
 		byte *captureBuffer, byte *encodeBuffer, qboolean motionJpeg );
 
-
+void RE_Get_Advertisements(int *num, float *verts, char shaders[][MAX_QPATH]);
 #endif //TR_LOCAL_H

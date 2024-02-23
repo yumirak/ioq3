@@ -1071,6 +1071,14 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.medalAssist = trap_R_RegisterShaderNoMip( "medal_assist" );
 	cgs.media.medalCapture = trap_R_RegisterShaderNoMip( "medal_capture" );
 
+	// TODO: change ads shader using cvar?
+	cgs.media.adbox1x1 = trap_R_RegisterShaderNoMip("textures/ad_content/1x1");
+	cgs.media.adbox1x1_trans = trap_R_RegisterShaderNoMip("textures/ad_content/1x1_trans_sfx");
+	cgs.media.adbox2x1 = trap_R_RegisterShaderNoMip("textures/ad_content/2x1");
+	cgs.media.adbox2x1_trans = trap_R_RegisterShaderNoMip("textures/ad_content/2x1_trans_sfx");
+	cgs.media.adbox4x1 = trap_R_RegisterShaderNoMip("textures/ad_content/4x1");
+	cgs.media.adbox8x1 = trap_R_RegisterShaderNoMip("textures/ad_content/4x1");
+	cgs.media.adboxblack = trap_R_RegisterShaderNoMip("gfx/colors/black");
 
 	memset( cg_items, 0, sizeof( cg_items ) );
 	memset( cg_weapons, 0, sizeof( cg_weapons ) );

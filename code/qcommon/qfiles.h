@@ -341,6 +341,7 @@ typedef struct {
 #define	MAX_MAP_DRAW_VERTS	0x80000
 #define	MAX_MAP_DRAW_INDEXES	0x80000
 
+#define MAX_MAP_ADVERTISEMENTS  30
 
 // key / value pair sizes in the entities lump
 #define	MAX_KEY				32
@@ -381,7 +382,8 @@ typedef struct {
 #define	LUMP_LIGHTMAPS		14
 #define	LUMP_LIGHTGRID		15
 #define	LUMP_VISIBILITY		16
-#define	HEADER_LUMPS		17
+#define	LUMP_ADVERTISEMENTS	17
+#define	HEADER_LUMPS		18
 
 typedef struct {
 	int			ident;
@@ -487,5 +489,12 @@ typedef struct {
 	int			patchHeight;
 } dsurface_t;
 
+typedef struct {
+	int			cellId;
+	vec3_t		normal;
+	vec3_t		rect[4];
+	char		model[ MAX_QPATH ];
+	//char shader[MAX_QPATH];
+} dadvertisement_t;
 
 #endif

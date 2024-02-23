@@ -254,7 +254,7 @@ spawn_t	spawns[] = {
 	{"team_neutralobelisk", SP_team_neutralobelisk},
 #endif
 	{"item_botroam", SP_item_botroam},
-	//{"advertisement", SP_ignore},
+	{"advertisement", SP_ignore},
 	{NULL, 0}
 };
 

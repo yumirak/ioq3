@@ -42,7 +42,7 @@ static	byte		*fileBase;
 
 int			c_subdivisions;
 int			c_gridVerts;
-
+#include "../renderercommon/inc_tr_bsp.c" // R_LoadAdvertisements()
 //===============================================================================
 
 static void HSVtoRGB( float h, float s, float v, float rgb[3] )
@@ -797,9 +797,10 @@ static void ParseFace( dsurface_t *ds, drawVert_t *verts, float *hdrVertColors, 
 ParseMesh
 ===============
 */
-static void ParseMesh ( dsurface_t *ds, drawVert_t *verts, float *hdrVertColors, msurface_t *surf ) {
+static void ParseMesh ( dsurface_t *ds, drawVert_t *verts, float *hdrVertColors, msurface_t *surf , int num) {
 	srfBspSurface_t	*grid = (srfBspSurface_t *)surf->data;
-	int				i;
+	int				i,j;
+	int k;
 	int				width, height, numPoints;
 	srfVert_t points[MAX_PATCH_SIZE*MAX_PATCH_SIZE];
 	vec3_t			bounds[2];
@@ -835,6 +836,53 @@ static void ParseMesh ( dsurface_t *ds, drawVert_t *verts, float *hdrVertColors,
 	numPoints = width * height;
 	for(i = 0; i < numPoints; i++)
 		LoadDrawVertToSrfVert(&points[i], &verts[i], realLightmapNum, hdrVertColors ? hdrVertColors + (ds->firstVert + i) * 3 : NULL, NULL);
+
+	if (!Q_stricmpn(surf->shader->name, "textures/ad_content/", strlen("textures/ad_content/"))  ||  !Q_stricmpn(surf->shader->name, "textures/ad_trim/", strlen("textures/ad_trim/"))) {
+		qboolean found = qfalse;
+
+		//ri.Printf(PRINT_ALL, "advert '%s'\n", surf->shader->name);
+
+		for (i = 0;  i < numPoints;  i++) {
+			//ri.Printf(PRINT_ALL, "%d: %f %f %f\n", i, verts[i].xyz[0], verts[i].xyz[1], verts[i].xyz[2]);
+		}
+
+		for (i = 0;  i < s_worldData.numAds;  i++) {
+			found = qfalse;
+
+			for (j = 0;  j < 3;  j++) {
+				found = qfalse;
+				for (k = 0;  k < numPoints;  k++) {
+					if (*s_worldData.adShaders[i]) {
+						continue;
+					}
+					if (s_worldData.ads[i].rect[j][0] == verts[k].xyz[0]  &&
+						s_worldData.ads[i].rect[j][1] == verts[k].xyz[1]  &&
+						s_worldData.ads[i].rect[j][2] == verts[k].xyz[2]) {
+						found = qtrue;
+						break;
+					}
+				}
+
+				if (!found) {
+					break;
+				}
+			}
+
+			if (found) {
+				//FIXME fuck wait, what about transparent ads :(
+				ri.Printf(PRINT_ALL, "found ad %d  lightmap:%d\n", i + 1, realLightmapNum);
+				//s_worldData.ads[i].cellId = RE_RegisterShader(surf->shader->name);
+				//FIXME always 0 :[
+				s_worldData.adsLightmap[i] = realLightmapNum;  //1;  //lightmapNum;
+				Q_strncpyz(s_worldData.adShaders[i], surf->shader->name, MAX_QPATH);
+				break;
+			}
+		}
+
+		if (!found) {
+			ri.Printf(PRINT_ALL, "couldn't find add for mesh %d\n", num);
+		}
+	}
 
 	// pre-tesseleate
 	R_SubdividePatchToGrid( grid, width, height, points );
@@ -1770,7 +1818,7 @@ static	void R_LoadSurfaces( lump_t *surfs, lump_t *verts, lump_t *indexLump ) {
 	for ( i = 0 ; i < count ; i++, in++, out++ ) {
 		switch ( LittleLong( in->surfaceType ) ) {
 		case MST_PATCH:
-			ParseMesh ( in, dv, hdrVertColors, out );
+			ParseMesh ( in, dv, hdrVertColors, out ,i);
 			numMeshes++;
 			break;
 		case MST_TRIANGLE_SOUP:
@@ -2710,7 +2758,7 @@ void RE_LoadWorldMap( const char *name ) {
 		void *v;
 	} buffer;
 	byte		*startMarker;
-
+	int bsp_ver;
 	if ( tr.worldMapLoaded ) {
 		ri.Error( ERR_DROP, "ERROR: attempted to redundantly load world map" );
 	}
@@ -2767,13 +2815,16 @@ void RE_LoadWorldMap( const char *name ) {
 		ri.Error (ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be %i or %i)",
 			name, i, BSP_VERSION_Q3, BSP_VERSION_QL);
 	}
-
+	bsp_ver = i;
 	// swap all the lumps
 	for (i=0 ; i<sizeof(dheader_t)/4 ; i++) {
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 	}
 
 	// load into heap
+	if (bsp_ver > 46) {
+		R_LoadAdvertisements(&header->lumps[LUMP_ADVERTISEMENTS]);
+	}
 	R_LoadEntities( &header->lumps[LUMP_ENTITIES] );
 	R_LoadShaders( &header->lumps[LUMP_SHADERS] );
 	R_LoadLightmaps( &header->lumps[LUMP_LIGHTMAPS], &header->lumps[LUMP_SURFACES] );

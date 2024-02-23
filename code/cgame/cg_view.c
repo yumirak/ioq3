@@ -759,6 +759,195 @@ static void CG_PlayBufferedSounds( void ) {
 	}
 }
 
+/*
+=====================
+CG_DrawAdvertisements
+=====================
+*/
+static void CG_DrawAdvertisements (void)
+{
+	float *vt;
+	int i;
+	polyVert_t verts[4];
+	int scaleGuess;
+	qboolean turn90 = qfalse;
+
+	if (!cgs.adsLoaded) {
+		trap_Get_Advertisements(&cgs.numAds, cgs.adverts, cgs.adShaders);
+		cgs.adsLoaded = qtrue;
+		for (i = 0;  i < cgs.numAds;  i++) {
+			//FIXME not using ad shaders?
+			Com_Printf("ad %d: '%s'\n", i + 1, cgs.adShaders[i]);
+			if (strstr(cgs.adShaders[i], "trans")) {
+				// ex: beyondreality
+				cgs.transAds[i] = qtrue;
+			}
+		}
+		Com_Printf("total ads: %d\n", cgs.numAds);
+	}
+
+	if (cg.hyperspace) {
+		return;
+	}
+
+	vt = cgs.adverts;
+
+	for (i = 0;  i < cgs.numAds;  i++) {
+		qhandle_t shader;
+		int width, height;
+		float scale;
+
+		verts[3].xyz[0] = vt[i * 16 + 0];
+		verts[3].xyz[1] = vt[i * 16 + 1];
+		verts[3].xyz[2] = vt[i * 16 + 2];
+
+		verts[2].xyz[0] = vt[i * 16 + 3];
+		verts[2].xyz[1] = vt[i * 16 + 4];
+		verts[2].xyz[2] = vt[i * 16 + 5];
+
+		verts[1].xyz[0] = vt[i * 16 + 6];
+		verts[1].xyz[1] = vt[i * 16 + 7];
+		verts[1].xyz[2] = vt[i * 16 + 8];
+
+		verts[0].xyz[0] = vt[i * 16 + 9];
+		verts[0].xyz[1] = vt[i * 16 + 10];
+		verts[0].xyz[2] = vt[i * 16 + 11];
+
+		//normal[0] = vt[i * 16 + 12];
+		//normal[1] = vt[i * 16 + 13];
+		//normal[2] = vt[i * 16 + 14];
+
+		//lightmap = vt[i * 16 + 14];
+		//cellId = vt[i * 16 + 15];
+
+		width = Distance(verts[3].xyz, verts[0].xyz);
+		height = Distance(verts[3].xyz, verts[2].xyz);
+
+		scale = (float)width / (float)height;
+
+		//Com_Printf("ad %d  %d x %d  (%f)\n", i + 1, width, height, scale);
+
+		//FIXME lookup when the 2x1 will fail to scale down (how close to 1.0? )
+		// qzdm18  128x120
+
+		//scale = 0.5f;
+
+		if (scale < 0.3f) {  // 0.5
+			shader = cgs.media.adboxblack;
+			scaleGuess = 0;
+		} else if (scale >= 9.0f) {
+			shader = cgs.media.adboxblack;
+			scaleGuess = 0;
+		} else if (scale > 7.0f) {
+			shader = cgs.media.adbox8x1;
+			scaleGuess = 8;
+		} else if (scale > 3.0f) {
+			shader = cgs.media.adbox4x1;
+			scaleGuess = 4;
+		} else if (scale > 1.5f) {
+			shader = cgs.media.adbox2x1;
+			scaleGuess = 2;
+		} else if (scale > 0.75) {
+			shader = cgs.media.adbox1x1;
+			scaleGuess = 1;
+			//Com_Printf("using 1x1\n");
+		} else if (scale > 0.25) {
+			// ex: blackcathedral
+			shader = cgs.media.adbox2x1;
+			scaleGuess = 2;
+			//Com_Printf("add scale > 0.25  &&  scale < 0.75\n");
+			turn90 = qtrue;
+		} else {
+			shader = cgs.media.adboxblack;
+			scaleGuess = 0;
+		}
+
+		//Com_Printf("ad %d  shader %d\n", i + 1, shader);
+
+		//FIXME transparent ads that arent 2x1, haven't seen any
+		if (cgs.transAds[i]) {
+			switch(scaleGuess)
+			{
+				case 1:
+					shader = cgs.media.adbox2x1_trans;
+					break;
+				case 2:
+					shader = cgs.media.adbox2x1_trans;
+					break;
+				default:
+					break;
+			}
+		}
+		// testing
+		//FIXME why are they greyish?  lightmap?
+		//shader = trap_R_RegisterShader(cgs.adShaders[i]);
+
+		verts[0].modulate[0] = 255;
+		verts[0].modulate[1] = 255;
+		verts[0].modulate[2] = 255;
+		verts[0].modulate[3] = 255;
+
+		verts[1].modulate[0] = 255;
+		verts[1].modulate[1] = 255;
+		verts[1].modulate[2] = 255;
+		verts[1].modulate[3] = 255;
+
+		verts[2].modulate[0] = 255;
+		verts[2].modulate[1] = 255;
+		verts[2].modulate[2] = 255;
+		verts[2].modulate[3] = 255;
+
+		verts[3].modulate[0] = 255;
+		verts[3].modulate[1] = 255;
+		verts[3].modulate[2] = 255;
+		verts[3].modulate[3] = 255;
+
+		verts[0].st[0] = 0;  //0;  //0;
+		verts[0].st[1] = 1;  //0;  //1;
+
+		verts[1].st[0] = 0;  //1;  //1;
+		verts[1].st[1] = 0;  //0;  //1;
+
+		verts[2].st[0] = 1;  //1;  //1;
+		verts[2].st[1] = 0;  //1;  //0;
+
+		verts[3].st[0] = 1;  //0;  //0;
+		verts[3].st[1] = 1;  //1;  //0;
+
+		if (turn90) {
+			verts[0].st[0] = 0;  //1;  //0;
+			verts[0].st[1] = 0;  //1;  //1;
+
+			verts[1].st[0] = 1;  //0;  //1;
+			verts[1].st[1] = 0;  //1;  //1;
+
+			verts[2].st[0] = 1;  //0;  //1;
+			verts[2].st[1] = 1;  //0;  //0;
+
+			verts[3].st[0] = 0;  //1;  //0;
+			verts[3].st[1] = 1;  //0;  //0;
+
+		}
+
+		//FIXME no clue what I'm doing
+		if (verts[0].xyz[2] > verts[1].xyz[2]) {
+			// ex: ad 3 blackcathedral
+			//Com_Printf("flip ad %i\n", i + 1);
+			verts[0].st[0] = 1;
+			verts[0].st[1] = 0;
+
+			verts[1].st[0] = 1;
+			verts[1].st[1] = 1;  //1;
+
+			verts[2].st[0] = 0;  //1;
+			verts[2].st[1] = 1;  //1;
+
+			verts[3].st[0] = 0;  //1;
+			verts[3].st[1] = 0;
+		}
+		trap_R_AddPolyToScene(shader, 4, verts);
+	}
+}
 //=========================================================================
 
 /*
@@ -833,7 +1022,7 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 
 	// add buffered sounds
 	CG_PlayBufferedSounds();
-
+	CG_DrawAdvertisements();
 #ifdef MISSIONPACK
 	// play buffered voice chats
 	CG_PlayBufferedVoiceChats();

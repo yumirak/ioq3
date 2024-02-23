@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define TR_COMMON_H
 
 #include "../qcommon/q_shared.h"
+#include "../qcommon/qfiles.h"
 #include "../renderercommon/tr_public.h"
 #include "qgl.h"
 
@@ -134,6 +135,8 @@ void R_InitFreeType( void );
 void R_DoneFreeType( void );
 void RE_RegisterFont(const char *fontName, int pointSize, fontInfo_t *font);
 
+
+void R_LoadAdvertisements( lump_t *l );
 /*
 =============================================================
 

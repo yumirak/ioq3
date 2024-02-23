@@ -745,6 +745,12 @@ typedef struct {
 
 	char		*entityString;
 	char		*entityParsePoint;
+
+	int                     numAds;
+	dadvertisement_t ads[MAX_MAP_ADVERTISEMENTS];
+	int adsLightmap[MAX_MAP_ADVERTISEMENTS];
+	char adShaders[MAX_MAP_ADVERTISEMENTS][MAX_QPATH];
+
 } world_t;
 
 //======================================================================
@@ -1613,5 +1619,5 @@ void LerpMeshVertexes_altivec( md3Surface_t *surf, float backlerp );
 void ProjectDlightTexture_altivec( void );
 void RB_CalcDiffuseColor_altivec( unsigned char *colors );
 #endif
-
+void RE_Get_Advertisements(int *num, float *verts, char shaders[][MAX_QPATH]);
 #endif //TR_LOCAL_H
