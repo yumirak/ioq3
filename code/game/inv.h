@@ -49,6 +49,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define INVENTORY_NAILS				26
 #define INVENTORY_MINES				27
 #define INVENTORY_BELT				28
+
 //powerups
 #define INVENTORY_HEALTH			29
 #define INVENTORY_TELEPORTER		30
@@ -72,6 +73,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define INVENTORY_NEUTRALFLAG		47
 #define INVENTORY_REDCUBE			48
 #define INVENTORY_BLUECUBE			49
+#define INVENTORY_HMG		        50
+#define INVENTORY_HMGBULLETS		51
 //enemy stuff
 #define ENEMY_HORIZONTAL_DIST		200
 #define ENEMY_HEIGHT				201
@@ -150,6 +153,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define MODELINDEX_CHAINGUN			51
 #define MODELINDEX_ARMORJACKET      52
 
+#define MODELINDEX_HMG				53
+#define MODELINDEX_HMGBULLETS		54
+
+
 //
 #define WEAPONINDEX_GAUNTLET			1
 #define WEAPONINDEX_MACHINEGUN			2
@@ -164,3 +171,4 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define WEAPONINDEX_NAILGUN				11
 #define WEAPONINDEX_PROXLAUNCHER		12
 #define WEAPONINDEX_CHAINGUN			13
+#define WEAPONINDEX_HMG                 14

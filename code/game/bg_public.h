@@ -320,6 +320,7 @@ typedef enum {
 	WP_PROX_LAUNCHER,
 	WP_CHAINGUN,
 #endif
+	WP_HMG,
 
 	WP_NUM_WEAPONS
 } weapon_t;
@@ -601,6 +602,7 @@ typedef enum {
 	MOD_KAMIKAZE,
 	MOD_JUICED,
 #endif
+	MOD_HMG,
 	MOD_GRAPPLE
 } meansOfDeath_t;
 

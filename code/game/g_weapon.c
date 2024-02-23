@@ -161,6 +161,9 @@ void SnapVectorTowards( vec3_t v, vec3_t to ) {
 #define	MACHINEGUN_DAMAGE	7
 #define	MACHINEGUN_TEAM_DAMAGE	5		// wimpier MG in teamplay
 
+#define HMG_SPREAD	400
+#define	HMG_DAMAGE	8
+
 void Bullet_Fire (gentity_t *ent, float spread, int damage, int mod ) {
 	trace_t		tr;
 	vec3_t		end;
@@ -876,6 +879,9 @@ void FireWeapon( gentity_t *ent ) {
 		Bullet_Fire( ent, CHAINGUN_SPREAD, CHAINGUN_DAMAGE, MOD_CHAINGUN );
 		break;
 #endif
+	case WP_HMG:
+		Bullet_Fire( ent, HMG_SPREAD, HMG_DAMAGE , MOD_HMG);
+		break;
 	default:
 // FIXME		G_Error( "Bad ent->s.weapon" );
 		break;

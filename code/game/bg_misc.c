@@ -78,21 +78,7 @@ gitem_t	bg_itemlist[] =
 /* precache */ "",
 /* sounds */ ""
 	},
-/*QUAKED item_armor_jacket (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
-*/
-	{
-		"item_armor_jacket",
-		"sound/misc/ar2_pkup.wav",
-		{ "models/powerups/armor/armor_grn.md3",
-		0, 0, 0},
-/* icon */		"icons/iconr_green",
-/* pickup */	"Green Armor",
-		25,
-		IT_ARMOR,
-		0,
-/* precache */ "",
-/* sounds */ ""
-	},
+
 /*QUAKED item_armor_combat (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
 */
 	{
@@ -941,7 +927,51 @@ Only in One Flag CTF games
 /* sounds */ "sound/weapons/vulcan/wvulwind.wav"
 	},
 #endif
-
+/*QUAKED item_armor_jacket (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"item_armor_jacket",
+		"sound/misc/ar2_pkup.wav",
+		{ "models/powerups/armor/armor_grn.md3",
+		0, 0, 0},
+/* icon */		"icons/iconr_green",
+/* pickup */	"Green Armor",
+		25,
+		IT_ARMOR,
+		0,
+/* precache */ "",
+/* sounds */ ""
+	},
+/*QUAKED weapon_hmg (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"weapon_hmg",
+		"sound/misc/w_pkup.wav",
+		{ "models/weapons3/hmg/hmg.md3",
+		0, 0, 0},
+/* icon */	"icons/weap_hmg",
+/* pickup */"Heavy Machinegun",
+		100,
+		IT_WEAPON,
+		WP_HMG,
+/* precache */ "",
+/* sounds */ ""
+	},
+/*QUAKED ammo_hmg (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"ammo_hmg",
+		"sound/misc/am_pkup.wav",
+		{ "models/powerups/ammo/hmgam.md3",
+		0, 0, 0},
+/* icon */		"icons/ammo_hmg",
+/* pickup */	"Heavy Bullets",
+		50,
+		IT_AMMO,
+		WP_HMG,
+/* precache */ "",
+/* sounds */ ""
+	},
 	// end of list marker
 	{NULL}
 };

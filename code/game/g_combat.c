@@ -309,6 +309,7 @@ char	*modNames[] = {
 	"MOD_KAMIKAZE",
 	"MOD_JUICED",
 #endif
+	"MOD_HMG",
 	"MOD_GRAPPLE"
 };
 
