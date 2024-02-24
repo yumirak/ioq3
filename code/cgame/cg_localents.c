@@ -188,11 +188,9 @@ void CG_FragmentBounceMark( localEntity_t *le, trace_t *trace ) {
 		default:
 			break;
 	}
-
-
 	// don't allow a fragment to make multiple marks, or they
 	// pile up while settling
-	le->leMarkType = LEMT_NONE;
+	//le->leMarkType = LEMT_NONE;
 }
 
 /*
@@ -201,19 +199,18 @@ CG_FragmentBounceSound
 ================
 */
 void CG_FragmentBounceSound( localEntity_t *le, trace_t *trace ) {
-	if ( le->leBounceSoundType == LEBS_BLOOD ) {
-		// half the gibs will make splat sounds
-		if ( rand() & 1 ) {
-			int r = (rand()&3) + 1;
+	int r = rand()&3;
+
+	switch(le->leBounceSoundType)
+	{
+		case LEBS_BLOOD:
 			trap_S_StartSound( trace->endpos, ENTITYNUM_WORLD, CHAN_AUTO, cgs.media.gibBounceSound[r] );
-		}
-	} else if ( le->leBounceSoundType == LEBS_BRASS ) {
-
+		default: //LEBS_BRASS
+			break;
 	}
-
 	// don't allow a fragment to make multiple bounce sounds,
 	// or it gets too noisy as they settle
-	le->leBounceSoundType = LEBS_NONE;
+	// le->leBounceSoundType = LEBS_NONE;
 }
 
 
