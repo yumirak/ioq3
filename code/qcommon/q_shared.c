@@ -45,6 +45,13 @@ qboolean Q_IsColorString(const char *p) {
 	return qtrue;
 }
 
+void Com_Memcpy2( void *dst, int dstSize, const void *src, int srcSize ) {
+	Com_Memcpy( dst, src, MIN( dstSize, srcSize ) );
+	if ( dstSize > srcSize ) {
+		Com_Memset( (byte*)dst+srcSize, 0, dstSize-srcSize );
+	}
+}
+
 float Com_Clamp( float min, float max, float value ) {
 	if ( value < min ) {
 		return min;

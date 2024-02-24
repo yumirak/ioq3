@@ -349,6 +349,7 @@ void *Hunk_Alloc( int size, ha_pref preference );
 
 #define Com_Memset memset
 #define Com_Memcpy memcpy
+void Com_Memcpy2( void *dst, int dstSize, const void *src, int srcSize );
 
 #define CIN_system	1
 #define CIN_loop	2
@@ -1354,6 +1355,7 @@ typedef enum {
 typedef struct {
   int height;       // number of scan lines
   int top;          // top of glyph in buffer
+  int left;			// left of glyph in buffer
   int bottom;       // bottom of glyph in buffer
   int pitch;        // width for copying
   int xSkip;        // x adjustment
@@ -1371,6 +1373,8 @@ typedef struct {
   glyphInfo_t glyphs [GLYPHS_PER_FONT];
   float glyphScale;
   char name[MAX_QPATH];
+  int pointSize;
+  int flags;
 } fontInfo_t;
 
 #define Square(x) ((x)*(x))
