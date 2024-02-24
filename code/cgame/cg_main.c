@@ -209,6 +209,7 @@ vmCvar_t	cg_hudFont;
 vmCvar_t	cg_hudFontBorder;
 vmCvar_t	cg_numberFont;
 vmCvar_t	cg_numberFontBorder;
+vmCvar_t	cg_hudTextScale;
 //
 vmCvar_t		cg_announcer;
 vmCvar_t		cg_lightningStyle;
@@ -342,6 +343,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_hitBeep, "cg_hitBeep", "1", CVAR_ARCHIVE},
 	// ttf
 	{ &cg_forceBitmapFonts, "cg_forceBitmapFonts", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_hudTextScale, "cg_hudTextScale", "1", CVAR_ARCHIVE },
 	{ &cg_hudFont, "cg_hudFont", "fonts/handelgothic.ttf", CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_hudFontBorder, "cg_hudFontBorder", "2", CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_numberFont, "cg_numberFont", "fonts/handelgothic.ttf", CVAR_ARCHIVE | CVAR_LATCH },
