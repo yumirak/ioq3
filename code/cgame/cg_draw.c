@@ -718,10 +718,10 @@ static float CG_DrawSnapshot( float y ) {
 
 	s = va( "time:%i snap:%i cmd:%i", cg.snap->serverTime, 
 		cg.latestSnapshotNum, cgs.serverCommandSequence );
-	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+	//w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 
-	CG_DrawBigString( cgs.screenXmax - 4 - w, y + 2, s, 1.0F);
-
+	//CG_DrawBigString( cgs.screenXmax - 4 - w, y + 2, s, 1.0F);
+	CG_DrawString( 635, y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT, NULL );
 	return y + BIGCHAR_HEIGHT + 4;
 }
 
@@ -761,9 +761,10 @@ static float CG_DrawFPS( float y ) {
 		fps = 1000 * FPS_FRAMES / total;
 
 		s = va( "%ifps", fps );
-		w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+		//w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 
-		CG_DrawBigString( cgs.screenXmax - w, y + 2, s, 1.0F);
+		//CG_DrawBigString( cgs.screenXmax - w, y + 2, s, 1.0F);
+		CG_DrawString( 635, y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT, NULL );
 	}
 
 	return y + BIGCHAR_HEIGHT + 4;
@@ -789,10 +790,10 @@ static float CG_DrawTimer( float y ) {
 	seconds -= tens * 10;
 
 	s = va( "%i:%i%i", mins, tens, seconds );
-	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+	//w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 
-	CG_DrawBigString( cgs.screenXmax - w, y + 2, s, 1.0F);
-
+	//CG_DrawBigString( cgs.screenXmax - w, y + 2, s, 1.0F);
+	CG_DrawString( 635, y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT, NULL );
 	return y + BIGCHAR_HEIGHT + 4;
 }
 /*
@@ -820,7 +821,7 @@ static float CG_DrawSpeedMeter( float y ) {
 
 	s = va( "%i", xyz );
 
-	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+	//w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 
 	if ( cg_drawSpeed.integer == 1 ) {
 		/* top left-hand corner of screen */
@@ -871,9 +872,9 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 		ci = cgs.clientinfo + sortedTeamPlayers[i];
 		if ( ci->infoValid && ci->team == cg.snap->ps.persistant[PERS_TEAM]) {
 			plyrs++;
-			len = CG_DrawStrlen(ci->name);
-			if (len > pwidth)
-				pwidth = len;
+			//len = CG_DrawStrlen(ci->name);
+			//if (len > pwidth)
+			//	pwidth = len;
 		}
 	}
 
@@ -888,9 +889,9 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 	for (i = 1; i < MAX_LOCATIONS; i++) {
 		p = CG_ConfigString(CS_LOCATIONS + i);
 		if (p && *p) {
-			len = CG_DrawStrlen(p);
-			if (len > lwidth)
-				lwidth = len;
+			//len = CG_DrawStrlen(p);
+			//if (len > lwidth)
+			//	lwidth = len;
 		}
 	}
 
@@ -937,8 +938,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 			xx = x + TINYCHAR_WIDTH;
 
 			CG_DrawStringExt( xx, y,
-				ci->name, hcolor, qfalse, qfalse,
-				TINYCHAR_WIDTH, TINYCHAR_HEIGHT, TEAM_OVERLAY_MAXNAME_WIDTH);
+				ci->name, UI_TINYFONT, NULL, 0, TEAM_OVERLAY_MAXNAME_WIDTH,0);
 
 			if (lwidth) {
 				p = CG_ConfigString(CS_LOCATIONS + ci->location);
@@ -951,9 +951,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 //				xx = x + TINYCHAR_WIDTH * 2 + TINYCHAR_WIDTH * pwidth + 
 //					((lwidth/2 - len/2) * TINYCHAR_WIDTH);
 				xx = x + TINYCHAR_WIDTH * 2 + TINYCHAR_WIDTH * pwidth;
-				CG_DrawStringExt( xx, y,
-					p, hcolor, qfalse, qfalse, TINYCHAR_WIDTH, TINYCHAR_HEIGHT,
-					TEAM_OVERLAY_MAXLOCATION_WIDTH);
+				CG_DrawStringExt( xx, y, p, UI_TINYFONT, NULL, 0, TEAM_OVERLAY_MAXLOCATION_WIDTH, 0 );
 			}
 
 			CG_GetColorForHealth( ci->health, ci->armor, hcolor );
@@ -963,9 +961,8 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 			xx = x + TINYCHAR_WIDTH * 3 + 
 				TINYCHAR_WIDTH * pwidth + TINYCHAR_WIDTH * lwidth;
 
-			CG_DrawStringExt( xx, y,
-				st, hcolor, qfalse, qfalse,
-				TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 0 );
+			Com_sprintf( st, sizeof(st), "%3i", ci->health );
+			CG_DrawString( xx, y, st, UI_TINYFONT, hcolor );
 
 			// draw weapon icon
 			xx += TINYCHAR_WIDTH * 3;
@@ -1083,7 +1080,7 @@ static float CG_DrawScores( float y ) {
 		color[2] = 1.0f;
 		color[3] = 0.33f;
 		s = va( "%2i", s2 );
-		w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH + 8;
+		w = CG_DrawStrlen( s , UI_BIGFONT);//* BIGCHAR_WIDTH + 8;
 		x -= w;
 		CG_FillRect( x, y-4,  w, BIGCHAR_HEIGHT+8, color );
 		if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE ) {
@@ -1107,7 +1104,7 @@ static float CG_DrawScores( float y ) {
 		color[2] = 0.0f;
 		color[3] = 0.33f;
 		s = va( "%2i", s1 );
-		w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH + 8;
+		w = CG_DrawStrlen( s , UI_BIGFONT);// * BIGCHAR_WIDTH + 8;
 		x -= w;
 		CG_FillRect( x, y-4,  w, BIGCHAR_HEIGHT+8, color );
 		if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED ) {
@@ -1134,7 +1131,7 @@ static float CG_DrawScores( float y ) {
 		}
 		if ( v ) {
 			s = va( "%2i", v );
-			w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH + 8;
+			w = CG_DrawStrlen( s , UI_BIGFONT);// * BIGCHAR_WIDTH + 8;
 			x -= w;
 			CG_DrawBigString( x + 4, y, s, 1.0F);
 		}
@@ -1152,7 +1149,7 @@ static float CG_DrawScores( float y ) {
 		}
 		if ( s2 != SCORE_NOT_PRESENT ) {
 			s = va( "%2i", s2 );
-			w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH + 8;
+			w = CG_DrawStrlen( s , UI_BIGFONT);//* BIGCHAR_WIDTH + 8;
 			x -= w;
 			if ( !spectator && score == s2 && score != s1 ) {
 				color[0] = 1.0f;
@@ -1174,7 +1171,7 @@ static float CG_DrawScores( float y ) {
 		// first place
 		if ( s1 != SCORE_NOT_PRESENT ) {
 			s = va( "%2i", s1 );
-			w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH + 8;
+			w = CG_DrawStrlen( s , UI_BIGFONT);
 			x -= w;
 			if ( !spectator && score == s1 ) {
 				color[0] = 0.0f;
@@ -1195,7 +1192,7 @@ static float CG_DrawScores( float y ) {
 
 		if ( cgs.fraglimit ) {
 			s = va( "%2i", cgs.fraglimit );
-			w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH + 8;
+			w = CG_DrawStrlen( s , UI_BIGFONT); //* BIGCHAR_WIDTH + 8;
 			x -= w;
 			CG_DrawBigString( x + 4, y, s, 1.0F);
 		}
@@ -1442,10 +1439,9 @@ static void CG_DrawTeamInfo( void ) {
 		hcolor[3] = 1.0f;
 
 		for (i = cgs.teamChatPos - 1; i >= cgs.teamLastChatPos; i--) {
-			CG_DrawStringExt( CHATLOC_X + TINYCHAR_WIDTH,
+			CG_DrawString( CHATLOC_X + TINYCHAR_WIDTH,
 				CHATLOC_Y - (cgs.teamChatPos - i)*TINYCHAR_HEIGHT,
-				cgs.teamChatMsgs[i % chatHeight], hcolor, qfalse, qfalse,
-				TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 0 );
+				cgs.teamChatMsgs[i % chatHeight], UI_TINYFONT, hcolor );
 		}
 	}
 }
@@ -1543,9 +1539,8 @@ static void CG_DrawReward( void ) {
 		x = 320 - ICON_SIZE/2;
 		CG_DrawPic( x, y, ICON_SIZE-4, ICON_SIZE-4, cg.rewardShader[0] );
 		Com_sprintf(buf, sizeof(buf), "%d", cg.rewardCount[0]);
-		x = ( SCREEN_WIDTH - SMALLCHAR_WIDTH * CG_DrawStrlen( buf ) ) / 2;
-		CG_DrawStringExt( x, y+ICON_SIZE, buf, color, qfalse, qtrue,
-								SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+		x = ( SCREEN_WIDTH - SMALLCHAR_WIDTH * CG_DrawStrlen( buf,UI_CENTER|UI_DROPSHADOW|UI_SMALLFONT ) ) / 2;
+		CG_DrawString( x, y+ICON_SIZE, buf, UI_CENTER|UI_DROPSHADOW|UI_SMALLFONT, color );
 	}
 	else {
 
@@ -1646,7 +1641,7 @@ static void CG_DrawDisconnect( void ) {
 
 	// also add text in center of screen
 	s = "Connection Interrupted";
-	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+	w = CG_DrawStrlen( s ,UI_BIGFONT);// * BIGCHAR_WIDTH;
 	CG_DrawBigString( 320 - w/2, cgs.screenYmin + 100, s, 1.0F);
 
 	// blink the icon
@@ -1857,13 +1852,12 @@ static void CG_DrawCenterString( void ) {
 		CG_Text_Paint(x, y + h, 0.5, color, linebuffer, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
 		y += h + 6;
 #else
-		w = cg.centerPrintCharWidth * CG_DrawStrlen( linebuffer );
+		w = cg.centerPrintCharWidth * CG_DrawStrlen( linebuffer , UI_CENTER|UI_DROPSHADOW|UI_SMALLFONT);
 
 		x = ( SCREEN_WIDTH - w ) / 2;
 
-		CG_DrawStringExt( x, y, linebuffer, color, qfalse, qtrue,
-			cg.centerPrintCharWidth, (int)(cg.centerPrintCharWidth * 1.5), 0 );
-
+		//CG_DrawStringExt( x, y, linebuffer, color, qfalse, qtrue,cg.centerPrintCharWidth, (int)(cg.centerPrintCharWidth * 1.5), 0 );
+		CG_DrawString( x, y, linebuffer, UI_CENTER|UI_DROPSHADOW|UI_SMALLFONT, color );
 		y += cg.centerPrintCharWidth * 1.5;
 #endif
 		while ( *start && ( *start != '\n' ) ) {
@@ -2110,7 +2104,7 @@ static void CG_DrawCrosshairNames( void ) {
 	w = CG_Text_Width(name, 0.3f, 0);
 	CG_Text_Paint( 320 - w / 2, 190, 0.3f, color, name, 0, 0, ITEM_TEXTSTYLE_SHADOWED);
 #else
-	w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
+	w = CG_DrawStrlen( name ,UI_BIGFONT); //* BIGCHAR_WIDTH;
 	CG_DrawBigString( 320 - w / 2, 170, name, color[3] * 0.5f );
 #endif
 	trap_R_SetColor( NULL );
@@ -2312,9 +2306,10 @@ static qboolean CG_DrawFollow( void ) {
 
 	name = cgs.clientinfo[ cg.snap->ps.clientNum ].name;
 
-	x = 0.5 * ( 640 - GIANT_WIDTH * CG_DrawStrlen( name ) );
+	x = 0.5 * ( 640 - GIANT_WIDTH * CG_DrawStrlen( name , UI_CENTER|UI_DROPSHADOW|UI_BIGFONT) );
 
-	CG_DrawStringExt( x, cgs.screenYmin + 40, name, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+	//CG_DrawStringExt( x, cgs.screenYmin + 40, name, color, qtrue, qtrue, GIANT_WIDTH, GIANT_HEIGHT, 0 );
+	CG_DrawString( x, cgs.screenYmin + 40, "following", UI_CENTER|UI_DROPSHADOW|UI_BIGFONT, NULL );
 
 	return qtrue;
 }
@@ -2343,7 +2338,7 @@ static void CG_DrawAmmoWarning( void ) {
 	} else {
 		s = "LOW AMMO WARNING";
 	}
-	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+	w = CG_DrawStrlen( s , UI_BIGFONT);// * BIGCHAR_WIDTH;
 	CG_DrawBigString(320 - w / 2, 64, s, 1.0F);
 }
 
@@ -2377,7 +2372,7 @@ static void CG_DrawProxWarning( void ) {
     Com_sprintf(s, sizeof(s), "YOU HAVE BEEN MINED");
   }
 
-	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+	w = CG_DrawStrlen( s , UI_BIGFONT);// * BIGCHAR_WIDTH;
 	CG_DrawBigStringColor( 320 - w / 2, 64 + BIGCHAR_HEIGHT, s, g_color_table[ColorIndex(COLOR_RED)] );
 }
 #endif
@@ -2407,7 +2402,7 @@ static void CG_DrawWarmup( void ) {
 
 	if ( sec < 0 ) {
 		s = "Waiting for players";		
-		w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
+		w = CG_DrawStrlen( s , UI_BIGFONT);
 		CG_DrawBigString(320 - w / 2, 24, s, 1.0F);
 		cg.warmupCount = 0;
 		return;
@@ -2433,14 +2428,14 @@ static void CG_DrawWarmup( void ) {
 			w = CG_Text_Width(s, 0.6f, 0);
 			CG_Text_Paint(320 - w / 2, 60, 0.6f, colorWhite, s, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
 #else
-			w = CG_DrawStrlen( s );
+			w = CG_DrawStrlen( s , UI_GIANTFONT);
 			if ( w > 640 / GIANT_WIDTH ) {
 				cw = 640 / w;
 			} else {
 				cw = GIANT_WIDTH;
 			}
-			CG_DrawStringExt( 320 - w * cw/2, 20,s, colorWhite, 
-					qfalse, qtrue, cw, (int)(cw * 1.5f), 0 );
+			//CG_DrawStringExt( 320 - w * cw/2, 20,s, colorWhite, qfalse, qtrue, cw, (int)(cw * 1.5f), 0 );
+			CG_DrawStringExt( 320 - w * cw/2, 20, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
 #endif
 		}
 	} else {
@@ -2465,14 +2460,14 @@ static void CG_DrawWarmup( void ) {
 		w = CG_Text_Width(s, 0.6f, 0);
 		CG_Text_Paint(320 - w / 2, 90, 0.6f, colorWhite, s, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
 #else
-		w = CG_DrawStrlen( s );
+		w = CG_DrawStrlen( s , UI_GIANTFONT);
 		if ( w > 640 / GIANT_WIDTH ) {
 			cw = 640 / w;
 		} else {
 			cw = GIANT_WIDTH;
 		}
-		CG_DrawStringExt( 320 - w * cw/2, 25,s, colorWhite, 
-				qfalse, qtrue, cw, (int)(cw * 1.1f), 0 );
+		//CG_DrawStringExt( 320 - w * cw/2, 25,s, colorWhite, qfalse, qtrue, cw, (int)(cw * 1.1f), 0 );
+		CG_DrawStringExt( 320 - w * cw/2, 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
 #endif
 	}
 
@@ -2533,9 +2528,9 @@ static void CG_DrawWarmup( void ) {
 		break;
 	}
 
-	w = CG_DrawStrlen( s );
-	CG_DrawStringExt( 320 - w * cw/2, 70, s, colorWhite, 
-			qfalse, qtrue, cw, (int)(cw * 1.5), 0 );
+	w = CG_DrawStrlen( s , UI_GIANTFONT);
+	//CG_DrawStringExt( 320 - w * cw/2, 70, s, colorWhite, qfalse, qtrue, cw, (int)(cw * 1.5), 0 );
+	CG_DrawStringExt( 320 - w * cw/2, 70, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 16 / 48.0f, 0, 0 );
 #endif
 }
 

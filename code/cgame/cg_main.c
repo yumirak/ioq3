@@ -201,6 +201,15 @@ vmCvar_t	cg_recordSPDemo;
 vmCvar_t	cg_recordSPDemoName;
 vmCvar_t	cg_obeliskRespawnDelay;
 #endif
+// ttf
+vmCvar_t	cg_forceBitmapFonts;
+vmCvar_t	cg_consoleFont;
+vmCvar_t	cg_consoleFontSize;
+vmCvar_t	cg_hudFont;
+vmCvar_t	cg_hudFontBorder;
+vmCvar_t	cg_numberFont;
+vmCvar_t	cg_numberFontBorder;
+//
 vmCvar_t		cg_announcer;
 vmCvar_t		cg_lightningStyle;
 vmCvar_t		cg_hitBeep;
@@ -331,7 +340,13 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_lightningStyle, "cg_lightningStyle", "0", CVAR_ARCHIVE},
 	{ &cg_announcer, "cg_announcer", "1", CVAR_ARCHIVE | CVAR_LATCH}, //FIXME: reload announcer without snd_restart ?
 	{ &cg_hitBeep, "cg_hitBeep", "1", CVAR_ARCHIVE},
-
+	// ttf
+	{ &cg_forceBitmapFonts, "cg_forceBitmapFonts", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_hudFont, "cg_hudFont", "fonts/handelgothic.ttf", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_hudFontBorder, "cg_hudFontBorder", "2", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_numberFont, "cg_numberFont", "fonts/handelgothic.ttf", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_numberFontBorder, "cg_numberFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	//
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -1936,6 +1951,8 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	if ( strcmp( s, GAME_VERSION ) ) {
 		CG_Error( "Client/Server game mismatch: %s/%s", GAME_VERSION, s );
 	}
+
+	CG_HudTextInit();
 
 	s = CG_ConfigString( CS_LEVEL_START_TIME );
 	cgs.levelStartTime = atoi( s );

@@ -1519,7 +1519,7 @@ void CG_DrawWeaponSelect( void ) {
 	if ( cg_weapons[ cg.weaponSelect ].item ) {
 		name = cg_weapons[ cg.weaponSelect ].item->pickup_name;
 		if ( name ) {
-			w = CG_DrawStrlen( name ) * BIGCHAR_WIDTH;
+			w = CG_DrawStrlen( name, UI_BIGFONT);// * BIGCHAR_WIDTH;
 			x = ( SCREEN_WIDTH - w ) / 2;
 			CG_DrawBigStringColor(x, y - 22, name, color);
 		}
