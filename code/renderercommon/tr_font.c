@@ -1004,7 +1004,8 @@ qboolean R_LoadDynamicFont( const char *fontName, int pointSize, float borderWid
 	//*font = &registeredFonts[registeredFontCount++];
 
 	// scale image size based on screen height, use the next higher power of two
-	for (imageSize = 256; imageSize < 256.0f * dpi / 72.0f; imageSize<<=1);
+	//for (imageSize = 256; imageSize < 256.0f * dpi / 72.0f; imageSize<<=1);
+	for (imageSize = 128; imageSize < 128.0f * dpi / 72.0f; imageSize<<=1);
 
 	// do not exceed maxTextureSize
 	if (imageSize > glConfig.maxTextureSize) {

@@ -254,7 +254,7 @@ char *Q_UTF8_Unstore( int e )
 
 
 #include "unicode_data.h"
-
+/*
 static int uc_search_range( const void *chp, const void *memb )
 {
   int ch = *(int *)chp;
@@ -302,3 +302,4 @@ static int uc_search_cp( const void *chp, const void *memb )
 
 Q_UC_TO( Upper, uc_case_upper )
 Q_UC_TO( Lower, uc_case_lower )
+*/
