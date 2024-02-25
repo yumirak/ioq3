@@ -203,10 +203,8 @@ Draws large numbers for status bar and powerups
 ==============
 */
 #ifndef MISSIONPACK
-static void CG_DrawField (int x, int y, int width, int value) {
-	char	num[16], *ptr;
-	int		l;
-	int		frame;
+static void CG_DrawField (int x, int y, int style, int width, int value, float *color) {
+	char	num[16];
 
 	if ( width < 1 ) {
 		return;
@@ -237,24 +235,8 @@ static void CG_DrawField (int x, int y, int width, int value) {
 	}
 
 	Com_sprintf (num, sizeof(num), "%i", value);
-	l = strlen(num);
-	if (l > width)
-		l = width;
-	x += 2 + CHAR_WIDTH*(width - l);
 
-	ptr = num;
-	while (*ptr && l)
-	{
-		if (*ptr == '-')
-			frame = STAT_MINUS;
-		else
-			frame = *ptr -'0';
-
-		CG_DrawPic( x,y, CHAR_WIDTH, CHAR_HEIGHT, cgs.media.numberShaders[frame] );
-		x += CHAR_WIDTH;
-		ptr++;
-		l--;
-	}
+	CG_DrawString( x + 2 + CHAR_WIDTH * width, y, num, UI_RIGHT|UI_NUMBERFONT|UI_DROPSHADOW|style, color );
 }
 #endif // MISSIONPACK
 
@@ -521,7 +503,7 @@ static void CG_DrawStatusBar( void ) {
 	centity_t	*cent;
 	playerState_t	*ps;
 	int			value;
-	vec4_t		hcolor;
+	//vec4_t		hcolor;
 	vec3_t		angles;
 	vec3_t		origin;
 
@@ -574,9 +556,7 @@ static void CG_DrawStatusBar( void ) {
 		CG_Draw3DModel( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432, ICON_SIZE, ICON_SIZE,
 					   cgs.media.armorModel, 0, origin, angles );
 	}
-	//
 	// ammo
-	//
 	if ( cent->currentState.weapon ) {
 		value = ps->ammo[cent->currentState.weapon];
 		if ( value > -1 ) {
@@ -585,16 +565,13 @@ static void CG_DrawStatusBar( void ) {
 				// draw as dark grey when reloading
 				color = 2;	// dark grey
 			} else {
-				if ( value >= 0 ) {
-					color = 0;	// green
-				} else {
-					color = 1;	// red
-				}
+				if(cg.lowAmmoWarning)
+					color = (cg.time >> 8) & 1; // flash;
+				else
+					color = 3;	// yellow
 			}
-			trap_R_SetColor( colors[color] );
 
-			CG_DrawField (0, cgs.screenYmax - 48, 3, value);
-			trap_R_SetColor( NULL );
+			CG_DrawField (0, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[color]);
 
 			// if we didn't draw a 3D icon, draw a 2D icon for ammo
 			if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
@@ -607,41 +584,31 @@ static void CG_DrawStatusBar( void ) {
 			}
 		}
 	}
-
-	//
 	// health
-	//
 	value = ps->stats[STAT_HEALTH];
-	if ( value > 100 ) {
-		trap_R_SetColor( colors[3] );		// white
-	} else if (value > 25) {
-		trap_R_SetColor( colors[0] );	// green
-	} else if (value > 0) {
-		color = (cg.time >> 8) & 1;	// flash
-		trap_R_SetColor( colors[color] );
-	} else {
-		trap_R_SetColor( colors[1] );	// red
+	switch(value / 25)
+	{
+		case 0:
+			color = (cg.time >> 8) & 1; // red
+			break;
+		case 1:
+			color = 1; // flash
+			break;
+		default:
+			color = 3; // white
+			break;
 	}
 
 	// stretch the health up when taking damage
-	CG_DrawField ( 185, cgs.screenYmax - 48, 3, value);
-	CG_ColorForHealth( hcolor );
-	trap_R_SetColor( hcolor );
+	CG_DrawField ( 185, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[color] );
 
-
-	//
 	// armor
-	//
 	value = ps->stats[STAT_ARMOR];
-	if (value > 0 ) {
-		trap_R_SetColor( colors[0] );
-		CG_DrawField (370, cgs.screenYmax - 48, 3, value);
-		trap_R_SetColor( NULL );
-		// if we didn't draw a 3D icon, draw a 2D icon for armor
-		if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
-			CG_DrawPic( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, cgs.screenYmax - 48, ICON_SIZE, ICON_SIZE, cgs.media.armorIcon );
-		}
 
+	CG_DrawField (370, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[3]);
+	// if we didn't draw a 3D icon, draw a 2D icon for armor
+	if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
+		CG_DrawPic( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, cgs.screenYmax - 48, ICON_SIZE, ICON_SIZE, cgs.media.armorIcon );
 	}
 }
 #endif
@@ -805,7 +772,7 @@ CG_DrawSpeedMeter
 */
 static float CG_DrawSpeedMeter( float y ) {
 	char	*s;
-	int		w;
+	//int		w;
 	int	 	xyz;
 	playerState_t	*ps;
 
@@ -1325,7 +1292,7 @@ static float CG_DrawPowerups( float y ) {
 		  y -= ICON_SIZE;
 
 		  trap_R_SetColor( colors[color] );
-		  CG_DrawField( x, y, 2, sortedTime[ i ] / 1000 );
+		  CG_DrawField( x, y + ICON_SIZE/2, UI_VA_CENTER, 2, sortedTime[ i ] / 1000, colors[color] );
 
 		  t = ps->powerups[ sorted[i] ];
 		  if ( t - cg.time >= POWERUP_BLINKS * POWERUP_BLINK_TIME ) {
@@ -1860,7 +1827,7 @@ CG_DrawCenterString
 static void CG_DrawCenterString( void ) {
 	char	*start;
 	int		l;
-	int		x, y, w;
+	int		y;
 #ifdef MISSIONPACK
 	int h;
 #endif
@@ -2331,23 +2298,17 @@ CG_DrawFollow
 =================
 */
 static qboolean CG_DrawFollow( void ) {
-	//float		x;
-	vec4_t		color;
 	const char	*name;
 
 	if ( !(cg.snap->ps.pm_flags & PMF_FOLLOW) ) {
 		return qfalse;
 	}
-	color[0] = 1;
-	color[1] = 1;
-	color[2] = 1;
-	color[3] = 1;
 
 	CG_DrawString( 320, cgs.screenYmin + 24, "following", UI_CENTER|UI_DROPSHADOW|UI_BIGFONT, NULL );
 
 	name = cgs.clientinfo[ cg.snap->ps.clientNum ].name;
 
-	CG_DrawString( 320, cgs.screenYmin + 40, name, UI_CENTER|UI_DROPSHADOW|UI_BIGFONT, NULL );
+	CG_DrawString( 320, cgs.screenYmin + 40, name, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
 
 	return qtrue;
 }
@@ -2427,8 +2388,6 @@ static void CG_DrawWarmup( void ) {
 	int			i;
 #ifdef MISSIONPACK
 	float		scale;
-#else
-	int			cw;
 #endif
 	clientInfo_t	*ci1, *ci2;
 	const char	*s;
@@ -2462,19 +2421,8 @@ static void CG_DrawWarmup( void ) {
 
 		if ( ci1 && ci2 ) {
 			s = va( "%s vs %s", ci1->name, ci2->name );
-#ifdef MISSIONPACK
-			w = CG_Text_Width(s, 0.6f, 0);
-			CG_Text_Paint(320 - w / 2, 60, 0.6f, colorWhite, s, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
-#else
-			w = CG_DrawStrlen( s , UI_GIANTFONT);
-			if ( w > 640 / GIANT_WIDTH ) {
-				cw = 640 / w;
-			} else {
-				cw = GIANT_WIDTH;
-			}
-			//CG_DrawStringExt( 320 - w * cw/2, 20,s, colorWhite, qfalse, qtrue, cw, (int)(cw * 1.5f), 0 );
-			CG_DrawStringExt( SCREEN_WIDTH / 2, 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
-#endif
+			//CG_DrawStringExt( SCREEN_WIDTH / 2, 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
+			CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
 		}
 	} else {
 		if ( cgs.gametype == GT_FFA ) {
@@ -2494,19 +2442,9 @@ static void CG_DrawWarmup( void ) {
 		} else {
 			s = "";
 		}
-#ifdef MISSIONPACK
-		w = CG_Text_Width(s, 0.6f, 0);
-		CG_Text_Paint(320 - w / 2, 90, 0.6f, colorWhite, s, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
-#else
-		w = CG_DrawStrlen( s , UI_GIANTFONT);
-		if ( w > 640 / GIANT_WIDTH ) {
-			cw = 640 / w;
-		} else {
-			cw = GIANT_WIDTH;
-		}
-		//CG_DrawStringExt( 320 - w * cw/2, 25,s, colorWhite, qfalse, qtrue, cw, (int)(cw * 1.1f), 0 );
-		CG_DrawStringExt( SCREEN_WIDTH / 2, 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
-#endif
+		//CG_DrawStringExt( SCREEN_WIDTH / 2, 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
+		CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
+
 	}
 
 	sec = ( sec - cg.time ) / 1000;
@@ -2532,44 +2470,10 @@ static void CG_DrawWarmup( void ) {
 		}
 	}
 
-#ifdef MISSIONPACK
-	switch ( cg.warmupCount ) {
-	case 0:
-		scale = 0.54f;
-		break;
-	case 1:
-		scale = 0.51f;
-		break;
-	case 2:
-		scale = 0.48f;
-		break;
-	default:
-		scale = 0.45f;
-		break;
-	}
-
-	w = CG_Text_Width(s, scale, 0);
-	CG_Text_Paint(320 - w / 2, 125, scale, colorWhite, s, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
-#else
-	switch ( cg.warmupCount ) {
-	case 0:
-		cw = 28;
-		break;
-	case 1:
-		cw = 24;
-		break;
-	case 2:
-		cw = 20;
-		break;
-	default:
-		cw = 16;
-		break;
-	}
-
 	w = CG_DrawStrlen( s , UI_GIANTFONT);
-	//CG_DrawStringExt( 320 - w * cw/2, 70, s, colorWhite, qfalse, qtrue, cw, (int)(cw * 1.5), 0 );
-	CG_DrawStringExt( SCREEN_WIDTH / 2, 70, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 28 / 48.0f, 0, 0 );
-#endif
+	//CG_DrawStringExt( SCREEN_WIDTH / 2, 70, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 28 / 48.0f, 0, 0 );
+	CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 70, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
+
 }
 
 //==================================================================================

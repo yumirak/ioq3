@@ -131,8 +131,14 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade 
 	switch(ci->team)
 	{
 		case TEAM_SPECTATOR:
+			Com_sprintf(string_score, sizeof(string_score),
+				"");
+			Com_sprintf(string_acc, sizeof(string_acc),
+				"");
 			Com_sprintf(string_ping, sizeof(string_ping),
-				"%i", score->ping);
+				"%i",score->ping);
+			Com_sprintf(string_time, sizeof(string_time),
+				"%i", score->time);
 			Com_sprintf(string_name, sizeof(string_name),
 				"%s(s)", ci->name);
 			break;
