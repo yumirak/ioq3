@@ -1238,7 +1238,7 @@ static float CG_DrawPowerups( float y ) {
 	float	f;
 	static float colors[2][4] = { 
     { 0.2f, 1.0f, 0.2f, 1.0f } , 
-    { 1.0f, 0.2f, 0.2f, 1.0f } 
+    { 1.0f, 1.0f, 1.0f, 1.0f }
   };
 
 	ps = &cg.snap->ps;
@@ -1281,7 +1281,7 @@ static float CG_DrawPowerups( float y ) {
 	}
 
 	// draw the icons and timers
-	x =  cgs.screenXmax  - ICON_SIZE - CHAR_WIDTH * 2;
+	x =  cgs.screenXmax - ICON_SIZE - CHAR_WIDTH * 2;
 	for ( i = 0 ; i < active ; i++ ) {
 		item = BG_FindItemForPowerup( sorted[i] );
 
@@ -1289,7 +1289,7 @@ static float CG_DrawPowerups( float y ) {
 
 		  color = 1;
 
-		  y -= ICON_SIZE;
+		  y -= ICON_SIZE + 4;
 
 		  trap_R_SetColor( colors[color] );
 		  CG_DrawField( x, y + ICON_SIZE/2, UI_VA_CENTER, 2, sortedTime[ i ] / 1000, colors[color] );
@@ -1325,6 +1325,229 @@ static float CG_DrawPowerups( float y ) {
 #endif // MISSIONPACK
 
 /*
+===============================================================================
+
+LAGOMETER
+
+===============================================================================
+*/
+
+#define	LAG_SAMPLES		128
+
+
+typedef struct {
+	int		frameSamples[LAG_SAMPLES];
+	int		frameCount;
+	int		snapshotFlags[LAG_SAMPLES];
+	int		snapshotSamples[LAG_SAMPLES];
+	int		snapshotCount;
+} lagometer_t;
+
+lagometer_t		lagometer;
+
+/*
+==============
+CG_AddLagometerFrameInfo
+
+Adds the current interpolate / extrapolate bar for this frame
+==============
+*/
+void CG_AddLagometerFrameInfo( void ) {
+	int			offset;
+
+	offset = cg.time - cg.latestSnapshotTime;
+	lagometer.frameSamples[ lagometer.frameCount & ( LAG_SAMPLES - 1) ] = offset;
+	lagometer.frameCount++;
+}
+
+/*
+==============
+CG_AddLagometerSnapshotInfo
+
+Each time a snapshot is received, log its ping time and
+the number of snapshots that were dropped before it.
+
+Pass NULL for a dropped packet.
+==============
+*/
+void CG_AddLagometerSnapshotInfo( snapshot_t *snap ) {
+	// dropped packet
+	if ( !snap ) {
+		lagometer.snapshotSamples[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = -1;
+		lagometer.snapshotCount++;
+		return;
+	}
+
+	// add this snapshot's info
+	lagometer.snapshotSamples[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = snap->ping;
+	lagometer.snapshotFlags[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = snap->snapFlags;
+	lagometer.snapshotCount++;
+}
+
+
+
+/*
+==============
+CG_DrawDisconnect
+
+Should we draw something differnet for long lag vs no packets?
+==============
+*/
+static void CG_DrawDisconnect( void ) {
+	float		x, y;
+	int			cmdNum;
+	usercmd_t	cmd;
+	const char		*s;
+	int			w;
+
+	// draw the phone jack if we are completely past our buffers
+	cmdNum = trap_GetCurrentCmdNumber() - CMD_BACKUP + 1;
+	trap_GetUserCmd( cmdNum, &cmd );
+	if ( cmd.serverTime <= cg.snap->ps.commandTime
+		|| cmd.serverTime > cg.time ) {	// special check for map_restart
+		return;
+	}
+
+	// also add text in center of screen
+	s = "Connection Interrupted";
+	w = CG_DrawStrlen( s ,UI_BIGFONT);// * BIGCHAR_WIDTH;
+	CG_DrawBigString( 320 - w/2, cgs.screenYmin + 100, s, 1.0F);
+
+	// blink the icon
+	if ( ( cg.time >> 9 ) & 1 ) {
+		return;
+	}
+
+	x = cgs.screenXmax + 1 - 48;
+	y = cgs.screenYmax + 1 - 48;
+
+	CG_DrawPic( x, y, 48, 48, trap_R_RegisterShader("gfx/2d/net.tga" ) );
+}
+
+
+#define	MAX_LAGOMETER_PING	900
+#define	MAX_LAGOMETER_RANGE	300
+
+/*
+==============
+CG_DrawLagometer
+==============
+*/
+static int CG_DrawLagometer( int y ) {
+	int		a, x, i;
+	float	v;
+	float	ax, ay, aw, ah, mid, range;
+	int		color;
+	float	vscale;
+	int		ping;
+	char *s;
+	if ( !cg_lagometer.integer ) { //|| cgs.localServer
+		CG_DrawDisconnect();
+		return y;
+	}
+
+	//
+	// draw the graph
+	//
+	x = cgs.screenXmax + 1 - 48;
+	y -= 48;
+
+	trap_R_SetColor( NULL );
+	CG_DrawPic( x, y, 48, 48, cgs.media.lagometerShader );
+
+	ax = x;
+	ay = y;
+	aw = 48;
+	ah = 48;
+	CG_AdjustFrom640( &ax, &ay, &aw, &ah );
+
+	color = -1;
+	range = ah / 3;
+	mid = ay + range;
+
+	vscale = range / MAX_LAGOMETER_RANGE;
+	ping = cg.snap->ping;
+	if (ping < 0)
+		ping = 0;
+
+	// draw the frame interpoalte / extrapolate graph
+	for ( a = 0 ; a < aw ; a++ ) {
+		i = ( lagometer.frameCount - 1 - a ) & (LAG_SAMPLES - 1);
+		v = lagometer.frameSamples[i];
+		v *= vscale;
+		if ( v > 0 ) {
+			if ( color != 1 ) {
+				color = 1;
+				trap_R_SetColor( g_color_table[ColorIndex(COLOR_YELLOW)] );
+			}
+			if ( v > range ) {
+				v = range;
+			}
+			trap_R_DrawStretchPic ( ax + aw - a, mid - v, 1, v, 0, 0, 0, 0, cgs.media.whiteShader );
+		} else if ( v < 0 ) {
+			if ( color != 2 ) {
+				color = 2;
+				trap_R_SetColor( g_color_table[ColorIndex(COLOR_BLUE)] );
+			}
+			v = -v;
+			if ( v > range ) {
+				v = range;
+			}
+			trap_R_DrawStretchPic( ax + aw - a, mid, 1, v, 0, 0, 0, 0, cgs.media.whiteShader );
+		}
+	}
+
+	// draw the snapshot latency / drop graph
+	range = ah / 2;
+	vscale = range / MAX_LAGOMETER_PING;
+
+	for ( a = 0 ; a < aw ; a++ ) {
+		i = ( lagometer.snapshotCount - 1 - a ) & (LAG_SAMPLES - 1);
+		v = lagometer.snapshotSamples[i];
+		if ( v > 0 ) {
+			if ( lagometer.snapshotFlags[i] & SNAPFLAG_RATE_DELAYED ) {
+				if ( color != 5 ) {
+					color = 5;	// YELLOW for rate delay
+					trap_R_SetColor( g_color_table[ColorIndex(COLOR_YELLOW)] );
+				}
+			} else {
+				if ( color != 3 ) {
+					color = 3;
+					trap_R_SetColor( g_color_table[ColorIndex(COLOR_GREEN)] );
+				}
+			}
+			v = v * vscale;
+			if ( v > range ) {
+				v = range;
+			}
+			trap_R_DrawStretchPic( ax + aw - a, ay + ah - v, 1, v, 0, 0, 0, 0, cgs.media.whiteShader );
+		} else if ( v < 0 ) {
+			if ( color != 4 ) {
+				color = 4;		// RED for dropped snapshots
+				trap_R_SetColor( g_color_table[ColorIndex(COLOR_RED)] );
+			}
+			trap_R_DrawStretchPic( ax + aw - a, ay + ah - range, 1, range, 0, 0, 0, 0, cgs.media.whiteShader );
+		}
+	}
+
+	trap_R_SetColor( NULL );
+
+	if ( cg_nopredict.integer || cg_synchronousClients.integer ) {
+		s = va("%d (sync)", ping);
+	} else
+	{
+		s = va("%d", ping);
+	}
+
+	// draw ping
+
+	if(s)
+		CG_DrawString(x+24,y,s,UI_TINYFONT|UI_CENTER,NULL);
+	CG_DrawDisconnect();
+	return y;
+}
+
+/*
 =====================
 CG_DrawLowerRight
 
@@ -1341,7 +1564,9 @@ static void CG_DrawLowerRight( void ) {
 	}
 
 	y = CG_DrawScores( y );
+	y = CG_DrawLagometer( y );
 	y = CG_DrawPowerups( y );
+
 }
 #endif // MISSIONPACK
 
@@ -1394,6 +1619,7 @@ static void CG_DrawLowerLeft( void ) {
 	}
 
 	y = CG_DrawPickupItem( y );
+
 }
 #endif // MISSIONPACK
 
@@ -1569,216 +1795,6 @@ static void CG_DrawReward( void ) {
 		}
 	}
 	trap_R_SetColor( NULL );
-}
-
-
-/*
-===============================================================================
-
-LAGOMETER
-
-===============================================================================
-*/
-
-#define	LAG_SAMPLES		128
-
-
-typedef struct {
-	int		frameSamples[LAG_SAMPLES];
-	int		frameCount;
-	int		snapshotFlags[LAG_SAMPLES];
-	int		snapshotSamples[LAG_SAMPLES];
-	int		snapshotCount;
-} lagometer_t;
-
-lagometer_t		lagometer;
-
-/*
-==============
-CG_AddLagometerFrameInfo
-
-Adds the current interpolate / extrapolate bar for this frame
-==============
-*/
-void CG_AddLagometerFrameInfo( void ) {
-	int			offset;
-
-	offset = cg.time - cg.latestSnapshotTime;
-	lagometer.frameSamples[ lagometer.frameCount & ( LAG_SAMPLES - 1) ] = offset;
-	lagometer.frameCount++;
-}
-
-/*
-==============
-CG_AddLagometerSnapshotInfo
-
-Each time a snapshot is received, log its ping time and
-the number of snapshots that were dropped before it.
-
-Pass NULL for a dropped packet.
-==============
-*/
-void CG_AddLagometerSnapshotInfo( snapshot_t *snap ) {
-	// dropped packet
-	if ( !snap ) {
-		lagometer.snapshotSamples[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = -1;
-		lagometer.snapshotCount++;
-		return;
-	}
-
-	// add this snapshot's info
-	lagometer.snapshotSamples[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = snap->ping;
-	lagometer.snapshotFlags[ lagometer.snapshotCount & ( LAG_SAMPLES - 1) ] = snap->snapFlags;
-	lagometer.snapshotCount++;
-}
-
-/*
-==============
-CG_DrawDisconnect
-
-Should we draw something differnet for long lag vs no packets?
-==============
-*/
-static void CG_DrawDisconnect( void ) {
-	float		x, y;
-	int			cmdNum;
-	usercmd_t	cmd;
-	const char		*s;
-	int			w;
-
-	// draw the phone jack if we are completely past our buffers
-	cmdNum = trap_GetCurrentCmdNumber() - CMD_BACKUP + 1;
-	trap_GetUserCmd( cmdNum, &cmd );
-	if ( cmd.serverTime <= cg.snap->ps.commandTime
-		|| cmd.serverTime > cg.time ) {	// special check for map_restart
-		return;
-	}
-
-	// also add text in center of screen
-	s = "Connection Interrupted";
-	w = CG_DrawStrlen( s ,UI_BIGFONT);// * BIGCHAR_WIDTH;
-	CG_DrawBigString( 320 - w/2, cgs.screenYmin + 100, s, 1.0F);
-
-	// blink the icon
-	if ( ( cg.time >> 9 ) & 1 ) {
-		return;
-	}
-
-	x = cgs.screenXmax + 1 - 48;
-	y = cgs.screenYmax + 1 - 48;
-
-	CG_DrawPic( x, y, 48, 48, trap_R_RegisterShader("gfx/2d/net.tga" ) );
-}
-
-
-#define	MAX_LAGOMETER_PING	900
-#define	MAX_LAGOMETER_RANGE	300
-
-/*
-==============
-CG_DrawLagometer
-==============
-*/
-static void CG_DrawLagometer( void ) {
-	int		a, x, y, i;
-	float	v;
-	float	ax, ay, aw, ah, mid, range;
-	int		color;
-	float	vscale;
-
-	if ( !cg_lagometer.integer ) { //|| cgs.localServer
-		CG_DrawDisconnect();
-		return;
-	}
-
-	//
-	// draw the graph
-	//
-	x = cgs.screenXmax + 1 - 48;
-	y = cgs.screenYmax + 1 - 144;
-
-	trap_R_SetColor( NULL );
-	CG_DrawPic( x, y, 48, 48, cgs.media.lagometerShader );
-
-	ax = x;
-	ay = y;
-	aw = 48;
-	ah = 48;
-	CG_AdjustFrom640( &ax, &ay, &aw, &ah );
-
-	color = -1;
-	range = ah / 3;
-	mid = ay + range;
-
-	vscale = range / MAX_LAGOMETER_RANGE;
-
-	// draw the frame interpoalte / extrapolate graph
-	for ( a = 0 ; a < aw ; a++ ) {
-		i = ( lagometer.frameCount - 1 - a ) & (LAG_SAMPLES - 1);
-		v = lagometer.frameSamples[i];
-		v *= vscale;
-		if ( v > 0 ) {
-			if ( color != 1 ) {
-				color = 1;
-				trap_R_SetColor( g_color_table[ColorIndex(COLOR_YELLOW)] );
-			}
-			if ( v > range ) {
-				v = range;
-			}
-			trap_R_DrawStretchPic ( ax + aw - a, mid - v, 1, v, 0, 0, 0, 0, cgs.media.whiteShader );
-		} else if ( v < 0 ) {
-			if ( color != 2 ) {
-				color = 2;
-				trap_R_SetColor( g_color_table[ColorIndex(COLOR_BLUE)] );
-			}
-			v = -v;
-			if ( v > range ) {
-				v = range;
-			}
-			trap_R_DrawStretchPic( ax + aw - a, mid, 1, v, 0, 0, 0, 0, cgs.media.whiteShader );
-		}
-	}
-
-	// draw the snapshot latency / drop graph
-	range = ah / 2;
-	vscale = range / MAX_LAGOMETER_PING;
-
-	for ( a = 0 ; a < aw ; a++ ) {
-		i = ( lagometer.snapshotCount - 1 - a ) & (LAG_SAMPLES - 1);
-		v = lagometer.snapshotSamples[i];
-		if ( v > 0 ) {
-			if ( lagometer.snapshotFlags[i] & SNAPFLAG_RATE_DELAYED ) {
-				if ( color != 5 ) {
-					color = 5;	// YELLOW for rate delay
-					trap_R_SetColor( g_color_table[ColorIndex(COLOR_YELLOW)] );
-				}
-			} else {
-				if ( color != 3 ) {
-					color = 3;
-					trap_R_SetColor( g_color_table[ColorIndex(COLOR_GREEN)] );
-				}
-			}
-			v = v * vscale;
-			if ( v > range ) {
-				v = range;
-			}
-			trap_R_DrawStretchPic( ax + aw - a, ay + ah - v, 1, v, 0, 0, 0, 0, cgs.media.whiteShader );
-		} else if ( v < 0 ) {
-			if ( color != 4 ) {
-				color = 4;		// RED for dropped snapshots
-				trap_R_SetColor( g_color_table[ColorIndex(COLOR_RED)] );
-			}
-			trap_R_DrawStretchPic( ax + aw - a, ay + ah - range, 1, range, 0, 0, 0, 0, cgs.media.whiteShader );
-		}
-	}
-
-	trap_R_SetColor( NULL );
-
-	if ( cg_nopredict.integer || cg_synchronousClients.integer ) {
-		CG_DrawBigString( x, y, "snc", 1.0 );
-	}
-
-	CG_DrawDisconnect();
 }
 
 
@@ -2128,12 +2144,15 @@ CG_DrawSpectator
 =================
 */
 static void CG_DrawSpectator(void) {
-	CG_DrawBigString(320 - 9 * 8, cgs.screenYmax - 40 , "SPECTATOR", 1.0F);
-	if ( cgs.gametype == GT_TOURNAMENT ) {
-		CG_DrawBigString(320 - 15 * 8, cgs.screenYmax - 20 , "waiting to play", 1.0F);
-	}
-	else if ( cgs.gametype >= GT_TEAM ) {
-		CG_DrawBigString(320 - 39 * 8, cgs.screenYmax - 20 , "press ESC and use the JOIN menu to play", 1.0F);
+	CG_DrawString(320, cgs.screenYmax - 40 , "SPECTATOR", UI_CENTER | UI_DROPSHADOW | UI_BIGFONT, NULL);
+	switch(cgs.gametype)
+	{
+		default:
+			CG_DrawString(320, cgs.screenYmax - 20 , "press ESC and use the START menu to play",UI_CENTER | UI_DROPSHADOW | UI_BIGFONT, NULL);
+			break;
+		case GT_TOURNAMENT:
+			CG_DrawString(320, cgs.screenYmax - 20 , "waiting to play", UI_CENTER | UI_DROPSHADOW | UI_BIGFONT, NULL);
+			break;
 	}
 }
 
@@ -2572,8 +2591,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 
 	CG_DrawVote();
 	CG_DrawTeamVote();
-
-	CG_DrawLagometer();
 
 #ifdef MISSIONPACK
 	if (!cg_paused.integer) {
