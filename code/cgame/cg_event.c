@@ -48,28 +48,21 @@ const char	*CG_PlaceString( int rank ) {
 		t = "";
 	}
 
-	if ( rank == 1 ) {
-		s = S_COLOR_BLUE "1st" S_COLOR_WHITE;		// draw in blue
-	} else if ( rank == 2 ) {
-		s = S_COLOR_RED "2nd" S_COLOR_WHITE;		// draw in red
-	} else if ( rank == 3 ) {
-		s = S_COLOR_YELLOW "3rd" S_COLOR_WHITE;		// draw in yellow
-	} else if ( rank == 11 ) {
-		s = "11th";
-	} else if ( rank == 12 ) {
-		s = "12th";
-	} else if ( rank == 13 ) {
-		s = "13th";
-	} else if ( rank % 10 == 1 ) {
-		s = va("%ist", rank);
-	} else if ( rank % 10 == 2 ) {
-		s = va("%ind", rank);
-	} else if ( rank % 10 == 3 ) {
-		s = va("%ird", rank);
-	} else {
-		s = va("%ith", rank);
+	switch(rank % 10)
+	{
+		case 1:
+			s = va("%ist", rank);
+			break;
+		case 2:
+			s = va("%ind", rank);
+			break;
+		case 3:
+			s = va("%ird", rank);
+			break;
+		default:
+			s = va("%ith", rank);
+			break;
 	}
-
 	Com_sprintf( str, sizeof( str ), "%s%s", t, s );
 	return str;
 }

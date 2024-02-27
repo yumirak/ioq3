@@ -410,8 +410,8 @@ extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
 #define	SCREEN_WIDTH		640
 #define	SCREEN_HEIGHT		480
 
-#define TINYCHAR_WIDTH		(SMALLCHAR_WIDTH)
-#define TINYCHAR_HEIGHT		(SMALLCHAR_HEIGHT/2)
+#define TINYCHAR_WIDTH		8
+#define TINYCHAR_HEIGHT		8
 
 #define SMALLCHAR_WIDTH		8
 #define SMALLCHAR_HEIGHT	16
@@ -420,7 +420,7 @@ extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
 #define BIGCHAR_HEIGHT		16
 
 #define	GIANTCHAR_WIDTH		32
-#define	GIANTCHAR_HEIGHT	48
+#define	GIANTCHAR_HEIGHT	32
 
 extern	vec4_t		colorBlack;
 extern	vec4_t		colorRed;

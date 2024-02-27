@@ -2454,7 +2454,7 @@ static void CG_DrawWarmup( void ) {
 			s = "";
 		}
 		//CG_DrawStringExt( SCREEN_WIDTH / 2, 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
-		CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
+		CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 45, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
 
 	}
 
@@ -2483,7 +2483,7 @@ static void CG_DrawWarmup( void ) {
 
 	w = CG_DrawStrlen( s , UI_GIANTFONT);
 	//CG_DrawStringExt( SCREEN_WIDTH / 2, 70, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 28 / 48.0f, 0, 0 );
-	CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 70, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
+	CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 80, s, UI_CENTER | UI_DROPSHADOW | UI_BIGFONT, NULL );
 
 }
 
