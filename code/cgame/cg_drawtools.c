@@ -128,7 +128,6 @@ const fontInfo_t *CG_FontForStyle( int style ) {
 			break;
 
 		case UI_BIGFONT:
-		default:
 			font = &cgs.media.textFont;
 			break;
 
@@ -140,8 +139,16 @@ const fontInfo_t *CG_FontForStyle( int style ) {
 			font = &cgs.media.numberFont;
 			break;
 
+		case UI_NORMALFONT:
+			font = &cgs.media.normalFont;
+			break;
+
 		case UI_CONSOLEFONT:
 			font = &cgs.media.consoleFont;
+			break;
+
+		default:
+			font = &cgs.media.normalFont;
 			break;
 	}
 
@@ -376,7 +383,6 @@ void CG_DrawSmallString( int x, int y, const char *s, float alpha ) {
 void CG_DrawSmallStringColor( int x, int y, const char *s, vec4_t color ) {
 	CG_DrawString( x, y, s, UI_FORCECOLOR|UI_SMALLFONT, color );
 }
-
 /*
 =================
 CG_DrawStrlenCommon
@@ -450,7 +456,6 @@ int CG_DrawStringLineHeight( int style ) {
 			break;
 
 		case UI_BIGFONT:
-		default:
 			font = &cgs.media.textFont;
 			gap = 2;
 			break;
@@ -462,6 +467,15 @@ int CG_DrawStringLineHeight( int style ) {
 
 		case UI_NUMBERFONT:
 			font = &cgs.media.numberFont;
+			break;
+
+		case UI_NORMALFONT:
+			font = &cgs.media.normalFont;
+			break;
+
+		default:
+			font = &cgs.media.textFont;
+			gap = 2;
 			break;
 
 		case UI_CONSOLEFONT:

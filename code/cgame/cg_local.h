@@ -653,7 +653,8 @@ typedef struct {
 	fontInfo_t	smallFont;
 	fontInfo_t	textFont;
 	fontInfo_t	bigFont;
-	fontInfo_t	numberFont; // status bar giant number font
+	fontInfo_t	numberFont;
+	fontInfo_t	normalFont;
 	fontInfo_t	consoleFont;
 
 	qhandle_t	charsetShader;
@@ -1267,6 +1268,8 @@ extern	vmCvar_t		cg_hudFont;
 extern	vmCvar_t		cg_hudFontBorder;
 extern	vmCvar_t		cg_numberFont;
 extern	vmCvar_t		cg_numberFontBorder;
+extern	vmCvar_t		cg_normalFont;
+extern	vmCvar_t		cg_normalFontBorder;
 extern	vmCvar_t		cg_hudTextScale;
 //
 extern	vmCvar_t		cg_announcer;

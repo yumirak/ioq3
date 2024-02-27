@@ -209,6 +209,8 @@ vmCvar_t	cg_hudFont;
 vmCvar_t	cg_hudFontBorder;
 vmCvar_t	cg_numberFont;
 vmCvar_t	cg_numberFontBorder;
+vmCvar_t	cg_normalFont;
+vmCvar_t	cg_normalFontBorder;
 vmCvar_t	cg_hudTextScale;
 //
 vmCvar_t		cg_announcer;
@@ -345,9 +347,11 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_forceBitmapFonts, "cg_forceBitmapFonts", "0", CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_hudTextScale, "cg_hudTextScale", "1", CVAR_ARCHIVE },
 	{ &cg_hudFont, "cg_hudFont", "fonts/handelgothic.ttf", CVAR_ARCHIVE | CVAR_LATCH },
-	{ &cg_hudFontBorder, "cg_hudFontBorder", "2", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_hudFontBorder, "cg_hudFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_numberFont, "cg_numberFont", "fonts/handelgothic.ttf", CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_numberFontBorder, "cg_numberFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_normalFont, "cg_normalFont", "fonts/notosans-regular.ttf", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_normalFontBorder, "cg_normalFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
 	//
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };

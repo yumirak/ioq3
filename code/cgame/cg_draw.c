@@ -669,10 +669,9 @@ static float CG_DrawAttacker( float y ) {
 	info = CG_ConfigString( CS_PLAYERS + clientNum );
 	name = Info_ValueForKey(  info, "n" );
 	y += size;
-	w = CG_DrawStrlen( name , UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT );
-	CG_DrawBigString( cgs.screenXmax - w, y, name, 0.5 );
 
-	return y + BIGCHAR_HEIGHT + 2;
+	CG_DrawString( cgs.screenXmax, y, name, UI_RIGHT|UI_DROPSHADOW|UI_NORMALFONT, NULL );
+	return y + BIGCHAR_HEIGHT + 4;
 }
 
 /*
@@ -688,8 +687,7 @@ static float CG_DrawSnapshot( float y ) {
 		cg.latestSnapshotNum, cgs.serverCommandSequence );
 	w = CG_DrawStrlen( s , UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT );
 
-	//CG_DrawBigString( cgs.screenXmax - 4 - w, y + 2, s, 1.0F);
-	CG_DrawString( cgs.screenXmax - 4 - w, y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT, NULL );
+	CG_DrawString( cgs.screenXmax, y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_NORMALFONT, NULL );
 	return y + BIGCHAR_HEIGHT + 4;
 }
 
@@ -729,10 +727,8 @@ static float CG_DrawFPS( float y ) {
 		fps = 1000 * FPS_FRAMES / total;
 
 		s = va( "%ifps", fps );
-		//w = CG_DrawStrlen( s , UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT );
 
-		//CG_DrawBigString( cgs.screenXmax - w, y + 2, s, 1.0F);
-		CG_DrawString( cgs.screenXmax , y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT, NULL );
+		CG_DrawString( cgs.screenXmax , y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_NORMALFONT, NULL );
 	}
 
 	return y + BIGCHAR_HEIGHT + 4;
@@ -758,10 +754,8 @@ static float CG_DrawTimer( float y ) {
 	seconds -= tens * 10;
 
 	s = va( "%i:%i%i", mins, tens, seconds );
-	//w = CG_DrawStrlen( s , UI_BIGFONT ); // * BIGCHAR_WIDTH;
 
-	//CG_DrawBigString( cgs.screenXmax - w, y + 2, s, 1.0F);
-	CG_DrawString(  cgs.screenXmax  , y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT, NULL );
+	CG_DrawString(  cgs.screenXmax  , y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_NORMALFONT, NULL );
 
 	return y + BIGCHAR_HEIGHT + 4;
 }
@@ -794,12 +788,10 @@ static float CG_DrawSpeedMeter( float y ) {
 
 	if ( cg_drawSpeed.integer == 1 ) {
 		/* top left-hand corner of screen */
-		//CG_DrawBigString( cgs.screenXmax, y + 2, s, 1.0f );
-		CG_DrawString( cgs.screenXmax , y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT, NULL );
+		CG_DrawString( cgs.screenXmax , y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_NORMALFONT, NULL );
 		return y + BIGCHAR_HEIGHT + 4;
 	} else {
 		/* center of screen */
-		//CG_DrawBigString( 320 - w / 2, 300, s, 1.0f );
 		CG_DrawString( 320 , 300 + 2, s, UI_CENTER|UI_DROPSHADOW|UI_BIGFONT, NULL );
 		return y;
 	}
@@ -1577,14 +1569,14 @@ CG_DrawPickupItem
 */
 #ifndef MISSIONPACK
 static int CG_DrawPickupItem( int y ) {
-	int		value;
+	int		value, iconsize;
 	float	*fadeColor;
 
 	if ( cg.snap->ps.stats[STAT_HEALTH] <= 0 ) {
 		return y;
 	}
-
-	y -= ICON_SIZE;
+	iconsize = ICON_SIZE/2;
+	y -= iconsize;
 
 	value = cg.itemPickup;
 	if ( value ) {
@@ -1592,8 +1584,8 @@ static int CG_DrawPickupItem( int y ) {
 		if ( fadeColor ) {
 			CG_RegisterItemVisuals( value );
 			trap_R_SetColor( fadeColor );
-			CG_DrawPic( cgs.screenXmin + 8, y, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
-			CG_DrawBigString( cgs.screenXmin + ICON_SIZE + 16, y + (ICON_SIZE/2 - BIGCHAR_HEIGHT/2), bg_itemlist[ value ].pickup_name, fadeColor[0] );
+			CG_DrawPic( cgs.screenXmin + 8, y - 4, iconsize, iconsize, cg_items[ value ].icon );
+			CG_DrawString( cgs.screenXmin + iconsize + 16, y , bg_itemlist[ value ].pickup_name, UI_DROPSHADOW|UI_NORMALFONT, fadeColor );
 			trap_R_SetColor( NULL );
 		}
 	}

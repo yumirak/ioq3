@@ -337,6 +337,7 @@ typedef enum {
 #define UI_TINYFONT		0x00000400
 #define UI_NUMBERFONT	0x00000500
 #define UI_CONSOLEFONT	0x00000600
+#define UI_NORMALFONT		0x00000700
 #define UI_FONTMASK		0x00000F00
 
 // other flags

@@ -49,7 +49,7 @@ Team Arena's pre-rendered menu/hud TrueType fonts (fonts/smallfont:12,
 fonts/font:16, and fonts/bigfont:20) are Impact.
 */
 void CG_HudTextInit( void ) {
-	if ( !CG_InitTrueTypeFont( cg_hudFont.string, TINYCHAR_HEIGHT, cg_hudFontBorder.value*0.5f, &cgs.media.tinyFont ) ) {
+	if ( !CG_InitTrueTypeFont( cg_normalFont.string, TINYCHAR_HEIGHT, cg_normalFontBorder.value*0.5f, &cgs.media.tinyFont ) ) {
 		CG_InitBitmapFont( &cgs.media.tinyFont, TINYCHAR_HEIGHT, TINYCHAR_WIDTH );
 	}
 
@@ -67,6 +67,9 @@ void CG_HudTextInit( void ) {
 
 	if ( !CG_InitTrueTypeFont( cg_numberFont.string, CHAR_HEIGHT, cg_numberFontBorder.value, &cgs.media.numberFont ) ) {
 		CG_InitBitmapNumberFont( &cgs.media.numberFont, CHAR_HEIGHT, CHAR_WIDTH );
+	}
+	if ( !CG_InitTrueTypeFont( cg_normalFont.string, SMALLCHAR_HEIGHT, cg_normalFontBorder.value, &cgs.media.normalFont ) ) {
+		CG_InitBitmapFont( &cgs.media.normalFont, SMALLCHAR_HEIGHT, SMALLCHAR_WIDTH );
 	}
 	Com_Printf("Overriding HUD smallFont '%s'", cg_hudFont.string);
 }
