@@ -627,7 +627,7 @@ CG_DrawAttacker
 ================
 */
 static float CG_DrawAttacker( float y ) {
-	int			t,w;
+	int			t;
 	float		size;
 	vec3_t		angles;
 	const char	*info;
@@ -680,11 +680,9 @@ CG_DrawSnapshot
 */
 static float CG_DrawSnapshot( float y ) {
 	char		*s;
-	int			w;
 
 	s = va( "time:%i snap:%i cmd:%i", cg.snap->serverTime, 
 		cg.latestSnapshotNum, cgs.serverCommandSequence );
-	w = CG_DrawStrlen( s , UI_RIGHT|UI_DROPSHADOW|UI_BIGFONT );
 
 	CG_DrawString( cgs.screenXmax, y + 2, s, UI_RIGHT|UI_DROPSHADOW|UI_NORMALFONT, NULL );
 	return y + BIGCHAR_HEIGHT + 4;
@@ -2393,69 +2391,71 @@ CG_DrawWarmup
 =================
 */
 static void CG_DrawWarmup( void ) {
-	int			w;
 	int			sec;
 	int			i;
-#ifdef MISSIONPACK
-	float		scale;
-#endif
 	clientInfo_t	*ci1, *ci2;
 	const char	*s;
 
 	sec = cg.warmup;
+	s = NULL;
 	if ( !sec ) {
 		return;
 	}
 
 	if ( sec < 0 ) {
 		s = "Waiting for players";		
-		w = CG_DrawStrlen( s , UI_BIGFONT);
 		CG_DrawString( SCREEN_WIDTH / 2, 24, s, UI_CENTER|UI_DROPSHADOW|UI_BIGFONT, NULL );
 		cg.warmupCount = 0;
 		return;
 	}
 
-	if (cgs.gametype == GT_TOURNAMENT) {
-		// find the two active players
-		ci1 = NULL;
-		ci2 = NULL;
-		for ( i = 0 ; i < cgs.maxclients ; i++ ) {
-			if ( cgs.clientinfo[i].infoValid && cgs.clientinfo[i].team == TEAM_FREE ) {
-				if ( !ci1 ) {
-					ci1 = &cgs.clientinfo[i];
-				} else {
-					ci2 = &cgs.clientinfo[i];
+	switch(cgs.gametype)
+	{
+		case GT_FFA:
+			s = "Free For All";
+			break;
+		case GT_TOURNAMENT:
+		{
+			// find the two active players
+			ci1 = NULL;
+			ci2 = NULL;
+			for ( i = 0 ; i < cgs.maxclients ; i++ ) {
+				if ( cgs.clientinfo[i].infoValid && cgs.clientinfo[i].team == TEAM_FREE ) {
+					if ( !ci1 ) {
+						ci1 = &cgs.clientinfo[i];
+					} else {
+						ci2 = &cgs.clientinfo[i];
+					}
 				}
 			}
-		}
 
-		if ( ci1 && ci2 ) {
-			s = va( "%s vs %s", ci1->name, ci2->name );
-			//CG_DrawStringExt( SCREEN_WIDTH / 2, 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
-			CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
+			if ( ci1 && ci2 )
+				s = va( "%s vs %s", ci1->name, ci2->name );
+			break;
 		}
-	} else {
-		if ( cgs.gametype == GT_FFA ) {
-			s = "Free For All";
-		} else if ( cgs.gametype == GT_TEAM ) {
+		case GT_TEAM:
 			s = "Team Deathmatch";
-		} else if ( cgs.gametype == GT_CTF ) {
+			break;
+		case GT_CTF:
 			s = "Capture the Flag";
+			break;
 #ifdef MISSIONPACK
-		} else if ( cgs.gametype == GT_1FCTF ) {
+		case GT_1FCTF:
 			s = "One Flag CTF";
-		} else if ( cgs.gametype == GT_OBELISK ) {
+			break;
+		case GT_OBELISK:
 			s = "Overload";
-		} else if ( cgs.gametype == GT_HARVESTER ) {
+			break;
+		case GT_HARVESTER:
 			s = "Harvester";
+			break;
 #endif
-		} else {
+		default:
 			s = "";
-		}
-		//CG_DrawStringExt( SCREEN_WIDTH / 2, 25, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 32 / 48.0f, 0, 0 );
-		CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 45, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
-
+			break;
 	}
+
+	CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 30, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL );
 
 	sec = ( sec - cg.time ) / 1000;
 	if ( sec < 0 ) {
@@ -2467,22 +2467,20 @@ static void CG_DrawWarmup( void ) {
 		cg.warmupCount = sec;
 		switch ( sec ) {
 		case 0:
-			trap_S_StartLocalSound( cgs.media.count1Sound, CHAN_ANNOUNCER );
+			trap_S_StartLocalSound( cgs.media.countSound[0], CHAN_ANNOUNCER );
 			break;
 		case 1:
-			trap_S_StartLocalSound( cgs.media.count2Sound, CHAN_ANNOUNCER );
+			trap_S_StartLocalSound( cgs.media.countSound[1], CHAN_ANNOUNCER );
 			break;
 		case 2:
-			trap_S_StartLocalSound( cgs.media.count3Sound, CHAN_ANNOUNCER );
+			trap_S_StartLocalSound( cgs.media.countSound[2], CHAN_ANNOUNCER );
 			break;
 		default:
 			break;
 		}
 	}
 
-	w = CG_DrawStrlen( s , UI_GIANTFONT);
-	//CG_DrawStringExt( SCREEN_WIDTH / 2, 70, s, UI_CENTER|UI_DROPSHADOW|UI_GIANTFONT, NULL, 28 / 48.0f, 0, 0 );
-	CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 80, s, UI_CENTER | UI_DROPSHADOW | UI_BIGFONT, NULL );
+	CG_DrawString( SCREEN_WIDTH / 2, cgs.screenYmin + 70, s, UI_CENTER | UI_DROPSHADOW | UI_GIANTFONT, NULL );
 
 }
 

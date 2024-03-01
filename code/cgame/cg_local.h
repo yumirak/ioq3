@@ -986,9 +986,7 @@ typedef struct {
 	sfxHandle_t eCapturedSound;
 
 	// tournament sounds
-	sfxHandle_t	count3Sound;
-	sfxHandle_t	count2Sound;
-	sfxHandle_t	count1Sound;
+	sfxHandle_t	countSound[3];
 	sfxHandle_t	countFightSound;
 	sfxHandle_t countGoSound;
 	sfxHandle_t countBiteSound;

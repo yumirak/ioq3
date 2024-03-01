@@ -132,7 +132,7 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade 
 	{
 		case TEAM_SPECTATOR:
 			Com_sprintf(string_score, sizeof(string_score),
-				"");
+				"SPEC");
 			Com_sprintf(string_acc, sizeof(string_acc),
 				"");
 			Com_sprintf(string_ping, sizeof(string_ping),
@@ -140,7 +140,7 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade 
 			Com_sprintf(string_time, sizeof(string_time),
 				"%i", score->time);
 			Com_sprintf(string_name, sizeof(string_name),
-				"%s(s)", ci->name);
+				"%s", ci->name);
 			break;
 		default:
 			Com_sprintf(string_score, sizeof(string_score),

@@ -592,9 +592,9 @@ static void CG_RegisterAnnouncerSounds (void)
 	cgs.media.oneFragSound = trap_S_RegisterSound( va("%s/1_frag.wav", baseDir), qtrue );
 	cgs.media.twoFragSound = trap_S_RegisterSound( va("%s/2_frags.wav", baseDir), qtrue );
 	cgs.media.threeFragSound = trap_S_RegisterSound( va("%s/3_frags.wav", baseDir), qtrue );
-	cgs.media.count3Sound = trap_S_RegisterSound( va("%s/three.wav", baseDir), qtrue );
-	cgs.media.count2Sound = trap_S_RegisterSound( va("%s/two.wav", baseDir), qtrue );
-	cgs.media.count1Sound = trap_S_RegisterSound( va("%s/one.wav", baseDir), qtrue );
+	cgs.media.countSound[2] = trap_S_RegisterSound( va("%s/three.wav", baseDir), qtrue );
+	cgs.media.countSound[1] = trap_S_RegisterSound( va("%s/two.wav", baseDir), qtrue );
+	cgs.media.countSound[0] = trap_S_RegisterSound( va("%s/one.wav", baseDir), qtrue );
 	cgs.media.countFightSound = trap_S_RegisterSound( va("%s/fight.wav", baseDir), qtrue );
 	cgs.media.countGoSound = trap_S_RegisterSound(va("%s/go.ogg", baseDir), qtrue);
 	cgs.media.countBiteSound = trap_S_RegisterSound(va("%s/bite.ogg", baseDir), qtrue);
