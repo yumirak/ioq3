@@ -548,7 +548,7 @@ static void CG_DrawStatusBar( void ) {
 		CG_DrawStatusBarFlag( 185 + CHAR_WIDTH*3 + TEXT_ICON_SPACE + ICON_SIZE, TEAM_FREE );
 	}
 
-	if ( ps->stats[ STAT_ARMOR ] ) {
+	if ( ps->stats[ STAT_ARMOR ] > -1) {
 		origin[0] = 90;
 		origin[1] = 0;
 		origin[2] = -10;
@@ -557,42 +557,33 @@ static void CG_DrawStatusBar( void ) {
 					   cgs.media.armorModel, 0, origin, angles );
 	}
 	// ammo
-	if ( cent->currentState.weapon ) {
-		value = ps->ammo[cent->currentState.weapon];
-		if ( value > -1 ) {
-			if ( cg.predictedPlayerState.weaponstate == WEAPON_FIRING
-				&& cg.predictedPlayerState.weaponTime > 100 ) {
-				// draw as dark grey when reloading
-				color = 2;	// dark grey
-			} else {
-				if(cg.lowAmmoWarning)
-					color = (cg.time >> 8) & 1; // flash;
-				else
-					color = 3;	// yellow
-			}
-
-			CG_DrawField (0, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[color]);
-
-			// if we didn't draw a 3D icon, draw a 2D icon for ammo
-			if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
-				qhandle_t	icon;
-
-				icon = cg_weapons[ cg.predictedPlayerState.weapon ].ammoIcon;
-				if ( icon ) {
-					CG_DrawPic( CHAR_WIDTH*3 + TEXT_ICON_SPACE, cgs.screenYmax - 48, ICON_SIZE, ICON_SIZE, icon );
-				}
-			}
-		}
-	}
-	// health
-	value = ps->stats[STAT_HEALTH];
-	switch(value / 25)
+	value = ps->ammo[cent->currentState.weapon];
+	switch(cg.lowAmmoWarning)
 	{
 		case 0:
-			color = (cg.time >> 8) & 1; // red
+			color = 3; // white
 			break;
-		case 1:
-			color = 1; // flash
+		default:
+			color = 1; // red
+			break;
+	}
+
+	if(value > -1)
+		CG_DrawField (0, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[color]);
+	// if we didn't draw a 3D icon, draw a 2D icon for ammo
+	if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
+		qhandle_t	icon;
+		icon = cg_weapons[ cg.predictedPlayerState.weapon ].ammoIcon;
+		if ( icon )
+			CG_DrawPic( CHAR_WIDTH*3 + TEXT_ICON_SPACE, cgs.screenYmax - 48, ICON_SIZE, ICON_SIZE, icon );
+	}
+
+	// health
+	value = ps->stats[STAT_HEALTH];
+	switch((value - 1) / 100)
+	{
+		case 0:
+			color = value >= 25 ? 0 : 1; // yellow / red
 			break;
 		default:
 			color = 3; // white
@@ -604,8 +595,16 @@ static void CG_DrawStatusBar( void ) {
 
 	// armor
 	value = ps->stats[STAT_ARMOR];
-
-	CG_DrawField (370, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[3]);
+	switch((value - 1) / 100)
+	{
+		case 0:
+			color = 0; // yellow
+			break;
+		default:
+			color = 3; // white
+			break;
+	}
+	CG_DrawField (370, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[color]);
 	// if we didn't draw a 3D icon, draw a 2D icon for armor
 	if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
 		CG_DrawPic( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, cgs.screenYmax - 48, ICON_SIZE, ICON_SIZE, cgs.media.armorIcon );
