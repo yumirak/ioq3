@@ -236,7 +236,7 @@ static void CG_DrawField (int x, int y, int style, int width, int value, float *
 
 	Com_sprintf (num, sizeof(num), "%i", value);
 
-	CG_DrawString( x + 2 + CHAR_WIDTH * width, y, num, UI_RIGHT|UI_NUMBERFONT|UI_DROPSHADOW|style, color );
+	CG_DrawString( x + 2 + CHAR_WIDTH * width, y, num, UI_RIGHT|UI_GRADIENT|UI_NUMBERFONT|UI_DROPSHADOW|style, color );
 }
 #endif // MISSIONPACK
 

@@ -1388,6 +1388,9 @@ refexport_t *GetRefAPI ( int apiVersion, refimport_t *rimp ) {
 	re.inPVS = R_inPVS;
 
 	re.TakeVideoFrame = RE_TakeVideoFrame;
+
+	re.DrawStretchPicGradient = RE_StretchPicGradient;
+
 	re.Get_Advertisements = RE_Get_Advertisements;
 	return &re;
 }

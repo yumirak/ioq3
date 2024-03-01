@@ -1728,6 +1728,92 @@ const void *RB_ExportCubemaps(const void *data)
 	return (const void *)(cmd + 1);
 }
 
+/*
+==============
+RB_StretchPicGradient
+==============
+*/
+const void *RB_StretchPicGradient( const void *data ) {
+	const stretchPicCommand_t   *cmd;
+	shader_t *shader;
+	int numVerts, numIndexes;
+
+	cmd = (const stretchPicCommand_t *)data;
+
+	if (glRefConfig.framebufferObject) {
+		FBO_Bind(r_postProcess->integer ? NULL : tr.renderFbo);
+	}
+
+	RB_SetGL2D();
+
+	shader = cmd->shader;
+	if ( shader != tess.shader ) {
+		if ( tess.numIndexes ) {
+			RB_EndSurface();
+		}
+		backEnd.currentEntity = &backEnd.entity2D;
+		RB_BeginSurface( shader, 0, 0 );
+	}
+
+	RB_CHECKOVERFLOW( 4, 6 );
+	numVerts = tess.numVertexes;
+	numIndexes = tess.numIndexes;
+
+	tess.numVertexes += 4;
+	tess.numIndexes += 6;
+
+	tess.indexes[ numIndexes ] = numVerts + 3;
+	tess.indexes[ numIndexes + 1 ] = numVerts + 0;
+	tess.indexes[ numIndexes + 2 ] = numVerts + 2;
+	tess.indexes[ numIndexes + 3 ] = numVerts + 2;
+	tess.indexes[ numIndexes + 4 ] = numVerts + 0;
+	tess.indexes[ numIndexes + 5 ] = numVerts + 1;
+
+	{
+		uint16_t color[4];
+
+		VectorScale4(backEnd.color2D, 257, color);
+
+		VectorCopy4(color, tess.color[ numVerts ]);
+		VectorCopy4(color, tess.color[ numVerts + 1]);
+
+		VectorScale4(cmd->gradientColor, 257, color);
+
+		VectorCopy4(color, tess.color[ numVerts + 2]);
+		VectorCopy4(color, tess.color[ numVerts + 3 ]);
+	}
+
+	tess.xyz[ numVerts ][0] = cmd->x;
+	tess.xyz[ numVerts ][1] = cmd->y;
+	tess.xyz[ numVerts ][2] = 0;
+
+	tess.texCoords[ numVerts ][0] = cmd->s1;
+	tess.texCoords[ numVerts ][1] = cmd->t1;
+
+	tess.xyz[ numVerts + 1 ][0] = cmd->x + cmd->w;
+	tess.xyz[ numVerts + 1 ][1] = cmd->y;
+	tess.xyz[ numVerts + 1 ][2] = 0;
+
+	tess.texCoords[ numVerts + 1 ][0] = cmd->s2;
+	tess.texCoords[ numVerts + 1 ][1] = cmd->t1;
+
+	tess.xyz[ numVerts + 2 ][0] = cmd->x + cmd->w;
+	tess.xyz[ numVerts + 2 ][1] = cmd->y + cmd->h;
+	tess.xyz[ numVerts + 2 ][2] = 0;
+
+	tess.texCoords[ numVerts + 2 ][0] = cmd->s2;
+	tess.texCoords[ numVerts + 2 ][1] = cmd->t2;
+
+	tess.xyz[ numVerts + 3 ][0] = cmd->x;
+	tess.xyz[ numVerts + 3 ][1] = cmd->y + cmd->h;
+	tess.xyz[ numVerts + 3 ][2] = 0;
+
+	tess.texCoords[ numVerts + 3 ][0] = cmd->s1;
+	tess.texCoords[ numVerts + 3 ][1] = cmd->t2;
+
+	return (const void *)( cmd + 1 );
+}
+
 
 /*
 ====================
@@ -1748,6 +1834,9 @@ void RB_ExecuteRenderCommands( const void *data ) {
 			break;
 		case RC_STRETCH_PIC:
 			data = RB_StretchPic( data );
+			break;
+		case RC_STRETCH_PIC_GRADIENT:
+			data = RB_StretchPicGradient( data );
 			break;
 		case RC_DRAW_SURFS:
 			data = RB_DrawSurfs( data );

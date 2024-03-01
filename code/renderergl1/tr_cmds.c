@@ -275,7 +275,45 @@ void R_SetColorMode(GLboolean *rgba, stereoFrame_t stereoFrame, int colormode)
 		}
 	}
 }
+/*
+==============
+RE_StretchPicGradient
+==============
+*/
+void RE_StretchPicGradient( float x, float y, float w, float h,
+							float s1, float t1, float s2, float t2, qhandle_t hShader, const float *gradientColor ) {
+	stretchPicCommand_t *cmd;
 
+	if ( !tr.registered ) {
+		return;
+	}
+
+	cmd = R_GetCommandBuffer( sizeof( *cmd ) );
+	if ( !cmd ) {
+		return;
+	}
+	cmd->commandId = RC_STRETCH_PIC_GRADIENT;
+	cmd->shader = R_GetShaderByHandle( hShader );
+	cmd->x = x;
+	cmd->y = y;
+	cmd->w = w;
+	cmd->h = h;
+	cmd->s1 = s1;
+	cmd->t1 = t1;
+	cmd->s2 = s2;
+	cmd->t2 = t2;
+
+	if ( !gradientColor ) {
+		static float colorWhite[4] = { 1, 1, 1, 1 };
+
+		gradientColor = colorWhite;
+	}
+
+	cmd->gradientColor[0] = gradientColor[0] * 255;
+	cmd->gradientColor[1] = gradientColor[1] * 255;
+	cmd->gradientColor[2] = gradientColor[2] * 255;
+	cmd->gradientColor[3] = gradientColor[3] * 255;
+}
 
 /*
 ====================
