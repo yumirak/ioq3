@@ -109,6 +109,26 @@ void CG_DrawPic( float x, float y, float width, float height, qhandle_t hShader 
 	CG_AdjustFrom640( &x, &y, &width, &height );
 	trap_R_DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
 }
+
+/*
+=================
+CG_LerpColor
+=================
+*/
+void CG_LerpColor( const vec4_t a, const vec4_t b, vec4_t c, float t )
+{
+	int i;
+
+	// lerp and clamp each component
+	for (i=0; i<4; i++)
+	{
+		c[i] = a[i] + t*(b[i]-a[i]);
+		if (c[i] < 0)
+			c[i] = 0;
+		else if (c[i] > 1.0)
+			c[i] = 1.0;
+	}
+}
 /*
 =================
 CG_FontForStyle
@@ -237,10 +257,10 @@ void CG_DrawStringCommon( int x, int y, const char* str, int style, const fontIn
 	if ( !color ) {
 		color = colorWhite;
 	}
-	/*
-	if ((style & UI_BLINK) && ((cg.realTime/BLINK_DIVISOR) & 1))
+
+	if ((style & UI_BLINK) && ((cg.time/BLINK_DIVISOR) & 1))
 		return;
-	*/
+
 	if ( (style & UI_FONTMASK) == UI_NUMBERFONT ) {
 		// the original number bitmaps already have a gradient
 		if ( font->glyphs[(int)'a'].xSkip == 0 ) {
@@ -263,19 +283,13 @@ void CG_DrawStringCommon( int x, int y, const char* str, int style, const fontIn
 	} else {
 		charh = 48 * scale;
 	}
-	/*
-	if ( !( style & UI_NOSCALE ) && cg.cur_lc ) {
-		if ( cg.numViewports != 1 ) {
-			shadowOffset *= cg_splitviewTextScale.value;
-			scale *= cg_splitviewTextScale.value;
-			charh *= cg_splitviewTextScale.value;
-		} else {
-			shadowOffset *= cg_hudTextScale.value;
-			scale *= cg_hudTextScale.value;
-			charh *= cg_hudTextScale.value;
-		}
+
+	if (!( style & UI_NOSCALE )) {
+		shadowOffset *= cg_hudTextScale.value;
+		scale *= cg_hudTextScale.value;
+		charh *= cg_hudTextScale.value;
 	}
-	*/
+
 
 	if (style & UI_PULSE)
 	{
@@ -283,7 +297,7 @@ void CG_DrawStringCommon( int x, int y, const char* str, int style, const fontIn
 		lowlight[1] = 0.8*color[1];
 		lowlight[2] = 0.8*color[2];
 		lowlight[3] = 0.8*color[3];
-		//CG_LerpColor(color,lowlight,newcolor,0.5+0.5*sin(cg.realTime/PULSE_DIVISOR));
+		CG_LerpColor(color,lowlight,newcolor,0.5+0.5*sin(cg.time/PULSE_DIVISOR));
 		drawcolor = newcolor;
 	}
 	else
@@ -344,15 +358,10 @@ void CG_DrawStringCommon( int x, int y, const char* str, int style, const fontIn
 		// replace 'char height' in line height with our scaled charh
 		// ZTM: TODO: This text gap handling is kind of messy. Passing scale to CG_DrawStringLineHeight might make cleaner code here.
 		int gap = CG_DrawStringLineHeight( style ) - font->pointSize;
-		/*
-		if ( !( style & UI_NOSCALE ) && cg.cur_lc ) {
-			if ( cg.numViewports != 1 ) {
-				gap *= cg_splitviewTextScale.value;
-			} else {
+
+		if ( !( style & UI_NOSCALE ) ) {
 				gap *= cg_hudTextScale.value;
-			}
 		}
-		*/
 
 		Text_Paint_AutoWrapped( x, y, font, scale, drawcolor, str, 0, maxChars, shadowOffset, gradient, !!( style & UI_FORCECOLOR ), !!( style & UI_INMOTION ), wrapX, charh + gap, style );
 	} else {
@@ -394,15 +403,10 @@ float CG_DrawStrlenCommon( const char *str, int style, const fontInfo_t *font, i
 	int charh;
 
 	charh = font->pointSize;
-	/*
-	if ( !( style & UI_NOSCALE ) && cg.cur_lc ) {
-		if ( cg.numViewports != 1 ) {
-			charh *= cg_splitviewTextScale.value;
-		} else {
-			charh *= cg_hudTextScale.value;
-		}
+
+	if ( !( style & UI_NOSCALE ) ) {
+		charh *= cg_hudTextScale.value;
 	}
-	*/
 
 	return Text_Width( str, font, charh / 48.0f, maxchars );
 }
@@ -492,15 +496,10 @@ int CG_DrawStringLineHeight( int style ) {
 
 	charh = font->pointSize;
 	lineHeight = charh + gap;
-	/*
-	if ( !( style & UI_NOSCALE ) && cg.cur_lc ) {
-		if ( cg.numViewports != 1 ) {
-			lineHeight *= cg_splitviewTextScale.value;
-		} else {
-			lineHeight *= cg_hudTextScale.value;
-		}
+
+	if ( !( style & UI_NOSCALE )) {
+		lineHeight *= cg_hudTextScale.value;
 	}
-	*/
 	return lineHeight;
 }
 
