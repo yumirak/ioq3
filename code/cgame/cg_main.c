@@ -141,6 +141,9 @@ vmCvar_t	cg_simpleItems;
 vmCvar_t	cg_fov;
 vmCvar_t	cg_fovAdjust;
 vmCvar_t	cg_zoomFov;
+vmCvar_t	cg_zoomScaling;
+vmCvar_t	cg_zoomToggle;
+vmCvar_t	cg_zoomSensitivity;
 vmCvar_t	cg_thirdPerson;
 vmCvar_t	cg_thirdPersonRange;
 vmCvar_t	cg_thirdPersonAngle;
@@ -240,6 +243,9 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_autoswitch, "cg_autoswitch", "1", CVAR_ARCHIVE },
 	{ &cg_drawGun, "cg_drawGun", "1", CVAR_ARCHIVE },
 	{ &cg_zoomFov, "cg_zoomfov", "22.5", CVAR_ARCHIVE },
+	{ &cg_zoomScaling, "cg_zoomScaling", "1", CVAR_ARCHIVE },
+	{ &cg_zoomToggle, "cg_zoomToggle", "0", CVAR_ARCHIVE},
+	{ &cg_zoomSensitivity, "cg_zoomSensitivity", "1.0", CVAR_ARCHIVE},
 	{ &cg_fov, "cg_fov", "90", CVAR_ARCHIVE },
 	{ &cg_fovAdjust, "cg_fovAdjust", "1", CVAR_ARCHIVE },
 	{ &cg_viewsize, "cg_viewsize", "100", CVAR_ARCHIVE },

@@ -442,6 +442,16 @@ static void CG_OffsetFirstPersonView( void ) {
 //======================================================================
 
 void CG_ZoomDown_f( void ) { 
+	if (cg_zoomToggle.integer) {
+		if (cg.zoomed) {
+			cg.zoomed = qfalse;
+			cg.zoomTime = cg.time;
+		} else {
+			cg.zoomed = qtrue;
+			cg.zoomTime = cg.time;
+		}
+		return;
+	}
 	if ( cg.zoomed ) {
 		return;
 	}
@@ -450,6 +460,9 @@ void CG_ZoomDown_f( void ) {
 }
 
 void CG_ZoomUp_f( void ) { 
+	if (cg_zoomToggle.integer) {
+		return;
+	}
 	if ( !cg.zoomed ) {
 		return;
 	}
@@ -505,14 +518,14 @@ static int CG_CalcFov( void ) {
 		}
 
 		if ( cg.zoomed ) {
-			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
+			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME*cg_zoomScaling.value;
 			if ( f > 1.0 ) {
 				fov_x = zoomFov;
 			} else {
 				fov_x = fov_x + f * ( zoomFov - fov_x );
 			}
 		} else {
-			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
+			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME*cg_zoomScaling.value;
 			if ( f <= 1.0 ) {
 				fov_x = zoomFov + f * ( fov_x - zoomFov );
 			}
@@ -554,6 +567,7 @@ static int CG_CalcFov( void ) {
 		cg.zoomSensitivity = 1;
 	} else {
 		cg.zoomSensitivity = cg.refdef.fov_y / 75.0;
+		cg.zoomSensitivity *= cg_zoomSensitivity.value;
 	}
 
 	return inwater;
