@@ -76,8 +76,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define	NUM_CROSSHAIRS		10
 
-#define TEAM_OVERLAY_MAXNAME_WIDTH	12
-#define TEAM_OVERLAY_MAXLOCATION_WIDTH	16
+#define TEAM_OVERLAY_MAXNAME_WIDTH	32
+#define TEAM_OVERLAY_MAXLOCATION_WIDTH	32
 
 #define	DEFAULT_MODEL			"sarge"
 #ifdef MISSIONPACK
@@ -649,6 +649,14 @@ typedef struct {
 // Other media that can be tied to clients, weapons, or items are
 // stored in the clientInfo_t, itemInfo_t, weaponInfo_t, and powerupInfo_t
 typedef struct {
+	fontInfo_t	tinyFont;
+	fontInfo_t	smallFont;
+	fontInfo_t	textFont;
+	fontInfo_t	bigFont;
+	fontInfo_t	numberFont;
+	fontInfo_t	normalFont;
+	fontInfo_t	consoleFont;
+
 	qhandle_t	charsetShader;
 	qhandle_t	charsetProp;
 	qhandle_t	charsetPropGlow;
@@ -978,9 +986,7 @@ typedef struct {
 	sfxHandle_t eCapturedSound;
 
 	// tournament sounds
-	sfxHandle_t	count3Sound;
-	sfxHandle_t	count2Sound;
-	sfxHandle_t	count1Sound;
+	sfxHandle_t	countSound[3];
 	sfxHandle_t	countFightSound;
 	sfxHandle_t countGoSound;
 	sfxHandle_t countBiteSound;
@@ -1252,6 +1258,18 @@ extern  vmCvar_t		cg_recordSPDemo;
 extern  vmCvar_t		cg_recordSPDemoName;
 extern	vmCvar_t		cg_obeliskRespawnDelay;
 #endif
+//ttf
+extern	vmCvar_t		cg_forceBitmapFonts;
+extern	vmCvar_t		cg_consoleFont;
+extern	vmCvar_t		cg_consoleFontSize;
+extern	vmCvar_t		cg_hudFont;
+extern	vmCvar_t		cg_hudFontBorder;
+extern	vmCvar_t		cg_numberFont;
+extern	vmCvar_t		cg_numberFontBorder;
+extern	vmCvar_t		cg_normalFont;
+extern	vmCvar_t		cg_normalFontBorder;
+extern	vmCvar_t		cg_hudTextScale;
+//
 extern	vmCvar_t		cg_announcer;
 extern	vmCvar_t		cg_lightningStyle;
 extern	vmCvar_t		cg_hitBeep;
@@ -1302,19 +1320,27 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 void CG_AdjustFrom640( float *x, float *y, float *w, float *h );
 void CG_FillRect( float x, float y, float width, float height, const float *color );
 void CG_DrawPic( float x, float y, float width, float height, qhandle_t hShader );
+/*
 void CG_DrawString( float x, float y, const char *string, 
 				   float charWidth, float charHeight, const float *modulate );
+*/
+// ttf
+void CG_DrawString( int x, int y, const char* str, int style, const vec4_t color );
+void CG_DrawStringWithCursor( int x, int y, const char* str, int style, const fontInfo_t *font, const vec4_t color, int cursorPos, int cursorChar );
+void CG_DrawStringCommon( int x, int y, const char* str, int style, const fontInfo_t *font, const vec4_t color, float scale, int maxChars, float shadowOffset, float gradient, int cursorPos, int cursorChar, float wrapX );
+float CG_DrawStrlenCommon( const char *str, int style, const fontInfo_t *font, int maxchars );
+int CG_DrawStringLineHeight( int style );
+float CG_DrawStrlen( const char *str, int style );
+// end ttf
 
+void CG_DrawStringExt( int x, int y, const char* str, int style, const vec4_t color, float scale, int maxChars, float shadowOffset );
 
-void CG_DrawStringExt( int x, int y, const char *string, const float *setColor, 
-		qboolean forceColor, qboolean shadow, int charWidth, int charHeight, int maxChars );
 void CG_DrawBigString( int x, int y, const char *s, float alpha );
 void CG_DrawBigStringColor( int x, int y, const char *s, vec4_t color );
 void CG_DrawSmallString( int x, int y, const char *s, float alpha );
 void CG_DrawSmallStringColor( int x, int y, const char *s, vec4_t color );
 
-int CG_DrawStrlen( const char *str );
-
+void CG_LerpColor( const vec4_t a, const vec4_t b, vec4_t c, float t );
 float	*CG_FadeColor( int startMsec, int totalMsec );
 float *CG_TeamColor( int team );
 void CG_TileClear( void );
@@ -1339,7 +1365,7 @@ extern  char teamChat2[256];
 
 void CG_AddLagometerFrameInfo( void );
 void CG_AddLagometerSnapshotInfo( snapshot_t *snap );
-void CG_CenterPrint( const char *str, int y, int charWidth );
+void CG_CenterPrint(  const char *str, int y, float charScale ) ; // ttf
 void CG_DrawHead( float x, float y, float w, float h, int clientNum, vec3_t headAngles );
 void CG_DrawActive( stereoFrame_t stereoView );
 void CG_DrawFlagModel( float x, float y, float w, float h, int team, qboolean force2D );
@@ -1367,7 +1393,34 @@ qboolean CG_YourTeamHasFlag( void );
 qboolean CG_OtherTeamHasFlag( void );
 qhandle_t CG_StatusHandle(int task);
 
+//
+// cg_text.c
+//
+#define GLYPH_INSERT 10
+#define GLYPH_OVERSTRIKE 11
+#define GLYPH_ARROW 13
 
+void CG_HudTextInit( void );
+void CG_InitBitmapFont( fontInfo_t *font, int charHeight, int charWidth );
+void CG_InitBitmapNumberFont( fontInfo_t *font, int charHeight, int charWidth );
+qboolean CG_InitTrueTypeFont( const char *name, int pointSize, float borderWidth, fontInfo_t *font );
+fontInfo_t *CG_FontForScale( float scale );
+
+const glyphInfo_t *Text_GetGlyph( const fontInfo_t *font, unsigned long index );
+float Text_Width( const char *text, const fontInfo_t *font, float scale, int limit );
+float Text_Height( const char *text, const fontInfo_t *font, float scale, int limit );
+void Text_PaintGlyph( float x, float y, float w, float h, const glyphInfo_t *glyph, float *gradientColor );
+void Text_Paint( float x, float y, const fontInfo_t *font, float scale, const vec4_t color, const char *text, float adjust, int limit, float shadowOffset, float gradient, qboolean forceColor, qboolean textInMotion );
+void Text_PaintWithCursor( float x, float y, const fontInfo_t *font, float scale, const vec4_t color, const char *text, int cursorPos, char cursor, float adjust, int limit, float shadowOffset, float gradient, qboolean forceColor, qboolean textInMotion );
+void Text_Paint_Limit( float *maxX, float x, float y, const fontInfo_t *font, float scale, const vec4_t color, const char* text, float adjust, int limit, qboolean textInMotion );
+void Text_Paint_AutoWrapped( float x, float y, const fontInfo_t *font, float scale, const vec4_t color, const char *str, float adjust, int limit, float shadowOffset, float gradient, qboolean forceColor, qboolean textInMotion, float xmax, float ystep, int style );
+/*
+void CG_Text_Paint( float x, float y, float scale, const vec4_t color, const char *text, float adjust, int limit, int textStyle );
+void CG_Text_PaintWithCursor( float x, float y, float scale, const vec4_t color, const char *text, int cursorPos, char cursor, int limit, int textStyle );
+void CG_Text_Paint_Limit( float *maxX, float x, float y, float scale, const vec4_t color, const char* text, float adjust, int limit );
+int CG_Text_Width( const char *text, float scale, int limit );
+int CG_Text_Height( const char *text, float scale, int limit );
+*/
 
 //
 // cg_player.c
@@ -1661,6 +1714,8 @@ void		trap_R_RenderScene( const refdef_t *fd );
 void		trap_R_SetColor( const float *rgba );	// NULL = 1,1,1,1
 void		trap_R_DrawStretchPic( float x, float y, float w, float h, 
 			float s1, float t1, float s2, float t2, qhandle_t hShader );
+void		trap_R_DrawStretchPicGradient( float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t hShader,
+				const float *gradientColor );
 void		trap_R_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs );
 int			trap_R_LerpTag( orientation_t *tag, clipHandle_t mod, int startFrame, int endFrame, 
 					   float frac, const char *tagName );
@@ -1707,7 +1762,7 @@ void		testPrintInt( char *string, int i );
 void		testPrintFloat( char *string, float f );
 
 int			trap_MemoryRemaining( void );
-void		trap_R_RegisterFont(const char *fontName, int pointSize, fontInfo_t *font);
+void		trap_R_RegisterFont(const char *fontName, int pointSize, float borderWidth, qboolean forceAutoHint, fontInfo_t *font);
 qboolean	trap_Key_IsDown( int keynum );
 int			trap_Key_GetCatcher( void );
 void		trap_Key_SetCatcher( int catcher );

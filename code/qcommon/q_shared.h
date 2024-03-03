@@ -27,18 +27,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // A user mod should never modify this file
 
 #ifdef STANDALONE
-  #define PRODUCT_NAME				"iofoo3"
-  #define BASEGAME					"foobar"
-  #define CLIENT_WINDOW_TITLE		"changeme"
-  #define CLIENT_WINDOW_MIN_TITLE	"changeme2"
-  #define HOMEPATH_NAME_UNIX		".foo"
-  #define HOMEPATH_NAME_WIN			"FooBar"
+  #define PRODUCT_NAME				"openQL"
+  #define BASEGAME					"baseq3"
+  #define CLIENT_WINDOW_TITLE		"openQL"
+  #define CLIENT_WINDOW_MIN_TITLE	"openQL"
+  #define HOMEPATH_NAME_UNIX		".local/share/openQL"
+  #define HOMEPATH_NAME_WIN			"openQL"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
 //  #define STEAMPATH_NAME			"Foo Bar"
 //  #define STEAMPATH_APPID         ""
-  #define GAMENAME_FOR_MASTER		"foobar"	// must NOT contain whitespace
-  #define CINEMATICS_LOGO		"foologo.roq"
-  #define CINEMATICS_INTRO		"intro.roq"
+  #define GAMENAME_FOR_MASTER		"openQL"	// must NOT contain whitespace
+//	#define CINEMATICS_LOGO		"foologo.roq"
+//	#define CINEMATICS_INTRO		"intro.roq"
 //  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
 //  #define PROTOCOL_HANDLER		"foobar"
 #else
@@ -318,17 +318,37 @@ typedef enum {
 #define BLINK_DIVISOR			200
 #define PULSE_DIVISOR			75
 
-#define UI_LEFT			0x00000000	// default
-#define UI_CENTER		0x00000001
-#define UI_RIGHT		0x00000002
-#define UI_FORMATMASK	0x00000007
-#define UI_SMALLFONT	0x00000010
-#define UI_BIGFONT		0x00000020	// default
-#define UI_GIANTFONT	0x00000040
-#define UI_DROPSHADOW	0x00000800
-#define UI_BLINK		0x00001000
-#define UI_INVERSE		0x00002000
-#define UI_PULSE		0x00004000
+// horizontal alignment
+#define UI_LEFT			0x00000001	// default
+#define UI_CENTER		0x00000002
+#define UI_RIGHT		0x00000003
+#define UI_FORMATMASK	0x0000000F
+
+// vertical alignment
+#define UI_VA_TOP			0x00000010	// default
+#define UI_VA_CENTER		0x00000020
+#define UI_VA_BOTTOM		0x00000030
+#define UI_VA_FORMATMASK	0x000000F0
+
+// font selection
+#define UI_SMALLFONT	0x00000100
+#define UI_BIGFONT		0x00000200	// default
+#define UI_GIANTFONT	0x00000300
+#define UI_TINYFONT		0x00000400
+#define UI_NUMBERFONT	0x00000500
+#define UI_CONSOLEFONT	0x00000600
+#define UI_NORMALFONT		0x00000700
+#define UI_FONTMASK		0x00000F00
+
+// other flags
+#define UI_DROPSHADOW	0x00001000
+#define UI_BLINK		0x00002000
+#define UI_INVERSE		0x00004000
+#define UI_PULSE		0x00008000
+#define UI_FORCECOLOR	0x00010000
+#define UI_GRADIENT		0x00020000
+#define UI_NOSCALE		0x00040000 // fixed size with other UI elements, don't change it's scale
+#define UI_INMOTION		0x00080000 // use for scrolling / moving text to fix uneven scrolling caused by aligning to pixel boundary
 
 #if !defined(NDEBUG) && !defined(BSPC)
 	#define HUNK_DEBUG
@@ -349,6 +369,7 @@ void *Hunk_Alloc( int size, ha_pref preference );
 
 #define Com_Memset memset
 #define Com_Memcpy memcpy
+void Com_Memcpy2( void *dst, int dstSize, const void *src, int srcSize );
 
 #define CIN_system	1
 #define CIN_loop	2
@@ -389,8 +410,8 @@ extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
 #define	SCREEN_WIDTH		640
 #define	SCREEN_HEIGHT		480
 
-#define TINYCHAR_WIDTH		(SMALLCHAR_WIDTH)
-#define TINYCHAR_HEIGHT		(SMALLCHAR_HEIGHT/2)
+#define TINYCHAR_WIDTH		8
+#define TINYCHAR_HEIGHT		8
 
 #define SMALLCHAR_WIDTH		8
 #define SMALLCHAR_HEIGHT	16
@@ -399,7 +420,7 @@ extern	vec3_t	bytedirs[NUMVERTEXNORMALS];
 #define BIGCHAR_HEIGHT		16
 
 #define	GIANTCHAR_WIDTH		32
-#define	GIANTCHAR_HEIGHT	48
+#define	GIANTCHAR_HEIGHT	32
 
 extern	vec4_t		colorBlack;
 extern	vec4_t		colorRed;
@@ -1354,6 +1375,7 @@ typedef enum {
 typedef struct {
   int height;       // number of scan lines
   int top;          // top of glyph in buffer
+  int left;			// left of glyph in buffer
   int bottom;       // bottom of glyph in buffer
   int pitch;        // width for copying
   int xSkip;        // x adjustment
@@ -1367,10 +1389,16 @@ typedef struct {
   char shaderName[32];
 } glyphInfo_t;
 
+#define FONTFLAG_CURSORS    0x0001 // font has extra glyphs (notably cursors) like Q3's bigchars font
+#define FONTFLAG_BORDER     0x0002 // font has a border
+
+
 typedef struct {
   glyphInfo_t glyphs [GLYPHS_PER_FONT];
   float glyphScale;
   char name[MAX_QPATH];
+  int pointSize;
+  int flags;
 } fontInfo_t;
 
 #define Square(x) ((x)*(x))

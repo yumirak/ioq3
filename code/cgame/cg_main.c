@@ -201,6 +201,18 @@ vmCvar_t	cg_recordSPDemo;
 vmCvar_t	cg_recordSPDemoName;
 vmCvar_t	cg_obeliskRespawnDelay;
 #endif
+// ttf
+vmCvar_t	cg_forceBitmapFonts;
+vmCvar_t	cg_consoleFont;
+vmCvar_t	cg_consoleFontSize;
+vmCvar_t	cg_hudFont;
+vmCvar_t	cg_hudFontBorder;
+vmCvar_t	cg_numberFont;
+vmCvar_t	cg_numberFontBorder;
+vmCvar_t	cg_normalFont;
+vmCvar_t	cg_normalFontBorder;
+vmCvar_t	cg_hudTextScale;
+//
 vmCvar_t		cg_announcer;
 vmCvar_t		cg_lightningStyle;
 vmCvar_t		cg_hitBeep;
@@ -331,7 +343,16 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_lightningStyle, "cg_lightningStyle", "0", CVAR_ARCHIVE},
 	{ &cg_announcer, "cg_announcer", "1", CVAR_ARCHIVE | CVAR_LATCH}, //FIXME: reload announcer without snd_restart ?
 	{ &cg_hitBeep, "cg_hitBeep", "1", CVAR_ARCHIVE},
-
+	// ttf
+	{ &cg_forceBitmapFonts, "cg_forceBitmapFonts", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_hudTextScale, "cg_hudTextScale", "1", CVAR_ARCHIVE },
+	{ &cg_hudFont, "cg_hudFont", "fonts/handelgothic.ttf", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_hudFontBorder, "cg_hudFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_numberFont, "cg_numberFont", "fonts/handelgothic.ttf", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_numberFontBorder, "cg_numberFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_normalFont, "cg_normalFont", "fonts/notosans-regular.ttf", CVAR_ARCHIVE | CVAR_LATCH },
+	{ &cg_normalFontBorder, "cg_normalFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	//
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -571,9 +592,9 @@ static void CG_RegisterAnnouncerSounds (void)
 	cgs.media.oneFragSound = trap_S_RegisterSound( va("%s/1_frag.wav", baseDir), qtrue );
 	cgs.media.twoFragSound = trap_S_RegisterSound( va("%s/2_frags.wav", baseDir), qtrue );
 	cgs.media.threeFragSound = trap_S_RegisterSound( va("%s/3_frags.wav", baseDir), qtrue );
-	cgs.media.count3Sound = trap_S_RegisterSound( va("%s/three.wav", baseDir), qtrue );
-	cgs.media.count2Sound = trap_S_RegisterSound( va("%s/two.wav", baseDir), qtrue );
-	cgs.media.count1Sound = trap_S_RegisterSound( va("%s/one.wav", baseDir), qtrue );
+	cgs.media.countSound[2] = trap_S_RegisterSound( va("%s/three.wav", baseDir), qtrue );
+	cgs.media.countSound[1] = trap_S_RegisterSound( va("%s/two.wav", baseDir), qtrue );
+	cgs.media.countSound[0] = trap_S_RegisterSound( va("%s/one.wav", baseDir), qtrue );
 	cgs.media.countFightSound = trap_S_RegisterSound( va("%s/fight.wav", baseDir), qtrue );
 	cgs.media.countGoSound = trap_S_RegisterSound(va("%s/go.ogg", baseDir), qtrue);
 	cgs.media.countBiteSound = trap_S_RegisterSound(va("%s/bite.ogg", baseDir), qtrue);
@@ -1936,6 +1957,8 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 	if ( strcmp( s, GAME_VERSION ) ) {
 		CG_Error( "Client/Server game mismatch: %s/%s", GAME_VERSION, s );
 	}
+
+	CG_HudTextInit();
 
 	s = CG_ConfigString( CS_LEVEL_START_TIME );
 	cgs.levelStartTime = atoi( s );

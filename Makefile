@@ -20,28 +20,28 @@ ifeq ($(COMPILE_PLATFORM),sunos)
 endif
 
 ifndef BUILD_STANDALONE
-  BUILD_STANDALONE =
+  BUILD_STANDALONE = 1
 endif
 ifndef BUILD_CLIENT
-  BUILD_CLIENT     =
+  BUILD_CLIENT     = 1
 endif
 ifndef BUILD_SERVER
-  BUILD_SERVER     =
+  BUILD_SERVER     = 1
 endif
 ifndef BUILD_GAME_SO
-  BUILD_GAME_SO    =
+  BUILD_GAME_SO    = 1
 endif
 ifndef BUILD_GAME_QVM
-  BUILD_GAME_QVM   =
+  BUILD_GAME_QVM   = 1
 endif
 ifndef BUILD_BASEGAME
-  BUILD_BASEGAME =
+  BUILD_BASEGAME = 1
 endif
 ifndef BUILD_MISSIONPACK
-  BUILD_MISSIONPACK=
+  BUILD_MISSIONPACK= 0
 endif
 ifndef BUILD_RENDERER_OPENGL2
-  BUILD_RENDERER_OPENGL2=
+  BUILD_RENDERER_OPENGL2= 1
 endif
 ifndef BUILD_AUTOUPDATER  # DON'T build unless you mean to!
   BUILD_AUTOUPDATER=0
@@ -200,7 +200,7 @@ USE_VOIP=1
 endif
 
 ifndef USE_FREETYPE
-USE_FREETYPE=0
+USE_FREETYPE=1
 endif
 
 ifndef USE_INTERNAL_LIBS
@@ -225,6 +225,10 @@ endif
 
 ifndef USE_INTERNAL_JPEG
 USE_INTERNAL_JPEG=$(USE_INTERNAL_LIBS)
+endif
+
+ifndef USE_INTERNAL_FREETYPE
+USE_INTERNAL_FREETYPE=$(USE_INTERNAL_LIBS)
 endif
 
 ifndef USE_LOCAL_HEADERS
@@ -272,6 +276,7 @@ VORBISDIR=$(MOUNT_DIR)/libvorbis-1.3.6
 OPUSDIR=$(MOUNT_DIR)/opus-1.2.1
 OPUSFILEDIR=$(MOUNT_DIR)/opusfile-0.9
 ZDIR=$(MOUNT_DIR)/zlib
+FTDIR=$(MOUNT_DIR)/freetype-2.9
 TOOLSDIR=$(MOUNT_DIR)/tools
 Q3ASMDIR=$(MOUNT_DIR)/tools/asm
 LBURGDIR=$(MOUNT_DIR)/tools/lcc/lburg
@@ -744,7 +749,9 @@ ifdef MINGW
   RENDERER_LIBS = -lgdi32 -lole32 -static-libgcc
 
   ifeq ($(USE_FREETYPE),1)
-    FREETYPE_CFLAGS = -Ifreetype2
+    ifneq ($(USE_INTERNAL_FREETYPE),1)
+      FREETYPE_CFLAGS = -Ifreetype2
+    endif
   endif
 
   ifeq ($(USE_CURL),1)
@@ -1232,8 +1239,12 @@ else
 endif
 
 ifeq ($(USE_FREETYPE),1)
-  FREETYPE_CFLAGS ?= $(shell $(PKG_CONFIG) --silence-errors --cflags freetype2 || true)
-  FREETYPE_LIBS ?= $(shell $(PKG_CONFIG) --silence-errors --libs freetype2 || echo -lfreetype)
+  ifeq ($(USE_INTERNAL_FREETYPE),1)
+    FREETYPE_CFLAGS += -I$(FTDIR)/include -DFT2_BUILD_LIBRARY
+  else
+    FREETYPE_CFLAGS ?= $(shell $(PKG_CONFIG) --silence-errors --cflags freetype2 || true)
+    FREETYPE_LIBS ?= $(shell $(PKG_CONFIG) --silence-errors --libs freetype2 || echo -lfreetype)
+  endif
 
   BASE_CFLAGS += -DBUILD_FREETYPE $(FREETYPE_CFLAGS)
   RENDERER_LIBS += $(FREETYPE_LIBS)
@@ -2044,6 +2055,41 @@ ifneq ($(USE_INTERNAL_JPEG),0)
     $(B)/renderergl1/jutils.o
 endif
 
+ifeq ($(USE_FREETYPE),1)
+ifneq ($(USE_INTERNAL_FREETYPE),0)
+  FTOBJ += \
+    $(B)/renderergl1/ftbase.o \
+    $(B)/renderergl1/ftbitmap.o \
+    $(B)/renderergl1/ftfntfmt.o \
+    $(B)/renderergl1/ftglyph.o \
+    $(B)/renderergl1/ftinit.o \
+    $(B)/renderergl1/ftlcdfil.o \
+    $(B)/renderergl1/ftstroke.o \
+    $(B)/renderergl1/ftsystem.o \
+	\
+    $(B)/renderergl1/ftbzip2.o \
+    $(B)/renderergl1/ftgzip.o \
+    $(B)/renderergl1/ftlzw.o \
+	\
+    $(B)/renderergl1/autofit.o \
+    $(B)/renderergl1/bdf.o \
+    $(B)/renderergl1/cff.o \
+    $(B)/renderergl1/pcf.o \
+    $(B)/renderergl1/pfr.o \
+    $(B)/renderergl1/psaux.o \
+    $(B)/renderergl1/pshinter.o \
+    $(B)/renderergl1/psnames.o \
+    $(B)/renderergl1/raster.o \
+    $(B)/renderergl1/sfnt.o \
+    $(B)/renderergl1/smooth.o \
+    $(B)/renderergl1/truetype.o \
+    $(B)/renderergl1/type1.o \
+    $(B)/renderergl1/type1cid.o \
+    $(B)/renderergl1/type42.o \
+    $(B)/renderergl1/winfnt.o
+endif
+endif
+
 ifeq ($(ARCH),x86)
   Q3OBJ += \
     $(B)/client/snd_mixa.o \
@@ -2293,26 +2339,26 @@ $(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(LIBSDLMAIN)
 		-o $@ $(Q3OBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(LIBS)
 
-$(B)/renderer_opengl1_$(SHLIBNAME): $(Q3ROBJ) $(JPGOBJ)
+$(B)/renderer_opengl1_$(SHLIBNAME): $(Q3ROBJ) $(JPGOBJ) $(FTOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROBJ) $(JPGOBJ) \
+	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3ROBJ) $(JPGOBJ) $(FTOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(RENDERER_LIBS) $(LIBS)
 
-$(B)/renderer_opengl2_$(SHLIBNAME): $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ)
+$(B)/renderer_opengl2_$(SHLIBNAME): $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(FTOBJ)
 	$(echo_cmd) "LD $@"
-	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) \
+	$(Q)$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(FTOBJ) \
 		$(THREAD_LIBS) $(LIBSDLMAIN) $(RENDERER_LIBS) $(LIBS)
 else
-$(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) $(LIBSDLMAIN)
+$(B)/$(CLIENTBIN)$(FULLBINEXT): $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) $(FTOBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) $(NOTSHLIBLDFLAGS) \
-		-o $@ $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) \
+		-o $@ $(Q3OBJ) $(Q3ROBJ) $(JPGOBJ) $(FTOBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(RENDERER_LIBS) $(LIBS)
 
-$(B)/$(CLIENTBIN)_opengl2$(FULLBINEXT): $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(LIBSDLMAIN)
+$(B)/$(CLIENTBIN)_opengl2$(FULLBINEXT): $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(FTOBJ) $(LIBSDLMAIN)
 	$(echo_cmd) "LD $@"
 	$(Q)$(CC) $(CLIENT_CFLAGS) $(CFLAGS) $(CLIENT_LDFLAGS) $(LDFLAGS) $(NOTSHLIBLDFLAGS) \
-		-o $@ $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) \
+		-o $@ $(Q3OBJ) $(Q3R2OBJ) $(Q3R2STRINGOBJ) $(JPGOBJ) $(FTOBJ) \
 		$(LIBSDLMAIN) $(CLIENT_LIBS) $(RENDERER_LIBS) $(LIBS)
 endif
 
@@ -2493,8 +2539,9 @@ Q3CGOBJ_ = \
   $(B)/$(BASEGAME)/cgame/cg_snapshot.o \
   $(B)/$(BASEGAME)/cgame/cg_view.o \
   $(B)/$(BASEGAME)/cgame/cg_weapons.o \
-  \
+  $(B)/$(BASEGAME)/cgame/cg_text.o \
   $(B)/$(BASEGAME)/qcommon/q_math.o \
+  $(B)/$(BASEGAME)/qcommon/q_unicode.o \
   $(B)/$(BASEGAME)/qcommon/q_shared.o
 
 Q3CGOBJ = $(Q3CGOBJ_) $(B)/$(BASEGAME)/cgame/cg_syscalls.o
@@ -2593,6 +2640,7 @@ Q3GOBJ_ = \
   $(B)/$(BASEGAME)/game/g_weapon.o \
   \
   $(B)/$(BASEGAME)/qcommon/q_math.o \
+  $(B)/$(BASEGAME)/qcommon/q_unicode.o \
   $(B)/$(BASEGAME)/qcommon/q_shared.o
 
 Q3GOBJ = $(Q3GOBJ_) $(B)/$(BASEGAME)/game/g_syscalls.o
@@ -2707,6 +2755,7 @@ Q3UIOBJ_ = \
   $(B)/$(BASEGAME)/ui/ui_video.o \
   \
   $(B)/$(BASEGAME)/qcommon/q_math.o \
+  $(B)/$(BASEGAME)/qcommon/q_unicode.o \
   $(B)/$(BASEGAME)/qcommon/q_shared.o
 
 Q3UIOBJ = $(Q3UIOBJ_) $(B)/$(MISSIONPACK)/ui/ui_syscalls.o
@@ -2843,6 +2892,65 @@ $(B)/renderergl2/%.o: $(RCOMMONDIR)/%.c
 $(B)/renderergl2/%.o: $(RGL2DIR)/%.c
 	$(DO_REF_CC)
 
+$(B)/renderergl1/%.o: $(FTDIR)/src/base/%.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/ftbzip2.o: $(FTDIR)/src/bzip2/ftbzip2.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/ftgzip.o: $(FTDIR)/src/gzip/ftgzip.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/ftlzw.o: $(FTDIR)/src/lzw/ftlzw.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/autofit.o: $(FTDIR)/src/autofit/autofit.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/bdf.o: $(FTDIR)/src/bdf/bdf.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/cff.o: $(FTDIR)/src/cff/cff.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/pcf.o: $(FTDIR)/src/pcf/pcf.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/pfr.o: $(FTDIR)/src/pfr/pfr.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/psaux.o: $(FTDIR)/src/psaux/psaux.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/pshinter.o: $(FTDIR)/src/pshinter/pshinter.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/psnames.o: $(FTDIR)/src/psnames/psnames.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/raster.o: $(FTDIR)/src/raster/raster.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/sfnt.o: $(FTDIR)/src/sfnt/sfnt.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/smooth.o: $(FTDIR)/src/smooth/smooth.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/truetype.o: $(FTDIR)/src/truetype/truetype.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/type1.o: $(FTDIR)/src/type1/type1.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/type1cid.o: $(FTDIR)/src/cid/type1cid.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/type42.o: $(FTDIR)/src/type42/type42.c
+	$(DO_REF_CC)
+
+$(B)/renderergl1/winfnt.o: $(FTDIR)/src/winfonts/winfnt.c
+	$(DO_REF_CC)
 
 $(B)/ded/%.o: $(ASMDIR)/%.s
 	$(DO_AS)
@@ -2967,7 +3075,7 @@ $(B)/$(MISSIONPACK)/qcommon/%.asm: $(CMDIR)/%.c $(Q3LCC)
 # MISC
 #############################################################################
 
-OBJ = $(Q3OBJ) $(Q3ROBJ) $(Q3R2OBJ) $(Q3DOBJ) $(JPGOBJ) \
+OBJ = $(Q3OBJ) $(Q3ROBJ) $(Q3R2OBJ) $(Q3DOBJ) $(JPGOBJ) $(FTOBJ) \
   $(MPGOBJ) $(Q3GOBJ) $(Q3CGOBJ) $(MPCGOBJ) $(Q3UIOBJ) $(MPUIOBJ) \
   $(MPGVMOBJ) $(Q3GVMOBJ) $(Q3CGVMOBJ) $(MPCGVMOBJ) $(Q3UIVMOBJ) $(MPUIVMOBJ)
 TOOLSOBJ = $(LBURGOBJ) $(Q3CPPOBJ) $(Q3RCCOBJ) $(Q3LCCOBJ) $(Q3ASMOBJ)
