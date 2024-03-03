@@ -222,6 +222,12 @@ vmCvar_t		cg_screenDamageAlpha;
 vmCvar_t		cg_screenDamage;
 vmCvar_t		cg_bob;
 //
+vmCvar_t	cg_impactSparks;
+vmCvar_t	cg_impactSparksLifetime;
+vmCvar_t	cg_impactSparksSize;
+vmCvar_t	cg_impactSparksVelocity;
+//
+
 typedef struct {
 	vmCvar_t	*vmCvar;
 	char		*cvarName;
@@ -362,6 +368,11 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_screenDamageAlpha, "cg_screenDamageAlpha", "200", CVAR_ARCHIVE },
 	{ &cg_screenDamage, "cg_screenDamage", "1", CVAR_ARCHIVE },
 	{ &cg_bob, "cg_bob", "1", CVAR_ARCHIVE },
+	//
+	{ &cg_impactSparks, "cg_impactSparks", "1", CVAR_ARCHIVE },
+	{ &cg_impactSparksLifetime, "cg_impactSparksLifetime", "250", CVAR_ARCHIVE },
+	{ &cg_impactSparksSize, "cg_impactSparksSize", "8", CVAR_ARCHIVE },
+	{ &cg_impactSparksVelocity, "cg_impactSparksVelocity", "128", CVAR_ARCHIVE },
 	//
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };

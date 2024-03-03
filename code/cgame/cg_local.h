@@ -1280,6 +1280,11 @@ extern	vmCvar_t		cg_screenDamageAlpha;
 extern	vmCvar_t		cg_screenDamage;
 extern	vmCvar_t		cg_bob;
 //
+extern	vmCvar_t	cg_impactSparks;
+extern	vmCvar_t	cg_impactSparksLifetime;
+extern	vmCvar_t	cg_impactSparksSize;
+extern	vmCvar_t	cg_impactSparksVelocity;
+//
 
 //
 // cg_main.c

@@ -516,25 +516,29 @@ void CG_Bleed( const vec3_t origin,int entityNum)
 	localEntity_t *le;
 	qhandle_t shader;
 	float radius;
+	int lifetime;
+	int velocity;
 	vec4_t color;
 
-	if (cg_blood.integer == 0) {
+	if (!cg_blood.integer || !cg_impactSparks.integer) {
 		return;
 	}
 
 	shader = cgs.media.bloodExplosionShader; // spark
 	color[0] = color[1] = color[2] = color[3] = 1.0;
-	radius = 8; //cg_impactSparksSize.value;
+	radius = Com_Clamp(0, 16, cg_impactSparksSize.value);
+	lifetime = Com_Clamp(0, 500, cg_impactSparksLifetime.value);
+	velocity = Com_Clamp(0, 512, cg_impactSparksVelocity.value);
 	le = CG_SmokePuff(origin, vec3_origin, radius,
 						 color[0], color[1], color[2], color[3],
-						 250,		// lifetime (cg_impactSparksLifetime.integer)
+						 lifetime,
 						 cg.time,  	// start time
 						 0,  		// fade in time
 						 0,  		// flags
 						 shader);
 	le->leType = LE_MOVE_SCALE_FADE;
 	le->leFlags = LEF_PUFF_DONT_SCALE;
-	le->pos.trDelta[2] = 128;//cg_impactSparksVelocity.value;
+	le->pos.trDelta[2] = velocity;
 	le->refEntity.reType = RT_SPRITE;
 	VectorCopy(origin, le->refEntity.origin);
 	VectorCopy(origin, le->refEntity.oldorigin);
