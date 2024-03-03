@@ -28,10 +28,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifdef STANDALONE
   #define PRODUCT_NAME				"openQL"
-  #define BASEGAME					"openQL"
+  #define BASEGAME					"baseq3"
   #define CLIENT_WINDOW_TITLE		"openQL"
   #define CLIENT_WINDOW_MIN_TITLE	"openQL"
-  #define HOMEPATH_NAME_UNIX		"./.local/share/openQL"
+  #define HOMEPATH_NAME_UNIX		".local/share/openQL"
   #define HOMEPATH_NAME_WIN			"openQL"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
 //  #define STEAMPATH_NAME			"Foo Bar"
