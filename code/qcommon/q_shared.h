@@ -27,18 +27,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // A user mod should never modify this file
 
 #ifdef STANDALONE
-  #define PRODUCT_NAME				"iofoo3"
-  #define BASEGAME					"foobar"
-  #define CLIENT_WINDOW_TITLE		"changeme"
-  #define CLIENT_WINDOW_MIN_TITLE	"changeme2"
-  #define HOMEPATH_NAME_UNIX		".foo"
-  #define HOMEPATH_NAME_WIN			"FooBar"
+  #define PRODUCT_NAME				"openQL"
+  #define BASEGAME					"openQL"
+  #define CLIENT_WINDOW_TITLE		"openQL"
+  #define CLIENT_WINDOW_MIN_TITLE	"openQL"
+  #define HOMEPATH_NAME_UNIX		"./.local/share/openQL"
+  #define HOMEPATH_NAME_WIN			"openQL"
   #define HOMEPATH_NAME_MACOSX		HOMEPATH_NAME_WIN
 //  #define STEAMPATH_NAME			"Foo Bar"
 //  #define STEAMPATH_APPID         ""
-  #define GAMENAME_FOR_MASTER		"foobar"	// must NOT contain whitespace
-  #define CINEMATICS_LOGO		"foologo.roq"
-  #define CINEMATICS_INTRO		"intro.roq"
+  #define GAMENAME_FOR_MASTER		"openQL"	// must NOT contain whitespace
+//	#define CINEMATICS_LOGO		"foologo.roq"
+//	#define CINEMATICS_INTRO		"intro.roq"
 //  #define LEGACY_PROTOCOL	// You probably don't need this for your standalone game
 //  #define PROTOCOL_HANDLER		"foobar"
 #else
