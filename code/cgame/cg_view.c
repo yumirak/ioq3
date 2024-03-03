@@ -343,6 +343,7 @@ static void CG_OffsetFirstPersonView( void ) {
 	// add angles based on damage kick
 	if ( cg.damageTime ) {
 		ratio = cg.time - cg.damageTime;
+		ratio *= cg_kickScale.value;
 		if ( ratio < DAMAGE_DEFLECT_TIME ) {
 			ratio /= DAMAGE_DEFLECT_TIME;
 			angles[PITCH] += ratio * cg.v_dmg_pitch;
@@ -363,7 +364,7 @@ static void CG_OffsetFirstPersonView( void ) {
 		ratio = 0;
 	angles[PITCH] += ratio * cg.fall_value;
 #endif
-
+	if ( !cg.renderingThirdPerson && cg_bob.integer ) {
 	// add angles based on velocity
 	VectorCopy( cg.predictedPlayerState.velocity, predictedVelocity );
 
@@ -389,6 +390,15 @@ static void CG_OffsetFirstPersonView( void ) {
 		delta = -delta;
 	angles[ROLL] += delta;
 
+	// add bob height
+	bob = cg.bobfracsin * cg.xyspeed * cg_bobup.value;
+	if (bob > 6) {
+		bob = 6;
+	}
+	origin[2] += bob;
+
+	}
+
 //===================================
 
 	// add view height
@@ -400,15 +410,6 @@ static void CG_OffsetFirstPersonView( void ) {
 		cg.refdef.vieworg[2] -= cg.duckChange 
 			* (DUCK_TIME - timeDelta) / DUCK_TIME;
 	}
-
-	// add bob height
-	bob = cg.bobfracsin * cg.xyspeed * cg_bobup.value;
-	if (bob > 6) {
-		bob = 6;
-	}
-
-	origin[2] += bob;
-
 
 	// add fall height
 	delta = cg.time - cg.landTime;
@@ -569,9 +570,10 @@ CG_DamageBlendBlob
 static void CG_DamageBlendBlob( void ) {
 	int			t;
 	int			maxTime;
+	int			alpha;
 	refEntity_t		ent;
 
-	if (!cg_blood.integer) {
+	if (!cg_blood.integer || !cg_screenDamage.integer) {
 		return;
 	}
 
@@ -594,6 +596,7 @@ static void CG_DamageBlendBlob( void ) {
 		return;
 	}
 
+	alpha = Com_Clamp(0, 255, cg_screenDamageAlpha.integer);
 
 	memset( &ent, 0, sizeof( ent ) );
 	ent.reType = RT_SPRITE;
@@ -608,7 +611,7 @@ static void CG_DamageBlendBlob( void ) {
 	ent.shaderRGBA[0] = 255;
 	ent.shaderRGBA[1] = 255;
 	ent.shaderRGBA[2] = 255;
-	ent.shaderRGBA[3] = 200 * ( 1.0 - ((float)t / maxTime) );
+	ent.shaderRGBA[3] = alpha * ( 1.0 - ((float)t / maxTime) );
 	trap_R_AddRefEntityToScene( &ent );
 }
 

@@ -131,7 +131,7 @@ static void CG_BloodTrail( const localEntity_t *le ) {
 	shader = cgs.media.bloodExplosionShader;
 	color[0] = color[1] = color[2] = color[3] = 1.0;
 
-	radius = 5;//3.5;//cg_gibSparksSize.value;
+	radius = 3.5;
 
 	step = 50; //cg_gibStepTime.integer;
 	t = step * ( (cg.time - cg.frametime + step ) / step );

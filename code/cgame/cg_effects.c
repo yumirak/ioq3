@@ -588,6 +588,7 @@ void CG_GibPlayer(const centity_t *cent)
 {
 	vec3_t	origin, velocity;
 	int i;
+	int gibCount;
 	float gibVelocity;
 	int gibJump;
 	vec3_t playerOrigin;
@@ -605,7 +606,7 @@ void CG_GibPlayer(const centity_t *cent)
 	CG_DeathEffect(playerOrigin);
 
 	gibJump = 0; //cg_gibJump.value;
-
+	gibCount = Com_Clamp( 0, 15, cg_gibs.value);
 	if (rand() % 1) {
 		gibJump = -gibJump;
 	}
@@ -618,7 +619,7 @@ void CG_GibPlayer(const centity_t *cent)
 		mix = 0.0;
 	}
 
-	for (i = 0;  i < 15;  i++) { // cg_gibs.integer
+	for (i = 0;  i < gibCount;  i++) { // cg_gibs.integer
 		ByteToDir(cent->currentState.eventParm, velocity);
 		gibVelocity = 600; //cg_gibVelocity.value;
 		//cg_gibVelocityRandomness.value 250

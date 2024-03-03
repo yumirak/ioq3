@@ -216,7 +216,12 @@ vmCvar_t	cg_hudTextScale;
 vmCvar_t		cg_announcer;
 vmCvar_t		cg_lightningStyle;
 vmCvar_t		cg_hitBeep;
-
+//
+vmCvar_t		cg_kickScale;
+vmCvar_t		cg_screenDamageAlpha;
+vmCvar_t		cg_screenDamage;
+vmCvar_t		cg_bob;
+//
 typedef struct {
 	vmCvar_t	*vmCvar;
 	char		*cvarName;
@@ -233,7 +238,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_fovAdjust, "cg_fovAdjust", "1", CVAR_ARCHIVE },
 	{ &cg_viewsize, "cg_viewsize", "100", CVAR_ARCHIVE },
 	{ &cg_shadows, "cg_shadows", "1", CVAR_ARCHIVE  },
-	{ &cg_gibs, "cg_gibs", "1", CVAR_ARCHIVE  },
+	{ &cg_gibs, "cg_gibs", "10", CVAR_ARCHIVE  },
 	{ &cg_draw2D, "cg_draw2D", "1", CVAR_ARCHIVE  },
 	{ &cg_drawStatus, "cg_drawStatus", "1", CVAR_ARCHIVE  },
 	{ &cg_drawTimer, "cg_drawTimer", "0", CVAR_ARCHIVE  },
@@ -352,6 +357,11 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_numberFontBorder, "cg_numberFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_normalFont, "cg_normalFont", "fonts/notosans-regular.ttf", CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_normalFontBorder, "cg_normalFontBorder", "0", CVAR_ARCHIVE | CVAR_LATCH },
+	//
+	{ &cg_kickScale, "cg_kickScale", "1.0", CVAR_ARCHIVE},
+	{ &cg_screenDamageAlpha, "cg_screenDamageAlpha", "200", CVAR_ARCHIVE },
+	{ &cg_screenDamage, "cg_screenDamage", "1", CVAR_ARCHIVE },
+	{ &cg_bob, "cg_bob", "1", CVAR_ARCHIVE },
 	//
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };

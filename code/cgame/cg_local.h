@@ -1273,6 +1273,14 @@ extern	vmCvar_t		cg_hudTextScale;
 extern	vmCvar_t		cg_announcer;
 extern	vmCvar_t		cg_lightningStyle;
 extern	vmCvar_t		cg_hitBeep;
+
+//
+extern	vmCvar_t		cg_kickScale;
+extern	vmCvar_t		cg_screenDamageAlpha;
+extern	vmCvar_t		cg_screenDamage;
+extern	vmCvar_t		cg_bob;
+//
+
 //
 // cg_main.c
 //
