@@ -1664,3 +1664,20 @@ void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 	s->loopSound = ps->loopSound;
 	s->generic1 = ps->generic1;
 }
+qboolean replace1( const char match, const char replace, char *str )
+{
+	qboolean	res = qfalse;
+
+	if ( !str )
+		return res;
+
+	while ( *str ) {
+		if ( *str == match ) {
+			*str = replace;
+			res = qtrue;
+		}
+		str++;
+	}
+
+	return res;
+}

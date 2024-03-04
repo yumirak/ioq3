@@ -30,6 +30,10 @@ displayContextDef_t cgDC;
 #endif
 
 int forceModelModificationCount = -1;
+int enemyModelModificationCount  = -1;
+int	enemyColorsModificationCount = -1;
+int teamModelModificationCount  = -1;
+int	teamColorsModificationCount = -1;
 
 void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum );
 void CG_Shutdown( void );
@@ -230,7 +234,11 @@ vmCvar_t	cg_impactSparksLifetime;
 vmCvar_t	cg_impactSparksSize;
 vmCvar_t	cg_impactSparksVelocity;
 //
-
+vmCvar_t		cg_enemyModel;
+vmCvar_t		cg_enemyColors;
+vmCvar_t		cg_teamModel;
+vmCvar_t		cg_teamColors;
+//
 typedef struct {
 	vmCvar_t	*vmCvar;
 	char		*cvarName;
@@ -380,6 +388,10 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_impactSparksSize, "cg_impactSparksSize", "8", CVAR_ARCHIVE },
 	{ &cg_impactSparksVelocity, "cg_impactSparksVelocity", "128", CVAR_ARCHIVE },
 	//
+	{ &cg_enemyModel, "cg_enemyModel", "", CVAR_ARCHIVE},
+	{ &cg_enemyColors, "cg_enemyColors", "", CVAR_ARCHIVE},
+	{ &cg_teamModel, "cg_teamModel", "", CVAR_ARCHIVE},
+	{ &cg_teamColors, "cg_teamColors", "", CVAR_ARCHIVE},
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -405,11 +417,15 @@ void CG_RegisterCvars( void ) {
 	cgs.localServer = atoi( var );
 
 	forceModelModificationCount = cg_forceModel.modificationCount;
+	enemyModelModificationCount = cg_enemyModel.modificationCount;
+	enemyColorsModificationCount = cg_enemyColors.modificationCount;
+	teamModelModificationCount = cg_teamModel.modificationCount;
+	teamColorsModificationCount = cg_teamColors.modificationCount;
 
 	trap_Cvar_Register(NULL, "model", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
 	trap_Cvar_Register(NULL, "headmodel", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
-	trap_Cvar_Register(NULL, "team_model", DEFAULT_TEAM_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
-	trap_Cvar_Register(NULL, "team_headmodel", DEFAULT_TEAM_HEAD, CVAR_USERINFO | CVAR_ARCHIVE );
+	//trap_Cvar_Register(NULL, "team_model", DEFAULT_TEAM_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
+	//trap_Cvar_Register(NULL, "team_headmodel", DEFAULT_TEAM_HEAD, CVAR_USERINFO | CVAR_ARCHIVE );
 }
 
 /*																																			
@@ -417,12 +433,11 @@ void CG_RegisterCvars( void ) {
 CG_ForceModelChange
 ===================
 */
-static void CG_ForceModelChange( void ) {
+void CG_ForceModelChange( void ) {
 	int		i;
+	const char		*clientInfo;
 
 	for (i=0 ; i<MAX_CLIENTS ; i++) {
-		const char		*clientInfo;
-
 		clientInfo = CG_ConfigString( CS_PLAYERS+i );
 		if ( !clientInfo[0] ) {
 			continue;
@@ -459,9 +474,19 @@ void CG_UpdateCvars( void ) {
 		}
 	}
 
-	// if force model changed
-	if ( forceModelModificationCount != cg_forceModel.modificationCount ) {
+	// if model changed
+	if ( forceModelModificationCount != cg_forceModel.modificationCount
+		|| enemyModelModificationCount != cg_enemyModel.modificationCount
+		|| enemyColorsModificationCount != cg_enemyColors.modificationCount
+		|| teamModelModificationCount != cg_teamModel.modificationCount
+		|| teamColorsModificationCount != cg_teamColors.modificationCount ) {
+
 		forceModelModificationCount = cg_forceModel.modificationCount;
+		enemyModelModificationCount = cg_enemyModel.modificationCount;
+		enemyColorsModificationCount = cg_enemyColors.modificationCount;
+		teamModelModificationCount = cg_teamModel.modificationCount;
+		teamColorsModificationCount = cg_teamColors.modificationCount;
+
 		CG_ForceModelChange();
 	}
 }
