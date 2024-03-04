@@ -1281,6 +1281,7 @@ extern	vmCvar_t		cg_hudTextScale;
 extern	vmCvar_t		cg_announcer;
 extern	vmCvar_t		cg_lightningStyle;
 extern	vmCvar_t		cg_hitBeep;
+extern	vmCvar_t		cg_killBeep;
 
 //
 extern	vmCvar_t		cg_kickScale;

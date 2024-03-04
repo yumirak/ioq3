@@ -223,6 +223,7 @@ vmCvar_t	cg_hudTextScale;
 vmCvar_t		cg_announcer;
 vmCvar_t		cg_lightningStyle;
 vmCvar_t		cg_hitBeep;
+vmCvar_t		cg_killBeep;
 //
 vmCvar_t		cg_kickScale;
 vmCvar_t		cg_screenDamageAlpha;
@@ -369,6 +370,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_lightningStyle, "cg_lightningStyle", "0", CVAR_ARCHIVE},
 	{ &cg_announcer, "cg_announcer", "1", CVAR_ARCHIVE | CVAR_LATCH}, //FIXME: reload announcer without snd_restart ?
 	{ &cg_hitBeep, "cg_hitBeep", "1", CVAR_ARCHIVE},
+	{ &cg_killBeep, "cg_killBeep", "7", CVAR_ARCHIVE },
 	// ttf
 	{ &cg_forceBitmapFonts, "cg_forceBitmapFonts", "0", CVAR_ARCHIVE | CVAR_LATCH },
 	{ &cg_hudTextScale, "cg_hudTextScale", "1", CVAR_ARCHIVE },
@@ -832,6 +834,14 @@ static void CG_RegisterSounds( void ) {
 	for (i = 0;  i < 4;  i++) {
 		cgs.media.hitSound[i] = trap_S_RegisterSound(va( "sound/feedback/hit%d.ogg", i ), qfalse);
 	}
+	cgs.media.hitTeamSound = trap_S_RegisterSound("sound/feedback/hit_teammate.ogg", qfalse);
+
+	for (i = 0;  i < 6;  i++) {
+		cgs.media.killBeep[i] = trap_S_RegisterSound(va("sound/feedback/impact%i.ogg", i + 1), qfalse);
+	}
+	cgs.media.killBeep[6] = trap_S_RegisterSound("sound/world/bell_01.ogg", qfalse);
+	cgs.media.killBeep[7] = trap_S_RegisterSound("sound/misc/chaching.ogg", qfalse);
+
 	cgs.media.watrInSound = trap_S_RegisterSound( "sound/player/watr_in.wav", qfalse);
 	cgs.media.watrOutSound = trap_S_RegisterSound( "sound/player/watr_out.wav", qfalse);
 	cgs.media.watrUnSound = trap_S_RegisterSound( "sound/player/watr_un.wav", qfalse);

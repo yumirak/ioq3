@@ -83,6 +83,7 @@ static void CG_Obituary( entityState_t *ent ) {
 	char		attackerName[32];
 	gender_t	gender;
 	clientInfo_t	*ci;
+	clientInfo_t	*us;
 
 	target = ent->otherEntityNum;
 	attacker = ent->otherEntityNum2;
@@ -92,6 +93,7 @@ static void CG_Obituary( entityState_t *ent ) {
 		CG_Error( "CG_Obituary: target out of range" );
 	}
 	ci = &cgs.clientinfo[target];
+	us = &cgs.clientinfo[cg.snap->ps.clientNum];
 
 	if ( attacker < 0 || attacker >= MAX_CLIENTS ) {
 		attacker = ENTITYNUM_WORLD;
@@ -221,7 +223,9 @@ static void CG_Obituary( entityState_t *ent ) {
 #else
 		CG_CenterPrint( s, SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH );
 #endif
-
+		if ( ( (cgs.gametype >= GT_TEAM && ci->team != us->team) || cgs.gametype < GT_TEAM ) && cg_killBeep.integer > 0  &&  cg_killBeep.integer <= 8) {
+			trap_S_StartLocalSound(cgs.media.killBeep[cg_killBeep.integer - 1], CHAN_LOCAL_SOUND);
+		}
 		// print the text message as well
 	}
 
