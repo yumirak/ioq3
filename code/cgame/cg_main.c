@@ -238,6 +238,7 @@ vmCvar_t		cg_enemyModel;
 vmCvar_t		cg_enemyColors;
 vmCvar_t		cg_teamModel;
 vmCvar_t		cg_teamColors;
+vmCvar_t		cg_deadBodyDarken;
 //
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -392,6 +393,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_enemyColors, "cg_enemyColors", "", CVAR_ARCHIVE},
 	{ &cg_teamModel, "cg_teamModel", "", CVAR_ARCHIVE},
 	{ &cg_teamColors, "cg_teamColors", "", CVAR_ARCHIVE},
+	{ &cg_deadBodyDarken, "cg_deadBodyDarken", "0", CVAR_ARCHIVE},
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
