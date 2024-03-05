@@ -241,6 +241,10 @@ vmCvar_t		cg_teamModel;
 vmCvar_t		cg_teamColors;
 vmCvar_t		cg_deadBodyDarken;
 //
+vmCvar_t		cg_damagePlum;
+vmCvar_t		cg_damagePlumStyle;
+vmCvar_t		cg_damagePlumSize;
+//
 typedef struct {
 	vmCvar_t	*vmCvar;
 	char		*cvarName;
@@ -396,6 +400,10 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_teamModel, "cg_teamModel", "", CVAR_ARCHIVE},
 	{ &cg_teamColors, "cg_teamColors", "", CVAR_ARCHIVE},
 	{ &cg_deadBodyDarken, "cg_deadBodyDarken", "0", CVAR_ARCHIVE},
+	//
+	{ &cg_damagePlum, "cg_damagePlum", "1", CVAR_USERINFO | CVAR_ARCHIVE},
+	{ &cg_damagePlumStyle, "cg_damagePlumColorStyle", "1", CVAR_USERINFO | CVAR_ARCHIVE},
+	{ &cg_damagePlumSize, "cg_damagePlumSize", "8", CVAR_USERINFO | CVAR_ARCHIVE},
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 

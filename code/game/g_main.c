@@ -96,7 +96,7 @@ vmCvar_t	g_enableBreath;
 vmCvar_t	g_proxMineTimeout;
 #endif
 vmCvar_t	g_ammoPack; // hack
-
+vmCvar_t	g_damagePlums;
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
 	{ &g_cheats, "sv_cheats", "", 0, 0, qfalse },
@@ -181,6 +181,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse },
 	{ &g_ammoPack, "g_ammoPack", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	//
+	{ &g_damagePlums, "g_damagePlums", "1", CVAR_ARCHIVE, 0, qfalse }, // rat damageplum
 
 };
 

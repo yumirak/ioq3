@@ -733,6 +733,14 @@ void ClientUserinfoChanged( int clientNum ) {
 	} else {
 		client->pers.predictItemPickup = qtrue;
 	}
+	// client damageplums
+
+	s = Info_ValueForKey( userinfo, "cg_damagePlum" );
+	if ( !atoi( s ) ) {
+		client->pers.damagePlums = 0;
+	} else {
+		client->pers.damagePlums = atoi( s );
+	}
 
 	// set name
 	Q_strncpyz ( oldname, client->pers.netname, sizeof( oldname ) );

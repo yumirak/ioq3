@@ -226,8 +226,9 @@ typedef enum {
 	LE_KAMIKAZE,
 	LE_INVULIMPACT,
 	LE_INVULJUICED,
-	LE_SHOWREFENTITY
+	LE_SHOWREFENTITY,
 #endif
+	LE_DAMAGEPLUM
 } leType_t;
 
 typedef enum {
@@ -1300,6 +1301,11 @@ extern	vmCvar_t		cg_teamModel;
 extern	vmCvar_t		cg_teamColors;
 extern	vmCvar_t		cg_deadBodyDarken;
 //
+extern	vmCvar_t		cg_damagePlum;
+extern	vmCvar_t		cg_damagePlumStyle;
+extern	vmCvar_t		cg_damagePlumSize;
+//
+
 
 //
 // cg_main.c
@@ -1562,7 +1568,7 @@ void CG_InvulnerabilityJuiced( vec3_t org );
 void CG_LightningBoltBeam( vec3_t start, vec3_t end );
 #endif
 void CG_ScorePlum( int client, vec3_t org, int score );
-
+void CG_DamagePlum( int client, vec3_t org, int score );
 void CG_GibPlayer(const centity_t *cent);
 void CG_BigExplode( vec3_t playerOrigin );
 

@@ -246,6 +246,7 @@ typedef struct {
 	int			voteCount;			// to prevent people from constantly calling votes
 	int			teamVoteCount;		// to prevent people from constantly calling votes
 	qboolean	teamInfo;			// send team overlay updates?
+	int 		damagePlums; 		//rat damage plums
 } clientPersistant_t;
 
 
@@ -317,6 +318,7 @@ struct gclient_s {
 #endif
 
 	char		*areabits;
+	int	shotgunDamagePlumDmg; //rat damage plums
 };
 
 
@@ -498,7 +500,7 @@ void TossClientItems( gentity_t *self );
 void TossClientPersistantPowerups( gentity_t *self );
 #endif
 void TossClientCubes( gentity_t *self );
-
+void DamagePlum( gentity_t *ent, gentity_t *target, int mod, int damage ); // rat damageplum
 // damage flags
 #define DAMAGE_RADIUS				0x00000001	// damage was indirect
 #define DAMAGE_NO_ARMOR				0x00000002	// armour does not protect from this damage
@@ -746,6 +748,7 @@ extern	vmCvar_t	g_singlePlayer;
 extern	vmCvar_t	g_proxMineTimeout;
 extern	vmCvar_t	g_localTeamPref;
 extern	vmCvar_t	g_ammoPack; // hack
+extern	vmCvar_t	g_damagePlums; //rat damageplum
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) __attribute__((noreturn));

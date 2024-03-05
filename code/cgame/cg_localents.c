@@ -728,12 +728,13 @@ CG_AddScorePlum
 ===================
 */
 #define NUMBER_SIZE		8
+#define MAX_PLUM_DIGITS 10
 
 void CG_AddScorePlum( localEntity_t *le ) {
 	refEntity_t	*re;
 	vec3_t		origin, delta, dir, vec, up = {0, 0, 1};
 	float		c, len;
-	int			i, score, digits[10], numdigits, negative;
+	int			i, score, digits[MAX_PLUM_DIGITS], numdigits, negative;
 
 	re = &le->refEntity;
 
@@ -791,7 +792,7 @@ void CG_AddScorePlum( localEntity_t *le ) {
 		score = -score;
 	}
 
-	for (numdigits = 0; !(numdigits && !score); numdigits++) {
+	for (numdigits = 0; !(numdigits && !score) && numdigits < MAX_PLUM_DIGITS - 1; numdigits++) {
 		digits[numdigits] = score % 10;
 		score = score / 10;
 	}
@@ -807,7 +808,173 @@ void CG_AddScorePlum( localEntity_t *le ) {
 		trap_R_AddRefEntityToScene( re );
 	}
 }
+/*
+===================
+CG_AddDamagePlum
+===================
+*/
+void CG_AddDamagePlum( localEntity_t *le ) {
+	refEntity_t	*re;
+	vec3_t		origin, dir, vec, up = {0, 0, 1};
+	float		c;
+	int			i, damage, digits[MAX_PLUM_DIGITS], numdigits, negative;
+	float deltaTime;
+	float size;
+	int weapon;
 
+	re = &le->refEntity;
+
+	c = ( le->endTime - cg.time ) * le->lifeRate;
+	weapon = cg_entities[cg.snap->ps.clientNum].currentState.weapon;;
+	damage = le->radius;
+	if (!weapon) {
+		//CG_Printf("^3WARNING CG_AddDamagePlum() invalid weapon number '%d'\n", weapon);
+		return;
+	}
+	switch(cg_damagePlumStyle.integer)
+	{
+		default:
+			// white
+			VectorSet(re->shaderRGBA, 0xff, 0xff, 0xff);
+			break;
+		case 1:
+			switch((damage + 1) / 20) {
+			case 0:
+				// light blue
+				VectorSet(re->shaderRGBA, 0x38, 0xb0, 0xde);
+				break;
+			case 1:
+				// yellow
+				VectorSet(re->shaderRGBA, 0xff, 0xff, 0x00);
+				break;
+			case 2:
+				// orange
+				VectorSet(re->shaderRGBA, 0xff, 0x7f, 0x00);
+				break;
+			default:
+				// red
+				VectorSet(re->shaderRGBA, 0xff, 0x00, 0x00);
+				break;
+			}
+			break;
+		case 2:
+			switch (weapon) {
+			case WP_GAUNTLET:
+				// light blue
+				VectorSet(re->shaderRGBA, 0x38, 0xb0, 0xde);
+				break;
+			case WP_MACHINEGUN:
+				// yellow
+				VectorSet(re->shaderRGBA, 0xff, 0xff, 0x00);
+				break;
+			case WP_SHOTGUN:
+				// orange
+				VectorSet(re->shaderRGBA, 0xff, 0x7f, 0x00);
+				break;
+			case WP_GRENADE_LAUNCHER:
+				// dark green
+				VectorSet(re->shaderRGBA, 0x00, 0x7f, 0x00);
+				break;
+			case WP_ROCKET_LAUNCHER:
+				// red
+				VectorSet(re->shaderRGBA, 0xff, 0x00, 0x00);
+				break;
+			case WP_LIGHTNING:
+				// yellowish white
+				VectorSet(re->shaderRGBA, 0xff, 0xff, 0xaf);
+				break;
+			case WP_RAILGUN:
+				// green
+				VectorSet(re->shaderRGBA, 0x00, 0xff, 0x00);
+				break;
+			case WP_PLASMAGUN:
+				// magenta
+				VectorSet(re->shaderRGBA, 0xaf, 0x00, 0xaf);
+				break;
+			case WP_BFG:
+				// dark blue
+				VectorSet(re->shaderRGBA, 0x00, 0x3f, 0xaf);
+				break;
+			case WP_GRAPPLING_HOOK:
+				//FIXME ql doesn't show hook damage plum
+				// purple
+				VectorSet(re->shaderRGBA, 0x55, 0xa8, 0x8b);
+				break;
+#ifdef MISSIONPACK
+			case WP_NAILGUN:
+				// turquoise
+				VectorSet(re->shaderRGBA, 0x00, 0xaf, 0x7f);
+				break;
+			case WP_PROX_LAUNCHER:
+				// rose
+				VectorSet(re->shaderRGBA, 0xff, 0x00, 0x7f);
+				break;
+			case WP_CHAINGUN:
+				// light grey
+				VectorSet(re->shaderRGBA, 0xaf, 0xaf, 0xaf);
+				break;
+#endif
+			case WP_HMG:
+				// dark yellowish orange
+				VectorSet(re->shaderRGBA, 0xaf, 0xaf, 0x00);
+				break;
+			default:
+				// light blue
+				VectorSet(re->shaderRGBA, 0x38, 0xb0, 0xde);
+				break;
+			}
+			break;
+	}
+
+
+	if (c < 0.25)
+		re->shaderRGBA[3] = 0xff * 4 * c;
+	else
+		re->shaderRGBA[3] = 0xff;
+
+
+	deltaTime = (cg.time - le->startTime) * 0.001;
+	VectorCopy(le->pos.trBase, origin);
+
+	VectorSubtract(cg.refdef.vieworg, origin, dir);
+	CrossProduct(dir, up, vec);
+	VectorNormalize(vec);
+	VectorNormalize(dir);
+	VectorMA(cg.refdef.vieworg, -8, dir, origin);
+
+	VectorMA(origin, deltaTime, le->pos.trDelta, origin);
+	// like TR_GRAVITY, but with different gravity
+	origin[2] -= 0.5 * 12 * deltaTime * deltaTime;
+
+
+	size = cg_damagePlumSize.value * 0.03;
+	re->radius = size / 2;
+
+	negative = qfalse;
+	if (damage < 0) {
+		negative = qtrue;
+		damage = -damage;
+	}
+
+	for (numdigits = 0; !(numdigits && !damage) && numdigits < MAX_PLUM_DIGITS-1; numdigits++) {
+		digits[numdigits] = damage % 10;
+		damage = damage / 10;
+	}
+
+	if (negative) {
+		digits[numdigits] = 10;
+		numdigits++;
+	}
+
+	for (i = 0; i < numdigits; i++) {
+		VectorMA(origin, ((float)numdigits / 2.0 - 0.5 - (float) i) * size, vec, re->origin);
+		// damage plums still using old quake3 font
+		re->customShader = cgs.media.numberShaders[digits[numdigits-1-i]];
+		trap_R_AddRefEntityToScene( re );
+
+	}
+
+}
 
 
 
@@ -872,6 +1039,9 @@ void CG_AddLocalEntities( void ) {
 
 		case LE_SCOREPLUM:
 			CG_AddScorePlum( le );
+			break;
+		case LE_DAMAGEPLUM:
+			CG_AddDamagePlum( le );
 			break;
 
 #ifdef MISSIONPACK

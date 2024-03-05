@@ -41,7 +41,30 @@ void ScorePlum( gentity_t *ent, vec3_t origin, int score ) {
 	plum->s.otherEntityNum = ent->s.number;
 	plum->s.time = score;
 }
+/*
+============
+DamagePlum
+============
+*/
+void DamagePlum( gentity_t *ent, gentity_t *target, int mod, int damage ) {
+	gentity_t *plum;
+	vec3_t origin;
 
+	if (!ent->client) {
+		return;
+	}
+
+	VectorCopy(target->r.currentOrigin, origin);
+	origin[2] += 2 * target->r.maxs[2];
+
+	plum = G_TempEntity( origin, EV_DAMAGEPLUM );
+	// only send this temp entity to a single client
+	plum->r.svFlags |= SVF_SINGLECLIENT;
+	plum->r.singleClient = ent->s.number;
+	//
+	plum->s.otherEntityNum = ent->s.number;
+	plum->s.time = damage;
+}
 /*
 ============
 AddScore
@@ -1023,6 +1046,17 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		// set the last client who damaged the target
 		targ->client->lasthurt_client = attacker->s.number;
 		targ->client->lasthurt_mod = mod;
+	}
+	if ( g_damagePlums.integer && damage > 0 && targ->client && targ != attacker && targ->health > 0)
+	{
+		switch(mod){
+		case MOD_SHOTGUN:
+			targ->client->shotgunDamagePlumDmg += damage;
+			break;
+		default:
+			DamagePlum(attacker, targ, mod, damage);
+			break;
+		}
 	}
 
 	// do the damage

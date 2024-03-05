@@ -265,12 +265,53 @@ SHOTGUN
 
 ======================================================================
 */
+struct hitShotgunTargets_s {
+	gentity_t *targets[DEFAULT_SHOTGUN_COUNT];
+};
 
+static void UpdateShotgunHits(struct hitShotgunTargets_s *list, gentity_t *hittarg) {
+	int i;
+	if (!g_damagePlums.integer || !list || !hittarg) {
+		return;
+	}
+	for (i = 0; i < DEFAULT_SHOTGUN_COUNT; i++) {
+		if (!list->targets[i]) {
+			list->targets[i] = hittarg;
+			if (hittarg->client) {
+				hittarg->client->shotgunDamagePlumDmg = 0;
+			}
+			return;
+		}
+		if (list->targets[i] == hittarg) {
+			return;
+		}
+
+	}
+}
+// rat damageplums
+static void ShotgunDamagePlums(struct hitShotgunTargets_s *list, gentity_t *attacker) {
+	int i;
+	gentity_t *targ;
+
+	if (!g_damagePlums.integer) {
+		return;
+	}
+
+	for (i = 0; i < DEFAULT_SHOTGUN_COUNT; i++) {
+		if (!list->targets[i]) {
+			return;
+		}
+		targ = list->targets[i];
+		if (targ != attacker && targ->client && targ->client->shotgunDamagePlumDmg > 0) {
+			DamagePlum(attacker, targ, MOD_SHOTGUN, targ->client->shotgunDamagePlumDmg);
+		}
+	}
+}
 // DEFAULT_SHOTGUN_SPREAD and DEFAULT_SHOTGUN_COUNT	are in bg_public.h, because
 // client predicts same spreads
 #define	DEFAULT_SHOTGUN_DAMAGE	10
 
-qboolean ShotgunPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
+qboolean ShotgunPellet( vec3_t start, vec3_t end, gentity_t *ent, struct hitShotgunTargets_s *hitTargets) {
 	trace_t		tr;
 	int			damage, i, passent;
 	gentity_t	*traceEnt;
@@ -312,6 +353,7 @@ qboolean ShotgunPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
 			if( LogAccuracyHit( traceEnt, ent ) ) {
 				hitClient = qtrue;
 			}
+			UpdateShotgunHits(hitTargets, traceEnt);
 			G_Damage( traceEnt, ent, ent, forward, tr.endpos, damage, 0, MOD_SHOTGUN);
 			return hitClient;
 		}
@@ -327,7 +369,9 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 	vec3_t		end;
 	vec3_t		forward, right, up;
 	qboolean	hitClient = qfalse;
+	struct hitShotgunTargets_s hitTargets;
 
+	memset(&hitTargets, 0, sizeof(hitTargets));
 	// derive the right and up vectors from the forward vector, because
 	// the client won't have any other information
 	VectorNormalize2( origin2, forward );
@@ -341,11 +385,12 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 		VectorMA( origin, 8192 * 16, forward, end);
 		VectorMA (end, r, right, end);
 		VectorMA (end, u, up, end);
-		if( ShotgunPellet( origin, end, ent ) && !hitClient ) {
+		if( ShotgunPellet( origin, end, ent, &hitTargets) && !hitClient ) {
 			hitClient = qtrue;
 			ent->client->accuracy_hits++;
 		}
 	}
+	ShotgunDamagePlums(&hitTargets, ent);
 }
 
 
