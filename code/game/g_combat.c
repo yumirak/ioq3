@@ -64,6 +64,7 @@ void DamagePlum( gentity_t *ent, gentity_t *target, int mod, int damage ) {
 	//
 	plum->s.otherEntityNum = ent->s.number;
 	plum->s.time = damage;
+	plum->s.time2 = mod;
 }
 /*
 ============

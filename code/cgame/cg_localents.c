@@ -825,12 +825,9 @@ void CG_AddDamagePlum( localEntity_t *le ) {
 	re = &le->refEntity;
 
 	c = ( le->endTime - cg.time ) * le->lifeRate;
-	weapon = cg_entities[cg.snap->ps.clientNum].currentState.weapon;;
+	weapon = le->leFlags;
 	damage = le->radius;
-	if (!weapon) {
-		//CG_Printf("^3WARNING CG_AddDamagePlum() invalid weapon number '%d'\n", weapon);
-		return;
-	}
+
 	switch(cg_damagePlumStyle.integer)
 	{
 		default:
@@ -859,67 +856,71 @@ void CG_AddDamagePlum( localEntity_t *le ) {
 			break;
 		case 2:
 			switch (weapon) {
-			case WP_GAUNTLET:
+			case MOD_GAUNTLET:
 				// light blue
 				VectorSet(re->shaderRGBA, 0x38, 0xb0, 0xde);
 				break;
-			case WP_MACHINEGUN:
+			case MOD_MACHINEGUN:
 				// yellow
 				VectorSet(re->shaderRGBA, 0xff, 0xff, 0x00);
 				break;
-			case WP_SHOTGUN:
+			case MOD_SHOTGUN:
 				// orange
 				VectorSet(re->shaderRGBA, 0xff, 0x7f, 0x00);
 				break;
-			case WP_GRENADE_LAUNCHER:
+			case MOD_GRENADE:
+			case MOD_GRENADE_SPLASH:
 				// dark green
 				VectorSet(re->shaderRGBA, 0x00, 0x7f, 0x00);
 				break;
-			case WP_ROCKET_LAUNCHER:
+			case MOD_ROCKET:
+			case MOD_ROCKET_SPLASH:
 				// red
 				VectorSet(re->shaderRGBA, 0xff, 0x00, 0x00);
 				break;
-			case WP_LIGHTNING:
+			case MOD_LIGHTNING:
 				// yellowish white
 				VectorSet(re->shaderRGBA, 0xff, 0xff, 0xaf);
 				break;
-			case WP_RAILGUN:
+			case MOD_RAILGUN:
 				// green
 				VectorSet(re->shaderRGBA, 0x00, 0xff, 0x00);
 				break;
-			case WP_PLASMAGUN:
+			case MOD_PLASMA:
+			case MOD_PLASMA_SPLASH:
 				// magenta
 				VectorSet(re->shaderRGBA, 0xaf, 0x00, 0xaf);
 				break;
-			case WP_BFG:
+			case MOD_BFG:
 				// dark blue
 				VectorSet(re->shaderRGBA, 0x00, 0x3f, 0xaf);
 				break;
-			case WP_GRAPPLING_HOOK:
+			case MOD_GRAPPLE:
 				//FIXME ql doesn't show hook damage plum
 				// purple
 				VectorSet(re->shaderRGBA, 0x55, 0xa8, 0x8b);
 				break;
 #ifdef MISSIONPACK
-			case WP_NAILGUN:
+			case MOD_NAIL:
 				// turquoise
 				VectorSet(re->shaderRGBA, 0x00, 0xaf, 0x7f);
 				break;
-			case WP_PROX_LAUNCHER:
+			case MOD_PROXIMITY_MINE:
 				// rose
 				VectorSet(re->shaderRGBA, 0xff, 0x00, 0x7f);
 				break;
-			case WP_CHAINGUN:
+			case MOD_CHAINGUN:
 				// light grey
 				VectorSet(re->shaderRGBA, 0xaf, 0xaf, 0xaf);
 				break;
 #endif
-			case WP_HMG:
+			case MOD_HMG:
 				// dark yellowish orange
 				VectorSet(re->shaderRGBA, 0xaf, 0xaf, 0x00);
 				break;
 			default:
 				// light blue
+				CG_Printf("^3WARNING CG_AddDamagePlum() invalid weapon mod '%d' falling back\n", weapon);
 				VectorSet(re->shaderRGBA, 0x38, 0xb0, 0xde);
 				break;
 			}

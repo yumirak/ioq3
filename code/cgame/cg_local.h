@@ -1568,7 +1568,7 @@ void CG_InvulnerabilityJuiced( vec3_t org );
 void CG_LightningBoltBeam( vec3_t start, vec3_t end );
 #endif
 void CG_ScorePlum( int client, vec3_t org, int score );
-void CG_DamagePlum( int client, vec3_t org, int score );
+void CG_DamagePlum( int client, vec3_t org, int score, int mod);
 void CG_GibPlayer(const centity_t *cent);
 void CG_BigExplode( vec3_t playerOrigin );
 

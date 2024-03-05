@@ -447,7 +447,7 @@ CG_DamagePlum
 ==================
 */
 
-void CG_DamagePlum( int client, vec3_t org, int damage ) {
+void CG_DamagePlum( int client, vec3_t org, int damage, int mod) {
 	localEntity_t	*le;
 	refEntity_t		*re;
 	vec3_t			angles;
@@ -458,7 +458,6 @@ void CG_DamagePlum( int client, vec3_t org, int damage ) {
 	}
 
 	le = CG_AllocLocalEntity();
-	le->leFlags = 0;
 	le->leType = LE_DAMAGEPLUM;
 	le->startTime = cg.time;
 	le->endTime = cg.time + 1000;
@@ -467,6 +466,7 @@ void CG_DamagePlum( int client, vec3_t org, int damage ) {
 
 	le->color[0] = le->color[1] = le->color[2] = le->color[3] = 1.0;
 	le->radius = damage;
+	le->leFlags = mod; // weapon
 
 	VectorCopy( org, le->pos.trBase );
 	if (org[2] >= lastPos[2] - 20 && org[2] <= lastPos[2] + 20) {
