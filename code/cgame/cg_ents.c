@@ -248,12 +248,20 @@ static void CG_Item( centity_t *cent ) {
 		memset( &ent, 0, sizeof( ent ) );
 		ent.reType = RT_SPRITE;
 		VectorCopy( cent->lerpOrigin, ent.origin );
-		ent.radius = 14;
+		ent.radius = 14.0 * cg_simpleItemsScale.value;
 		ent.customShader = cg_items[es->modelindex].icon;
 		ent.shaderRGBA[0] = 255;
 		ent.shaderRGBA[1] = 255;
 		ent.shaderRGBA[2] = 255;
 		ent.shaderRGBA[3] = 255;
+
+		if (cg_simpleItemsBob.integer) {
+			scale = 0.005 + cent->currentState.number * 0.00001;
+			cent->lerpOrigin[2] += 4 + cos( ( cg.time + 1000 ) *  scale ) * 4;
+			ent.origin[2] = cent->lerpOrigin[2];
+		}
+		ent.origin[2] += cg_simpleItemsHeightOffset.value;
+
 		trap_R_AddRefEntityToScene(&ent);
 		return;
 	}
