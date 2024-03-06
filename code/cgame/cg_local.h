@@ -1314,7 +1314,8 @@ extern	vmCvar_t		cg_damagePlum;
 extern	vmCvar_t		cg_damagePlumStyle;
 extern	vmCvar_t		cg_damagePlumSize;
 //
-
+extern	vmCvar_t		cg_itemFx;
+extern	vmCvar_t		cg_itemSize;
 
 //
 // cg_main.c

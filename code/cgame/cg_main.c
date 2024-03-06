@@ -251,6 +251,10 @@ vmCvar_t		cg_damagePlum;
 vmCvar_t		cg_damagePlumStyle;
 vmCvar_t		cg_damagePlumSize;
 //
+vmCvar_t		cg_itemFx;
+vmCvar_t		cg_itemSize;
+
+
 typedef struct {
 	vmCvar_t	*vmCvar;
 	char		*cvarName;
@@ -416,6 +420,9 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_damagePlum, "cg_damagePlum", "1", CVAR_USERINFO | CVAR_ARCHIVE},
 	{ &cg_damagePlumStyle, "cg_damagePlumColorStyle", "1", CVAR_USERINFO | CVAR_ARCHIVE},
 	{ &cg_damagePlumSize, "cg_damagePlumSize", "8", CVAR_USERINFO | CVAR_ARCHIVE},
+	//
+	{ &cg_itemFx, "cg_itemFx", "7", CVAR_ARCHIVE },
+	{ &cg_itemSize, "cg_itemSize", "1.0", CVAR_ARCHIVE },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
