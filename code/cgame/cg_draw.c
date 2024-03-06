@@ -1938,6 +1938,36 @@ CROSSHAIR
 */
 
 
+static void CG_CrosshairSetHitColor (void)
+{
+	vec4_t color;
+
+	if (cg.time - cg.damageDoneTime < cg_crosshairHitTime.integer) {
+		switch(cg_crosshairHitStyle.integer){
+			default:
+				VectorSet(color, 1, 0, 0); // red
+				break;
+			case 1:
+				switch(cg.hitSound) {
+					default:
+						VectorSet(color, 0.22, 0.69, 0.87); // light blue
+						break;
+					case 1:
+						VectorSet(color, 1, 1, 0); // yellow
+						break;
+					case 2:
+						VectorSet(color, 1, 0.5, 0); // orange
+						break;
+					case 3:
+						VectorSet(color, 1, 0, 0); // red
+						break;
+				}
+				break;
+		}
+		color[3] = 255.0;
+		trap_R_SetColor(color);
+	}
+}
 /*
 =================
 CG_DrawCrosshair
@@ -1976,11 +2006,13 @@ static void CG_DrawCrosshair(void)
 	w = h = cg_crosshairSize.value;
 
 	// pulse the size of the crosshair when picking up items
+	if (cg_crosshairPulse.integer) {
 	f = cg.time - cg.itemPickupBlendTime;
 	if ( f > 0 && f < ITEM_BLOB_TIME ) {
 		f /= ITEM_BLOB_TIME;
 		w *= ( 1 + f );
 		h *= ( 1 + f );
+	}
 	}
 
 	x = cg_crosshairX.integer;
@@ -1997,6 +2029,9 @@ static void CG_DrawCrosshair(void)
 	}
 	// indexed at 1
 	hShader = cgs.media.crosshairShader[ca];
+
+	if (cg_crosshairHitStyle.integer)
+		CG_CrosshairSetHitColor();
 
 	trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef.width - w) - cgs.screenXBias,
 		y + cg.refdef.y + 0.5 * (cg.refdef.height - h) - cgs.screenYBias,

@@ -316,6 +316,11 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 		armor  = ps->persistant[PERS_ATTACKEE_ARMOR] & 0xff;
 		health = ps->persistant[PERS_ATTACKEE_ARMOR] >> 8;
 		damage = ps->persistant[PERS_DAMAGE] - ops->persistant[PERS_DAMAGE];
+
+		cg.hitSound = Com_Clamp(0, 3, damage / 20);
+		cg.damageDone = damage;
+		cg.damageDoneTime = cg.time;
+
 		switch(cg_hitBeep.integer)
 		{
 			case 1: // low to high pitch
