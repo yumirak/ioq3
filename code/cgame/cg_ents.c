@@ -218,7 +218,350 @@ static void CG_Speaker( centity_t *cent ) {
 	//	ent->s.clientNum = ent->random * 10;
 	cent->miscTime = cg.time + cent->currentState.frame * 100 + cent->currentState.clientNum * 100 * crandom();
 }
+/*
+==================
+CG_DrawTimerPie
+display item respawn timer pie
+==================
+*/
+static void CG_DrawTimerPie (const centity_t *cent)
+{
+	const gitem_t *item;
+	const entityState_t *es;
+	refEntity_t ent;
+	int i;
+	int sliceSize;
+	int totalTime;
+	int currentSlice;
+	qhandle_t currentShader;
+	int num5Chunks;
+	float alpha;
 
+	if (cg_itemTimers.integer == 0) {
+		return;
+	}
+
+	es = &cent->currentState;
+	if (es->modelindex <= 0) {
+		return;
+	}
+
+	item = &bg_itemlist[es->modelindex];
+	alpha = Com_Clamp( 0, 1, cg_itemTimersAlpha.value);
+	// time:  time when it will respawn
+	// time2:  spawn length
+	if (es->time <= 0  ||  es->time2 <= 0) {
+		// will be zero with quad initial spawn
+		return;
+	}
+
+	//FIXME is it all powerups?  regen and flight not in shader list.
+	// 2015-07-09 regen is ok
+	if (! (
+		   item->giType == IT_POWERUP  ||  (item->giType == IT_ARMOR  &&  item->quantity > 5)  ||   (item->giType == IT_HEALTH  &&  item->quantity >= 100)  ||  (item->giType == IT_HOLDABLE  &&  item->giTag == HI_MEDKIT)
+		   )
+		) {
+		return;
+	}
+
+	// icon
+	memset(&ent, 0, sizeof(ent));
+	ent.reType = RT_SPRITE;
+	VectorCopy(cent->lerpOrigin, ent.origin);
+	ent.radius = 3.5 * cg_itemTimersScale.value;
+	if (ent.radius < 0) {
+		return;
+	}
+
+	if (cg_itemTimers.integer == 2) {
+		if(cgs.clientinfo[ cg.snap->ps.clientNum ].team == TEAM_SPECTATOR)
+			ent.renderfx |= RF_DEPTHHACK;
+	}
+
+	//FIXME ql uses different icons?
+	ent.customShader = cg_items[es->modelindex].icon;
+	ent.shaderRGBA[0] = 255;
+	ent.shaderRGBA[1] = 255;
+	ent.shaderRGBA[2] = 255;
+	ent.shaderRGBA[3] = alpha * 255;
+
+	ent.origin[2] += cg_itemTimersOffset.value;
+
+	trap_R_AddRefEntityToScene(&ent);
+
+	// slices
+	memset(&ent, 0, sizeof(ent));
+	ent.reType = RT_SPRITE;
+	VectorCopy(cent->lerpOrigin, ent.origin);
+	ent.radius = 14.0 * cg_itemTimersScale.value;
+	if (ent.radius < 0) {
+		return;
+	}
+
+	if (cg_itemTimers.integer == 2) {
+		if(cgs.clientinfo[ cg.snap->ps.clientNum ].team == TEAM_SPECTATOR)
+			ent.renderfx |= RF_DEPTHHACK;
+	}
+
+	ent.shaderRGBA[0] = 255;
+	ent.shaderRGBA[1] = 255;
+	ent.shaderRGBA[2] = 255;
+	ent.shaderRGBA[3] = alpha * 255;
+
+	ent.origin[2] += cg_itemTimersOffset.value;
+
+	totalTime = es->time2;
+
+	num5Chunks = (totalTime / 1000) / 5;
+
+	if (num5Chunks < 1) {
+		return;
+	}
+
+	sliceSize = num5Chunks;
+
+	if (num5Chunks < 5) {  // less than 25 seconds
+		// this will not work based on chunks of 5 seconds
+		// just divide up into 5 chunks of whatever time
+		sliceSize = 5;
+		ent.customShader = cgs.media.timerSlice[0];
+		currentShader = cgs.media.timerSliceCurrent[0];
+		ent.shaderRGBA[0] = 200;
+		ent.shaderRGBA[1] = 150;
+		ent.shaderRGBA[2] = 50;
+		ent.shaderRGBA[3] = cg_itemTimersAlpha.value * 255;
+	} else if (num5Chunks == 5) {  // equal to 25 seconds
+		ent.customShader = cgs.media.timerSlice[0];
+		currentShader = cgs.media.timerSliceCurrent[0];
+	} else if (num5Chunks > 5  &&  num5Chunks <= 7) {
+		ent.customShader = cgs.media.timerSlice[1];
+		currentShader = cgs.media.timerSliceCurrent[1];
+	} else if (num5Chunks > 7  &&  num5Chunks <= 12) {
+		ent.customShader = cgs.media.timerSlice[2];
+		currentShader = cgs.media.timerSliceCurrent[2];
+	} else {
+		ent.customShader = cgs.media.timerSlice[3];
+		currentShader = cgs.media.timerSliceCurrent[3];
+	}
+	// totalTime checked for zero above
+	currentSlice = floor(((float)(cg.time - (es->time - totalTime)) / (float)(totalTime)) * (float)sliceSize);
+
+	// start at upper right
+	ent.rotation = +((360 / sliceSize) * (sliceSize / 2));
+	for (i = 0;  i < sliceSize;  i++) {
+		if (i == currentSlice) {
+			// hack for time less than 25sec
+			if (num5Chunks < 5) {
+				ent.shaderRGBA[2] = 200;
+			}
+			ent.customShader = currentShader;
+		}
+		trap_R_AddRefEntityToScene(&ent);
+		if (i == currentSlice) {
+			break;
+		}
+		// rotate right
+		ent.rotation -= (360 / sliceSize);
+	}
+}
+/*
+==================
+CG_DrawPowerupRespawnPOI
+==================
+*/
+static void CG_DrawPowerupRespawnPOI (const centity_t *cent)
+{
+	const gitem_t *item;
+	const entityState_t *es;
+	refEntity_t ent;
+	int timeleft;
+	vec3_t org;
+	float minWidth, maxWidth, radius, dist;
+	float alpha;
+
+	if (cg_drawPowerupRespawn.integer == 0) {
+		return;
+	}
+
+	es = &cent->currentState;
+	if (es->modelindex <= 0) {
+		return;
+	}
+
+	// time:  time when it will respawn
+	// time2:  spawn length
+	if (es->time <= 0  ||  es->time2 <= 0) {
+		// will be zero with quad initial spawn
+		return;
+	}
+
+	item = &bg_itemlist[es->modelindex];
+	if (item->giType != IT_POWERUP) {
+		return;
+	}
+
+	timeleft = es->time - cg.time;
+	if (timeleft <= 0 || timeleft > 10000) {
+		return;
+	}
+
+	memset(&ent, 0, sizeof(ent));
+	ent.reType = RT_SPRITE;
+	VectorCopy(cent->lerpOrigin, ent.origin);
+	ent.radius = 14.0 * cg_drawPowerupRespawnScale.value;
+	if (ent.radius < 0) {
+		return;
+	}
+
+	// distance hack
+	VectorCopy(cg.refdef.vieworg, org);
+
+	minWidth = 14.0 * cg_drawPowerupRespawnScale.value;
+	maxWidth = 14.0 * cg_drawPowerupRespawnScale.value;
+
+	radius = maxWidth / 2.0;
+	dist = ICON_SCALE_DISTANCE * (maxWidth / 16.0);
+
+	if (minWidth > 0.1) {
+		dist *= (16.0 / minWidth);
+	}
+
+	ent.radius = radius;
+
+	if (Distance(ent.origin, org) > dist  &&  minWidth > 0.1) {
+		ent.radius = radius * (Distance(ent.origin, org) / dist);
+	}
+
+	ent.renderfx |= RF_DEPTHHACK;
+	alpha = Com_Clamp( 0, 1, cg_drawPowerupRespawnAlpha.value);
+	ent.customShader = cgs.media.powerupIncoming;
+	ent.shaderRGBA[0] = 255;
+	ent.shaderRGBA[1] = 255;
+	ent.shaderRGBA[2] = 255;
+	ent.shaderRGBA[3] = alpha * 255;
+
+	ent.origin[2] += cg_drawPowerupRespawnOffset.value;
+	trap_R_AddRefEntityToScene(&ent);
+}
+/*
+==================
+CG_DrawPowerupAvailable
+==================
+*/
+static void CG_DrawPowerupAvailable (const centity_t *cent)
+{
+	const gitem_t *item;
+	const entityState_t *es;
+	refEntity_t ent;
+	vec3_t org;
+	float minWidth, maxWidth, radius, dist;
+	qhandle_t shader;
+	float fadeStart;
+	float fadeEnd;
+	float frac;
+	float total;
+	float alpha;
+
+	if (cg_drawPowerupAvailable.integer == 0) {
+		return;
+	}
+
+	es = &cent->currentState;
+	if (es->modelindex <= 0) {
+		return;
+	}
+	if (es->eFlags & EF_NODRAW) {
+		return;
+	}
+
+	item = &bg_itemlist[es->modelindex];
+	if (item->giType != IT_POWERUP) {
+		return;
+	}
+
+	memset(&ent, 0, sizeof(ent));
+	ent.reType = RT_SPRITE;
+	VectorCopy(cent->lerpOrigin, ent.origin);
+	ent.radius = 14.0 * cg_drawPowerupAvailableScale.value;
+	if (ent.radius < 0) {
+		return;
+	}
+
+	// distance hack
+	VectorCopy(cg.refdef.vieworg, org);
+
+	minWidth = 14.0 * cg_drawPowerupAvailableScale.value;
+	maxWidth = 14.0 * cg_drawPowerupAvailableScale.value;
+
+	radius = maxWidth / 2.0;
+	dist = ICON_SCALE_DISTANCE * (maxWidth / 16.0);
+
+	if (minWidth > 0.1) {
+		dist *= (16.0 / minWidth);
+	}
+
+	ent.radius = radius;
+
+	if (Distance(ent.origin, org) > dist  &&  minWidth > 0.1) {
+		ent.radius = radius * (Distance(ent.origin, org) / dist);
+	}
+
+	// now distance fade if too close
+	fadeStart = cg_drawPowerupAvailableFadeStart.value;
+	fadeEnd = cg_drawPowerupAvailableFadeEnd.value;
+
+	dist = Distance(ent.origin, org);
+	if (dist < fadeEnd) {
+		return;
+	}
+	if (dist < fadeStart) {
+		total = fadeStart - fadeEnd;
+		if (total > 0.0f) {
+			frac = (fadeStart - dist) / total;
+		} else {
+			// invalid values for fadeStart and/or fadeEnd, ignoring
+			frac = 0.0f;
+		}
+		ent.shaderRGBA[3] = 255 - (255.0f * frac);
+	} else {
+		ent.shaderRGBA[3] = 255;
+	}
+
+	ent.renderfx |= RF_DEPTHHACK;
+
+	switch(item->giTag)
+	{
+		case PW_QUAD:
+			shader = cgs.media.quadAvailable;
+			break;
+		case PW_BATTLESUIT:
+			shader = cgs.media.bsAvailable;
+			break;
+		case PW_HASTE:
+			shader = cgs.media.hasteAvailable;
+			break;
+		case PW_INVIS:
+			shader = cgs.media.invisAvailable;
+			break;
+		case PW_REGEN:
+			shader = cgs.media.regenAvailable;
+			break;
+		default:
+			// Flight not included in QL
+			shader = cg_items[es->modelindex].icon;
+			break;
+	}
+	alpha = Com_Clamp( 0, 1, cg_drawPowerupAvailableAlpha.value);
+	ent.customShader = shader;
+	ent.shaderRGBA[0] = 255;
+	ent.shaderRGBA[1] = 255;
+	ent.shaderRGBA[2] = 255;
+	ent.shaderRGBA[3] = alpha * 255;
+
+	ent.origin[2] += cg_drawPowerupAvailableOffset.value;
+
+	trap_R_AddRefEntityToScene(&ent);
+}
 /*
 ==================
 CG_Item
@@ -236,6 +579,14 @@ static void CG_Item( centity_t *cent ) {
 	es = &cent->currentState;
 	if ( es->modelindex >= bg_numItems ) {
 		CG_Error( "Bad item index %i on entity", es->modelindex );
+	}
+
+	// ql ingame icons
+	if (es->eFlags & EF_NODRAW) {
+		CG_DrawTimerPie(cent);
+		CG_DrawPowerupRespawnPOI(cent);
+	} else {
+		CG_DrawPowerupAvailable(cent);
 	}
 
 	// if set to invisible, skip

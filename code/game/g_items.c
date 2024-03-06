@@ -499,6 +499,9 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 	if ( !respawn ) {
 		return;
 	}
+	// for ql timer pies
+	ent->s.time = level.time + respawn * 1000;
+	ent->s.time2 = respawn * 1000;
 
 	// play the normal pickup sound
 	if (predict) {
@@ -560,7 +563,14 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 	// picked up items still stay around, they just don't
 	// draw anything.  This allows respawnable items
 	// to be placed on movers.
-	ent->r.svFlags |= SVF_NOCLIENT;
+
+	// ql timer pies..  send no draw items to client
+
+	// commenting this creates double pickup sounds if cg_predict.c isn't changed  -- 2019-02-14 added EF_NODRAW check in cg_predict.c
+	// ent->r.svFlags |= SVF_NOCLIENT;
+	if (ent->item->giType == IT_POWERUP) {
+		ent->r.svFlags |= SVF_BROADCAST;
+	}
 	ent->s.eFlags |= EF_NODRAW;
 	ent->r.contents = 0;
 

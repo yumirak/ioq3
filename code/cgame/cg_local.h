@@ -93,6 +93,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define NUM_REWARD_VARIATIONS 3
 
+#define ICON_SCALE_DISTANCE 200.0
+
 typedef enum {
 	FOOTSTEP_NORMAL,
 	FOOTSTEP_BOOT,
@@ -1044,6 +1046,16 @@ typedef struct {
 	sfxHandle_t invisibilityPickupVo;
 	sfxHandle_t regenPickupVo;
 
+	qhandle_t powerupIncoming;
+	qhandle_t regenAvailable;
+	qhandle_t quadAvailable;
+	qhandle_t invisAvailable;
+	qhandle_t hasteAvailable;
+	qhandle_t bsAvailable;
+
+	qhandle_t timerSlice[4];
+	qhandle_t timerSliceCurrent[4];
+
 } cgMedia_t;
 
 
@@ -1316,6 +1328,22 @@ extern	vmCvar_t		cg_damagePlumSize;
 //
 extern	vmCvar_t		cg_itemFx;
 extern	vmCvar_t		cg_itemSize;
+//
+extern	vmCvar_t	cg_itemTimers;
+extern	vmCvar_t	cg_itemTimersScale;
+extern	vmCvar_t	cg_itemTimersOffset;
+extern	vmCvar_t	cg_itemTimersAlpha;
+extern	vmCvar_t	cg_drawPowerupRespawn;
+extern	vmCvar_t	cg_drawPowerupRespawnScale;
+extern	vmCvar_t	cg_drawPowerupRespawnOffset;
+extern	vmCvar_t	cg_drawPowerupRespawnAlpha;
+extern	vmCvar_t	cg_drawPowerupAvailable;
+extern	vmCvar_t	cg_drawPowerupAvailableScale;
+extern	vmCvar_t	cg_drawPowerupAvailableOffset;
+extern	vmCvar_t	cg_drawPowerupAvailableAlpha;
+extern	vmCvar_t	cg_drawPowerupAvailableFadeStart;
+extern	vmCvar_t	cg_drawPowerupAvailableFadeEnd;
+//
 
 //
 // cg_main.c

@@ -253,7 +253,21 @@ vmCvar_t		cg_damagePlumSize;
 //
 vmCvar_t		cg_itemFx;
 vmCvar_t		cg_itemSize;
-
+//
+vmCvar_t	cg_itemTimers;
+vmCvar_t	cg_itemTimersScale;
+vmCvar_t	cg_itemTimersOffset;
+vmCvar_t	cg_itemTimersAlpha;
+vmCvar_t	cg_drawPowerupRespawn;
+vmCvar_t	cg_drawPowerupRespawnScale;
+vmCvar_t	cg_drawPowerupRespawnOffset;
+vmCvar_t	cg_drawPowerupRespawnAlpha;
+vmCvar_t	cg_drawPowerupAvailable;
+vmCvar_t	cg_drawPowerupAvailableScale;
+vmCvar_t	cg_drawPowerupAvailableOffset;
+vmCvar_t	cg_drawPowerupAvailableAlpha;
+vmCvar_t	cg_drawPowerupAvailableFadeStart;
+vmCvar_t	cg_drawPowerupAvailableFadeEnd;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -423,6 +437,23 @@ static cvarTable_t cvarTable[] = {
 	//
 	{ &cg_itemFx, "cg_itemFx", "7", CVAR_ARCHIVE },
 	{ &cg_itemSize, "cg_itemSize", "1.0", CVAR_ARCHIVE },
+	//
+	{ &cg_itemTimers,"cg_itemTimers", "1", CVAR_ARCHIVE },
+	{ &cg_itemTimersScale, "cg_itemTimersScale", "1.3", CVAR_ARCHIVE },
+	{ &cg_itemTimersOffset, "cg_itemTimersOffset", "8.0", CVAR_ARCHIVE },
+	{ &cg_itemTimersAlpha, "cg_itemTimersAlpha", "1.0", CVAR_ARCHIVE },
+
+	{ &cg_drawPowerupRespawn,"cg_drawPowerupRespawn", "1", CVAR_ARCHIVE },
+	{ &cg_drawPowerupRespawnScale,"cg_drawPowerupRespawnScale", "1.0", CVAR_ARCHIVE },
+	{ &cg_drawPowerupRespawnOffset,"cg_drawPowerupRespawnOffset", "90.0", CVAR_ARCHIVE },
+	{ &cg_drawPowerupRespawnAlpha,"cg_drawPowerupRespawnAlpha", "1.0", CVAR_ARCHIVE },
+
+	{ &cg_drawPowerupAvailable, "cg_drawPowerupAvailable", "1", CVAR_ARCHIVE },
+	{ &cg_drawPowerupAvailableScale, "cg_drawPowerupAvailableScale", "1.0", CVAR_ARCHIVE },
+	{ &cg_drawPowerupAvailableOffset, "cg_drawPowerupAvailableOffset", "90.0", CVAR_ARCHIVE },
+	{ &cg_drawPowerupAvailableAlpha,"cg_drawPowerupAvailableAlpha", "1.0", CVAR_ARCHIVE },
+	{ &cg_drawPowerupAvailableFadeStart,"cg_drawPowerupAvailableFadeStart", "705.0", CVAR_ARCHIVE },
+	{ &cg_drawPowerupAvailableFadeEnd, "cg_drawPowerupAvailableFadeEnd", "520.0", CVAR_ARCHIVE },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -1225,6 +1256,22 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.flagShaders[1] = trap_R_RegisterShaderNoMip("ui/assets/statusbar/flag_capture.tga");
 	cgs.media.flagShaders[2] = trap_R_RegisterShaderNoMip("ui/assets/statusbar/flag_missing.tga");
 #endif
+	cgs.media.powerupIncoming = trap_R_RegisterShaderNoMip("gfx/2d/powerup/incoming");
+	cgs.media.regenAvailable = trap_R_RegisterShaderNoMip("gfx/2d/powerup/regen");
+	cgs.media.quadAvailable = trap_R_RegisterShaderNoMip("gfx/2d/powerup/quad");
+	cgs.media.invisAvailable = trap_R_RegisterShaderNoMip("gfx/2d/powerup/invis");
+	cgs.media.hasteAvailable = trap_R_RegisterShaderNoMip("gfx/2d/powerup/haste");
+	cgs.media.bsAvailable = trap_R_RegisterShaderNoMip("gfx/2d/powerup/bs");
+
+	cgs.media.timerSlice[0] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice5");
+	cgs.media.timerSlice[1] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice7");
+	cgs.media.timerSlice[2] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice12");
+	cgs.media.timerSlice[3] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice24");
+	cgs.media.timerSliceCurrent[0] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice5_current");
+	cgs.media.timerSliceCurrent[1] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice7_current");
+	cgs.media.timerSliceCurrent[2] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice12_current");
+	cgs.media.timerSliceCurrent[3] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice24_current");
+
 	CG_ClearParticles ();
 /*
 	for (i=1; i<MAX_PARTICLES_AREAS; i++)
