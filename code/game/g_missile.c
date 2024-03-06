@@ -574,6 +574,7 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.weapon = WP_GRENADE_LAUNCHER;
 	bolt->s.eFlags = EF_BOUNCE_HALF;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.clientNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = 100;
 	bolt->splashDamage = 100;

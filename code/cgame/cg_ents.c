@@ -414,10 +414,12 @@ CG_Missile
 static void CG_Missile( centity_t *cent ) {
 	refEntity_t			ent;
 	entityState_t		*s1;
+	clientInfo_t		*ci;
 	const weaponInfo_t		*weapon;
 //	int	col;
 
 	s1 = &cent->currentState;
+	ci = &cgs.clientinfo[ s1->clientNum ];
 	if ( s1->weapon >= WP_NUM_WEAPONS ) {
 		s1->weapon = 0;
 	}
@@ -481,6 +483,13 @@ static void CG_Missile( centity_t *cent ) {
 	ent.skinNum = cg.clientFrame & 1;
 	ent.hModel = weapon->missileModel;
 	ent.renderfx = weapon->missileRenderfx | RF_NOSHADOW;
+
+	if (cent->currentState.weapon == WP_GRENADE_LAUNCHER) {
+		// Can be forced using cg_teamColors / cg_enemyColors
+		ent.shaderRGBA[0] = ci->color1[0] * 255;
+		ent.shaderRGBA[1] = ci->color1[1] * 255;
+		ent.shaderRGBA[2] = ci->color1[2] * 255;
+	}
 
 #ifdef MISSIONPACK
 	if ( cent->currentState.weapon == WP_PROX_LAUNCHER ) {
