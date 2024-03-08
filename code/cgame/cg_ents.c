@@ -551,12 +551,12 @@ static void CG_DrawPowerupAvailable (const centity_t *cent)
 			shader = cg_items[es->modelindex].icon;
 			break;
 	}
-	alpha = Com_Clamp( 0, 1, cg_drawPowerupAvailableAlpha.value);
+	alpha = Com_Clamp( 0, 1, cg_drawPowerupAvailableAlpha.value) * 255;
 	ent.customShader = shader;
 	ent.shaderRGBA[0] = 255;
 	ent.shaderRGBA[1] = 255;
 	ent.shaderRGBA[2] = 255;
-	ent.shaderRGBA[3] = alpha * 255;
+	ent.shaderRGBA[3] *= alpha / 255.0f;
 
 	ent.origin[2] += cg_drawPowerupAvailableOffset.value;
 
