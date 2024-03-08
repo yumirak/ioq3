@@ -538,7 +538,6 @@ CG_DrawStatusBar
 ================
 */
 #ifndef MISSIONPACK
-#define STATUSBAR_HEIGHT 60
 static void CG_DrawStatusBar( void ) {
 	int			color;
 	centity_t	*cent;

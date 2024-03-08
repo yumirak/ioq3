@@ -1458,77 +1458,77 @@ WEAPON SELECTION
 CG_DrawWeaponSelect
 ===================
 */
+#define AMMO_ICON_SIZE 16
 void CG_DrawWeaponSelect( void ) {
 	int		i;
 	int		bits;
 	int		count;
-	int		x, y, w;
-	char	*name;
-	float	*color;
+	int		x, y;
+	int		dx, dy;
+	int		weaponSelect;
+	char	buf[4];
 
 	// don't display if dead
-	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
+	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 || !cg_drawWeaponBar.integer  ) {
 		return;
 	}
 
-	color = CG_FadeColor( cg.weaponSelectTime, WEAPON_SELECT_TIME );
-	if ( !color ) {
-		return;
-	}
-	trap_R_SetColor( color );
-
-	// showing weapon select clears pickup item display, but not the blend blob
-	cg.itemPickupTime = 0;
+	weaponSelect = cg_drawWeaponBar.integer ;
 
 	// count the number of weapons owned
 	bits = cg.snap->ps.stats[ STAT_WEAPONS ];
 	count = 0;
-	for ( i = 1 ; i < MAX_WEAPONS ; i++ ) {
+	for ( i = WP_MACHINEGUN ; i < MAX_WEAPONS ; i++ ) {
 		if ( bits & ( 1 << i ) ) {
 			count++;
 		}
 	}
 
-	x = 320 - count * 20;
-	y = cgs.screenYmax + 1 - 100; // - STATUSBAR_HEIGHT - 40
+	switch(weaponSelect)
+	{
+		case 2: // horizontal
+			x = 320 - count * 28;
+			y = cgs.screenYmax - STATUSBAR_HEIGHT - 40;
+			dx = 56;
+			dy = 0;
+			break;
+		default: // vertical left
+			x = cgs.screenXmin + 6;
+			y = 100; //240 - count * 10; // centered
+			dx = 0;
+			dy = 20;
+			break;
+	}
 
-	for ( i = 1 ; i < MAX_WEAPONS ; i++ ) {
+	for ( i = WP_MACHINEGUN ; i < MAX_WEAPONS ; i++ ) {
 		if ( !( bits & ( 1 << i ) ) ) {
 			continue;
 		}
 
 		CG_RegisterWeapon( i );
 
-		// draw weapon icon
-		CG_DrawPic( x, y, 32, 32, cg_weapons[i].weaponIcon );
-
 		// draw selection marker
 		if ( i == cg.weaponSelect ) {
-			CG_DrawPic( x-4, y-4, 40, 40, cgs.media.selectShader );
+			CG_DrawPic( x - 2, y - 2, (AMMO_ICON_SIZE*3) + 8, AMMO_ICON_SIZE+4, cgs.media.weaplit);
 		}
+
+		// draw weapon icon
+		CG_DrawPic( x, y, AMMO_ICON_SIZE, AMMO_ICON_SIZE, cg_weapons[i].weaponIcon );
 
 		// no ammo cross on top
-		if ( !cg.snap->ps.ammo[ i ] ) {
-			CG_DrawPic( x, y, 32, 32, cgs.media.noammoShader );
+		if ( weaponSelect > 0 && cg.snap->ps.ammo[ i ] > -1 ) {
+
+			if ( !cg.snap->ps.ammo[ i ] )
+				CG_DrawPic( x, y, AMMO_ICON_SIZE, AMMO_ICON_SIZE, cgs.media.noammoShader );
+
+			// ammo counter
+			Com_sprintf( buf, sizeof(buf),"%i", cg.snap->ps.ammo[ i ] );
+			CG_DrawString( x + AMMO_ICON_SIZE + 2, y-1, buf, UI_BIGFONT, NULL);
 		}
-
-		x += 40;
+		x += dx;
+		y += dy;
 	}
-
-	// draw the selected name
-	if ( cg_weapons[ cg.weaponSelect ].item ) {
-		name = cg_weapons[ cg.weaponSelect ].item->pickup_name;
-		if ( name ) {
-			w = CG_DrawStrlen( name, UI_BIGFONT);// * BIGCHAR_WIDTH;
-			x = ( SCREEN_WIDTH - w ) / 2;
-			CG_DrawBigStringColor(x, y - 22, name, color);
-		}
-	}
-
-	trap_R_SetColor( NULL );
 }
-
-
 /*
 ===============
 CG_WeaponSelectable

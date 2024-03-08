@@ -268,6 +268,8 @@ vmCvar_t	cg_drawPowerupAvailableOffset;
 vmCvar_t	cg_drawPowerupAvailableAlpha;
 vmCvar_t	cg_drawPowerupAvailableFadeStart;
 vmCvar_t	cg_drawPowerupAvailableFadeEnd;
+//
+vmCvar_t	cg_drawWeaponBar;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -454,6 +456,8 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_drawPowerupAvailableAlpha,"cg_drawPowerupAvailableAlpha", "1.0", CVAR_ARCHIVE },
 	{ &cg_drawPowerupAvailableFadeStart,"cg_drawPowerupAvailableFadeStart", "705.0", CVAR_ARCHIVE },
 	{ &cg_drawPowerupAvailableFadeEnd, "cg_drawPowerupAvailableFadeEnd", "520.0", CVAR_ARCHIVE },
+	//
+	{ &cg_drawWeaponBar, "cg_weaponBar", "1", CVAR_ARCHIVE },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -1053,6 +1057,7 @@ static void CG_RegisterGraphics( void ) {
 
 	cgs.media.tracerShader = trap_R_RegisterShader( "gfx/misc/tracer" );
 	cgs.media.selectShader = trap_R_RegisterShader( "gfx/2d/select" );
+	cgs.media.weaplit = trap_R_RegisterShader("ui/assets/hud/weaplit2");
 
 	for ( i = 0 ; i < NUM_CROSSHAIRS ; i++ )
 		cgs.media.crosshairShader[i] = trap_R_RegisterShaderNoMip( va("gfx/2d/crosshair%d", i) );

@@ -91,6 +91,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define DEFAULT_REDTEAM_NAME		"Stroggs"
 #define DEFAULT_BLUETEAM_NAME		"Pagans"
 
+#define STATUSBAR_HEIGHT 60
+
 #define NUM_REWARD_VARIATIONS 3
 
 #define ICON_SCALE_DISTANCE 200.0
@@ -736,6 +738,7 @@ typedef struct {
 	qhandle_t	connectionShader;
 
 	qhandle_t	selectShader;
+	qhandle_t	weaplit;
 	qhandle_t	viewBloodShader;
 	qhandle_t	tracerShader;
 	qhandle_t	crosshairShader[NUM_CROSSHAIRS];
@@ -1344,7 +1347,7 @@ extern	vmCvar_t	cg_drawPowerupAvailableAlpha;
 extern	vmCvar_t	cg_drawPowerupAvailableFadeStart;
 extern	vmCvar_t	cg_drawPowerupAvailableFadeEnd;
 //
-
+extern	vmCvar_t	cg_drawWeaponBar;
 //
 // cg_main.c
 //
