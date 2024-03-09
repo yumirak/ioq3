@@ -1084,45 +1084,46 @@ static float CG_DrawScores( float y ) {
 	s2 = cgs.scores2;
 
 	scoreHeight = CG_DrawStringLineHeight( UI_BIGFONT ) + 6;
-	y -= scoreHeight;
+	w = CG_DrawStrlen( "000", UI_BIGFONT );
+	x = cgs.screenXmax - w;
+	y = cgs.screenYmax - scoreHeight;
 
-	y1 = y;
+	y1 = y + scoreHeight;;
 
 	// draw from the right side to left
 	if ( cgs.gametype >= GT_TEAM ) {
-		x = cgs.screenXmax;
-		color[0] = 0.0f;
-		color[1] = 0.0f;
+		// BLUE
+		color[0] = 0.3f;
+		color[1] = 0.3f;
 		color[2] = 1.0f;
-		color[3] = 0.33f;
+		color[3] = 0.5f;
 		s = va( "%2i", s2 );
-		w = CG_DrawStrlen( s, UI_BIGFONT ) + 8;
-		x -= w;
-		CG_FillRect( x, y-4,  w, scoreHeight, color );
+		CG_FillRect( x, y,  w, scoreHeight, color );
 		if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE ) {
-			CG_DrawPic( x, y-4, w, scoreHeight, cgs.media.selectShader );
+			CG_DrawPic( x, y, w, scoreHeight, cgs.media.selectShader );
 		}
-		CG_DrawBigString( x + 2, y, s, 1.0F);
+		CG_DrawString( x - 2 + w/2, y+2, s, UI_BIGFONT | UI_CENTER | UI_DROPSHADOW, NULL);
+
+		y -= scoreHeight;
 
 		if ( cgs.gametype == GT_CTF ) {
 			// Display flag status
 			item = BG_FindItemForPowerup( PW_BLUEFLAG );
 
 			if (item) {
-				y1 = y - scoreHeight;
+
 				if( cgs.blueflag >= 0 && cgs.blueflag <= 2 ) {
-					CG_DrawPic( x, y1-4, w, scoreHeight, cgs.media.blueFlagShader[cgs.blueflag] );
+					CG_DrawPic( x - w, y1, w, scoreHeight, cgs.media.blueFlagShader[cgs.blueflag] );
 				}
 			}
 		}
-
 #ifdef MISSIONPACK
 		if ( cgs.gametype == GT_1FCTF ) {
 			// Display flag status
 			item = BG_FindItemForPowerup( PW_NEUTRALFLAG );
 
 			if (item) {
-				y1 = y - scoreHeight;
+
 				if( cgs.flagStatus >= 0 && cgs.flagStatus <= 4 ) {
 					vec4_t color = {1, 1, 1, 1};
 					int index = 0;
@@ -1142,32 +1143,33 @@ static float CG_DrawScores( float y ) {
 			}
 		}
 #endif
-
+		// RED
 		color[0] = 1.0f;
-		color[1] = 0.0f;
-		color[2] = 0.0f;
-		color[3] = 0.33f;
+		color[1] = 0.3f;
+		color[2] = 0.3f;
+		color[3] = 0.5f;
 		s = va( "%2i", s1 );
-		w = CG_DrawStrlen( s, UI_BIGFONT ) + 8;
-		x -= w;
-		CG_FillRect( x, y-4,  w, scoreHeight, color );
+		CG_FillRect( x, y,  w, scoreHeight, color );
 		if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED ) {
-			CG_DrawPic( x, y-4, w, scoreHeight, cgs.media.selectShader );
+			CG_DrawPic( x, y, w, scoreHeight, cgs.media.selectShader );
 		}
-		CG_DrawBigString( x + 2, y, s, 1.0F);
+		CG_DrawString( x - 2 + w/2, y+2, s, UI_BIGFONT | UI_CENTER | UI_DROPSHADOW, NULL);
+
+		y -= scoreHeight;
 
 		if ( cgs.gametype == GT_CTF ) {
 			// Display flag status
 			item = BG_FindItemForPowerup( PW_REDFLAG );
 
 			if (item) {
-				y1 = y - scoreHeight;
+
 				if( cgs.redflag >= 0 && cgs.redflag <= 2 ) {
-					CG_DrawPic( x, y1-4, w, scoreHeight, cgs.media.redFlagShader[cgs.redflag] );
+					CG_DrawPic( x - w, y1, w, scoreHeight, cgs.media.redFlagShader[cgs.redflag] );
 				}
 			}
 		}
 
+		// frag/capture limit
 		if ( cgs.gametype >= GT_CTF ) {
 			v = cgs.capturelimit;
 		} else {
@@ -1175,15 +1177,11 @@ static float CG_DrawScores( float y ) {
 		}
 		if ( v ) {
 			s = va( "%2i", v );
-			w = CG_DrawStrlen( s, UI_BIGFONT ) + 8;
-			x -= w;
-			CG_DrawBigString( x + 2, y, s, 1.0F);
+			CG_DrawString( x - 2 + w/2, y+2, s, UI_BIGFONT | UI_CENTER | UI_DROPSHADOW, NULL);
 		}
 
 	} else {
 		qboolean	spectator;
-
-		x = cgs.screenXmax;
 		score = cg.snap->ps.persistant[PERS_SCORE];
 		spectator = ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR );
 
@@ -1193,57 +1191,41 @@ static float CG_DrawScores( float y ) {
 		}
 		if ( s2 != SCORE_NOT_PRESENT ) {
 			s = va( "%2i", s2 );
-			w = CG_DrawStrlen( s, UI_BIGFONT ) + 8;
-			x -= w;
+			color[0] = 1.0f;
+			color[1] = 0.3f;
+			color[2] = 0.3f;
+			color[3] = 0.5f;
+			CG_FillRect( x, y,  w, scoreHeight, color );
+			CG_DrawString( x - 2 + w/2, y+2, s, UI_BIGFONT | UI_CENTER | UI_DROPSHADOW, NULL);
 			if ( !spectator && score == s2 && score != s1 ) {
-				color[0] = 1.0f;
-				color[1] = 0.0f;
-				color[2] = 0.0f;
-				color[3] = 0.33f;
-				CG_FillRect( x, y-4,  w, scoreHeight, color );
-				CG_DrawPic( x, y-4, w, scoreHeight, cgs.media.selectShader );
-			} else {
-				color[0] = 0.5f;
-				color[1] = 0.5f;
-				color[2] = 0.5f;
-				color[3] = 0.33f;
-				CG_FillRect( x, y-4,  w, scoreHeight, color );
+				CG_DrawPic( x, y, w, scoreHeight, cgs.media.selectShader );
 			}
-			CG_DrawBigString( x + 2, y, s, 1.0F);
 		}
+		y -= scoreHeight;
 
 		// first place
 		if ( s1 != SCORE_NOT_PRESENT ) {
 			s = va( "%2i", s1 );
-			w = CG_DrawStrlen( s, UI_BIGFONT ) + 8;
-			x -= w;
+			color[0] = 0.3f;
+			color[1] = 0.3f;
+			color[2] = 1.0f;
+			color[3] = 0.5f;
+			CG_FillRect( x, y,  w, scoreHeight, color );
+			CG_DrawString( x - 2 + w/2 , y+2, s, UI_BIGFONT | UI_CENTER | UI_DROPSHADOW, NULL);
 			if ( !spectator && score == s1 ) {
-				color[0] = 0.0f;
-				color[1] = 0.0f;
-				color[2] = 1.0f;
-				color[3] = 0.33f;
-				CG_FillRect( x, y-4,  w, scoreHeight, color );
-				CG_DrawPic( x, y-4, w, scoreHeight, cgs.media.selectShader );
-			} else {
-				color[0] = 0.5f;
-				color[1] = 0.5f;
-				color[2] = 0.5f;
-				color[3] = 0.33f;
-				CG_FillRect( x, y-4,  w, scoreHeight, color );
+				CG_DrawPic( x, y, w, scoreHeight, cgs.media.selectShader );
 			}
-			CG_DrawBigString( x + 2, y, s, 1.0F);
 		}
+		y -= scoreHeight;
 
 		if ( cgs.fraglimit ) {
 			s = va( "%2i", cgs.fraglimit );
-			w = CG_DrawStrlen( s, UI_BIGFONT ) + 8;
-			x -= w;
-			CG_DrawBigString( x + 2, y, s, 1.0F);
+			CG_DrawString( x - 2 + w/2 , y+2, s, UI_BIGFONT | UI_CENTER | UI_DROPSHADOW, NULL);
 		}
 
 	}
 
-	return y1 - 8;
+	return y;
 }
 #endif // MISSIONPACK
 

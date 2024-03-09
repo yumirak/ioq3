@@ -1088,12 +1088,12 @@ static void CG_RegisterGraphics( void ) {
 #endif
 		cgs.media.redFlagModel = trap_R_RegisterModel( "models/flags/r_flag.md3" );
 		cgs.media.blueFlagModel = trap_R_RegisterModel( "models/flags/b_flag.md3" );
-		cgs.media.redFlagShader[0] = trap_R_RegisterShaderNoMip( "icons/iconf_red1" );
-		cgs.media.redFlagShader[1] = trap_R_RegisterShaderNoMip( "icons/iconf_red2" );
-		cgs.media.redFlagShader[2] = trap_R_RegisterShaderNoMip( "icons/iconf_red3" );
-		cgs.media.blueFlagShader[0] = trap_R_RegisterShaderNoMip( "icons/iconf_blu1" );
-		cgs.media.blueFlagShader[1] = trap_R_RegisterShaderNoMip( "icons/iconf_blu2" );
-		cgs.media.blueFlagShader[2] = trap_R_RegisterShaderNoMip( "icons/iconf_blu3" );
+		cgs.media.redFlagShader[0] = trap_R_RegisterShaderNoMip( "gfx/2d/flag_status/red_flag_at_base.png" );
+		cgs.media.redFlagShader[1] = trap_R_RegisterShaderNoMip( "gfx/2d/flag_status/red_flag_taken.png" );
+		cgs.media.redFlagShader[2] = trap_R_RegisterShaderNoMip( "gfx/2d/flag_status/red_flag_dropped.png" );
+		cgs.media.blueFlagShader[0] = trap_R_RegisterShaderNoMip( "gfx/2d/flag_status/blue_flag_at_base.png" );
+		cgs.media.blueFlagShader[1] = trap_R_RegisterShaderNoMip( "gfx/2d/flag_status/blue_flag_taken.png" );
+		cgs.media.blueFlagShader[2] = trap_R_RegisterShaderNoMip( "gfx/2d/flag_status/blue_flag_dropped.png" );
 #ifdef MISSIONPACK
 		cgs.media.flagPoleModel = trap_R_RegisterModel( "models/flag2/flagpole.md3" );
 		cgs.media.flagFlapModel = trap_R_RegisterModel( "models/flag2/flagflap3.md3" );
