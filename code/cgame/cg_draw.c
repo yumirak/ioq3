@@ -1088,8 +1088,6 @@ static float CG_DrawScores( float y ) {
 	x = cgs.screenXmax - w;
 	y = cgs.screenYmax - scoreHeight;
 
-	y1 = y + scoreHeight;;
-
 	// draw from the right side to left
 	if ( cgs.gametype >= GT_TEAM ) {
 		// BLUE
@@ -1111,7 +1109,7 @@ static float CG_DrawScores( float y ) {
 			item = BG_FindItemForPowerup( PW_BLUEFLAG );
 
 			if (item) {
-
+				y1 = y + scoreHeight;
 				if( cgs.blueflag >= 0 && cgs.blueflag <= 2 ) {
 					CG_DrawPic( x - w, y1, w, scoreHeight, cgs.media.blueFlagShader[cgs.blueflag] );
 				}
@@ -1123,7 +1121,7 @@ static float CG_DrawScores( float y ) {
 			item = BG_FindItemForPowerup( PW_NEUTRALFLAG );
 
 			if (item) {
-
+				y1 = y + scoreHeight;
 				if( cgs.flagStatus >= 0 && cgs.flagStatus <= 4 ) {
 					vec4_t color = {1, 1, 1, 1};
 					int index = 0;
@@ -1162,7 +1160,7 @@ static float CG_DrawScores( float y ) {
 			item = BG_FindItemForPowerup( PW_REDFLAG );
 
 			if (item) {
-
+				y1 = y + scoreHeight;
 				if( cgs.redflag >= 0 && cgs.redflag <= 2 ) {
 					CG_DrawPic( x - w, y1, w, scoreHeight, cgs.media.redFlagShader[cgs.redflag] );
 				}
