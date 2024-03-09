@@ -82,7 +82,7 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade 
 	char	string_score[5];
 	char	string_acc[5];
 	char	string_ping[5];
-	char	string_time[5];
+	char	string_time[8];
 	char	string_name[128];
 	char	string_wl[8];
 	vec3_t	headAngles;
@@ -137,8 +137,8 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade 
 				"");
 			Com_sprintf(string_ping, sizeof(string_ping),
 				"%i",score->ping);
-			Com_sprintf(string_time, sizeof(string_time),
-				"%i", score->time);
+			Com_sprintf(string_time, sizeof (string_time),
+				"%2i:%02i", score->time/60, score->time % 60);
 			Com_sprintf(string_name, sizeof(string_name),
 				"%s", ci->name);
 			break;
@@ -149,8 +149,8 @@ static void CG_DrawClientScore( int y, score_t *score, float *color, float fade 
 				"%i%%", score->accuracy);
 			Com_sprintf(string_ping, sizeof(string_ping),
 				"%i", score->ping);
-			Com_sprintf(string_time, sizeof(string_time),
-				"%i", score->time);
+			Com_sprintf(string_time, sizeof (string_time),
+				"%2i:%02i", score->time/60, score->time % 60);
 			Com_sprintf(string_name, sizeof(string_name),
 				"%s", ci->name);
 			break;

@@ -302,6 +302,7 @@ typedef struct {
 	int				captures;
 	qboolean	perfect;
 	int				team;
+	int				killdeath[2];
 } score_t;
 
 // each client has an associated clientInfo_t

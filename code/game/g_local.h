@@ -247,6 +247,7 @@ typedef struct {
 	int			teamVoteCount;		// to prevent people from constantly calling votes
 	qboolean	teamInfo;			// send team overlay updates?
 	int 		damagePlums; 		//rat damage plums
+	int			killdeath[2];
 } clientPersistant_t;
 
 
