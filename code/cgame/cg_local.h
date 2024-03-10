@@ -226,12 +226,12 @@ typedef enum {
 	LE_FADE_RGB,
 	LE_SCALE_FADE,
 	LE_SCOREPLUM,
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	LE_KAMIKAZE,
 	LE_INVULIMPACT,
 	LE_INVULJUICED,
 	LE_SHOWREFENTITY,
-#endif
+//#endif
 	LE_DAMAGEPLUM
 } leType_t;
 
@@ -757,10 +757,10 @@ typedef struct {
 	qhandle_t	plasmaBallShader;
 	qhandle_t	waterBubbleShader;
 	qhandle_t	bloodTrailShader;
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	qhandle_t	nailPuffShader;
 	qhandle_t	blueProxMine;
-#endif
+//#endif
 
 	qhandle_t	numberShaders[11];
 
@@ -809,7 +809,7 @@ typedef struct {
 	qhandle_t	teleportEffectModel;
 	qhandle_t	deathEffectShader;
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	qhandle_t	kamikazeEffectModel;
 	qhandle_t	kamikazeShockWave;
 	qhandle_t	kamikazeHeadModel;
@@ -824,7 +824,7 @@ typedef struct {
 	qhandle_t	dustPuffShader;
 	qhandle_t	heartShader;
 	qhandle_t	invulnerabilityPowerupModel;
-#endif
+//#endif
 
 	// scoreboard headers
 	qhandle_t	scoreboardName;
@@ -861,7 +861,7 @@ typedef struct {
 	//sfxHandle_t	sfx_railg;
 	sfxHandle_t	sfx_rockexp;
 	sfxHandle_t	sfx_plasmaexp;
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	sfxHandle_t	sfx_proxexp;
 	sfxHandle_t	sfx_nghit;
 	sfxHandle_t	sfx_nghitflesh;
@@ -881,7 +881,7 @@ typedef struct {
 	sfxHandle_t obeliskHitSound2;
 	sfxHandle_t obeliskHitSound3;
 	sfxHandle_t	obeliskRespawnSound;
-#endif
+//#endif
 	sfxHandle_t	winnerSound;
 	sfxHandle_t	loserSound;
 	sfxHandle_t	gibSound[4];
@@ -943,9 +943,9 @@ typedef struct {
 	sfxHandle_t flightSound;
 	sfxHandle_t medkitSound;
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	sfxHandle_t weaponHoverSound;
-#endif
+//#endif
 
 	// teamplay sounds
 	sfxHandle_t captureAwardSound;
@@ -1605,14 +1605,14 @@ localEntity_t *CG_SmokePuff( const vec3_t p,
 				   qhandle_t hShader );
 void CG_BubbleTrail( vec3_t start, vec3_t end, float spacing );
 void CG_SpawnEffect( vec3_t org );
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 void CG_KamikazeEffect( vec3_t org );
 void CG_ObeliskExplode( vec3_t org, int entityNum );
 void CG_ObeliskPain( vec3_t org );
 void CG_InvulnerabilityImpact( vec3_t org, vec3_t angles );
 void CG_InvulnerabilityJuiced( vec3_t org );
 void CG_LightningBoltBeam( vec3_t start, vec3_t end );
-#endif
+//#endif
 void CG_ScorePlum( int client, vec3_t org, int score );
 void CG_DamagePlum( int client, vec3_t org, int score, int mod);
 void CG_GibPlayer(const centity_t *cent);

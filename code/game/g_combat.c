@@ -764,7 +764,7 @@ int RaySphereIntersections( vec3_t origin, float radius, vec3_t point, vec3_t di
 	return 0;
 }
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 ================
 G_InvulnerabilityEffect
@@ -802,7 +802,7 @@ int G_InvulnerabilityEffect( gentity_t *targ, vec3_t dir, vec3_t point, vec3_t i
 		return qfalse;
 	}
 }
-#endif
+//#endif
 /*
 ============
 G_Damage

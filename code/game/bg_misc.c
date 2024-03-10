@@ -666,7 +666,7 @@ Only in CTF games
 /* sounds */ ""
 	},
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*QUAKED holdable_kamikaze (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
 */
 	{
@@ -926,7 +926,7 @@ Only in One Flag CTF games
 /* precache */ "",
 /* sounds */ "sound/weapons/vulcan/wvulwind.wav"
 	},
-#endif
+//#endif
 /*QUAKED item_armor_jacket (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
 */
 	{

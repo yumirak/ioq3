@@ -863,13 +863,13 @@ static void CG_Missile( centity_t *cent ) {
 		ent.shaderRGBA[2] = ci->color1[2] * 255;
 	}
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if ( cent->currentState.weapon == WP_PROX_LAUNCHER ) {
 		if (s1->generic1 == TEAM_BLUE) {
 			ent.hModel = cgs.media.blueProxMine;
 		}
 	}
-#endif
+//#endif
 
 	// convert direction of travel into axis
 	if ( VectorNormalize2( s1->pos.trDelta, ent.axis[0] ) == 0 ) {
@@ -880,12 +880,12 @@ static void CG_Missile( centity_t *cent ) {
 	if ( s1->pos.trType != TR_STATIONARY ) {
 		RotateAroundDirection( ent.axis, cg.time / 4 );
 	} else {
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 		if ( s1->weapon == WP_PROX_LAUNCHER ) {
 			AnglesToAxis( cent->lerpAngles, ent.axis );
 		}
 		else
-#endif
+//#endif
 		{
 			RotateAroundDirection( ent.axis, s1->time );
 		}

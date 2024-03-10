@@ -93,7 +93,7 @@ void G_ExplodeMissile( gentity_t *ent ) {
 }
 
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 ================
 ProximityMine_Explode
@@ -260,7 +260,7 @@ static void ProximityMine_Player( gentity_t *mine, gentity_t *player ) {
 		mine->nextthink = level.time + 10 * 1000;
 	}
 }
-#endif
+//#endif
 
 /*
 ================
@@ -270,21 +270,25 @@ G_MissileImpact
 void G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 	gentity_t		*other;
 	qboolean		hitClient = qfalse;
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	vec3_t			forward, impactpoint, bouncedir;
 	int				eFlags;
-#endif
+//#endif
 	other = &g_entities[trace->entityNum];
 
 	// check for bounce
 	if ( !other->takedamage &&
 		( ent->s.eFlags & ( EF_BOUNCE | EF_BOUNCE_HALF ) ) ) {
+		if(ent->s.weapon == WP_NAILGUN && !ent->s.generic1 )
+			return;
+
 		G_BounceMissile( ent, trace );
 		G_AddEvent( ent, EV_GRENADE_BOUNCE, 0 );
+		ent->s.generic1--;
 		return;
 	}
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if ( other->takedamage ) {
 		if ( ent->s.weapon != WP_PROX_LAUNCHER ) {
 			if ( other->client && other->client->invulnerabilityTime > level.time ) {
@@ -303,7 +307,7 @@ void G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 			}
 		}
 	}
-#endif
+//#endif
 	// impact damage
 	if (other->takedamage) {
 		// FIXME: wrong damage direction?
@@ -325,7 +329,7 @@ void G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 		}
 	}
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if( ent->s.weapon == WP_PROX_LAUNCHER ) {
 		if( ent->s.pos.trType != TR_GRAVITY ) {
 			return;
@@ -360,7 +364,7 @@ void G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 
 		return;
 	}
-#endif
+//#endif
 
 	if (!strcmp(ent->classname, "hook")) {
 		gentity_t *nent;
@@ -459,12 +463,12 @@ void G_RunMissile( gentity_t *ent ) {
 	if ( ent->target_ent ) {
 		passent = ent->target_ent->s.number;
 	}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	// prox mines that left the owner bbox will attach to anything, even the owner
 	else if (ent->s.weapon == WP_PROX_LAUNCHER && ent->count) {
 		passent = ENTITYNUM_NONE;
 	}
-#endif
+//#endif
 	else {
 		// ignore interactions with the missile owner
 		passent = ent->r.ownerNum;
@@ -498,7 +502,7 @@ void G_RunMissile( gentity_t *ent ) {
 			return;		// exploded
 		}
 	}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	// if the prox mine wasn't yet outside the player body
 	if (ent->s.weapon == WP_PROX_LAUNCHER && !ent->count) {
 		// check if the prox mine is outside the owner bbox
@@ -507,7 +511,7 @@ void G_RunMissile( gentity_t *ent ) {
 			ent->count = 1;
 		}
 	}
-#endif
+//#endif
 	// check think function after bouncing
 	G_RunThink( ent );
 }
@@ -534,6 +538,7 @@ gentity_t *fire_plasma (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_PLASMAGUN;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
 	bolt->damage = 20;
 	bolt->splashDamage = 15;
@@ -577,6 +582,7 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.eFlags = EF_BOUNCE_HALF;
 	bolt->r.ownerNum = self->s.number;
 	bolt->s.clientNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
 	bolt->damage = 100;
 	bolt->splashDamage = 100;
@@ -618,6 +624,7 @@ gentity_t *fire_bfg (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_BFG;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
 	bolt->damage = 100;
 	bolt->splashDamage = 100;
@@ -658,6 +665,7 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_ROCKET_LAUNCHER;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
 	bolt->damage = 100;
 	bolt->splashDamage = 100;
@@ -714,7 +722,7 @@ gentity_t *fire_grapple (gentity_t *self, vec3_t start, vec3_t dir) {
 }
 
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 =================
 fire_nail
@@ -733,9 +741,12 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 	bolt->nextthink = level.time + 10000;
 	bolt->think = G_ExplodeMissile;
 	bolt->s.eType = ET_MISSILE;
+	bolt->s.eFlags = EF_BOUNCE;
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_NAILGUN;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
+	bolt->s.generic1 = 1;  // bouncetime
 	bolt->parent = self;
 	bolt->damage = 20;
 	bolt->methodOfDeath = MOD_NAIL;
@@ -784,6 +795,7 @@ gentity_t *fire_prox( gentity_t *self, vec3_t start, vec3_t dir ) {
 	bolt->s.weapon = WP_PROX_LAUNCHER;
 	bolt->s.eFlags = 0;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
 	bolt->damage = 0;
 	bolt->splashDamage = 100;
@@ -809,4 +821,4 @@ gentity_t *fire_prox( gentity_t *self, vec3_t start, vec3_t dir ) {
 
 	return bolt;
 }
-#endif
+//#endif

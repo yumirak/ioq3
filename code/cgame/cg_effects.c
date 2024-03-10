@@ -220,7 +220,7 @@ void CG_SpawnEffect( vec3_t org ) {
 }
 
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 ===============
 CG_LightningBoltBeam
@@ -395,7 +395,7 @@ void CG_InvulnerabilityJuiced( vec3_t org ) {
 	trap_S_StartSound (org, ENTITYNUM_NONE, CHAN_BODY, cgs.media.invulnerabilityJuicedSound );
 }
 
-#endif
+//#endif
 
 /*
 ==================
