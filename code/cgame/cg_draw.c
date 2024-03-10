@@ -1115,32 +1115,40 @@ static float CG_DrawScores( float y ) {
 				}
 			}
 		}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 		if ( cgs.gametype == GT_1FCTF ) {
 			// Display flag status
 			item = BG_FindItemForPowerup( PW_NEUTRALFLAG );
 
 			if (item) {
-				y1 = y + scoreHeight;
+				y1 = y;
 				if( cgs.flagStatus >= 0 && cgs.flagStatus <= 4 ) {
 					vec4_t color = {1, 1, 1, 1};
 					int index = 0;
-					if (cgs.flagStatus == FLAG_TAKEN_RED) {
-						color[1] = color[2] = 0;
-						index = 1;
-					} else if (cgs.flagStatus == FLAG_TAKEN_BLUE) {
-						color[0] = color[1] = 0;
-						index = 1;
-					} else if (cgs.flagStatus == FLAG_DROPPED) {
-						index = 2;
+					switch(cgs.flagStatus)
+					{
+						case FLAG_TAKEN_RED:
+							color[1] = color[2] = 0;
+							index = 1;
+							y1 = y ;
+							break;
+						case FLAG_TAKEN_BLUE:
+							color[0] = color[1] = 0;
+							index = 1;
+							y1 = y + scoreHeight;
+						default:
+							index = 2;
+							y1 = y - scoreHeight;
+							break;
 					}
+
 					trap_R_SetColor(color);
-					CG_DrawPic( x, y1-4, w, scoreHeight, cgs.media.flagShaders[index] );
+					CG_DrawPic( x - w, y1, w, scoreHeight, cgs.media.flagShaders[index] );
 					trap_R_SetColor(NULL);
 				}
 			}
 		}
-#endif
+//#endif
 		// RED
 		color[0] = 1.0f;
 		color[1] = 0.3f;
@@ -1715,13 +1723,13 @@ static void CG_DrawHoldableItem( void ) {
 }
 #endif // MISSIONPACK
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 ===================
 CG_DrawPersistantPowerup
 ===================
 */
-#if 0 // sos001208 - DEAD
+//#if 0 // sos001208 - DEAD
 static void CG_DrawPersistantPowerup( void ) { 
 	int		value;
 
@@ -1731,8 +1739,8 @@ static void CG_DrawPersistantPowerup( void ) {
 		CG_DrawPic( 640-ICON_SIZE, (SCREEN_HEIGHT-ICON_SIZE)/2 - ICON_SIZE, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
 	}
 }
-#endif
-#endif // MISSIONPACK
+//#endif
+//#endif // MISSIONPACK
 
 
 /*
@@ -2223,15 +2231,17 @@ static void CG_DrawVote(void) {
 	if ( sec < 0 ) {
 		sec = 0;
 	}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	s = va("VOTE(%i):%s yes:%i no:%i", sec, cgs.voteString, cgs.voteYes, cgs.voteNo);
 	CG_DrawSmallString( cgs.screenXmin , 58, s, 1.0F );
 	s = "or press ESC then click Vote";
 	CG_DrawSmallString( 0, 58 + SMALLCHAR_HEIGHT + 2, s, 1.0F );
+	/*
 #else
 	s = va("VOTE(%i):%s yes:%i no:%i", sec, cgs.voteString, cgs.voteYes, cgs.voteNo );
 	CG_DrawSmallString( cgs.screenXmin , 58, s, 1.0F );
 #endif
+	*/
 }
 
 /*
@@ -2441,7 +2451,7 @@ static void CG_DrawAmmoWarning( void ) {
 }
 
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 =================
 CG_DrawProxWarning
@@ -2473,7 +2483,7 @@ static void CG_DrawProxWarning( void ) {
 	w = CG_DrawStrlen( s , UI_BIGFONT);// * BIGCHAR_WIDTH;
 	CG_DrawBigStringColor( 320 - w / 2, 64 + BIGCHAR_HEIGHT, s, g_color_table[ColorIndex(COLOR_RED)] );
 }
-#endif
+//#endif
 
 
 /*
@@ -2530,7 +2540,7 @@ static void CG_DrawWarmup( void ) {
 		case GT_CTF:
 			s = "Capture the Flag";
 			break;
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 		case GT_1FCTF:
 			s = "One Flag CTF";
 			break;
@@ -2540,7 +2550,7 @@ static void CG_DrawWarmup( void ) {
 		case GT_HARVESTER:
 			s = "Harvester";
 			break;
-#endif
+//#endif
 		default:
 			s = "";
 			break;
@@ -2646,19 +2656,19 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
       
 			CG_DrawAmmoWarning();
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 			CG_DrawProxWarning();
-#endif      
+//#endif
 			if(stereoFrame == STEREO_CENTER)
 				CG_DrawCrosshair();
 			CG_DrawCrosshairNames();
 			CG_DrawWeaponSelect();
 
-#ifndef MISSIONPACK
+//#ifndef MISSIONPACK
 			CG_DrawHoldableItem();
-#else
-			//CG_DrawPersistantPowerup();
-#endif
+//#else
+			CG_DrawPersistantPowerup();
+//#endif
 			CG_DrawReward();
 		}
 	}

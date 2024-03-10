@@ -94,11 +94,33 @@ static const char *gametype_items[] = {
 	"Team Deathmatch",
 	"Tournament",
 	"Capture the Flag",
+	"One Flag Capture",
+	"Overload",
+	"Harvester",
 	NULL
 };
 
-static int gametype_remap[] = {GT_FFA, GT_TEAM, GT_TOURNAMENT, GT_CTF};
-static int gametype_remap2[] = {0, 2, 0, 1, 3};
+static int gametype_remap[] = {
+		GT_FFA,
+		GT_TEAM,
+		GT_TOURNAMENT,
+		GT_CTF,
+		GT_1FCTF,
+		GT_OBELISK,
+		GT_HARVESTER
+};
+
+static int gametype_remap2[] = {
+	0,
+	2,
+	0,
+	1,
+	3,
+	4,
+	5,
+	6,
+	7
+};		//this works and should increment for more gametypes
 
 // use ui_servers2.c definition
 extern const char* punkbuster_items[];
@@ -150,6 +172,18 @@ static int GametypeBits( char *string ) {
 			bits |= 1 << GT_CTF;
 			continue;
 		}
+
+		if( Q_stricmp( token, "oneflag" ) == 0) {
+			bits |= 1 << GT_1FCTF;
+			continue;
+		}
+
+		if( Q_stricmp( token, "har" ) == 0) {
+			bits |= 1 << GT_OBELISK;
+			bits |= 1 << GT_HARVESTER;
+			continue;
+		}
+
 	}
 
 	return bits;
@@ -780,6 +814,24 @@ static void ServerOptions_Start( void ) {
 		trap_Cvar_SetValue( "ui_ctf_timelimit", timelimit );
 		trap_Cvar_SetValue( "ui_ctf_friendly", friendlyfire );
 		break;
+
+	case GT_1FCTF:
+		trap_Cvar_SetValue( "ui_1fctf_capturelimit", flaglimit );
+		trap_Cvar_SetValue( "ui_1fctf_timelimit", timelimit );
+		trap_Cvar_SetValue( "ui_1fctf_friendly", friendlyfire );
+		break;
+
+	case GT_OBELISK:
+		trap_Cvar_SetValue( "ui_overload_capturelimit", flaglimit );
+		trap_Cvar_SetValue( "ui_overload_timelimit", timelimit );
+		trap_Cvar_SetValue( "ui_overload_friendly", friendlyfire );
+		break;
+
+	case GT_HARVESTER:
+		trap_Cvar_SetValue( "ui_harvester_capturelimit", flaglimit );
+		trap_Cvar_SetValue( "ui_harvester_timelimit", timelimit );
+		trap_Cvar_SetValue( "ui_harvester_friendly", friendlyfire );
+		break;
 	}
 
 	trap_Cvar_SetValue( "sv_maxclients", Com_Clamp( 0, 12, maxclients ) );
@@ -1164,6 +1216,24 @@ static void ServerOptions_SetMenuItems( void ) {
 		Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ctf_timelimit" ) ) );
 		s_serveroptions.friendlyfire.curvalue = (int)Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_ctf_friendly" ) );
 		break;
+
+	case GT_1FCTF:
+		Com_sprintf( s_serveroptions.flaglimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 100, trap_Cvar_VariableValue( "ui_1fctf_capturelimit" ) ) );
+		Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_1fctf_timelimit" ) ) );
+		s_serveroptions.friendlyfire.curvalue = (int)Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_1fctf_friendly" ) );
+		break;
+
+	case GT_OBELISK:
+		Com_sprintf( s_serveroptions.flaglimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 100, trap_Cvar_VariableValue( "ui_overload_capturelimit" ) ) );
+		Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_overload_timelimit" ) ) );
+		s_serveroptions.friendlyfire.curvalue = (int)Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_overload_friendly" ) );
+		break;
+
+	case GT_HARVESTER:
+		Com_sprintf( s_serveroptions.flaglimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 100, trap_Cvar_VariableValue( "ui_harvester_capturelimit" ) ) );
+		Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_harvester_timelimit" ) ) );
+		s_serveroptions.friendlyfire.curvalue = (int)Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_harvester_friendly" ) );
+		break;
 	}
 
 	Q_strncpyz( s_serveroptions.hostname.field.buffer, UI_Cvar_VariableString( "sv_hostname" ), sizeof( s_serveroptions.hostname.field.buffer ) );
@@ -1283,7 +1353,7 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	s_serveroptions.picframe.focuspic			= GAMESERVER_SELECT;
 
 	y = 272;
-	if( s_serveroptions.gametype != GT_CTF ) {
+	if( s_serveroptions.gametype < GT_CTF ) {
 		s_serveroptions.fraglimit.generic.type       = MTYPE_FIELD;
 		s_serveroptions.fraglimit.generic.name       = "Frag Limit:";
 		s_serveroptions.fraglimit.generic.flags      = QMF_NUMBERSONLY|QMF_PULSEIFFOCUS|QMF_SMALLFONT;
@@ -1463,7 +1533,7 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 		}
 	}
 
-	if( s_serveroptions.gametype != GT_CTF ) {
+	if( s_serveroptions.gametype < GT_CTF ) {
 		Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.fraglimit );
 	}
 	else {

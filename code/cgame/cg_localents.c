@@ -545,7 +545,7 @@ static void CG_AddSpriteExplosion( localEntity_t *le ) {
 }
 
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 ====================
 CG_AddKamikaze
@@ -721,7 +721,7 @@ void CG_AddRefEntity( localEntity_t *le ) {
 	trap_R_AddRefEntityToScene( &le->refEntity );
 }
 
-#endif
+//#endif
 /*
 ===================
 CG_AddScorePlum
@@ -900,7 +900,7 @@ void CG_AddDamagePlum( localEntity_t *le ) {
 				// purple
 				VectorSet(re->shaderRGBA, 0x55, 0xa8, 0x8b);
 				break;
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 			case MOD_NAIL:
 				// turquoise
 				VectorSet(re->shaderRGBA, 0x00, 0xaf, 0x7f);
@@ -913,7 +913,7 @@ void CG_AddDamagePlum( localEntity_t *le ) {
 				// light grey
 				VectorSet(re->shaderRGBA, 0xaf, 0xaf, 0xaf);
 				break;
-#endif
+//#endif
 			case MOD_HMG:
 				// dark yellowish orange
 				VectorSet(re->shaderRGBA, 0xaf, 0xaf, 0x00);
@@ -1045,7 +1045,7 @@ void CG_AddLocalEntities( void ) {
 			CG_AddDamagePlum( le );
 			break;
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 		case LE_KAMIKAZE:
 			CG_AddKamikaze( le );
 			break;
@@ -1058,7 +1058,7 @@ void CG_AddLocalEntities( void ) {
 		case LE_SHOWREFENTITY:
 			CG_AddRefEntity( le );
 			break;
-#endif
+//#endif
 		}
 	}
 }

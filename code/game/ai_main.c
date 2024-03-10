@@ -288,7 +288,7 @@ void BotReportStatus(bot_state_t *bs) {
 			else strcpy(flagstatus, S_COLOR_BLUE"F ");
 		}
 	}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	else if (gametype == GT_1FCTF) {
 		if (Bot1FCTFCarryingFlag(bs)) {
 			if (BotTeam(bs) == TEAM_RED) strcpy(flagstatus, S_COLOR_RED"F ");
@@ -301,7 +301,7 @@ void BotReportStatus(bot_state_t *bs) {
 			else Com_sprintf(flagstatus, sizeof(flagstatus), S_COLOR_BLUE"%2d", bs->inventory[INVENTORY_BLUECUBE]);
 		}
 	}
-#endif
+//#endif
 
 	switch(bs->ltgtype) {
 		case LTG_TEAMHELP:
@@ -437,7 +437,7 @@ void BotSetInfoConfigString(bot_state_t *bs) {
 			strcpy(carrying, "F ");
 		}
 	}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	else if (gametype == GT_1FCTF) {
 		if (Bot1FCTFCarryingFlag(bs)) {
 			strcpy(carrying, "F ");
@@ -449,7 +449,7 @@ void BotSetInfoConfigString(bot_state_t *bs) {
 			else Com_sprintf(carrying, sizeof(carrying), "%2d", bs->inventory[INVENTORY_BLUECUBE]);
 		}
 	}
-#endif
+//#endif
 
 	switch(bs->ltgtype) {
 		case LTG_TEAMHELP:
@@ -1389,9 +1389,9 @@ int BotAILoadMap( int restart ) {
 	return qtrue;
 }
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 void ProximityMine_Trigger( gentity_t *trigger, gentity_t *other, trace_t *trace );
-#endif
+//#endif
 
 /*
 ==================
@@ -1506,7 +1506,7 @@ int BotAIStartFrame(int time) {
 				trap_BotLibUpdateEntity(i, NULL);
 				continue;
 			}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 			// never link prox mine triggers
 			if (ent->r.contents == CONTENTS_TRIGGER) {
 				if (ent->touch == ProximityMine_Trigger) {
@@ -1514,7 +1514,7 @@ int BotAIStartFrame(int time) {
 					continue;
 				}
 			}
-#endif
+//#endif
 			//
 			memset(&state, 0, sizeof(bot_entitystate_t));
 			//

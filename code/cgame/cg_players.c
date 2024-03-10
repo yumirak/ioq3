@@ -748,7 +748,7 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 		trap_Cvar_Set( "r_vertexlight", "0" );
 	}
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if( cgs.gametype >= GT_TEAM) {
 		if( ci->team == TEAM_BLUE ) {
 			Q_strncpyz(teamname, cg_blueTeamName.string, sizeof(teamname) );
@@ -759,7 +759,7 @@ static void CG_LoadClientInfo( int clientNum, clientInfo_t *ci ) {
 	if( teamname[0] ) {
 		strcat( teamname, "/" );
 	}
-#endif
+//#endif
 	modelloaded = qtrue;
 	if ( !CG_RegisterClientModelname( ci, ci->modelName, ci->skinName, ci->headModelName, ci->headSkinName, teamname ) ) {
 		if ( cg_buildScript.integer ) {
@@ -1784,7 +1784,7 @@ static void CG_HasteTrail( centity_t *cent ) {
 	smoke->leType = LE_SCALE_FADE;
 }
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 ===============
 CG_BreathPuffs
@@ -1869,7 +1869,7 @@ static void CG_DustTrail( centity_t *cent ) {
 				  cgs.media.dustPuffShader );
 }
 
-#endif
+//#endif
 
 /*
 ===============
@@ -2014,7 +2014,7 @@ static void CG_PlayerFlag( centity_t *cent, qhandle_t hSkin, refEntity_t *torso 
 }
 
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 ===============
 CG_PlayerTokens
@@ -2082,7 +2082,7 @@ static void CG_PlayerTokens( centity_t *cent, int renderfx ) {
 		VectorCopy(trail->positions[i], origin);
 	}
 }
-#endif
+//#endif
 
 
 /*
@@ -2499,14 +2499,14 @@ void CG_Player( centity_t *cent ) {
 	int				renderfx;
 	qboolean		shadow;
 	float			shadowPlane;
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	refEntity_t		skull;
 	refEntity_t		powerup;
 	int				t;
 	float			c;
 	float			angle;
 	vec3_t			dir, angles;
-#endif
+//#endif
 	qboolean		darken;
 
 	// the client number is stored in clientNum.  It can't be derived
@@ -2565,11 +2565,11 @@ void CG_Player( centity_t *cent ) {
 		renderfx |= RF_SHADOW_PLANE;
 	}
 	renderfx |= RF_LIGHTING_ORIGIN;			// use the same origin for all
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if( cgs.gametype == GT_HARVESTER ) {
 		CG_PlayerTokens( cent, renderfx );
 	}
-#endif
+//#endif
 	//
 	// add the legs
 	//
@@ -2621,7 +2621,7 @@ void CG_Player( centity_t *cent ) {
 
 	CG_AddRefEntityWithPowerups( &torso, &cent->currentState, ci->team );
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if ( cent->currentState.eFlags & EF_KAMIKAZE ) {
 
 		memset( &skull, 0, sizeof(skull) );
@@ -2827,7 +2827,7 @@ void CG_Player( centity_t *cent ) {
 		}
 		trap_R_AddRefEntityToScene( &powerup );
 	}
-#endif // MISSIONPACK
+//#endif // MISSIONPACK
 
 	//
 	// add the head
@@ -2853,11 +2853,11 @@ void CG_Player( centity_t *cent ) {
 
 	CG_AddRefEntityWithPowerups( &head, &cent->currentState, ci->team );
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	CG_BreathPuffs(cent, &head);
 
 	CG_DustTrail(cent);
-#endif
+//#endif
 
 	//
 	// add the gun / barrel / flash

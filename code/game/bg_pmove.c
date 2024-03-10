@@ -533,7 +533,7 @@ static void PM_WaterMove( void ) {
 	PM_SlideMove( qfalse );
 }
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 /*
 ===================
 PM_InvulnerabilityMove
@@ -547,7 +547,7 @@ static void PM_InvulnerabilityMove( void ) {
 	pm->cmd.upmove = 0;
 	VectorClear(pm->ps->velocity);
 }
-#endif
+//#endif
 
 /*
 ===================
@@ -1690,7 +1690,7 @@ static void PM_Weapon( void ) {
 		break;
 	}
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if( bg_itemlist[pm->ps->stats[STAT_PERSISTANT_POWERUP]].giTag == PW_SCOUT ) {
 		addTime /= 1.5;
 	}
@@ -1699,7 +1699,7 @@ static void PM_Weapon( void ) {
 		addTime /= 1.3;
 	}
 	else
-#endif
+//#endif
 	if ( pm->ps->powerups[PW_HASTE] ) {
 		addTime /= 1.3;
 	}
@@ -1720,7 +1720,7 @@ static void PM_Animate( void ) {
 			pm->ps->torsoTimer = TIMER_GESTURE;
 			PM_AddEvent( EV_TAUNT );
 		}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	} else if ( pm->cmd.buttons & BUTTON_GETFLAG ) {
 		if ( pm->ps->torsoTimer == 0 ) {
 			PM_StartTorsoAnim( TORSO_GETFLAG );
@@ -1751,7 +1751,7 @@ static void PM_Animate( void ) {
 			PM_StartTorsoAnim( TORSO_NEGATIVE );
 			pm->ps->torsoTimer = 600;	//TIMER_GESTURE;
 		}
-#endif
+//#endif
 	}
 }
 
@@ -1970,11 +1970,11 @@ void PmoveSingle (pmove_t *pmove) {
 
 	PM_DropTimers();
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if ( pm->ps->powerups[PW_INVULNERABILITY] ) {
 		PM_InvulnerabilityMove();
 	} else
-#endif
+//#endif
 	if ( pm->ps->powerups[PW_FLIGHT] ) {
 		// flight powerup doesn't allow jump and has different friction
 		PM_FlyMove();

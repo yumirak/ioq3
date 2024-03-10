@@ -400,10 +400,10 @@ just like the existing corpse to leave behind.
 =============
 */
 void CopyToBodyQue( gentity_t *ent ) {
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	gentity_t	*e;
 	int i;
-#endif
+//#endif
 	gentity_t		*body;
 	int			contents;
 
@@ -421,7 +421,7 @@ void CopyToBodyQue( gentity_t *ent ) {
 
 	body->s = ent->s;
 	body->s.eFlags = EF_DEAD;		// clear EF_TALK, etc
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if ( ent->s.eFlags & EF_KAMIKAZE ) {
 		body->s.eFlags |= EF_KAMIKAZE;
 
@@ -438,7 +438,7 @@ void CopyToBodyQue( gentity_t *ent ) {
 			break;
 		}
 	}
-#endif
+//#endif
 	body->s.powerups = 0;	// clear powerups
 	body->s.loopSound = 0;	// clear lava burning
 	body->s.number = body - g_entities;
@@ -761,7 +761,7 @@ void ClientUserinfoChanged( int clientNum ) {
 	}
 
 	// set max health
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if (client->ps.powerups[PW_GUARD]) {
 		client->pers.maxHealth = 200;
 	} else {
@@ -771,6 +771,7 @@ void ClientUserinfoChanged( int clientNum ) {
 			client->pers.maxHealth = 100;
 		}
 	}
+/*
 #else
 	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
 	client->pers.maxHealth = health;
@@ -778,6 +779,7 @@ void ClientUserinfoChanged( int clientNum ) {
 		client->pers.maxHealth = 100;
 	}
 #endif
+*/
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
 
 	// set model
@@ -1302,12 +1304,12 @@ void ClientDisconnect( int clientNum ) {
 		// They don't get to take powerups with them!
 		// Especially important for stuff like CTF flags
 		TossClientItems( ent );
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 		TossClientPersistantPowerups( ent );
 		if( g_gametype.integer == GT_HARVESTER ) {
 			TossClientCubes( ent );
 		}
-#endif
+//#endif
 
 	}
 

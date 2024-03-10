@@ -130,25 +130,23 @@ int BotSortTeamMatesByBaseTravelTime(bot_state_t *bs, int *teammates, int maxtea
 	int traveltimes[MAX_CLIENTS];
 	bot_goal_t *goal = NULL;
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	if (gametype == GT_CTF || gametype == GT_1FCTF)
-#else
-	if (gametype == GT_CTF)
-#endif
+
 	{
 		if (BotTeam(bs) == TEAM_RED)
 			goal = &ctf_redflag;
 		else
 			goal = &ctf_blueflag;
 	}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	else {
 		if (BotTeam(bs) == TEAM_RED)
 			goal = &redobelisk;
 		else
 			goal = &blueobelisk;
 	}
-#endif
+//#endif
 	numteammates = 0;
 	for (i = 0; i < level.maxclients; i++) {
 		trap_GetConfigstring(CS_PLAYERS+i, buf, sizeof(buf));
@@ -933,7 +931,7 @@ void BotTeamOrders(bot_state_t *bs) {
 	}
 }
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 
 /*
 ==================
@@ -1886,7 +1884,7 @@ void BotHarvesterOrders(bot_state_t *bs) {
 		}
 	}
 }
-#endif
+//#endif
 
 /*
 ==================
@@ -2015,7 +2013,7 @@ void BotTeamAI(bot_state_t *bs) {
 			}
 			break;
 		}
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 		case GT_1FCTF:
 		{
 			if (bs->numteammates != numteammates || bs->flagstatuschanged || bs->forceorders) {
@@ -2071,7 +2069,7 @@ void BotTeamAI(bot_state_t *bs) {
 			}
 			break;
 		}
-#endif
+//#endif
 	}
 }
 

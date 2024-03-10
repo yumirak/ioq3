@@ -159,10 +159,10 @@ struct gentity_s {
 	gentity_t	*teamchain;		// next entity in team
 	gentity_t	*teammaster;	// master of the team
 
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	int			kamikazeTime;
 	int			kamikazeShockTime;
-#endif
+//#endif
 
 	int			watertype;
 	int			waterlevel;
@@ -409,9 +409,9 @@ typedef struct {
 	gentity_t	*locationHead;			// head of the location list
 	int			bodyQueIndex;			// dead bodies
 	gentity_t	*bodyQue[BODY_QUEUE_SIZE];
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 	int			portalSequence;
-#endif
+//#endif
 } level_locals_t;
 
 
@@ -499,9 +499,9 @@ qboolean G_RadiusDamage (vec3_t origin, gentity_t *attacker, float damage, float
 int G_InvulnerabilityEffect( gentity_t *targ, vec3_t dir, vec3_t point, vec3_t impactpoint, vec3_t bouncedir );
 void body_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int damage, int meansOfDeath );
 void TossClientItems( gentity_t *self );
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 void TossClientPersistantPowerups( gentity_t *self );
-#endif
+//#endif
 void TossClientCubes( gentity_t *self );
 void DamagePlum( gentity_t *ent, gentity_t *target, int mod, int damage ); // rat damageplum
 // damage flags
@@ -509,9 +509,9 @@ void DamagePlum( gentity_t *ent, gentity_t *target, int mod, int damage ); // ra
 #define DAMAGE_NO_ARMOR				0x00000002	// armour does not protect from this damage
 #define DAMAGE_NO_KNOCKBACK			0x00000004	// do not affect velocity, just view angles
 #define DAMAGE_NO_PROTECTION		0x00000008  // armor, shields, invulnerability, and godmode have no effect
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 #define DAMAGE_NO_TEAM_PROTECTION	0x00000010  // armor, shields, invulnerability, and godmode have no effect
-#endif
+//#endif
 
 //
 // g_missile.c
@@ -545,10 +545,10 @@ void trigger_teleporter_touch (gentity_t *self, gentity_t *other, trace_t *trace
 // g_misc.c
 //
 void TeleportPlayer( gentity_t *player, vec3_t origin, vec3_t angles );
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 void DropPortalSource( gentity_t *ent );
 void DropPortalDestination( gentity_t *ent );
-#endif
+//#endif
 
 
 //
@@ -591,9 +591,9 @@ qboolean G_FilterPacket (char *from);
 // g_weapon.c
 //
 void FireWeapon( gentity_t *ent );
-#ifdef MISSIONPACK
+//#ifdef MISSIONPACK
 void G_StartKamikaze( gentity_t *ent );
-#endif
+//#endif
 
 //
 // g_cmds.c
