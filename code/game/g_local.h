@@ -320,6 +320,8 @@ struct gclient_s {
 
 	char		*areabits;
 	int	shotgunDamagePlumDmg; //rat damage plums
+
+	int			accuracy[WP_NUM_WEAPONS][2];
 };
 
 

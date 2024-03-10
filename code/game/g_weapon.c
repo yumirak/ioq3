@@ -118,7 +118,10 @@ qboolean CheckGauntletAttack( gentity_t *ent ) {
 	damage = 50 * s_quadFactor;
 	G_Damage( traceEnt, ent, ent, forward, tr.endpos,
 		damage, 0, MOD_GAUNTLET );
-
+	if (LogAccuracyHit(traceEnt, ent)) {
+		ent->client->accuracy[WP_GAUNTLET][0]++;
+		ent->client->accuracy[WP_GAUNTLET][1]++;
+	}
 	return qtrue;
 }
 
@@ -204,6 +207,7 @@ void Bullet_Fire (gentity_t *ent, float spread, int damage, int mod ) {
 			tent->s.eventParm = traceEnt->s.number;
 			if( LogAccuracyHit( traceEnt, ent ) ) {
 				ent->client->accuracy_hits++;
+				ent->client->accuracy[ent->s.weapon][1]++;
 			}
 		} else {
 			tent = G_TempEntity( tr.endpos, EV_BULLET_HIT_WALL );
@@ -388,8 +392,10 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 		if( ShotgunPellet( origin, end, ent, &hitTargets) && !hitClient ) {
 			hitClient = qtrue;
 			ent->client->accuracy_hits++;
+			ent->client->accuracy[WP_SHOTGUN][1]++;
 		}
 	}
+
 	ShotgunDamagePlums(&hitTargets, ent);
 }
 
@@ -600,6 +606,7 @@ void weapon_railgun_fire (gentity_t *ent) {
 			ent->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 		}
 		ent->client->accuracy_hits++;
+		ent->client->accuracy[WP_RAILGUN][1]++;
 	}
 
 }
@@ -708,6 +715,7 @@ void Weapon_LightningFire( gentity_t *ent ) {
 #endif
 			if( LogAccuracyHit( traceEnt, ent ) ) {
 				ent->client->accuracy_hits++;
+				ent->client->accuracy[WP_LIGHTNING][1]++;
 			}
 			G_Damage( traceEnt, ent, ent, forward, tr.endpos, damage, 0, MOD_LIGHTNING);
 		}
@@ -869,6 +877,7 @@ void FireWeapon( gentity_t *ent ) {
 		}
 #else
 		ent->client->accuracy_shots++;
+		ent->client->accuracy[ent->s.weapon][0]++;
 #endif
 	}
 

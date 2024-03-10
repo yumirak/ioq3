@@ -97,6 +97,36 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 		string ) );
 }
 
+/*
+==================
+AccMessage
+
+==================
+*/
+void AccMessage( gentity_t *ent ) {
+	char		entry[1024];
+
+	Com_sprintf (entry, sizeof(entry),
+			" %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i ", //  %i %i %i %i %i %i
+			ent->client->accuracy[WP_MACHINEGUN][0], ent->client->accuracy[WP_MACHINEGUN][1],
+			ent->client->accuracy[WP_SHOTGUN][0], ent->client->accuracy[WP_SHOTGUN][1],
+			ent->client->accuracy[WP_GRENADE_LAUNCHER][0], ent->client->accuracy[WP_GRENADE_LAUNCHER][1],
+			ent->client->accuracy[WP_ROCKET_LAUNCHER][0], ent->client->accuracy[WP_ROCKET_LAUNCHER][1],
+			ent->client->accuracy[WP_LIGHTNING][0], ent->client->accuracy[WP_LIGHTNING][1],
+			ent->client->accuracy[WP_RAILGUN][0], ent->client->accuracy[WP_RAILGUN][1],
+			ent->client->accuracy[WP_PLASMAGUN][0], ent->client->accuracy[WP_PLASMAGUN][1],
+			ent->client->accuracy[WP_BFG][0], ent->client->accuracy[WP_BFG][1],
+			0,0, //Hook
+#ifdef MISSIONPACK
+			ent->client->accuracy[WP_NAILGUN][0], ent->client->accuracy[WP_NAILGUN][1],
+			0,0,
+			ent->client->accuracy[WP_CHAINGUN][0], ent->client->accuracy[WP_CHAINGUN][1]
+#endif
+			ent->client->accuracy[WP_HMG][0], ent->client->accuracy[WP_HMG][1]
+		);
+
+	trap_SendServerCommand( ent-g_entities, va("accs%s", entry ));
+}
 
 /*
 ==================
@@ -107,6 +137,16 @@ Request current scoreboard information
 */
 void Cmd_Score_f( gentity_t *ent ) {
 	DeathmatchScoreboardMessage( ent );
+}
+
+/*
+==================
+ Cmd_Acc_f
+ Request current scoreboard information
+==================
+*/
+void Cmd_Acc_f( gentity_t *ent ) {
+	AccMessage( ent );
 }
 
 
@@ -1773,6 +1813,10 @@ void ClientCommand( int clientNum ) {
 #endif
 	if (Q_stricmp (cmd, "score") == 0) {
 		Cmd_Score_f (ent);
+		return;
+	}
+	if (Q_stricmp (cmd, "acc") == 0) {
+		Cmd_Acc_f (ent);
 		return;
 	}
 

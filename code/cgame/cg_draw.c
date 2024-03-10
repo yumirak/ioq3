@@ -2333,6 +2333,42 @@ static qboolean CG_DrawScoreboard( void ) {
 #endif
 }
 
+#define ACCBOARD_XPOS cgs.screenXmax - 80
+#define ACCBOARD_YPOS cgs.screenYmax / 3
+#define ACCBOARD_HEIGHT 20
+#define ACCBOARD_WIDTH 75
+#define ACCITEM_SIZE 16
+
+qboolean CG_DrawAccboard(void) {
+	int counter, i;
+	char *len;
+	i = 0;
+
+	if (!cg.showAcc) {
+		return qfalse;
+	}
+
+	for (counter = 0; counter < WP_NUM_WEAPONS; counter++) {
+		if (cg_weapons[counter + 2].weaponIcon /*&& counter != WP_PROX_LAUNCHER */&& counter != WP_GRAPPLING_HOOK) {
+			trap_R_SetColor(colorDkGrey);
+
+			CG_DrawPic(ACCBOARD_XPOS, ACCBOARD_YPOS + i*ACCBOARD_HEIGHT, ACCBOARD_WIDTH, ACCBOARD_HEIGHT , cgs.media.teamStatusBar);
+			CG_DrawPic(ACCBOARD_XPOS + 5, ACCBOARD_YPOS + i*ACCBOARD_HEIGHT, ACCITEM_SIZE, ACCITEM_SIZE, cg_weapons[counter + 2].weaponIcon);
+
+			if (cg.accuracys[counter][0] > 0)
+				len = va("%i%%", (cg.accuracys[counter][1]*100) / cg.accuracys[counter][0]);
+			else
+				len = "-%";
+
+			CG_DrawString(ACCBOARD_XPOS + ACCBOARD_WIDTH - 5, ACCBOARD_YPOS + i * ACCBOARD_HEIGHT + ACCITEM_SIZE / 2 - SMALLCHAR_HEIGHT / 2,
+					len, UI_SMALLFONT | UI_RIGHT ,NULL);
+
+			trap_R_SetColor(NULL);
+			i++;
+		}
+	}
+	return qtrue;
+}
 /*
 =================
 CG_DrawIntermission
@@ -2658,6 +2694,8 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	if ( !cg.scoreBoardShowing) {
 		CG_DrawCenterString();
 	}
+
+	CG_DrawAccboard();
 }
 // will be called on warmup end and when client changed
 void CG_WarmupEvent( void ) {

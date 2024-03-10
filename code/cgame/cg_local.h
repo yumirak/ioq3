@@ -655,6 +655,10 @@ typedef struct {
 	int damageDoneTime;
 	int damageDone;
 	int hitSound;
+
+	int		accuracys[WP_NUM_WEAPONS][2];
+	int		accRequestTime;
+	qboolean	showAcc;
 } cg_t;
 
 
