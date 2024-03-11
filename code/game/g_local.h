@@ -750,8 +750,20 @@ extern	vmCvar_t	g_enableBreath;
 extern	vmCvar_t	g_singlePlayer;
 extern	vmCvar_t	g_proxMineTimeout;
 extern	vmCvar_t	g_localTeamPref;
-extern	vmCvar_t	g_ammoPack; // hack
 extern	vmCvar_t	g_damagePlums; //rat damageplum
+//
+extern	vmCvar_t	g_ammoRespawn;
+extern	vmCvar_t	g_ammoPack;
+//
+extern	vmCvar_t	g_spawnItem;
+extern	vmCvar_t	g_spawnItemAmmo;
+extern	vmCvar_t	g_spawnItemArmor;
+extern	vmCvar_t	g_spawnItemHealth;
+extern	vmCvar_t	g_spawnItemHoldable;
+extern	vmCvar_t	g_spawnItemPowerup;
+extern	vmCvar_t	g_spawnItemWeapons;
+//
+
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) __attribute__((noreturn));

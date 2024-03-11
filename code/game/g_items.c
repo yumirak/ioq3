@@ -214,7 +214,7 @@ void Add_Ammo (gentity_t *ent, int weapon, int count)
 	}
 }
 
-int Pickup_Ammo (gentity_t *ent, gentity_t *other)
+float Pickup_Ammo (gentity_t *ent, gentity_t *other)
 {
 	int		quantity;
 
@@ -246,7 +246,7 @@ int Pickup_Ammo (gentity_t *ent, gentity_t *other)
 		Add_Ammo (other, ent->item->giTag, quantity);
 	}
 
-	return RESPAWN_AMMO;
+	return g_ammoRespawn.value;
 }
 
 //======================================================================
@@ -446,7 +446,7 @@ Touch_Item
 ===============
 */
 void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
-	int			respawn;
+	float			respawn;
 	qboolean	predict;
 
 	if (!other->client)
@@ -920,7 +920,15 @@ void G_SpawnItem (gentity_t *ent, gitem_t *item) {
 	G_SpawnFloat( "wait", "0", &ent->wait );
 
 	RegisterItem( item );
-	if ( G_ItemDisabled(item) )
+	if ( G_ItemDisabled(item)
+	|| (item->giType == IT_AMMO && !g_spawnItemAmmo.integer)
+	|| (item->giType == IT_ARMOR && !g_spawnItemArmor.integer)
+	|| (item->giType == IT_HEALTH && !g_spawnItemHealth.integer)
+	|| (item->giType == IT_PERSISTANT_POWERUP && !g_spawnItemHoldable.integer)
+	|| (item->giType == IT_POWERUP && !g_spawnItemPowerup.integer)
+	|| (item->giType == IT_WEAPON && !g_spawnItemWeapons.integer)
+	|| !g_spawnItem.integer
+	)
 		return;
 
 	ent->item = item;

@@ -95,8 +95,21 @@ vmCvar_t	g_enableDust;
 vmCvar_t	g_enableBreath;
 vmCvar_t	g_proxMineTimeout;
 //#endif
-vmCvar_t	g_ammoPack; // hack
+//
 vmCvar_t	g_damagePlums;
+//
+vmCvar_t	g_ammoPack;
+vmCvar_t	g_ammoRespawn;
+//
+vmCvar_t	g_spawnItem;
+vmCvar_t	g_spawnItemArmor;
+vmCvar_t	g_spawnItemHealth;
+vmCvar_t	g_spawnItemHoldable;
+vmCvar_t	g_spawnItemPowerup;
+vmCvar_t	g_spawnItemWeapons;
+vmCvar_t	g_spawnItemAmmo;
+//
+
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
 	{ &g_cheats, "sv_cheats", "", 0, 0, qfalse },
@@ -180,9 +193,19 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse },
-	{ &g_ammoPack, "g_ammoPack", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
 	//
 	{ &g_damagePlums, "g_damagePlums", "1", CVAR_ARCHIVE, 0, qfalse }, // rat damageplum
+	//
+	{ &g_ammoRespawn, "g_ammoRespawn", "40", CVAR_SERVERINFO, 0, qtrue  },
+	{ &g_ammoPack, "g_ammoPack", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_spawnItem, "g_spawnItem", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_spawnItemAmmo, "g_spawnItemAmmo", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_spawnItemArmor, "g_spawnItemArmor", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_spawnItemHealth, "g_spawnItemHealth", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_spawnItemHoldable, "g_spawnItemHoldable", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_spawnItemPowerup, "g_spawnItemPowerup", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_spawnItemWeapons, "g_spawnItemWeapons", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+
 
 };
 
