@@ -923,6 +923,7 @@ void ClientThink_real( gentity_t *ent ) {
 
 	pm.pmove_fixed = pmove_fixed.integer | client->pers.pmoveFixed;
 	pm.pmove_msec = pmove_msec.integer;
+	pm.pmove_JumpVelocity = pmove_JumpVelocity.value;
 
 	VectorCopy( client->ps.origin, client->oldOrigin );
 
