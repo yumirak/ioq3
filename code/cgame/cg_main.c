@@ -1280,6 +1280,8 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.timerSliceCurrent[2] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice12_current");
 	cgs.media.timerSliceCurrent[3] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice24_current");
 
+	cgs.media.infiniteAmmo = trap_R_RegisterShader("icons/infinite");
+
 	CG_ClearParticles ();
 /*
 	for (i=1; i<MAX_PARTICLES_AREAS; i++)

@@ -109,6 +109,22 @@ vmCvar_t	g_spawnItemPowerup;
 vmCvar_t	g_spawnItemWeapons;
 vmCvar_t	g_spawnItemAmmo;
 //
+vmCvar_t	g_startingWeapons; //bitmask
+//
+vmCvar_t	g_startingAmmo_g;
+vmCvar_t	g_startingAmmo_mg;
+vmCvar_t	g_startingAmmo_sg;
+vmCvar_t	g_startingAmmo_gl;
+vmCvar_t	g_startingAmmo_rl;
+vmCvar_t	g_startingAmmo_lg;
+vmCvar_t	g_startingAmmo_rg;
+vmCvar_t	g_startingAmmo_pg;
+vmCvar_t	g_startingAmmo_bfg;
+vmCvar_t	g_startingAmmo_gh;
+vmCvar_t	g_startingAmmo_ng;
+vmCvar_t	g_startingAmmo_pl;
+vmCvar_t	g_startingAmmo_cg;
+vmCvar_t	g_startingAmmo_hmg;
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -205,7 +221,23 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_spawnItemHoldable, "g_spawnItemHoldable", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
 	{ &g_spawnItemPowerup, "g_spawnItemPowerup", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
 	{ &g_spawnItemWeapons, "g_spawnItemWeapons", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
-
+	//
+	{ &g_startingWeapons, "g_startingWeapons", "3", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	//
+	{ &g_startingAmmo_g, "g_startingAmmo_g", "-1", 0 , 0, qtrue},
+	{ &g_startingAmmo_mg, "g_startingAmmo_mg", "100", 0, 0, qtrue},
+	{ &g_startingAmmo_sg, "g_startingAmmo_sg", "10", 0, 0, qtrue},
+	{ &g_startingAmmo_gl, "g_startingAmmo_gl", "10", 0, 0, qtrue},
+	{ &g_startingAmmo_rl, "g_startingAmmo_rl", "10", 0, 0, qtrue},
+	{ &g_startingAmmo_lg, "g_startingAmmo_lg", "100", 0, 0, qtrue},
+	{ &g_startingAmmo_rg, "g_startingAmmo_rg", "10", 0, 0, qtrue},
+	{ &g_startingAmmo_pg, "g_startingAmmo_pg", "50", 0, 0, qtrue},
+	{ &g_startingAmmo_bfg, "g_startingAmmo_bfg", "10", 0, 0, qtrue},
+	{ &g_startingAmmo_gh, "g_startingAmmo_gh", "-1", 0, 0, qtrue},
+	{ &g_startingAmmo_ng, "g_startingAmmo_ng", "10", 0, 0, qtrue},
+	{ &g_startingAmmo_pl, "g_startingAmmo_pl", "5", 0, 0, qtrue},
+	{ &g_startingAmmo_cg, "g_startingAmmo_cg", "100", 0, 0, qtrue},
+	{ &g_startingAmmo_hmg, "g_startingAmmo_hmg", "50", 0, 0, qtrue},
 
 };
 

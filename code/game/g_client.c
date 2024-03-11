@@ -498,7 +498,72 @@ void CopyToBodyQue( gentity_t *ent ) {
 	VectorCopy ( body->s.pos.trBase, body->r.currentOrigin );
 	trap_LinkEntity (body);
 }
+void ClientWeaponSpawn( gentity_t *ent )
+{
+	gclient_t	*client;
+	client = ent->client;
 
+	if ( g_startingWeapons.integer & 1 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
+		client->ps.ammo[WP_GAUNTLET] = g_startingAmmo_g.integer;
+	}
+	if ( g_startingWeapons.integer & 2 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
+		if ( g_gametype.integer == GT_TEAM ) {
+			client->ps.ammo[WP_MACHINEGUN] = g_startingAmmo_mg.integer / 2;
+		} else {
+			client->ps.ammo[WP_MACHINEGUN] = g_startingAmmo_mg.integer;
+		}
+	}
+	if ( g_startingWeapons.integer & 4 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_SHOTGUN );
+		client->ps.ammo[WP_SHOTGUN] = g_startingAmmo_sg.integer;
+	}
+	if ( g_startingWeapons.integer & 8 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRENADE_LAUNCHER );
+		client->ps.ammo[WP_GRENADE_LAUNCHER] = g_startingAmmo_gl.integer;
+	}
+	if ( g_startingWeapons.integer & 16 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
+		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_startingAmmo_rg.integer;
+	}
+	if ( g_startingWeapons.integer & 32 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
+		client->ps.ammo[WP_LIGHTNING] = g_startingAmmo_lg.integer;
+	}
+	if ( g_startingWeapons.integer & 64 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_RAILGUN );
+		client->ps.ammo[WP_RAILGUN] = g_startingAmmo_rg.integer;
+	}
+	if ( g_startingWeapons.integer & 128 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PLASMAGUN );
+		client->ps.ammo[WP_PLASMAGUN] = g_startingAmmo_pg.integer;
+	}
+	if ( g_startingWeapons.integer & 256 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_BFG );
+		client->ps.ammo[WP_BFG] = g_startingAmmo_bfg.integer;
+	}
+	if ( g_startingWeapons.integer & 512 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GRAPPLING_HOOK );
+		client->ps.ammo[WP_GRAPPLING_HOOK] = g_startingAmmo_gh.integer;
+	}
+	if ( g_startingWeapons.integer & 1024 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_NAILGUN );
+		client->ps.ammo[WP_NAILGUN] = g_startingAmmo_ng.integer;
+	}
+	if ( g_startingWeapons.integer & 2048 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_PROX_LAUNCHER );
+		client->ps.ammo[WP_PROX_LAUNCHER] = g_startingAmmo_pl.integer;
+	}
+	if ( g_startingWeapons.integer & 4096 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_CHAINGUN );
+		client->ps.ammo[WP_CHAINGUN] = g_startingAmmo_cg.integer;
+	}
+	if ( g_startingWeapons.integer & 8192 ) {
+		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_HMG );
+		client->ps.ammo[WP_HMG] = g_startingAmmo_hmg.integer;
+	}
+}
 //======================================================================
 
 
@@ -1181,16 +1246,7 @@ void ClientSpawn(gentity_t *ent) {
 
 	client->ps.clientNum = index;
 
-	client->ps.stats[STAT_WEAPONS] = ( 1 << WP_MACHINEGUN );
-	if ( g_gametype.integer == GT_TEAM ) {
-		client->ps.ammo[WP_MACHINEGUN] = 50;
-	} else {
-		client->ps.ammo[WP_MACHINEGUN] = 100;
-	}
-
-	client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
+	ClientWeaponSpawn( ent );
 
 	// health will count down towards max_health
 	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + 25;

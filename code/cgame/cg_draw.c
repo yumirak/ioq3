@@ -610,6 +610,8 @@ static void CG_DrawStatusBar( void ) {
 
 	if(value > -1)
 		CG_DrawField (0, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[color]);
+	else
+		CG_DrawPic( cgs.screenYmin +  ICON_SIZE, cgs.screenYmax - 48, ICON_SIZE, ICON_SIZE, cgs.media.infiniteAmmo );
 	// if we didn't draw a 3D icon, draw a 2D icon for ammo
 	if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
 		qhandle_t	icon;

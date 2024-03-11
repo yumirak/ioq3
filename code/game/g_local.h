@@ -763,6 +763,23 @@ extern	vmCvar_t	g_spawnItemHoldable;
 extern	vmCvar_t	g_spawnItemPowerup;
 extern	vmCvar_t	g_spawnItemWeapons;
 //
+extern	vmCvar_t	g_startingWeapons; //bitmask
+//
+extern	vmCvar_t	g_startingAmmo_g;
+extern	vmCvar_t	g_startingAmmo_mg;
+extern	vmCvar_t	g_startingAmmo_sg;
+extern	vmCvar_t	g_startingAmmo_gl;
+extern	vmCvar_t	g_startingAmmo_rl;
+extern	vmCvar_t	g_startingAmmo_lg;
+extern	vmCvar_t	g_startingAmmo_rg;
+extern	vmCvar_t	g_startingAmmo_pg;
+extern	vmCvar_t	g_startingAmmo_bfg;
+extern	vmCvar_t	g_startingAmmo_gh;
+extern	vmCvar_t	g_startingAmmo_ng;
+extern	vmCvar_t	g_startingAmmo_pl;
+extern	vmCvar_t	g_startingAmmo_cg;
+extern	vmCvar_t	g_startingAmmo_hmg;
+//
 
 
 void	trap_Print( const char *text );

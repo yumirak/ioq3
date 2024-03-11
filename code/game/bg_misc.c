@@ -1106,11 +1106,14 @@ qboolean BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 
 	switch( item->giType ) {
 	case IT_WEAPON:
+		if ( item->giType && ps->ammo[ item->giTag ] == -1 ) { // has unlimited ammo
+			return qfalse;
+		}
 		return qtrue;	// weapons are always picked up
 
 	case IT_AMMO:
-		if ( ps->ammo[ item->giTag ] >= 200 ) {
-			return qfalse;		// can't hold any more
+		if ( ps->ammo[ item->giTag ] >= 200 || ps->ammo[ item->giTag ] == -1 ) {
+			return qfalse;		// can't hold any more or has unlimited ammo
 		}
 		return qtrue;
 

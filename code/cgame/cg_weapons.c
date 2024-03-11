@@ -576,7 +576,7 @@ void CG_GrappleTrail( centity_t *ent, const weaponInfo_t *wi ) {
 		return; // Don't draw if close
 
 	beam.reType = RT_LIGHTNING;
-	beam.customShader = cgs.media.lightningShader;
+	beam.customShader = cgs.media.grappleShader;
 
 	AxisClear( beam.axis );
 	beam.shaderRGBA[0] = 0xff;
@@ -693,14 +693,15 @@ void CG_RegisterWeapon( int weaponNum ) {
 		break;
 
 	case WP_GRAPPLING_HOOK:
-		MAKERGB( weaponInfo->flashDlightColor, 0.6f, 0.6f, 1.0f );
-		weaponInfo->missileModel = trap_R_RegisterModel( "models/ammo/rocket/rocket.md3" );
+		//MAKERGB( weaponInfo->flashDlightColor, 0.6f, 0.6f, 1.0f );
+		weaponInfo->missileModel = trap_R_RegisterModel( "models/weapons2/grapple/grapple_hook.md3" );
 		weaponInfo->missileTrailFunc = CG_GrappleTrail;
-		weaponInfo->missileDlight = 200;
-		MAKERGB( weaponInfo->missileDlightColor, 1, 0.75f, 0 );
-		weaponInfo->readySound = trap_S_RegisterSound( "sound/weapons/melee/fsthum.wav", qfalse );
-		weaponInfo->firingSound = trap_S_RegisterSound( "sound/weapons/melee/fstrun.wav", qfalse );
-		cgs.media.lightningShader = trap_R_RegisterShader( "lightningBolt1");
+		//weaponInfo->missileDlight = 200;
+		//MAKERGB( weaponInfo->missileDlightColor, 1, 0.75f, 0 );
+		weaponInfo->readySound = trap_S_RegisterSound( "sound/weapons/grapple/grhang.wav", qfalse );
+		weaponInfo->firingSound = trap_S_RegisterSound( "sound/weapons/grapple/grfire.wav", qfalse );
+		weaponInfo->flashSound[0] = trap_S_RegisterSound( "sound/weapons/grapple/grpull.wav", qfalse );
+		cgs.media.grappleShader = trap_R_RegisterShader( "grapplingChain");
 		break;
 
 //#ifdef MISSIONPACK
@@ -1516,14 +1517,24 @@ void CG_DrawWeaponSelect( void ) {
 		CG_DrawPic( x, y, AMMO_ICON_SIZE, AMMO_ICON_SIZE, cg_weapons[i].weaponIcon );
 
 		// no ammo cross on top
-		if ( weaponSelect > 0 && cg.snap->ps.ammo[ i ] > -1 ) {
+		if ( weaponSelect > 0 && cg.snap->ps.ammo[ i ] ) {
 
-			if ( !cg.snap->ps.ammo[ i ] )
-				CG_DrawPic( x, y, AMMO_ICON_SIZE, AMMO_ICON_SIZE, cgs.media.noammoShader );
+			switch(cg.snap->ps.ammo[ i ]){
+				default:
+					break;
+				case -1:
+					CG_DrawPic( x + AMMO_ICON_SIZE, y, AMMO_ICON_SIZE, AMMO_ICON_SIZE, cgs.media.infiniteAmmo );
+					break;
+				case 0:
+					CG_DrawPic( x, y, AMMO_ICON_SIZE, AMMO_ICON_SIZE, cgs.media.noammoShader );
+					break;
+			}
 
 			// ammo counter
+			if(cg.snap->ps.ammo[ i ] > -1) {
 			Com_sprintf( buf, sizeof(buf),"%i", cg.snap->ps.ammo[ i ] );
 			CG_DrawString( x + AMMO_ICON_SIZE + 2, y-1, buf, UI_BIGFONT, NULL);
+			}
 		}
 		x += dx;
 		y += dy;
@@ -1881,7 +1892,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 		radius = 8;
 		break;
 //#endif
-		case WP_MACHINEGUN:
+	case WP_MACHINEGUN:
 		mod = cgs.media.bulletFlashModel;
 		shader = cgs.media.bulletExplosionShader;
 		mark = cgs.media.bulletMarkShader;
@@ -1891,7 +1902,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 
 		radius = 8;
 		break;
-		case WP_HMG:
+	case WP_HMG:
 		mod = cgs.media.bulletFlashModel;
 		shader = cgs.media.bulletExplosionShader;
 		mark = cgs.media.bulletMarkShader;

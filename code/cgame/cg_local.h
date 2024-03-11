@@ -736,6 +736,7 @@ typedef struct {
 	qhandle_t	railCoreShader;
 
 	qhandle_t	lightningShader;
+	qhandle_t	grappleShader;
 
 	qhandle_t	friendShader;
 
@@ -1064,6 +1065,7 @@ typedef struct {
 	qhandle_t timerSlice[4];
 	qhandle_t timerSliceCurrent[4];
 
+	qhandle_t infiniteAmmo;
 } cgMedia_t;
 
 
