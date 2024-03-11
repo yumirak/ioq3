@@ -1737,20 +1737,20 @@ void BotUpdateInventory(bot_state_t *bs) {
 //#endif
 	bs->inventory[INVENTORY_HMG] = (bs->cur_ps.stats[STAT_WEAPONS] & (1 << WP_HMG)) != 0;;
 	//ammo
-	bs->inventory[INVENTORY_SHELLS] = bs->cur_ps.ammo[WP_SHOTGUN];
-	bs->inventory[INVENTORY_BULLETS] = bs->cur_ps.ammo[WP_MACHINEGUN];
-	bs->inventory[INVENTORY_GRENADES] = bs->cur_ps.ammo[WP_GRENADE_LAUNCHER];
-	bs->inventory[INVENTORY_CELLS] = bs->cur_ps.ammo[WP_PLASMAGUN];
-	bs->inventory[INVENTORY_LIGHTNINGAMMO] = bs->cur_ps.ammo[WP_LIGHTNING];
-	bs->inventory[INVENTORY_ROCKETS] = bs->cur_ps.ammo[WP_ROCKET_LAUNCHER];
-	bs->inventory[INVENTORY_SLUGS] = bs->cur_ps.ammo[WP_RAILGUN];
-	bs->inventory[INVENTORY_BFGAMMO] = bs->cur_ps.ammo[WP_BFG];
+	bs->inventory[INVENTORY_SHELLS] = bs->cur_ps.ammo[WP_SHOTGUN] == -1 ? 999 : bs->cur_ps.ammo[WP_SHOTGUN];
+	bs->inventory[INVENTORY_BULLETS] = bs->cur_ps.ammo[WP_MACHINEGUN] == -1 ? 999 : bs->cur_ps.ammo[WP_MACHINEGUN];
+	bs->inventory[INVENTORY_GRENADES] = bs->cur_ps.ammo[WP_GRENADE_LAUNCHER] == -1 ? 999 : bs->cur_ps.ammo[WP_GRENADE_LAUNCHER];
+	bs->inventory[INVENTORY_CELLS] = bs->cur_ps.ammo[WP_PLASMAGUN] == -1 ? 999 : bs->cur_ps.ammo[WP_PLASMAGUN];
+	bs->inventory[INVENTORY_LIGHTNINGAMMO] = bs->cur_ps.ammo[WP_LIGHTNING] == -1 ? 999 : bs->cur_ps.ammo[WP_LIGHTNING];
+	bs->inventory[INVENTORY_ROCKETS] = bs->cur_ps.ammo[WP_ROCKET_LAUNCHER] == -1 ? 999 : bs->cur_ps.ammo[WP_ROCKET_LAUNCHER];
+	bs->inventory[INVENTORY_SLUGS] = bs->cur_ps.ammo[WP_RAILGUN] == -1 ? 999 : bs->cur_ps.ammo[WP_RAILGUN];
+	bs->inventory[INVENTORY_BFGAMMO] = bs->cur_ps.ammo[WP_BFG] == -1 ? 999 : bs->cur_ps.ammo[WP_BFG];
 //#ifdef MISSIONPACK
-	bs->inventory[INVENTORY_NAILS] = bs->cur_ps.ammo[WP_NAILGUN];
-	bs->inventory[INVENTORY_MINES] = bs->cur_ps.ammo[WP_PROX_LAUNCHER];
-	bs->inventory[INVENTORY_BELT] = bs->cur_ps.ammo[WP_CHAINGUN];
+	bs->inventory[INVENTORY_NAILS] = bs->cur_ps.ammo[WP_NAILGUN] == -1 ? 999 : bs->cur_ps.ammo[WP_NAILGUN];
+	bs->inventory[INVENTORY_MINES] = bs->cur_ps.ammo[WP_PROX_LAUNCHER] == -1 ? 999 : bs->cur_ps.ammo[WP_PROX_LAUNCHER];
+	bs->inventory[INVENTORY_BELT] = bs->cur_ps.ammo[WP_CHAINGUN] == -1 ? 999 : bs->cur_ps.ammo[WP_CHAINGUN];
 //#endif
-	bs->inventory[INVENTORY_HMGBULLETS] = bs->cur_ps.ammo[WP_HMG];
+	bs->inventory[INVENTORY_HMGBULLETS] = bs->cur_ps.ammo[WP_HMG] == -1 ? 999 : bs->cur_ps.ammo[WP_HMG];
 	//powerups
 	bs->inventory[INVENTORY_HEALTH] = bs->cur_ps.stats[STAT_HEALTH];
 	bs->inventory[INVENTORY_TELEPORTER] = bs->cur_ps.stats[STAT_HOLDABLE_ITEM] == MODELINDEX_TELEPORTER;
