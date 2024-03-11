@@ -113,6 +113,7 @@ vmCvar_t	g_startingWeapons; //bitmask
 //
 vmCvar_t	g_startingAmmo_g;
 vmCvar_t	g_startingAmmo_mg;
+vmCvar_t	g_startingAmmo_mg_team;
 vmCvar_t	g_startingAmmo_sg;
 vmCvar_t	g_startingAmmo_gl;
 vmCvar_t	g_startingAmmo_rl;
@@ -125,6 +126,47 @@ vmCvar_t	g_startingAmmo_ng;
 vmCvar_t	g_startingAmmo_pl;
 vmCvar_t	g_startingAmmo_cg;
 vmCvar_t	g_startingAmmo_hmg;
+//
+vmCvar_t	g_damage_g;
+vmCvar_t	g_damage_mg;
+vmCvar_t	g_damage_mg_team;
+vmCvar_t	g_damage_sg;
+vmCvar_t	g_damage_gl;
+vmCvar_t	g_damage_rl;
+vmCvar_t	g_damage_lg;
+vmCvar_t	g_damage_rg;
+vmCvar_t	g_damage_pg;
+vmCvar_t	g_damage_bfg;
+vmCvar_t	g_damage_gh;
+vmCvar_t	g_damage_ng;
+vmCvar_t	g_damage_pl;
+vmCvar_t	g_damage_cg;
+vmCvar_t	g_damage_hmg;
+
+vmCvar_t	g_splashdamage_rl;
+vmCvar_t	g_splashdamage_gl;
+vmCvar_t	g_splashdamage_pg;
+vmCvar_t	g_splashdamage_bfg;
+vmCvar_t	g_splashdamage_pl;
+
+vmCvar_t	g_splashradius_rl;
+vmCvar_t	g_splashradius_gl;
+vmCvar_t	g_splashradius_pg;
+vmCvar_t	g_splashradius_bfg;
+vmCvar_t	g_splashradius_pl;
+
+vmCvar_t	g_velocity_bfg;
+vmCvar_t	g_velocity_gh;
+vmCvar_t	g_velocity_gl;
+vmCvar_t	g_velocity_pg;
+vmCvar_t	g_velocity_rl;
+
+vmCvar_t	g_nailbounce;
+vmCvar_t	g_nailbouncepercentage;
+vmCvar_t	g_nailcount;
+vmCvar_t	g_nailspeed;
+vmCvar_t	g_nailspread;
+//
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -226,6 +268,7 @@ static cvarTable_t		gameCvarTable[] = {
 	//
 	{ &g_startingAmmo_g, "g_startingAmmo_g", "-1", 0 , 0, qtrue},
 	{ &g_startingAmmo_mg, "g_startingAmmo_mg", "100", 0, 0, qtrue},
+	{ &g_startingAmmo_mg, "g_startingAmmo_mg_team", "50", 0, 0, qtrue},
 	{ &g_startingAmmo_sg, "g_startingAmmo_sg", "10", 0, 0, qtrue},
 	{ &g_startingAmmo_gl, "g_startingAmmo_gl", "10", 0, 0, qtrue},
 	{ &g_startingAmmo_rl, "g_startingAmmo_rl", "10", 0, 0, qtrue},
@@ -238,6 +281,46 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_startingAmmo_pl, "g_startingAmmo_pl", "5", 0, 0, qtrue},
 	{ &g_startingAmmo_cg, "g_startingAmmo_cg", "100", 0, 0, qtrue},
 	{ &g_startingAmmo_hmg, "g_startingAmmo_hmg", "50", 0, 0, qtrue},
+	//
+	{ &g_damage_g, "g_damage_g", "50", 0 , 0, qtrue},
+	{ &g_damage_mg, "g_damage_mg", "7", 0, 0, qtrue},
+	{ &g_damage_mg_team, "g_damage_mg_team", "5", 0, 0, qtrue},
+	{ &g_damage_sg, "g_damage_sg", "10", 0, 0, qtrue},
+	{ &g_damage_gl, "g_damage_gl", "100", 0, 0, qtrue},
+	{ &g_damage_rl, "g_damage_rl", "100", 0, 0, qtrue},
+	{ &g_damage_lg, "g_damage_lg", "8", 0, 0, qtrue},
+	{ &g_damage_rg, "g_damage_rg", "100", 0, 0, qtrue},
+	{ &g_damage_pg, "g_damage_pg", "20", 0, 0, qtrue},
+	{ &g_damage_bfg, "g_damage_bfg", "100", 0, 0, qtrue},
+	{ &g_damage_gh, "g_damage_gh", "10", 0, 0, qtrue},
+	{ &g_damage_ng, "g_damage_ng", "20", 0, 0, qtrue},
+	{ &g_damage_pl, "g_damage_pl", "0", 0, 0, qtrue},
+	{ &g_damage_cg, "g_damage_cg", "8", 0, 0, qtrue},
+	{ &g_damage_hmg, "g_damage_hmg", "7", 0, 0, qtrue},
+
+	{ &g_splashdamage_gl, "g_splashdamage_gl", "100", 0, 0, qtrue},
+	{ &g_splashdamage_rl, "g_splashdamage_rl", "100", 0, 0, qtrue},
+	{ &g_splashdamage_pg, "g_splashdamage_pg", "15", 0, 0, qtrue},
+	{ &g_splashdamage_bfg, "g_splashdamage_bfg", "100", 0, 0, qtrue},
+	{ &g_splashdamage_pl, "g_splashdamage_pl", "100", 0, 0, qtrue},
+
+	{ &g_splashradius_gl, "g_splashradius_gl", "150", 0, 0, qtrue},
+	{ &g_splashradius_rl, "g_splashradius_rl", "100", 0, 0, qtrue},
+	{ &g_splashradius_pg, "g_splashradius_pg", "20", 0, 0, qtrue},
+	{ &g_splashradius_bfg, "g_splashradius_bfg", "120", 0, 0, qtrue},
+	{ &g_splashradius_pl, "g_splashradius_pl", "150", 0, 0, qtrue},
+
+	{ &g_velocity_gl, "g_velocity_gl", "700", 0, 0, qtrue},
+	{ &g_velocity_rl, "g_velocity_rl", "1000", 0, 0, qtrue},
+	{ &g_velocity_pg, "g_velocity_pg", "2000", 0, 0, qtrue},
+	{ &g_velocity_bfg, "g_velocity_bfg", "1800", 0, 0, qtrue},
+	{ &g_velocity_gh, "g_velocity_gh", "1800", 0, 0, qtrue},
+
+	{ &g_nailbounce, "g_nailbounce", "1", 0, 0, qtrue},
+	{ &g_nailbouncepercentage, "g_nailbouncepercentage", "65", 0, 0, qtrue},
+	{ &g_nailcount, "g_nailcount", "10", 0, 0, qtrue},
+	{ &g_nailspeed, "g_nailspeed", "1000", 0, 0, qtrue},
+	{ &g_nailspread, "g_nailspeed", "400", 0, 0, qtrue},
 
 };
 

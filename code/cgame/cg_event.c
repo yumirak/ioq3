@@ -937,6 +937,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 			trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.hgrenb2aSound );
 		}
 		break;
+	case EV_NAIL_BOUNCE:
+		DEBUGNAME("EV_NAIL_BOUNCE");
+		trap_S_StartSound (NULL, es->number, CHAN_AUTO, cgs.media.sfx_nghit );
+		break;
 
 //#ifdef MISSIONPACK
 	case EV_PROXIMITY_MINE_STICK:

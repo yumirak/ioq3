@@ -767,6 +767,7 @@ extern	vmCvar_t	g_startingWeapons; //bitmask
 //
 extern	vmCvar_t	g_startingAmmo_g;
 extern	vmCvar_t	g_startingAmmo_mg;
+extern	vmCvar_t	g_startingAmmo_mg_team;
 extern	vmCvar_t	g_startingAmmo_sg;
 extern	vmCvar_t	g_startingAmmo_gl;
 extern	vmCvar_t	g_startingAmmo_rl;
@@ -780,7 +781,46 @@ extern	vmCvar_t	g_startingAmmo_pl;
 extern	vmCvar_t	g_startingAmmo_cg;
 extern	vmCvar_t	g_startingAmmo_hmg;
 //
+extern	vmCvar_t	g_damage_g;
+extern	vmCvar_t	g_damage_mg;
+extern	vmCvar_t	g_damage_mg_team;
+extern	vmCvar_t	g_damage_sg;
+extern	vmCvar_t	g_damage_gl;
+extern	vmCvar_t	g_damage_rl;
+extern	vmCvar_t	g_damage_lg;
+extern	vmCvar_t	g_damage_rg;
+extern	vmCvar_t	g_damage_pg;
+extern	vmCvar_t	g_damage_bfg;
+extern	vmCvar_t	g_damage_gh;
+extern	vmCvar_t	g_damage_ng;
+extern	vmCvar_t	g_damage_pl;
+extern	vmCvar_t	g_damage_cg;
+extern	vmCvar_t	g_damage_hmg;
 
+extern	vmCvar_t	g_splashdamage_rl;
+extern	vmCvar_t	g_splashdamage_gl;
+extern	vmCvar_t	g_splashdamage_pg;
+extern	vmCvar_t	g_splashdamage_bfg;
+extern	vmCvar_t	g_splashdamage_pl;
+
+extern	vmCvar_t	g_splashradius_rl;
+extern	vmCvar_t	g_splashradius_gl;
+extern	vmCvar_t	g_splashradius_pg;
+extern	vmCvar_t	g_splashradius_bfg;
+extern	vmCvar_t	g_splashradius_pl;
+
+extern	vmCvar_t	g_velocity_bfg;
+extern	vmCvar_t	g_velocity_gh;
+extern	vmCvar_t	g_velocity_gl;
+extern	vmCvar_t	g_velocity_pg;
+extern	vmCvar_t	g_velocity_rl;
+
+extern	vmCvar_t	g_nailbounce;
+extern	vmCvar_t	g_nailbouncepercentage;
+extern	vmCvar_t	g_nailcount;
+extern	vmCvar_t	g_nailspeed;
+extern	vmCvar_t	g_nailspread;
+//
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) __attribute__((noreturn));

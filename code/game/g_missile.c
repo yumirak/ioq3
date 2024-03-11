@@ -51,6 +51,9 @@ void G_BounceMissile( gentity_t *ent, trace_t *trace ) {
 		}
 	}
 
+	if(ent->s.eFlags & EF_BOUNCE && ent->s.modelindex2 < (rand() & 100) + 1)
+		return;
+
 	VectorAdd( ent->r.currentOrigin, trace->plane.normal, ent->r.currentOrigin);
 	VectorCopy( ent->r.currentOrigin, ent->s.pos.trBase );
 	ent->s.pos.trTime = level.time;
@@ -279,12 +282,20 @@ void G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 	// check for bounce
 	if ( !other->takedamage &&
 		( ent->s.eFlags & ( EF_BOUNCE | EF_BOUNCE_HALF ) ) ) {
-		if(ent->s.weapon == WP_NAILGUN && !ent->s.generic1 )
-			return;
-
-		G_BounceMissile( ent, trace );
-		G_AddEvent( ent, EV_GRENADE_BOUNCE, 0 );
-		ent->s.generic1--;
+		switch(ent->s.weapon)
+		{
+			case WP_NAILGUN:
+				if(ent->s.generic1) {
+					ent->s.generic1--;
+					G_BounceMissile( ent, trace );
+					G_AddEvent( ent, EV_NAIL_BOUNCE, 0 );
+				}
+				break;
+			case WP_GRENADE_LAUNCHER:
+				G_BounceMissile( ent, trace );
+				G_AddEvent( ent, EV_GRENADE_BOUNCE, 0 );
+				break;
+		}
 		return;
 	}
 
@@ -540,9 +551,9 @@ gentity_t *fire_plasma (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
-	bolt->damage = 20;
-	bolt->splashDamage = 15;
-	bolt->splashRadius = 20;
+	bolt->damage = g_damage_pg.integer; // 20;
+	bolt->splashDamage = g_splashdamage_pg.integer; // 15;
+	bolt->splashRadius = g_splashradius_pg.integer; // 20;
 	bolt->methodOfDeath = MOD_PLASMA;
 	bolt->splashMethodOfDeath = MOD_PLASMA_SPLASH;
 	bolt->clipmask = MASK_SHOT;
@@ -551,7 +562,7 @@ gentity_t *fire_plasma (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.pos.trType = TR_LINEAR;
 	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 	VectorCopy( start, bolt->s.pos.trBase );
-	VectorScale( dir, 2000, bolt->s.pos.trDelta );
+	VectorScale( dir, g_velocity_pg.integer, bolt->s.pos.trDelta ); //, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 
 	VectorCopy (start, bolt->r.currentOrigin);
@@ -584,9 +595,9 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.clientNum = self->s.number;
 	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
-	bolt->damage = 100;
-	bolt->splashDamage = 100;
-	bolt->splashRadius = 150;
+	bolt->damage = g_damage_gl.integer; // 100;
+	bolt->splashDamage = g_splashdamage_gl.integer; // 100;
+	bolt->splashRadius = g_splashradius_gl.integer; // 150;
 	bolt->methodOfDeath = MOD_GRENADE;
 	bolt->splashMethodOfDeath = MOD_GRENADE_SPLASH;
 	bolt->clipmask = MASK_SHOT;
@@ -595,7 +606,7 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.pos.trType = TR_GRAVITY;
 	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 	VectorCopy( start, bolt->s.pos.trBase );
-	VectorScale( dir, 700, bolt->s.pos.trDelta );
+	VectorScale( dir, g_velocity_gl.integer, bolt->s.pos.trDelta ); //, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 
 	VectorCopy (start, bolt->r.currentOrigin);
@@ -626,9 +637,9 @@ gentity_t *fire_bfg (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
-	bolt->damage = 100;
-	bolt->splashDamage = 100;
-	bolt->splashRadius = 120;
+	bolt->damage = g_damage_bfg.integer; // 100;
+	bolt->splashDamage = g_splashdamage_bfg.integer; // 100;
+	bolt->splashRadius = g_splashradius_bfg.integer; // 120;
 	bolt->methodOfDeath = MOD_BFG;
 	bolt->splashMethodOfDeath = MOD_BFG_SPLASH;
 	bolt->clipmask = MASK_SHOT;
@@ -637,7 +648,7 @@ gentity_t *fire_bfg (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.pos.trType = TR_LINEAR;
 	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 	VectorCopy( start, bolt->s.pos.trBase );
-	VectorScale( dir, 2000, bolt->s.pos.trDelta );
+	VectorScale( dir, g_velocity_bfg.integer, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, bolt->r.currentOrigin);
 
@@ -667,9 +678,9 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
-	bolt->damage = 100;
-	bolt->splashDamage = 100;
-	bolt->splashRadius = 120;
+	bolt->damage = g_damage_rl.integer; //100;
+	bolt->splashDamage = g_splashdamage_rl.integer; //100;
+	bolt->splashRadius = g_splashradius_rl.integer; //120;
 	bolt->methodOfDeath = MOD_ROCKET;
 	bolt->splashMethodOfDeath = MOD_ROCKET_SPLASH;
 	bolt->clipmask = MASK_SHOT;
@@ -678,7 +689,7 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.pos.trType = TR_LINEAR;
 	bolt->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 	VectorCopy( start, bolt->s.pos.trBase );
-	VectorScale( dir, 900, bolt->s.pos.trDelta );
+	VectorScale( dir, g_velocity_rl.integer, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, bolt->r.currentOrigin);
 
@@ -707,12 +718,12 @@ gentity_t *fire_grapple (gentity_t *self, vec3_t start, vec3_t dir) {
 	hook->clipmask = MASK_SHOT;
 	hook->parent = self;
 	hook->target_ent = NULL;
-
+	hook->damage = g_damage_gh.integer; //20;
 	hook->s.pos.trType = TR_LINEAR;
 	hook->s.pos.trTime = level.time - MISSILE_PRESTEP_TIME;		// move a bit on the very first frame
 	hook->s.otherEntityNum = self->s.number; // use to match beam in client
 	VectorCopy( start, hook->s.pos.trBase );
-	VectorScale( dir, 800, hook->s.pos.trDelta );
+	VectorScale( dir, g_velocity_gh.integer, hook->s.pos.trDelta );
 	SnapVector( hook->s.pos.trDelta );			// save net bandwidth
 	VectorCopy (start, hook->r.currentOrigin);
 
@@ -734,7 +745,7 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 	gentity_t	*bolt;
 	vec3_t		dir;
 	vec3_t		end;
-	float		r, u, scale;
+	float		r, u;
 
 	bolt = G_Spawn();
 	bolt->classname = "nail";
@@ -746,9 +757,10 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 	bolt->s.weapon = WP_NAILGUN;
 	bolt->r.ownerNum = self->s.number;
 	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
-	bolt->s.generic1 = 1;  // bouncetime
+	bolt->s.generic1 = g_nailbounce.integer;  // bouncetime
+	bolt->s.modelindex2 = g_nailbouncepercentage.integer;  // bouncepercent
 	bolt->parent = self;
-	bolt->damage = 20;
+	bolt->damage = g_damage_ng.integer; //20;
 	bolt->methodOfDeath = MOD_NAIL;
 	bolt->clipmask = MASK_SHOT;
 	bolt->target_ent = NULL;
@@ -758,16 +770,15 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 	VectorCopy( start, bolt->s.pos.trBase );
 
 	r = random() * M_PI * 2.0f;
-	u = sin(r) * crandom() * NAILGUN_SPREAD * 16;
-	r = cos(r) * crandom() * NAILGUN_SPREAD * 16;
+	u = sin(r) * crandom() * g_nailspread.integer * 16;
+	r = cos(r) * crandom() * g_nailspread.integer * 16;
 	VectorMA( start, 8192 * 16, forward, end);
 	VectorMA (end, r, right, end);
 	VectorMA (end, u, up, end);
 	VectorSubtract( end, start, dir );
 	VectorNormalize( dir );
 
-	scale = 555 + random() * 1800;
-	VectorScale( dir, scale, bolt->s.pos.trDelta );
+	VectorScale( dir, g_nailspeed.integer, bolt->s.pos.trDelta );
 	SnapVector( bolt->s.pos.trDelta );
 
 	VectorCopy( start, bolt->r.currentOrigin );
@@ -797,9 +808,9 @@ gentity_t *fire_prox( gentity_t *self, vec3_t start, vec3_t dir ) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->s.otherEntityNum = self->s.number;  // 2019-03-07 quake live adds owner
 	bolt->parent = self;
-	bolt->damage = 0;
-	bolt->splashDamage = 100;
-	bolt->splashRadius = 150;
+	bolt->damage = g_damage_pl.integer;
+	bolt->splashDamage = g_splashdamage_pl.integer; // 100;
+	bolt->splashRadius = g_splashradius_pl.integer; //150;
 	bolt->methodOfDeath = MOD_PROXIMITY_MINE;
 	bolt->splashMethodOfDeath = MOD_PROXIMITY_MINE;
 	bolt->clipmask = MASK_SHOT;

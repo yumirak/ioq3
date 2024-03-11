@@ -510,7 +510,7 @@ void ClientWeaponSpawn( gentity_t *ent )
 	if ( g_startingWeapons.integer & 2 ) {
 		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_MACHINEGUN );
 		if ( g_gametype.integer == GT_TEAM ) {
-			client->ps.ammo[WP_MACHINEGUN] = g_startingAmmo_mg.integer / 2;
+			client->ps.ammo[WP_MACHINEGUN] = g_startingAmmo_mg_team.integer;
 		} else {
 			client->ps.ammo[WP_MACHINEGUN] = g_startingAmmo_mg.integer;
 		}
@@ -525,7 +525,7 @@ void ClientWeaponSpawn( gentity_t *ent )
 	}
 	if ( g_startingWeapons.integer & 16 ) {
 		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_ROCKET_LAUNCHER );
-		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_startingAmmo_rg.integer;
+		client->ps.ammo[WP_ROCKET_LAUNCHER] = g_startingAmmo_rl.integer;
 	}
 	if ( g_startingWeapons.integer & 32 ) {
 		client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_LIGHTNING );
