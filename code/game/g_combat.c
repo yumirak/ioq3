@@ -803,6 +803,62 @@ int G_InvulnerabilityEffect( gentity_t *targ, vec3_t dir, vec3_t point, vec3_t i
 	}
 }
 //#endif
+float G_WeaponKnockbackMulti( qboolean self, int mod )
+{
+	float	kb_multi;
+
+	if(g_knockback_override.integer)
+		return 1;
+
+	switch(mod)
+	{
+		case MOD_GRENADE:
+		case MOD_GRENADE_SPLASH:
+			kb_multi = g_knockback_gl[self].value;
+			break;
+		case MOD_ROCKET:
+		case MOD_ROCKET_SPLASH:
+			kb_multi =g_knockback_rl[self].value;
+			break;
+		case MOD_PLASMA:
+		case MOD_PLASMA_SPLASH:
+			kb_multi = g_knockback_pg[self].value;
+			break;
+		case MOD_BFG:
+		case MOD_BFG_SPLASH:
+			kb_multi = g_knockback_bfg[self].value;
+			break;
+		case MOD_GAUNTLET:
+			kb_multi = g_knockback_g.value;
+			break;
+		case MOD_MACHINEGUN:
+			kb_multi = g_knockback_mg.value;
+			break;
+		case MOD_SHOTGUN:
+			kb_multi = g_knockback_sg.value;
+			break;
+		case MOD_LIGHTNING:
+			kb_multi = g_knockback_lg.value;
+			break;
+		case MOD_RAILGUN:
+			kb_multi = g_knockback_rg.value;
+			break;
+		case MOD_GRAPPLE:
+			kb_multi = g_knockback_gh.value;
+			break;
+		case MOD_CHAINGUN:
+			kb_multi = g_knockback_cg.value;
+			break;
+		case MOD_HMG:
+			kb_multi = g_knockback_hmg.value;
+			break;
+		default:
+			kb_multi = 1;
+			break;
+	}
+
+	return kb_multi;
+}
 /*
 ============
 G_Damage
@@ -903,9 +959,12 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	}
 
 	knockback = damage;
-	if ( knockback > 200 ) {
-		knockback = 200;
-	}
+
+	knockback *= G_WeaponKnockbackMulti( attacker == targ, mod );
+
+	if ( knockback > g_max_knockback.integer )
+		knockback = g_max_knockback.integer;
+
 	if ( targ->flags & FL_NO_KNOCKBACK ) {
 		knockback = 0;
 	}
@@ -921,9 +980,11 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		mass = 200;
 
 		VectorScale (dir, g_knockback.value * (float)knockback / mass, kvel);
+		kvel[2] += attacker == targ ? g_knockback_z[1].integer : g_knockback_z[0].integer; // z offset
 		VectorAdd (targ->client->ps.velocity, kvel, targ->client->ps.velocity);
 
 		// set the timer so that the other client can't cancel
+
 		// out the movement immediately
 		if ( !targ->client->ps.pm_time ) {
 			int		t;

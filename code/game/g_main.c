@@ -166,6 +166,24 @@ vmCvar_t	g_nailbouncepercentage;
 vmCvar_t	g_nailcount;
 vmCvar_t	g_nailspeed;
 vmCvar_t	g_nailspread;
+
+vmCvar_t	g_max_knockback;
+vmCvar_t	g_knockback_override;
+vmCvar_t	g_knockback_z[2];
+vmCvar_t	g_knockback_g;
+vmCvar_t	g_knockback_mg;
+vmCvar_t	g_knockback_sg;
+vmCvar_t	g_knockback_gl[2];
+vmCvar_t	g_knockback_rl[2];
+vmCvar_t	g_knockback_lg;
+vmCvar_t	g_knockback_rg;
+vmCvar_t	g_knockback_pg[2];
+vmCvar_t	g_knockback_bfg[2];
+vmCvar_t	g_knockback_gh;
+vmCvar_t	g_knockback_ng;
+vmCvar_t	g_knockback_pl;
+vmCvar_t	g_knockback_cg;
+vmCvar_t	g_knockback_hmg;
 //
 
 static cvarTable_t		gameCvarTable[] = {
@@ -268,7 +286,7 @@ static cvarTable_t		gameCvarTable[] = {
 	//
 	{ &g_startingAmmo_g, "g_startingAmmo_g", "-1", 0 , 0, qtrue},
 	{ &g_startingAmmo_mg, "g_startingAmmo_mg", "100", 0, 0, qtrue},
-	{ &g_startingAmmo_mg, "g_startingAmmo_mg_team", "50", 0, 0, qtrue},
+	{ &g_startingAmmo_mg_team, "g_startingAmmo_mg_team", "50", 0, 0, qtrue},
 	{ &g_startingAmmo_sg, "g_startingAmmo_sg", "10", 0, 0, qtrue},
 	{ &g_startingAmmo_gl, "g_startingAmmo_gl", "10", 0, 0, qtrue},
 	{ &g_startingAmmo_rl, "g_startingAmmo_rl", "10", 0, 0, qtrue},
@@ -322,6 +340,28 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_nailspeed, "g_nailspeed", "1000", 0, 0, qtrue},
 	{ &g_nailspread, "g_nailspeed", "400", 0, 0, qtrue},
 
+	{ &g_max_knockback, "g_max_knockback", "120", 0 , 0, qtrue},
+	{ &g_knockback_override, "g_knockback_override", "0", 0 , 0, qtrue},
+	{ &g_knockback_z[0], "g_knockback_z", "24", 0 , 0, qtrue},
+	{ &g_knockback_z[1], "g_knockback_z_self", "24", 0 , 0, qtrue},
+	{ &g_knockback_g, "g_knockback_g", "1", 0 , 0, qtrue},
+	{ &g_knockback_mg, "g_knockback_mg", "1", 0, 0, qtrue},
+	{ &g_knockback_sg, "g_knockback_sg", "1", 0, 0, qtrue},
+	{ &g_knockback_gl[0], "g_knockback_gl", "1.10", 0, 0, qtrue},
+	{ &g_knockback_gl[1], "g_knockback_gl_self", "1.10", 0, 0, qtrue},
+	{ &g_knockback_rl[0], "g_knockback_rl", "0.90", 0, 0, qtrue},
+	{ &g_knockback_rl[1], "g_knockback_rl_self", "1.10", 0, 0, qtrue},
+	{ &g_knockback_lg, "g_knockback_lg", "1.75", 0, 0, qtrue},
+	{ &g_knockback_rg, "g_knockback_rg", "0.85", 0, 0, qtrue},
+	{ &g_knockback_pg[0], "g_knockback_pg", "1.10", 0, 0, qtrue},
+	{ &g_knockback_pg[1], "g_knockback_pg_self", "1.30", 0, 0, qtrue},
+	{ &g_knockback_bfg[0], "g_knockback_bfg", "1", 0, 0, qtrue},
+	{ &g_knockback_bfg[1], "g_knockback_bfg_self", "1", 0, 0, qtrue},
+	{ &g_knockback_gh, "g_knockback_gh", "1", 0, 0, qtrue},
+	{ &g_knockback_ng, "g_knockback_ng", "1", 0, 0, qtrue},
+	{ &g_knockback_pl, "g_knockback_pl", "1", 0, 0, qtrue},
+	{ &g_knockback_cg, "g_knockback_cg", "1", 0, 0, qtrue},
+	{ &g_knockback_hmg, "g_knockback_hmg", "1", 0, 0, qtrue},
 };
 
 static int gameCvarTableSize = ARRAY_LEN( gameCvarTable );

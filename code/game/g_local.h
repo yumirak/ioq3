@@ -820,6 +820,24 @@ extern	vmCvar_t	g_nailbouncepercentage;
 extern	vmCvar_t	g_nailcount;
 extern	vmCvar_t	g_nailspeed;
 extern	vmCvar_t	g_nailspread;
+
+extern	vmCvar_t	g_max_knockback;
+extern	vmCvar_t	g_knockback_override;
+extern	vmCvar_t	g_knockback_z[2];
+extern	vmCvar_t	g_knockback_g;
+extern	vmCvar_t	g_knockback_mg;
+extern	vmCvar_t	g_knockback_sg;
+extern	vmCvar_t	g_knockback_gl[2];
+extern	vmCvar_t	g_knockback_rl[2];
+extern	vmCvar_t	g_knockback_lg;
+extern	vmCvar_t	g_knockback_rg;
+extern	vmCvar_t	g_knockback_pg[2];
+extern	vmCvar_t	g_knockback_bfg[2];
+extern	vmCvar_t	g_knockback_gh;
+extern	vmCvar_t	g_knockback_ng;
+extern	vmCvar_t	g_knockback_pl;
+extern	vmCvar_t	g_knockback_cg;
+extern	vmCvar_t	g_knockback_hmg;
 //
 
 void	trap_Print( const char *text );
