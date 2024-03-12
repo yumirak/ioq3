@@ -61,12 +61,12 @@ extern	float	pm_stopspeed;
 extern	float	pm_duckScale;
 extern	float	pm_swimScale;
 
-extern	float	pm_accelerate;
+//extern	float	pm_accelerate;
 extern	float	pm_airaccelerate;
 extern	float	pm_wateraccelerate;
 extern	float	pm_flyaccelerate;
 
-extern	float	pm_friction;
+//extern	float	pm_friction;
 extern	float	pm_waterfriction;
 extern	float	pm_flightfriction;
 
@@ -79,4 +79,7 @@ void PM_AddEvent( int newEvent );
 qboolean	PM_SlideMove( qboolean gravity );
 void		PM_StepSlideMove( qboolean gravity );
 
+extern	vmCvar_t	pmove_WishSpeed;
+extern	vmCvar_t	pmove_WalkAccel;
+extern	vmCvar_t	pmove_WalkFriction;
 

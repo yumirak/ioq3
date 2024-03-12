@@ -183,6 +183,9 @@ vmCvar_t 	cg_smoothClients;
 vmCvar_t	pmove_fixed;
 //vmCvar_t	cg_pmove_fixed;
 vmCvar_t	pmove_msec;
+vmCvar_t	pmove_WishSpeed;
+vmCvar_t	pmove_WalkAccel;
+vmCvar_t	pmove_WalkFriction;
 vmCvar_t	cg_pmove_msec;
 vmCvar_t	cg_cameraMode;
 vmCvar_t	cg_cameraOrbit;
@@ -393,6 +396,9 @@ static cvarTable_t cvarTable[] = {
 
 	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO},
 	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO},
+	{ &pmove_WishSpeed, "pmove_WishSpeed", "400", CVAR_SYSTEMINFO},
+	{ &pmove_WalkAccel, "pmove_WalkAccel", "10", CVAR_SYSTEMINFO},
+	{ &pmove_WalkFriction, "pmove_WalkFriction", "6", CVAR_SYSTEMINFO},
 #ifdef MISSIONPACK
 	{ &cg_smallFont, "ui_smallFont", "0.25", CVAR_ARCHIVE},
 	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},

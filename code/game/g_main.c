@@ -80,6 +80,9 @@ vmCvar_t	g_smoothClients;
 vmCvar_t	pmove_fixed;
 vmCvar_t	pmove_msec;
 vmCvar_t	pmove_JumpVelocity;
+vmCvar_t	pmove_WishSpeed;
+vmCvar_t	pmove_WalkAccel;
+vmCvar_t	pmove_WalkFriction;
 vmCvar_t	g_rankings;
 vmCvar_t	g_listEntity;
 vmCvar_t	g_localTeamPref;
@@ -267,7 +270,10 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_smoothClients, "g_smoothClients", "1", 0, 0, qfalse},
 	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO, 0, qfalse},
+	{ &pmove_WishSpeed, "pmove_WishSpeed", "400", CVAR_SYSTEMINFO,0, qfalse},
 	{ &pmove_JumpVelocity, "pmove_JumpVelocity", "275", CVAR_SYSTEMINFO, 0, qfalse},
+	{ &pmove_WalkAccel, "pmove_WalkAccel", "10", CVAR_SYSTEMINFO,0, qfalse},
+	{ &pmove_WalkFriction, "pmove_WalkFriction", "6", CVAR_SYSTEMINFO,0, qfalse},
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse },
