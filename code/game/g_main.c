@@ -85,6 +85,8 @@ vmCvar_t	pmove_JumpVelocityScaleAdd;
 vmCvar_t	pmove_JumpVelocityTimeThreshold;
 vmCvar_t	pmove_DoubleJump;
 vmCvar_t	pmove_StepHeight;
+vmCvar_t	pmove_StepJump;
+vmCvar_t	pmove_StepJumpVelocity;
 vmCvar_t	pmove_Overbounce;
 vmCvar_t	pmove_WishSpeed;
 vmCvar_t	pmove_WalkAccel;
@@ -290,6 +292,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &pmove_JumpVelocityTimeThreshold, "pmove_JumpVelocityTimeThreshold", "500.0", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_DoubleJump, "pmove_DoubleJump", "0", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_StepHeight, "pmove_StepHeight", "22", CVAR_SYSTEMINFO, 0, qfalse},
+	{ &pmove_StepJump, "pmove_StepJump", "1", CVAR_SYSTEMINFO, 0, qfalse},
+	{ &pmove_StepJumpVelocity, "pmove_StepJumpVelocity", "48", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_Overbounce, "pmove_Overbounce", "0", CVAR_SYSTEMINFO, 0, qfalse},
 
 	{ &pmove_WalkAccel, "pmove_WalkAccel", "10", CVAR_SYSTEMINFO,0, qfalse},

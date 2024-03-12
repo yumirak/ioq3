@@ -750,6 +750,8 @@ extern	vmCvar_t	pmove_JumpVelocityScaleAdd;
 extern	vmCvar_t	pmove_JumpVelocityTimeThreshold;
 extern	vmCvar_t	pmove_DoubleJump;
 extern	vmCvar_t	pmove_StepHeight;
+extern	vmCvar_t	pmove_StepJump;
+extern	vmCvar_t	pmove_StepJumpVelocity;
 extern	vmCvar_t	pmove_Overbounce;
 extern	vmCvar_t	pmove_WishSpeed;
 extern	vmCvar_t	pmove_WalkAccel;
