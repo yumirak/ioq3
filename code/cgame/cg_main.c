@@ -183,6 +183,7 @@ vmCvar_t 	cg_smoothClients;
 vmCvar_t	pmove_fixed;
 //vmCvar_t	cg_pmove_fixed;
 vmCvar_t	pmove_msec;
+vmCvar_t	pmove_JumpVelocity;
 vmCvar_t	pmove_WishSpeed;
 vmCvar_t	pmove_WalkAccel;
 vmCvar_t	pmove_WalkFriction;
@@ -396,6 +397,7 @@ static cvarTable_t cvarTable[] = {
 
 	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO},
 	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO},
+	{ &pmove_JumpVelocity, "pmove_JumpVelocity", "275", CVAR_SYSTEMINFO},
 	{ &pmove_WishSpeed, "pmove_WishSpeed", "400", CVAR_SYSTEMINFO},
 	{ &pmove_WalkAccel, "pmove_WalkAccel", "10", CVAR_SYSTEMINFO},
 	{ &pmove_WalkFriction, "pmove_WalkFriction", "6", CVAR_SYSTEMINFO},
