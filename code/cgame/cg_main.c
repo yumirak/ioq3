@@ -184,6 +184,12 @@ vmCvar_t	pmove_fixed;
 //vmCvar_t	cg_pmove_fixed;
 vmCvar_t	pmove_msec;
 vmCvar_t	pmove_JumpVelocity;
+vmCvar_t	pmove_JumpVelocityMax;
+vmCvar_t	pmove_JumpVelocityScaleAdd;
+vmCvar_t	pmove_JumpVelocityTimeThreshold;
+vmCvar_t	pmove_DoubleJump;
+vmCvar_t	pmove_StepHeight;
+vmCvar_t	pmove_Overbounce;
 vmCvar_t	pmove_WishSpeed;
 vmCvar_t	pmove_WalkAccel;
 vmCvar_t	pmove_AirAccel;
@@ -406,6 +412,12 @@ static cvarTable_t cvarTable[] = {
 	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO},
 	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO},
 	{ &pmove_JumpVelocity, "pmove_JumpVelocity", "275", CVAR_SYSTEMINFO},
+	{ &pmove_JumpVelocityMax, "pmove_JumpVelocityMax", "700", CVAR_SYSTEMINFO},
+	{ &pmove_JumpVelocityScaleAdd, "pmove_JumpVelocityScaleAdd", "275", CVAR_SYSTEMINFO},
+	{ &pmove_JumpVelocityTimeThreshold, "pmove_JumpVelocityTimeThreshold", "500.0", CVAR_SYSTEMINFO},
+	{ &pmove_DoubleJump, "pmove_DoubleJump", "0", CVAR_SYSTEMINFO},
+	{ &pmove_StepHeight, "pmove_StepHeight", "22", CVAR_SYSTEMINFO},
+	{ &pmove_Overbounce, "pmove_Overbounce", "0", CVAR_SYSTEMINFO},
 	{ &pmove_WishSpeed, "pmove_WishSpeed", "400", CVAR_SYSTEMINFO},
 	{ &pmove_WalkAccel, "pmove_WalkAccel", "10", CVAR_SYSTEMINFO},
 	{ &pmove_AirAccel, "pmove_AirAccel", "1", CVAR_SYSTEMINFO},

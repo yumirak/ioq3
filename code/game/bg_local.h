@@ -72,6 +72,12 @@ qboolean	PM_SlideMove( qboolean gravity );
 void		PM_StepSlideMove( qboolean gravity );
 
 extern	vmCvar_t	pmove_JumpVelocity;
+extern	vmCvar_t	pmove_JumpVelocityMax;
+extern	vmCvar_t	pmove_JumpVelocityScaleAdd;
+extern	vmCvar_t	pmove_JumpVelocityTimeThreshold;
+extern	vmCvar_t	pmove_DoubleJump;
+extern	vmCvar_t	pmove_StepHeight;
+extern	vmCvar_t	pmove_Overbounce;
 extern	vmCvar_t	pmove_WishSpeed;
 extern	vmCvar_t	pmove_WalkAccel;
 extern	vmCvar_t	pmove_AirAccel;

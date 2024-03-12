@@ -371,6 +371,17 @@ static qboolean PM_CheckJump( void ) {
 
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
 	pm->ps->velocity[2] = pmove_JumpVelocity.value; // JUMP_VELOCITY
+	// Double jump
+	if (pmove_DoubleJump.integer) {
+		float jump_zvel;
+		jump_zvel = Com_Clamp( 0,
+					pmove_JumpVelocityMax.value,
+					pm->ps->velocity[2] * pmove_JumpVelocityScaleAdd.value);
+
+		if (pm->ps->stats[STAT_JUMPTIME] > 0)
+			pm->ps->velocity[2] += jump_zvel;
+	}
+	pm->ps->stats[STAT_JUMPTIME] = pmove_JumpVelocityTimeThreshold.value;
 	PM_AddEvent( EV_JUMP );
 
 	if ( pm->cmd.forwardmove >= 0 ) {
@@ -519,8 +530,10 @@ static void PM_WaterMove( void ) {
 		PM_ClipVelocity (pm->ps->velocity, pml.groundTrace.plane.normal, 
 			pm->ps->velocity, OVERCLIP );
 
-		VectorNormalize(pm->ps->velocity);
-		VectorScale(pm->ps->velocity, vel, pm->ps->velocity);
+		if ( pmove_Overbounce.integer || VectorLength(pm->ps->velocity) > 1 ) {
+			VectorNormalize(pm->ps->velocity);
+			VectorScale(pm->ps->velocity, vel, pm->ps->velocity);
+		}
 	}
 
 	PM_SlideMove( qfalse );
@@ -785,9 +798,10 @@ static void PM_WalkMove( void ) {
 	PM_ClipVelocity (pm->ps->velocity, pml.groundTrace.plane.normal, 
 		pm->ps->velocity, OVERCLIP );
 
-	// don't decrease velocity when going up or down a slope
-	VectorNormalize(pm->ps->velocity);
-	VectorScale(pm->ps->velocity, vel, pm->ps->velocity);
+	if ( pmove_Overbounce.integer || VectorLength(pm->ps->velocity) > 1 ) {
+			VectorNormalize(pm->ps->velocity);
+			VectorScale(pm->ps->velocity, vel, pm->ps->velocity);
+	}
 
 	// don't do anything if standing still
 	if (!pm->ps->velocity[0] && !pm->ps->velocity[1]) {
@@ -1777,6 +1791,14 @@ static void PM_DropTimers( void ) {
 		pm->ps->torsoTimer -= pml.msec;
 		if ( pm->ps->torsoTimer < 0 ) {
 			pm->ps->torsoTimer = 0;
+		}
+	}
+
+	// drop post-jump counter
+	if ( pm->ps->stats[STAT_JUMPTIME] > 0 ) {
+		pm->ps->stats[STAT_JUMPTIME] -= pml.msec;
+		if ( pm->ps->stats[STAT_JUMPTIME] < 0 ) {
+			pm->ps->stats[STAT_JUMPTIME] = 0;
 		}
 	}
 }
