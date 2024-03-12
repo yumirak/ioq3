@@ -35,16 +35,6 @@ float	pm_stopspeed = 100.0f;
 float	pm_duckScale = 0.25f;
 float	pm_swimScale = 0.50f;
 
-//float	pm_accelerate = 10.0f;
-float	pm_airaccelerate = 1.0f;
-float	pm_wateraccelerate = 4.0f;
-float	pm_flyaccelerate = 8.0f;
-
-//float	pm_friction = 6.0f;
-float	pm_waterfriction = 1.0f;
-float	pm_flightfriction = 3.0f;
-float	pm_spectatorfriction = 5.0f;
-
 int		c_pmove = 0;
 
 
@@ -204,16 +194,16 @@ static void PM_Friction( void ) {
 
 	// apply water friction even if just wading
 	if ( pm->waterlevel ) {
-		drop += speed*pm_waterfriction*pm->waterlevel*pml.frametime;
+		drop += speed*pmove_WaterFriction.value*pm->waterlevel*pml.frametime;
 	}
 
 	// apply flying friction
 	if ( pm->ps->powerups[PW_FLIGHT]) {
-		drop += speed*pm_flightfriction*pml.frametime;
+		drop += speed*pmove_FlyFriction.value*pml.frametime;
 	}
 
 	if ( pm->ps->pm_type == PM_SPECTATOR) {
-		drop += speed*pm_spectatorfriction*pml.frametime;
+		drop += speed*pmove_FlyFriction.value*pml.frametime;
 	}
 
 	// scale the velocity
@@ -520,7 +510,7 @@ static void PM_WaterMove( void ) {
 		wishspeed = pm->ps->speed * pm_swimScale;
 	}
 
-	PM_Accelerate (wishdir, wishspeed, pm_wateraccelerate);
+	PM_Accelerate (wishdir, wishspeed, pmove_WaterAccel.value);
 
 	// make sure we can go up slopes easily under water
 	if ( pml.groundPlane && DotProduct( pm->ps->velocity, pml.groundTrace.plane.normal ) < 0 ) {
@@ -588,7 +578,7 @@ static void PM_FlyMove( void ) {
 	VectorCopy (wishvel, wishdir);
 	wishspeed = VectorNormalize(wishdir);
 
-	PM_Accelerate (wishdir, wishspeed, pm_flyaccelerate);
+	PM_Accelerate (wishdir, wishspeed, pmove_FlyAccel.value);
 
 	PM_StepSlideMove( qfalse );
 }
@@ -636,7 +626,7 @@ static void PM_AirMove( void ) {
 	wishspeed *= scale;
 
 	// not on ground, so little effect on velocity
-	PM_Accelerate (wishdir, wishspeed, pm_airaccelerate);
+	PM_Accelerate (wishdir, wishspeed, pmove_AirAccel.value);
 
 	// we may have a ground plane that is very steep, even
 	// though we don't have a groundentity
@@ -772,7 +762,7 @@ static void PM_WalkMove( void ) {
 	// when a player gets hit, they temporarily lose
 	// full control, which allows them to be moved a bit
 	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) {
-		accelerate = pm_airaccelerate;
+		accelerate = pmove_AirAccel.value;
 	} else {
 		accelerate = pmove_WalkAccel.value;
 	}

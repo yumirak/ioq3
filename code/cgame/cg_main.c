@@ -186,7 +186,13 @@ vmCvar_t	pmove_msec;
 vmCvar_t	pmove_JumpVelocity;
 vmCvar_t	pmove_WishSpeed;
 vmCvar_t	pmove_WalkAccel;
+vmCvar_t	pmove_AirAccel;
+vmCvar_t	pmove_WaterAccel;
+vmCvar_t	pmove_FlyAccel;
+
 vmCvar_t	pmove_WalkFriction;
+vmCvar_t	pmove_WaterFriction;
+vmCvar_t	pmove_FlyFriction;
 vmCvar_t	cg_pmove_msec;
 vmCvar_t	cg_cameraMode;
 vmCvar_t	cg_cameraOrbit;
@@ -400,7 +406,12 @@ static cvarTable_t cvarTable[] = {
 	{ &pmove_JumpVelocity, "pmove_JumpVelocity", "275", CVAR_SYSTEMINFO},
 	{ &pmove_WishSpeed, "pmove_WishSpeed", "400", CVAR_SYSTEMINFO},
 	{ &pmove_WalkAccel, "pmove_WalkAccel", "10", CVAR_SYSTEMINFO},
+	{ &pmove_AirAccel, "pmove_AirAccel", "1", CVAR_SYSTEMINFO},
+	{ &pmove_WaterAccel, "pmove_WaterAccel", "4", CVAR_SYSTEMINFO},
+	{ &pmove_FlyAccel, "pmove_FlyAccel", "8", CVAR_SYSTEMINFO},
 	{ &pmove_WalkFriction, "pmove_WalkFriction", "6", CVAR_SYSTEMINFO},
+	{ &pmove_WaterFriction, "pmove_WaterFriction", "1", CVAR_SYSTEMINFO},
+	{ &pmove_FlyFriction, "pmove_FlyFriction", "3", CVAR_SYSTEMINFO},
 #ifdef MISSIONPACK
 	{ &cg_smallFont, "ui_smallFont", "0.25", CVAR_ARCHIVE},
 	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},
