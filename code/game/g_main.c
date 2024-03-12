@@ -88,6 +88,8 @@ vmCvar_t	pmove_FlyAccel;
 vmCvar_t	pmove_WalkFriction;
 vmCvar_t	pmove_WaterFriction;
 vmCvar_t	pmove_FlyFriction;
+vmCvar_t	pmove_WeaponDropTime;
+vmCvar_t	pmove_WeaponRaiseTime;
 vmCvar_t	g_rankings;
 vmCvar_t	g_listEntity;
 vmCvar_t	g_localTeamPref;
@@ -285,6 +287,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &pmove_WaterFriction, "pmove_WaterFriction", "1", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_FlyFriction, "pmove_FlyFriction", "3", CVAR_SYSTEMINFO, 0, qfalse},
 
+	{ &pmove_WeaponDropTime, "pmove_WeaponDropTime", "200", CVAR_SYSTEMINFO, 0, qfalse},
+	{ &pmove_WeaponRaiseTime, "pmove_WeaponRaiseTime", "200", CVAR_SYSTEMINFO, 0, qfalse},
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse },

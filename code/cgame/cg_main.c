@@ -193,6 +193,8 @@ vmCvar_t	pmove_FlyAccel;
 vmCvar_t	pmove_WalkFriction;
 vmCvar_t	pmove_WaterFriction;
 vmCvar_t	pmove_FlyFriction;
+vmCvar_t	pmove_WeaponDropTime;
+vmCvar_t	pmove_WeaponRaiseTime;
 vmCvar_t	cg_pmove_msec;
 vmCvar_t	cg_cameraMode;
 vmCvar_t	cg_cameraOrbit;
@@ -412,6 +414,8 @@ static cvarTable_t cvarTable[] = {
 	{ &pmove_WalkFriction, "pmove_WalkFriction", "6", CVAR_SYSTEMINFO},
 	{ &pmove_WaterFriction, "pmove_WaterFriction", "1", CVAR_SYSTEMINFO},
 	{ &pmove_FlyFriction, "pmove_FlyFriction", "3", CVAR_SYSTEMINFO},
+	{ &pmove_WeaponDropTime, "pmove_WeaponDropTime", "200", CVAR_SYSTEMINFO},
+	{ &pmove_WeaponRaiseTime, "pmove_WeaponRaiseTime", "200", CVAR_SYSTEMINFO},
 #ifdef MISSIONPACK
 	{ &cg_smallFont, "ui_smallFont", "0.25", CVAR_ARCHIVE},
 	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},

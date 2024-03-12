@@ -80,3 +80,5 @@ extern	vmCvar_t	pmove_FlyAccel;
 extern	vmCvar_t	pmove_WalkFriction;
 extern	vmCvar_t	pmove_WaterFriction;
 extern	vmCvar_t	pmove_FlyFriction;
+extern	vmCvar_t	pmove_WeaponDropTime;
+extern	vmCvar_t	pmove_WeaponRaiseTime;

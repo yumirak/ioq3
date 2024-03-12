@@ -753,6 +753,8 @@ extern	vmCvar_t	pmove_FlyAccel;
 extern	vmCvar_t	pmove_WalkFriction;
 extern	vmCvar_t	pmove_WaterFriction;
 extern	vmCvar_t	pmove_FlyFriction;
+extern	vmCvar_t	pmove_WeaponDropTime;
+extern	vmCvar_t	pmove_WeaponRaiseTime;
 extern	vmCvar_t	g_rankings;
 extern	vmCvar_t	g_enableDust;
 extern	vmCvar_t	g_enableBreath;
