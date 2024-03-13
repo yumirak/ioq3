@@ -372,16 +372,16 @@ static qboolean PM_CheckJump( void ) {
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
 	pm->ps->velocity[2] = pmove_JumpVelocity.value; // JUMP_VELOCITY
 	// Double jump
-	if (pmove_DoubleJump.integer) {
+	if (pmove_RampJump.integer) {
 		float jump_zvel;
 		jump_zvel = Com_Clamp( 0,
 					pmove_JumpVelocityMax.value,
-					pm->ps->velocity[2] * pmove_JumpVelocityScaleAdd.value);
+					pm->ps->velocity[2] * pmove_RampJumpScale.value);
 
 		if (pm->ps->stats[STAT_JUMPTIME] > 0)
 			pm->ps->velocity[2] += jump_zvel;
 	}
-	pm->ps->stats[STAT_JUMPTIME] = pmove_JumpVelocityTimeThreshold.value;
+	pm->ps->stats[STAT_JUMPTIME] = pmove_RampJumpTime.value;
 	PM_AddEvent( EV_JUMP );
 
 	if ( pm->cmd.forwardmove >= 0 ) {
@@ -774,7 +774,7 @@ static void PM_WalkMove( void ) {
 
 	// when a player gets hit, they temporarily lose
 	// full control, which allows them to be moved a bit
-	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) {
+	if ( (( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) && !pmove_RampJump.integer) {
 		accelerate = pmove_AirAccel.value;
 	} else {
 		accelerate = pmove_WalkAccel.value;

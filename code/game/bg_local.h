@@ -73,9 +73,9 @@ void		PM_StepSlideMove( qboolean gravity );
 
 extern	vmCvar_t	pmove_JumpVelocity;
 extern	vmCvar_t	pmove_JumpVelocityMax;
-extern	vmCvar_t	pmove_JumpVelocityScaleAdd;
-extern	vmCvar_t	pmove_JumpVelocityTimeThreshold;
-extern	vmCvar_t	pmove_DoubleJump;
+extern	vmCvar_t	pmove_RampJump;
+extern	vmCvar_t	pmove_RampJumpScale;
+extern	vmCvar_t	pmove_RampJumpTime;
 extern	vmCvar_t	pmove_StepHeight;
 extern	vmCvar_t	pmove_StepJump;
 extern	vmCvar_t	pmove_StepJumpVelocity;
