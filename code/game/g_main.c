@@ -289,7 +289,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &pmove_JumpVelocity, "pmove_JumpVelocity", "275", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_JumpVelocityMax, "pmove_JumpVelocityMax", "700", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_RampJump, "pmove_RampJump", "0", CVAR_SYSTEMINFO, 0, qfalse},
-	{ &pmove_RampJumpScale, "pmove_RampJumpScale", "1.0"", CVAR_SYSTEMINFO, 0, qfalse},
+	{ &pmove_RampJumpScale, "pmove_RampJumpScale", "1.0", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_RampJumpTime, "pmove_RampJumpTime", "500", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_StepHeight, "pmove_StepHeight", "22", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_StepJump, "pmove_StepJump", "1", CVAR_SYSTEMINFO, 0, qfalse},
