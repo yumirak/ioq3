@@ -610,6 +610,7 @@ static void PM_AirMove( void ) {
 	vec3_t		wishdir;
 	float		wishspeed;
 	float		scale;
+	float		speed, zspeed;
 	usercmd_t	cmd;
 
 	PM_Friction();
@@ -639,8 +640,30 @@ static void PM_AirMove( void ) {
 	wishspeed *= scale;
 
 	// not on ground, so little effect on velocity
-	PM_Accelerate (wishdir, wishspeed, pmove_AirAccel.value);
+	if ( pmove_AirControl.integer && fmove == 0 && smove != 0 )
+		PM_Accelerate (wishdir, wishspeed * 0.1, pmove_AirAccel.value * 100);
+	else
+		PM_Accelerate (wishdir, wishspeed, pmove_AirAccel.value);
 
+	// Air control
+	if ( pmove_AirControl.integer && smove == 0 && fmove != 0 &&
+			wishspeed <= DotProduct (pm->ps->velocity, wishdir) ) {
+
+		zspeed = pm->ps->velocity[2];
+		pm->ps->velocity[2] = 0;
+
+		speed = VectorLength(pm->ps->velocity);
+
+		pm->ps->velocity[0] += wishdir[0] * speed * 0.03;
+		pm->ps->velocity[1] += wishdir[1] * speed * 0.03;
+
+		VectorNormalize(pm->ps->velocity);
+
+		for (i=0 ; i<2 ; i++)
+			pm->ps->velocity[i] = speed*pm->ps->velocity[i];
+
+		pm->ps->velocity[2] = zspeed;
+	}
 	// we may have a ground plane that is very steep, even
 	// though we don't have a groundentity
 	// slide along the steep plane

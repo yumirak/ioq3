@@ -98,6 +98,7 @@ vmCvar_t	pmove_WaterFriction;
 vmCvar_t	pmove_FlyFriction;
 vmCvar_t	pmove_WeaponDropTime;
 vmCvar_t	pmove_WeaponRaiseTime;
+vmCvar_t	pmove_AirControl;
 vmCvar_t	g_rankings;
 vmCvar_t	g_listEntity;
 vmCvar_t	g_localTeamPref;
@@ -295,7 +296,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &pmove_StepJump, "pmove_StepJump", "1", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_StepJumpVelocity, "pmove_StepJumpVelocity", "48", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_Overbounce, "pmove_Overbounce", "0", CVAR_SYSTEMINFO, 0, qfalse},
-
+	{ &pmove_AirControl, "pmove_AirControl", "0", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_WalkAccel, "pmove_WalkAccel", "10", CVAR_SYSTEMINFO,0, qfalse},
 	{ &pmove_AirAccel, "pmove_AirAccel", "1", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_WaterAccel, "pmove_WaterAccel", "4", CVAR_SYSTEMINFO, 0, qfalse},
@@ -306,6 +307,8 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &pmove_WeaponDropTime, "pmove_WeaponDropTime", "200", CVAR_SYSTEMINFO, 0, qfalse},
 	{ &pmove_WeaponRaiseTime, "pmove_WeaponRaiseTime", "200", CVAR_SYSTEMINFO, 0, qfalse},
+
+
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse },

@@ -203,6 +203,7 @@ vmCvar_t	pmove_WaterFriction;
 vmCvar_t	pmove_FlyFriction;
 vmCvar_t	pmove_WeaponDropTime;
 vmCvar_t	pmove_WeaponRaiseTime;
+vmCvar_t	pmove_AirControl;
 vmCvar_t	cg_pmove_msec;
 vmCvar_t	cg_cameraMode;
 vmCvar_t	cg_cameraOrbit;
@@ -423,6 +424,7 @@ static cvarTable_t cvarTable[] = {
 	{ &pmove_StepJumpVelocity, "pmove_StepJumpVelocity", "48", CVAR_SYSTEMINFO},
 	{ &pmove_Overbounce, "pmove_Overbounce", "0", CVAR_SYSTEMINFO},
 	{ &pmove_WishSpeed, "pmove_WishSpeed", "400", CVAR_SYSTEMINFO},
+	{ &pmove_AirControl, "pmove_AirControl", "0", CVAR_SYSTEMINFO},
 	{ &pmove_WalkAccel, "pmove_WalkAccel", "10", CVAR_SYSTEMINFO},
 	{ &pmove_AirAccel, "pmove_AirAccel", "1", CVAR_SYSTEMINFO},
 	{ &pmove_WaterAccel, "pmove_WaterAccel", "4", CVAR_SYSTEMINFO},
