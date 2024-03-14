@@ -1130,11 +1130,47 @@ qboolean BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 		else {
 			upperBound = ps->stats[STAT_MAX_HEALTH] * 2;
 		}
-
-		if ( ps->stats[STAT_ARMOR] >= upperBound ) {
-			return qfalse;
+		switch(ps->stats[STAT_ARMORTYPE]) // armor_tiered
+		{
+			case 0:
+				if ( ps->stats[STAT_ARMOR] >= upperBound )
+					return qfalse;
+				break;
+			default:
+				if (item->quantity == 100) // RA
+					return (ps->stats[STAT_ARMOR] >= 200) ? qfalse : qtrue;
+				if (item->quantity == 50) // GA
+				{
+					switch(ps->stats[STAT_ARMORTYPE])
+					{
+						case 3:
+							return (ps->stats[STAT_ARMOR] >= 133) ? qfalse : qtrue; // QW = 113
+							break;
+						case 2:
+							return (ps->stats[STAT_ARMOR] >= 150) ? qfalse : qtrue;
+							break;
+						default:
+							break;
+					}
+				}
+				if (item->quantity == 25) // GA
+				{
+					switch(ps->stats[STAT_ARMORTYPE])
+					{
+						case 3:
+							return (ps->stats[STAT_ARMOR] >= 67) ? qfalse : qtrue; // QW = 38
+							break;
+						case 2:
+							return (ps->stats[STAT_ARMOR] >= 76) ? qfalse : qtrue; // QW = 50
+							break;
+						case 1:
+							return (ps->stats[STAT_ARMOR] >= 100) ? qfalse : qtrue;
+							break;
+					}
+				}
+				return qtrue;
+				break;
 		}
-
 		return qtrue;
 
 	case IT_HEALTH:

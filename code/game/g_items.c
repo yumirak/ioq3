@@ -333,23 +333,48 @@ int Pickup_Health (gentity_t *ent, gentity_t *other) {
 }
 
 //======================================================================
+void GiveArmor( gentity_t *other, int count, int clamp, int type )
+{
+	other->client->ps.stats[STAT_ARMOR] += count; // give 150
+	if ( other->client->ps.stats[STAT_ARMOR] > clamp )
+		other->client->ps.stats[STAT_ARMOR] = clamp; // clamp 200
+	other->client->ps.stats[STAT_ARMORTYPE] = type;
+}
 
 int Pickup_Armor( gentity_t *ent, gentity_t *other ) {
 //#ifdef MISSIONPACK
 	int		upperBound;
 
-	other->client->ps.stats[STAT_ARMOR] += ent->item->quantity;
+	switch(armor_tiered.integer)
+	{
+		case 0:
+			if( other->client && bg_itemlist[other->client->ps.stats[STAT_PERSISTANT_POWERUP]].giTag == PW_GUARD )
+				upperBound = other->client->ps.stats[STAT_MAX_HEALTH];
+			else
+				upperBound = other->client->ps.stats[STAT_MAX_HEALTH] * 2;
+			GiveArmor( other, ent->item->quantity, upperBound, 0); // bg_misc armor_tiered 0
+			break;
+		default:
+		{
+			// tiered
+			if (ent->item->quantity == 100) // RA
+				GiveArmor( other, 150, 200, 3);
+			else if (ent->item->quantity == 50) // YA
+				GiveArmor( other, 100, 150, 2);
+			else if (ent->item->quantity == 25) // GA
+				GiveArmor( other, 50, 100, 1);
+			else // Shard
+				GiveArmor( other, 2, 200,
+						   other->client->ps.stats[STAT_ARMOR] <= 0 ? 1 : other->client->ps.stats[STAT_ARMORTYPE]);
+			// TA powerup just in case
+			if( other->client && bg_itemlist[other->client->ps.stats[STAT_PERSISTANT_POWERUP]].giTag == PW_GUARD ) {
+				other->client->ps.stats[STAT_ARMOR] = upperBound = other->client->ps.stats[STAT_MAX_HEALTH];
+			}
+			break;
+		}
 
-	if( other->client && bg_itemlist[other->client->ps.stats[STAT_PERSISTANT_POWERUP]].giTag == PW_GUARD ) {
-		upperBound = other->client->ps.stats[STAT_MAX_HEALTH];
-	}
-	else {
-		upperBound = other->client->ps.stats[STAT_MAX_HEALTH] * 2;
-	}
+		}
 
-	if ( other->client->ps.stats[STAT_ARMOR] > upperBound ) {
-		other->client->ps.stats[STAT_ARMOR] = upperBound;
-	}
 /*
 #else
 	other->client->ps.stats[STAT_ARMOR] += ent->item->quantity;

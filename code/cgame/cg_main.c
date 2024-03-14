@@ -204,6 +204,7 @@ vmCvar_t	pmove_FlyFriction;
 vmCvar_t	pmove_WeaponDropTime;
 vmCvar_t	pmove_WeaponRaiseTime;
 vmCvar_t	pmove_AirControl;
+vmCvar_t	armor_tiered;
 vmCvar_t	cg_pmove_msec;
 vmCvar_t	cg_cameraMode;
 vmCvar_t	cg_cameraOrbit;
@@ -434,6 +435,8 @@ static cvarTable_t cvarTable[] = {
 	{ &pmove_FlyFriction, "pmove_FlyFriction", "3", CVAR_SYSTEMINFO},
 	{ &pmove_WeaponDropTime, "pmove_WeaponDropTime", "200", CVAR_SYSTEMINFO},
 	{ &pmove_WeaponRaiseTime, "pmove_WeaponRaiseTime", "200", CVAR_SYSTEMINFO},
+	{ &armor_tiered, "armor_tiered", "0", CVAR_SYSTEMINFO | CVAR_LATCH},
+
 #ifdef MISSIONPACK
 	{ &cg_smallFont, "ui_smallFont", "0.25", CVAR_ARCHIVE},
 	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},

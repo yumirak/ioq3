@@ -415,6 +415,9 @@ static void CG_ItemPickup( int itemNum ) {
 			cg.weaponSelect = bg_itemlist[itemNum].giTag;
 		}
 	}
+	if ( bg_itemlist[itemNum].giType == IT_ARMOR && bg_itemlist[itemNum].quantity >= 25) {
+		cg.armorType = itemNum;
+	}
 
 }
 

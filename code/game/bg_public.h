@@ -211,7 +211,8 @@ typedef enum {
 	STAT_DEAD_YAW,					// look this direction when dead (FIXME: get rid of?)
 	STAT_CLIENTS_READY,				// bit mask of clients wishing to exit the intermission (FIXME: configstring?)
 	STAT_MAX_HEALTH,					// health / armor limit, changeable by handicap
-	STAT_JUMPTIME
+	STAT_JUMPTIME,
+	STAT_ARMORTYPE					// HACK: 1 = armor_tiered enabled ( offset +1 )
 } statIndex_t;
 
 

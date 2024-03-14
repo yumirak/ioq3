@@ -764,6 +764,7 @@ extern	vmCvar_t	pmove_FlyFriction;
 extern	vmCvar_t	pmove_WeaponDropTime;
 extern	vmCvar_t	pmove_WeaponRaiseTime;
 extern	vmCvar_t	pmove_AirControl;
+extern	vmCvar_t	armor_tiered;
 extern	vmCvar_t	g_rankings;
 extern	vmCvar_t	g_enableDust;
 extern	vmCvar_t	g_enableBreath;

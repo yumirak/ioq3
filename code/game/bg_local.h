@@ -71,6 +71,8 @@ void PM_AddEvent( int newEvent );
 qboolean	PM_SlideMove( qboolean gravity );
 void		PM_StepSlideMove( qboolean gravity );
 
+extern	vmCvar_t	armor_tiered;
+
 extern	vmCvar_t	pmove_JumpVelocity;
 extern	vmCvar_t	pmove_JumpVelocityMax;
 extern	vmCvar_t	pmove_RampJump;

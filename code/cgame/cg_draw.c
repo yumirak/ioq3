@@ -587,14 +587,15 @@ static void CG_DrawStatusBar( void ) {
 	} else if( cg.predictedPlayerState.powerups[PW_NEUTRALFLAG] ) {
 		CG_DrawStatusBarFlag( 185 + CHAR_WIDTH*3 + TEXT_ICON_SPACE + ICON_SIZE, TEAM_FREE );
 	}
-
+	value = armor_tiered.integer ? (cg.armorType ? cg_items[ cg.armorType ].models[0] : cgs.media.armorModel)  : cgs.media.armorModel;
 	if ( ps->stats[ STAT_ARMOR ] > -1) {
 		origin[0] = 90;
 		origin[1] = 0;
 		origin[2] = -10;
 		angles[YAW] = ( cg.time & 2047 ) * 360 / 2048.0;
+
 		CG_Draw3DModel( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, 432, ICON_SIZE, ICON_SIZE,
-					   cgs.media.armorModel, 0, origin, angles );
+						value, 0, origin, angles );
 	}
 	// ammo
 	value = ps->ammo[cent->currentState.weapon];
@@ -647,9 +648,10 @@ static void CG_DrawStatusBar( void ) {
 			break;
 	}
 	CG_DrawField (370, cgs.screenYmax - 4, UI_VA_BOTTOM, 3, value, colors[color]);
+	value = armor_tiered.integer ? (cg.armorType ? cg_items[ cg.armorType ].icon : cgs.media.armorIcon) : cgs.media.armorIcon;
 	// if we didn't draw a 3D icon, draw a 2D icon for armor
 	if ( !cg_draw3dIcons.integer && cg_drawIcons.integer ) {
-		CG_DrawPic( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, cgs.screenYmax - 48, ICON_SIZE, ICON_SIZE, cgs.media.armorIcon );
+		CG_DrawPic( 370 + CHAR_WIDTH*3 + TEXT_ICON_SPACE, cgs.screenYmax - 48, ICON_SIZE, ICON_SIZE, value );
 	}
 }
 #endif

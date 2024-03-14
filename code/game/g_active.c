@@ -462,8 +462,8 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 			}
 		}
 
-		// count down armor when over max
-		if ( client->ps.stats[STAT_ARMOR] > client->ps.stats[STAT_MAX_HEALTH] ) {
+		// count down armor when over max except armor_tiered 1
+		if (( client->ps.stats[STAT_ARMOR] > client->ps.stats[STAT_MAX_HEALTH] ) && !armor_tiered.integer) {
 			client->ps.stats[STAT_ARMOR]--;
 		}
 	}
