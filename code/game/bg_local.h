@@ -93,3 +93,5 @@ extern	vmCvar_t	pmove_FlyFriction;
 extern	vmCvar_t	pmove_WeaponDropTime;
 extern	vmCvar_t	pmove_WeaponRaiseTime;
 extern	vmCvar_t	pmove_AirControl;
+
+extern	vmCvar_t	weapon_reload[WP_NUM_WEAPONS];

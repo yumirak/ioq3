@@ -292,6 +292,9 @@ vmCvar_t	cg_drawPowerupAvailableFadeStart;
 vmCvar_t	cg_drawPowerupAvailableFadeEnd;
 //
 vmCvar_t	cg_drawWeaponBar;
+//
+vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
+//
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -502,6 +505,21 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_drawPowerupAvailableFadeEnd, "cg_drawPowerupAvailableFadeEnd", "520.0", CVAR_ARCHIVE },
 	//
 	{ &cg_drawWeaponBar, "cg_weaponBar", "1", CVAR_ARCHIVE },
+	//
+	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SYSTEMINFO}, // gauntlet
+	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SYSTEMINFO}, // mg
+	{ &weapon_reload[WP_SHOTGUN], "weapon_reload_sg", "1000", CVAR_SYSTEMINFO}, // sg
+	{ &weapon_reload[WP_GRENADE_LAUNCHER], "weapon_reload_gl", "800", CVAR_SYSTEMINFO}, // gl
+	{ &weapon_reload[WP_ROCKET_LAUNCHER], "weapon_reload_rl", "800", CVAR_SYSTEMINFO}, // gl
+	{ &weapon_reload[WP_LIGHTNING], "weapon_reload_lg", "50", CVAR_SYSTEMINFO}, // lg
+	{ &weapon_reload[WP_RAILGUN], "weapon_reload_rg", "1500", CVAR_SYSTEMINFO}, // rg
+	{ &weapon_reload[WP_PLASMAGUN], "weapon_reload_pg", "100", CVAR_SYSTEMINFO}, // pg
+	{ &weapon_reload[WP_BFG], "weapon_reload_bfg", "300", CVAR_SYSTEMINFO}, // bfg
+	{ &weapon_reload[WP_GRAPPLING_HOOK], "weapon_reload_hook", "100", CVAR_SYSTEMINFO}, // gh
+	{ &weapon_reload[WP_NAILGUN], "weapon_reload_ng", "1000", CVAR_SYSTEMINFO}, // ng
+	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SYSTEMINFO}, // pl
+	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SYSTEMINFO}, // cg
+	{ &weapon_reload[WP_HMG], "weapon_reload_hmg", "75", CVAR_SYSTEMINFO}, // hmg
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 

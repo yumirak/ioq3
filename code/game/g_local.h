@@ -859,7 +859,10 @@ extern	vmCvar_t	g_knockback_ng;
 extern	vmCvar_t	g_knockback_pl;
 extern	vmCvar_t	g_knockback_cg;
 extern	vmCvar_t	g_knockback_hmg;
+
+extern	vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 //
+
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) __attribute__((noreturn));

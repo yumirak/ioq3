@@ -205,6 +205,8 @@ vmCvar_t	g_knockback_ng;
 vmCvar_t	g_knockback_pl;
 vmCvar_t	g_knockback_cg;
 vmCvar_t	g_knockback_hmg;
+
+vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 //
 
 static cvarTable_t		gameCvarTable[] = {
@@ -407,6 +409,21 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_knockback_pl, "g_knockback_pl", "1", 0, 0, qtrue},
 	{ &g_knockback_cg, "g_knockback_cg", "1", 0, 0, qtrue},
 	{ &g_knockback_hmg, "g_knockback_hmg", "1", 0, 0, qtrue},
+
+	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SYSTEMINFO, 0, qtrue}, // gauntlet
+	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SYSTEMINFO, 0, qtrue}, // mg
+	{ &weapon_reload[WP_SHOTGUN], "weapon_reload_sg", "1000", CVAR_SYSTEMINFO, 0, qtrue}, // sg
+	{ &weapon_reload[WP_GRENADE_LAUNCHER], "weapon_reload_gl", "800", CVAR_SYSTEMINFO, 0, qtrue}, // gl
+	{ &weapon_reload[WP_ROCKET_LAUNCHER], "weapon_reload_rl", "800", CVAR_SYSTEMINFO, 0, qtrue}, // gl
+	{ &weapon_reload[WP_LIGHTNING], "weapon_reload_lg", "50", CVAR_SYSTEMINFO, 0, qtrue}, // lg
+	{ &weapon_reload[WP_RAILGUN], "weapon_reload_rg", "1500", CVAR_SYSTEMINFO, 0, qtrue}, // rg
+	{ &weapon_reload[WP_PLASMAGUN], "weapon_reload_pg", "100", CVAR_SYSTEMINFO, 0, qtrue}, // pg
+	{ &weapon_reload[WP_BFG], "weapon_reload_bfg", "300", CVAR_SYSTEMINFO, 0, qtrue}, // bfg
+	{ &weapon_reload[WP_GRAPPLING_HOOK], "weapon_reload_hook", "100", CVAR_SYSTEMINFO, 0, qtrue}, // gh
+	{ &weapon_reload[WP_NAILGUN], "weapon_reload_ng", "1000", CVAR_SYSTEMINFO, 0, qtrue}, // ng
+	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SYSTEMINFO, 0, qtrue}, // pl
+	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SYSTEMINFO, 0, qtrue}, // cg
+	{ &weapon_reload[WP_HMG], "weapon_reload_hmg", "75", CVAR_SYSTEMINFO, 0, qtrue}, // hmg
 };
 
 static int gameCvarTableSize = ARRAY_LEN( gameCvarTable );
