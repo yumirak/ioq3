@@ -131,6 +131,9 @@ vmCvar_t	g_spawnItemWeapons;
 vmCvar_t	g_spawnItemAmmo;
 //
 vmCvar_t	g_startingWeapons; //bitmask
+vmCvar_t	g_startingHealth;
+vmCvar_t	g_startingHealthBonus;
+vmCvar_t	g_startingArmor;
 //
 vmCvar_t	g_startingAmmo_g;
 vmCvar_t	g_startingAmmo_mg;
@@ -329,6 +332,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_spawnItemPowerup, "g_spawnItemPowerup", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
 	{ &g_spawnItemWeapons, "g_spawnItemWeapons", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
 	//
+	{ &g_startingHealth, "g_startingHealth", "100", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_startingHealthBonus, "g_startingHealthBonus", "25", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
+	{ &g_startingArmor, "g_startingArmor", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
 	{ &g_startingWeapons, "g_startingWeapons", "3", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH , 0, qtrue, qtrue },
 	//
 	{ &g_startingAmmo_g, "g_startingAmmo_g", "-1", 0 , 0, qtrue},

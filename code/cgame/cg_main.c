@@ -1876,8 +1876,6 @@ static const char *CG_FeederItemText(float feederID, int index, int column, qhan
 				} else {
 					if ( info->botSkill > 0 && info->botSkill <= 5 ) {
 						*handle = cgs.media.botSkillShaders[ info->botSkill - 1 ];
-					} else if ( info->handicap < 100 ) {
-					return va("%i", info->handicap );
 					}
 				}
 			break;

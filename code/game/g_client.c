@@ -826,25 +826,11 @@ void ClientUserinfoChanged( int clientNum ) {
 	}
 
 	// set max health
-//#ifdef MISSIONPACK
 	if (client->ps.powerups[PW_GUARD]) {
-		client->pers.maxHealth = 200;
+		client->pers.maxHealth = g_startingHealth.integer * 2;
 	} else {
-		health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
-		client->pers.maxHealth = health;
-		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-			client->pers.maxHealth = 100;
-		}
+		client->pers.maxHealth = g_startingHealth.integer;
 	}
-/*
-#else
-	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
-	client->pers.maxHealth = health;
-	if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-		client->pers.maxHealth = 100;
-	}
-#endif
-*/
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
 
 	// set model
@@ -1221,10 +1207,7 @@ void ClientSpawn(gentity_t *ent) {
 
 	trap_GetUserinfo( index, userinfo, sizeof(userinfo) );
 	// set max health
-	client->pers.maxHealth = atoi( Info_ValueForKey( userinfo, "handicap" ) );
-	if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-		client->pers.maxHealth = 100;
-	}
+	client->pers.maxHealth = g_startingHealth.integer;
 	// clear entity values
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
 	client->ps.eFlags = flags;
@@ -1249,7 +1232,20 @@ void ClientSpawn(gentity_t *ent) {
 	ClientWeaponSpawn( ent );
 
 	// health will count down towards max_health
-	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + 25;
+	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + g_startingHealthBonus.integer;
+
+	// starting armor
+	client->ps.stats[STAT_ARMOR] = g_startingArmor.integer;
+	client->ps.stats[STAT_ARMORTYPE] = 0;
+	if( armor_tiered.integer && client->ps.stats[STAT_ARMOR] > 0 )
+	{
+		if(client->ps.stats[STAT_ARMOR] >= 150)
+			client->ps.stats[STAT_ARMORTYPE] = 3;
+		else if(client->ps.stats[STAT_ARMOR] >= 100)
+			client->ps.stats[STAT_ARMORTYPE] = 2;
+		else if(client->ps.stats[STAT_ARMOR] >= 0)
+			client->ps.stats[STAT_ARMORTYPE] = 1;
+	}
 
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );

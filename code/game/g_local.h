@@ -785,6 +785,9 @@ extern	vmCvar_t	g_spawnItemPowerup;
 extern	vmCvar_t	g_spawnItemWeapons;
 //
 extern	vmCvar_t	g_startingWeapons; //bitmask
+extern	vmCvar_t	g_startingHealth;
+extern	vmCvar_t	g_startingHealthBonus;
+extern	vmCvar_t	g_startingArmor;
 //
 extern	vmCvar_t	g_startingAmmo_g;
 extern	vmCvar_t	g_startingAmmo_mg;
