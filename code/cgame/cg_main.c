@@ -160,8 +160,8 @@ vmCvar_t	cg_thirdPersonAngle;
 vmCvar_t	cg_lagometer;
 vmCvar_t	cg_drawAttacker;
 vmCvar_t	cg_synchronousClients;
-vmCvar_t 	cg_teamChatTime;
-vmCvar_t 	cg_teamChatHeight;
+vmCvar_t 	cg_drawChatTime;
+vmCvar_t 	cg_drawChatHeight;
 vmCvar_t 	cg_stats;
 vmCvar_t 	cg_buildScript;
 vmCvar_t 	cg_forceModel;
@@ -172,7 +172,7 @@ vmCvar_t	cg_deferPlayers;
 vmCvar_t	cg_drawTeamOverlay;
 vmCvar_t	cg_teamOverlayUserinfo;
 vmCvar_t	cg_drawFriend;
-vmCvar_t	cg_teamChatsOnly;
+vmCvar_t	cg_drawChatsOnly;
 #ifdef MISSIONPACK
 vmCvar_t	cg_noVoiceChats;
 vmCvar_t	cg_noVoiceText;
@@ -371,8 +371,8 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_thirdPersonRange, "cg_thirdPersonRange", "40", CVAR_CHEAT },
 	{ &cg_thirdPersonAngle, "cg_thirdPersonAngle", "0", CVAR_CHEAT },
 	{ &cg_thirdPerson, "cg_thirdPerson", "0", 0 },
-	{ &cg_teamChatTime, "cg_teamChatTime", "3000", CVAR_ARCHIVE  },
-	{ &cg_teamChatHeight, "cg_teamChatHeight", "0", CVAR_ARCHIVE  },
+	{ &cg_drawChatTime, "cg_drawChatTime", "3000", CVAR_ARCHIVE  },
+	{ &cg_drawChatHeight, "cg_drawChatHeight", "0", CVAR_ARCHIVE  },
 	{ &cg_forceModel, "cg_forceModel", "0", CVAR_ARCHIVE  },
 	{ &cg_predictItems, "cg_predictItems", "1", CVAR_ARCHIVE },
 #ifdef MISSIONPACK
@@ -384,7 +384,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_teamOverlayUserinfo, "teamoverlay", "0", CVAR_ROM | CVAR_USERINFO },
 	{ &cg_stats, "cg_stats", "0", 0 },
 	{ &cg_drawFriend, "cg_drawFriend", "1", CVAR_ARCHIVE },
-	{ &cg_teamChatsOnly, "cg_teamChatsOnly", "0", CVAR_ARCHIVE },
+	{ &cg_drawChatsOnly, "cg_drawChatsOnly", "0", CVAR_ARCHIVE },
 #ifdef MISSIONPACK
 	{ &cg_noVoiceChats, "cg_noVoiceChats", "0", CVAR_ARCHIVE },
 	{ &cg_noVoiceText, "cg_noVoiceText", "0", CVAR_ARCHIVE },

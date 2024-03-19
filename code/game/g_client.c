@@ -820,7 +820,7 @@ void ClientUserinfoChanged( int clientNum ) {
 
 	if ( client->pers.connected == CON_CONNECTED ) {
 		if ( strcmp( oldname, client->pers.netname ) ) {
-			trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " renamed to %s\n\"", oldname, 
+			trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " renamed to %s", oldname,
 				client->pers.netname) );
 		}
 	}
@@ -1021,7 +1021,7 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	// don't do the "xxx connected" messages if they were caried over from previous level
 	if ( firstTime ) {
-		trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " connected\n\"", client->pers.netname) );
+		trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " connected", client->pers.netname) );
 	}
 
 	if ( g_gametype.integer >= GT_TEAM &&
@@ -1084,7 +1084,7 @@ void ClientBegin( int clientNum ) {
 
 	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
 		if ( g_gametype.integer != GT_TOURNAMENT  ) {
-			trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " entered the game\n\"", client->pers.netname) );
+			trap_SendServerCommand( -1, va("print \"%s" S_COLOR_WHITE " entered the game", client->pers.netname) );
 		}
 	}
 	G_LogPrintf( "ClientBegin: %i\n", clientNum );

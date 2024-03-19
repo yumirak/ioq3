@@ -385,13 +385,13 @@ static void CG_AddToTeamChat( const char *str ) {
 	int lastcolor;
 	int chatHeight;
 
-	if (cg_teamChatHeight.integer < TEAMCHAT_HEIGHT) {
-		chatHeight = cg_teamChatHeight.integer;
+	if (cg_drawChatHeight.integer < TEAMCHAT_HEIGHT) {
+		chatHeight = cg_drawChatHeight.integer;
 	} else {
 		chatHeight = TEAMCHAT_HEIGHT;
 	}
 
-	if (chatHeight <= 0 || cg_teamChatTime.integer <= 0) {
+	if (chatHeight <= 0 || cg_drawChatTime.integer <= 0) {
 		// team chat disabled, dump into normal chat
 		cgs.teamChatPos = cgs.teamLastChatPos = 0;
 		return;
@@ -912,7 +912,7 @@ void CG_VoiceChatLocal( int mode, qboolean voiceOnly, int clientNum, int color, 
 		return;
 	}
 
-	if ( mode == SAY_ALL && cgs.gametype >= GT_TEAM && cg_teamChatsOnly.integer ) {
+	if ( mode == SAY_ALL && cgs.gametype >= GT_TEAM && cg_drawChatsOnly.integer ) {
 		return;
 	}
 
@@ -1017,7 +1017,10 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "print" ) ) {
-		CG_Printf( "%s", CG_Argv(1) );
+		Q_strncpyz( text, CG_Argv(1), MAX_SAY_TEXT );
+		CG_RemoveChatEscapeChar( text );
+		CG_Printf( "%s\n", text );
+		CG_AddToTeamChat( text );
 //#ifdef MISSIONPACK
 		cmd = CG_Argv(1);			// yes, this is obviously a hack, but so is the way we hear about
 									// votes passing or failing
@@ -1031,13 +1034,14 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "chat" ) ) {
-		if ( cgs.gametype >= GT_TEAM && cg_teamChatsOnly.integer ) {
+		if ( cgs.gametype >= GT_TEAM && cg_drawChatsOnly.integer ) {
 			return;
 		}
 
 		trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
 		Q_strncpyz( text, CG_Argv(1), MAX_SAY_TEXT );
 		CG_RemoveChatEscapeChar( text );
+		CG_AddToTeamChat( text );
 		CG_Printf( "%s\n", text );
 		return;
 	}

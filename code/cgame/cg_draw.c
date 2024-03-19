@@ -1624,6 +1624,32 @@ static int CG_DrawPickupItem( int y ) {
 #endif // MISSIONPACK
 
 /*
+=================
+CG_DrawChat
+=================
+*/
+static int CG_DrawChat(int y1) {
+	int x , y, i;
+
+	y = y1 - cg_drawChatHeight.integer; // bottom end
+	x = cgs.screenXmin;
+
+	if (cgs.teamLastChatPos != cgs.teamChatPos) {
+		if (cg.time - cgs.teamChatMsgTimes[cgs.teamLastChatPos % TEAMCHAT_HEIGHT] > cg_drawChatTime.integer) {
+			cgs.teamLastChatPos++;
+		}
+
+		for (i = cgs.teamChatPos - 1; i >= cgs.teamLastChatPos; i--) {
+			CG_DrawStringExt( x + TINYCHAR_WIDTH,
+				y - (cgs.teamChatPos - i)*BIGCHAR_HEIGHT,
+				cgs.teamChatMsgs[i % TEAMCHAT_HEIGHT], UI_NORMALFONT | UI_DROPSHADOW, NULL , 0.25f, 128, 1.5f );
+			y1 = y - (cgs.teamChatPos - i)*BIGCHAR_HEIGHT;
+		}
+	}
+	return y1;
+}
+
+/*
 =====================
 CG_DrawLowerLeft
 
@@ -1638,7 +1664,7 @@ static void CG_DrawLowerLeft( void ) {
 	if ( cgs.gametype >= GT_TEAM && cg_drawTeamOverlay.integer == 3 ) {
 		y = CG_DrawTeamOverlay( y, qfalse, qfalse );
 	}
-
+	y = CG_DrawChat( y );
 	y = CG_DrawPickupItem( y );
 
 }
@@ -1646,68 +1672,6 @@ static void CG_DrawLowerLeft( void ) {
 
 
 //===========================================================================================
-
-/*
-=================
-CG_DrawTeamInfo
-=================
-*/
-#ifndef MISSIONPACK
-static void CG_DrawTeamInfo( void ) {
-	int h;
-	int i;
-	vec4_t		hcolor;
-	int		chatHeight;
-
-#define CHATLOC_Y (cgs.screenYmax + 1 - STATUSBAR_HEIGHT ) // bottom end
-#define CHATLOC_X (cgs.screenXmin)
-
-	if (cg_teamChatHeight.integer < TEAMCHAT_HEIGHT)
-		chatHeight = cg_teamChatHeight.integer;
-	else
-		chatHeight = TEAMCHAT_HEIGHT;
-	if (chatHeight <= 0)
-		return; // disabled
-
-	if (cgs.teamLastChatPos != cgs.teamChatPos) {
-		if (cg.time - cgs.teamChatMsgTimes[cgs.teamLastChatPos % chatHeight] > cg_teamChatTime.integer) {
-			cgs.teamLastChatPos++;
-		}
-
-		h = (cgs.teamChatPos - cgs.teamLastChatPos) * TINYCHAR_HEIGHT;
-
-		if ( cgs.clientinfo[cg.clientNum].team == TEAM_RED ) {
-			hcolor[0] = 1.0f;
-			hcolor[1] = 0.0f;
-			hcolor[2] = 0.0f;
-			hcolor[3] = 0.33f;
-		} else if ( cgs.clientinfo[cg.clientNum].team == TEAM_BLUE ) {
-			hcolor[0] = 0.0f;
-			hcolor[1] = 0.0f;
-			hcolor[2] = 1.0f;
-			hcolor[3] = 0.33f;
-		} else {
-			hcolor[0] = 0.0f;
-			hcolor[1] = 1.0f;
-			hcolor[2] = 0.0f;
-			hcolor[3] = 0.33f;
-		}
-
-		trap_R_SetColor( hcolor );
-		CG_DrawPic( CHATLOC_X, CHATLOC_Y - h, 640, h, cgs.media.teamStatusBar );
-		trap_R_SetColor( NULL );
-
-		hcolor[0] = hcolor[1] = hcolor[2] = 1.0f;
-		hcolor[3] = 1.0f;
-
-		for (i = cgs.teamChatPos - 1; i >= cgs.teamLastChatPos; i--) {
-			CG_DrawString( CHATLOC_X + TINYCHAR_WIDTH,
-				CHATLOC_Y - (cgs.teamChatPos - i)*TINYCHAR_HEIGHT,
-				cgs.teamChatMsgs[i % chatHeight], UI_TINYFONT, hcolor );
-		}
-	}
-}
-#endif // MISSIONPACK
 
 /*
 =================
@@ -2737,12 +2701,6 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 //#endif
 			CG_DrawReward();
 		}
-	}
-
-	if ( cgs.gametype >= GT_TEAM ) {
-#ifndef MISSIONPACK
-		CG_DrawTeamInfo();
-#endif
 	}
 
 	CG_DrawVote();
