@@ -577,7 +577,7 @@ void CG_TileClear( void ) {
 CG_FadeColor
 ================
 */
-float *CG_FadeColor( int startMsec, int totalMsec ) {
+float *CG_FadeColor( float r, float g, float b,int startMsec, int totalMsec ) {
 	static vec4_t		color;
 	int			t;
 
@@ -597,7 +597,9 @@ float *CG_FadeColor( int startMsec, int totalMsec ) {
 	} else {
 		color[3] = 1.0;
 	}
-	color[0] = color[1] = color[2] = 1;
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
 
 	return color;
 }

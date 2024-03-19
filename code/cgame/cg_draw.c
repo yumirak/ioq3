@@ -1609,7 +1609,7 @@ static int CG_DrawPickupItem( int y ) {
 
 	value = cg.itemPickup;
 	if ( value ) {
-		fadeColor = CG_FadeColor( cg.itemPickupTime, 3000 );
+		fadeColor = CG_FadeColor( 1, 1, 1, cg.itemPickupTime, 3000 );
 		if ( fadeColor ) {
 			CG_RegisterItemVisuals( value );
 			trap_R_SetColor( fadeColor );
@@ -1710,6 +1710,68 @@ static void CG_DrawTeamInfo( void ) {
 #endif // MISSIONPACK
 
 /*
+=================
+CG_DrawDeathNotice
+=================
+*/
+
+static void CG_DrawDeathNotice ( void ) {
+	int x, y, i;
+	float	*fadeColor;
+	vec4_t color;
+
+	for ( i = 0; i < MAX_DEATHNOTICE ; i++ ) {
+
+		x = cgs.screenXmin + cg_deathNoticePos[0].integer;
+		y = cgs.screenYmin + cg_deathNoticePos[1].integer + ( SMALLCHAR_HEIGHT  * i);
+
+		if ( ( cgs.deathNoticeTime[ i ] != 0 ) && ( cg.time - cgs.deathNoticeTime[ i ] < cg_deathNoticeTime.integer )  ) {
+
+			switch(cgs.deathNoticeTeam1[ i ])
+			{
+				case TEAM_RED:
+					VectorSet(color, 1.0, 0.5, 0.5 );
+					break;
+				case TEAM_BLUE:
+					VectorSet(color, 0.5, 0.75, 1.0 );
+					break;
+				default:
+					VectorSet(color, 1.0, 1.0, 1.0 );
+					break;
+			}
+
+			fadeColor = CG_FadeColor( color[0], color[1] , color[2], cgs.deathNoticeTime[ i ], cg_deathNoticeTime.integer);
+			if(fadeColor) {
+				CG_DrawString( x,y, cgs.deathNoticeName1[ i ], UI_SMALLFONT | UI_DROPSHADOW , fadeColor );
+				x +=  CG_DrawStrlen ( cgs.deathNoticeName1[ i ] , UI_SMALLFONT) + 5;
+			}
+
+			switch(cgs.deathNoticeTeam2[ i ])
+			{
+				case TEAM_RED:
+					VectorSet(color, 1.0, 0.5, 0.5 );
+					break;
+				case TEAM_BLUE:
+					VectorSet(color, 0.5, 0.75, 1.0 );
+					break;
+				default:
+					VectorSet(color, 1.0, 1.0, 1.0 );
+					break;
+			}
+
+			fadeColor = CG_FadeColor( color[0], color[1] , color[2], cgs.deathNoticeTime[ i ], cg_deathNoticeTime.integer);
+			if(fadeColor) {
+				trap_R_SetColor( fadeColor );
+				CG_DrawPic ( x + 1, y, SMALLCHAR_HEIGHT, SMALLCHAR_HEIGHT, cgs.deathNoticeIcon[ i ] );
+				x += SMALLCHAR_HEIGHT + 5;
+				CG_DrawString( x, y, cgs.deathNoticeName2[ i ], UI_SMALLFONT | UI_DROPSHADOW , fadeColor );
+				trap_R_SetColor( NULL );
+			}
+        }
+    }
+}
+
+/*
 ===================
 CG_DrawHoldableItem
 ===================
@@ -1762,7 +1824,7 @@ static void CG_DrawReward( void ) {
 		return;
 	}
 
-	color = CG_FadeColor( cg.rewardTime, REWARD_TIME );
+	color = CG_FadeColor(  1, 1, 1, cg.rewardTime, REWARD_TIME );
 	if ( !color ) {
 		if (cg.rewardStack > 0) {
 			for(i = 0; i < cg.rewardStack; i++) {
@@ -1772,7 +1834,7 @@ static void CG_DrawReward( void ) {
 			}
 			cg.rewardTime = cg.time;
 			cg.rewardStack--;
-			color = CG_FadeColor( cg.rewardTime, REWARD_TIME );
+			color = CG_FadeColor(  1, 1, 1, cg.rewardTime, REWARD_TIME );
 			trap_S_StartLocalSound(cg.rewardSound[0], CHAN_ANNOUNCER);
 		} else {
 			return;
@@ -1874,7 +1936,7 @@ static void CG_DrawCenterString( void ) {
 		return;
 	}
 
-	color = CG_FadeColor( cg.centerPrintTime, 1000 * cg_centertime.value );
+	color = CG_FadeColor(  1, 1, 1, cg.centerPrintTime, 1000 * cg_centertime.value );
 	if ( !color ) {
 		return;
 	}
@@ -2173,7 +2235,7 @@ static void CG_DrawCrosshairNames( void ) {
 	CG_ScanForCrosshairEntity();
 
 	// draw the name of the player being looked at
-	color = CG_FadeColor( cg.crosshairClientTime, 1000 );
+	color = CG_FadeColor(  1, 1, 1, cg.crosshairClientTime, 1000 );
 	if ( !color ) {
 		trap_R_SetColor( NULL );
 		return;
@@ -2311,7 +2373,7 @@ static qboolean CG_DrawScoreboard( void ) {
 
 	if ( cg.showScores || cg.predictedPlayerState.pm_type == PM_DEAD || cg.predictedPlayerState.pm_type == PM_INTERMISSION ) {
 	} else {
-		if ( !CG_FadeColor( cg.scoreFadeTime, FADE_TIME ) ) {
+		if ( !CG_FadeColor(  1, 1, 1, cg.scoreFadeTime, FADE_TIME ) ) {
 			// next time scoreboard comes up, don't print killer
 			cg.deferredPlayerLoading = 0;
 			cg.killerName[0] = 0;
@@ -2708,7 +2770,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	if ( !cg.scoreBoardShowing) {
 		CG_DrawCenterString();
 	}
-
+	CG_DrawDeathNotice();
 	CG_DrawAccboard();
 }
 // will be called on warmup end and when client changed

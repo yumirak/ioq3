@@ -292,6 +292,8 @@ vmCvar_t	cg_drawPowerupAvailableFadeStart;
 vmCvar_t	cg_drawPowerupAvailableFadeEnd;
 //
 vmCvar_t	cg_drawWeaponBar;
+vmCvar_t	cg_deathNoticeTime;
+vmCvar_t	cg_deathNoticePos[2];
 //
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 //
@@ -505,6 +507,9 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_drawPowerupAvailableFadeEnd, "cg_drawPowerupAvailableFadeEnd", "520.0", CVAR_ARCHIVE },
 	//
 	{ &cg_drawWeaponBar, "cg_weaponBar", "1", CVAR_ARCHIVE },
+	{ &cg_deathNoticeTime, "cg_deathNoticeTime", "3000", CVAR_ARCHIVE },
+	{ &cg_deathNoticePos[0], "cg_deathNoticeX", "150", CVAR_ARCHIVE },
+	{ &cg_deathNoticePos[1], "cg_deathNoticeY", "0", CVAR_ARCHIVE },
 	//
 	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SYSTEMINFO}, // gauntlet
 	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SYSTEMINFO}, // mg
@@ -1343,6 +1348,7 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.timerSliceCurrent[3] = trap_R_RegisterShaderNoMip("gfx/2d/timer/slice24_current");
 
 	cgs.media.infiniteAmmo = trap_R_RegisterShader("icons/infinite");
+	cgs.media.worldDeathIcon = trap_R_RegisterShader("icons/icon_frag");
 
 	CG_ClearParticles ();
 /*

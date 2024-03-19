@@ -97,6 +97,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define ICON_SCALE_DISTANCE 200.0
 
+#define MAX_DEATHNOTICE	5
 typedef enum {
 	FOOTSTEP_NORMAL,
 	FOOTSTEP_BOOT,
@@ -807,6 +808,7 @@ typedef struct {
 	qhandle_t	bfgExplosionShader;
 	qhandle_t	bloodExplosionShader;
 
+	qhandle_t	worldDeathIcon;
 	// special effects models
 	qhandle_t	teleportEffectModel;
 	qhandle_t	deathEffectShader;
@@ -1170,6 +1172,12 @@ typedef struct {
 	float 			adverts[MAX_MAP_ADVERTISEMENTS * 16];  // fu
 	char adShaders[MAX_MAP_ADVERTISEMENTS][MAX_QPATH];
 
+	int deathNoticeTime[ MAX_DEATHNOTICE ];
+	char deathNoticeName1[ MAX_DEATHNOTICE ][ MAX_NAME_LENGTH ];
+	char deathNoticeName2[ MAX_DEATHNOTICE ][ MAX_NAME_LENGTH ];
+	int deathNoticeTeam1[ MAX_DEATHNOTICE ];
+	int deathNoticeTeam2[ MAX_DEATHNOTICE ];
+	qhandle_t deathNoticeIcon[ MAX_DEATHNOTICE ];
 } cgs_t;
 
 //==============================================================================
@@ -1357,6 +1365,8 @@ extern	vmCvar_t	cg_drawPowerupAvailableFadeStart;
 extern	vmCvar_t	cg_drawPowerupAvailableFadeEnd;
 //
 extern	vmCvar_t	cg_drawWeaponBar;
+extern	vmCvar_t	cg_deathNoticeTime;
+extern	vmCvar_t	cg_deathNoticePos[2];
 //
 // cg_main.c
 //
@@ -1425,7 +1435,7 @@ void CG_DrawSmallString( int x, int y, const char *s, float alpha );
 void CG_DrawSmallStringColor( int x, int y, const char *s, vec4_t color );
 
 void CG_LerpColor( const vec4_t a, const vec4_t b, vec4_t c, float t );
-float	*CG_FadeColor( int startMsec, int totalMsec );
+float *CG_FadeColor( float r, float g, float b,int startMsec, int totalMsec );
 float *CG_TeamColor( int team );
 void CG_TileClear( void );
 void CG_ColorForHealth( vec4_t hcolor );
@@ -1535,7 +1545,7 @@ void CG_CheckEvents( centity_t *cent );
 const char	*CG_PlaceString( int rank );
 void CG_EntityEvent( centity_t *cent, vec3_t position );
 void CG_PainEvent( centity_t *cent, int health );
-
+void CG_AddDeathNotice( char name1[ MAX_NAME_LENGTH ], int team1, char name2[ MAX_NAME_LENGTH ], int team2, qhandle_t icon1 );
 
 //
 // cg_ents.c

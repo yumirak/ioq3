@@ -84,6 +84,7 @@ static void CG_Obituary( entityState_t *ent ) {
 	gender_t	gender;
 	clientInfo_t	*ci;
 	clientInfo_t	*us;
+	qhandle_t icon1;
 
 	target = ent->otherEntityNum;
 	attacker = ent->otherEntityNum2;
@@ -110,7 +111,7 @@ static void CG_Obituary( entityState_t *ent ) {
 	strcat( targetName, S_COLOR_WHITE );
 
 	message2 = "";
-
+	icon1 = cgs.media.worldDeathIcon;
 	// check for single client messages
 
 	switch( mod ) {
@@ -152,6 +153,7 @@ static void CG_Obituary( entityState_t *ent ) {
 			break;
 //#endif
 		case MOD_GRENADE_SPLASH:
+			icon1 = cg_weapons[WP_GRENADE_LAUNCHER].weaponIcon;
 			if ( gender == GENDER_FEMALE )
 				message = "tripped on her own grenade";
 			else if ( gender == GENDER_NEUTER )
@@ -160,6 +162,7 @@ static void CG_Obituary( entityState_t *ent ) {
 				message = "tripped on his own grenade";
 			break;
 		case MOD_ROCKET_SPLASH:
+			icon1 = cg_weapons[WP_ROCKET_LAUNCHER].weaponIcon;
 			if ( gender == GENDER_FEMALE )
 				message = "blew herself up";
 			else if ( gender == GENDER_NEUTER )
@@ -168,6 +171,7 @@ static void CG_Obituary( entityState_t *ent ) {
 				message = "blew himself up";
 			break;
 		case MOD_PLASMA_SPLASH:
+			icon1 = cg_weapons[WP_PLASMAGUN].weaponIcon;
 			if ( gender == GENDER_FEMALE )
 				message = "melted herself";
 			else if ( gender == GENDER_NEUTER )
@@ -176,10 +180,12 @@ static void CG_Obituary( entityState_t *ent ) {
 				message = "melted himself";
 			break;
 		case MOD_BFG_SPLASH:
+			icon1 = cg_weapons[WP_BFG].weaponIcon;
 			message = "should have used a smaller gun";
 			break;
 //#ifdef MISSIONPACK
 		case MOD_PROXIMITY_MINE:
+			icon1 = cg_weapons[WP_PROX_LAUNCHER].weaponIcon;
 			if( gender == GENDER_FEMALE ) {
 				message = "found her prox mine";
 			} else if ( gender == GENDER_NEUTER ) {
@@ -190,6 +196,7 @@ static void CG_Obituary( entityState_t *ent ) {
 			break;
 //#endif
 		default:
+			icon1 = cgs.media.worldDeathIcon;
 			if ( gender == GENDER_FEMALE )
 				message = "killed herself";
 			else if ( gender == GENDER_NEUTER )
@@ -200,8 +207,9 @@ static void CG_Obituary( entityState_t *ent ) {
 		}
 	}
 
-	if (message) {
-		CG_Printf( "%s %s.\n", targetName, message);
+	if (message && strlen(targetName)) {
+		CG_AddDeathNotice( va("",targetName), cgs.clientinfo[target].team, va("%s",targetName), cgs.clientinfo[target].team, icon1 );
+		//CG_Printf( "%s %s.\n", targetName, message);
 		return;
 	}
 
@@ -245,93 +253,140 @@ static void CG_Obituary( entityState_t *ent ) {
 	if ( attacker != ENTITYNUM_WORLD ) {
 		switch (mod) {
 		case MOD_GRAPPLE:
+			icon1 = cg_weapons[WP_GRAPPLING_HOOK].weaponIcon;
 			message = "was caught by";
 			break;
 		case MOD_GAUNTLET:
+			icon1 = cg_weapons[WP_GAUNTLET].weaponIcon;
 			message = "was pummeled by";
 			break;
 		case MOD_MACHINEGUN:
+			icon1 = cg_weapons[WP_MACHINEGUN].weaponIcon;
 			message = "was machinegunned by";
 			break;
 		case MOD_SHOTGUN:
+			icon1 = cg_weapons[WP_SHOTGUN].weaponIcon;
 			message = "was gunned down by";
 			break;
 		case MOD_GRENADE:
+			icon1 = cg_weapons[WP_GRENADE_LAUNCHER].weaponIcon;
 			message = "ate";
 			message2 = "'s grenade";
 			break;
 		case MOD_GRENADE_SPLASH:
+			icon1 = cg_weapons[WP_GRENADE_LAUNCHER].weaponIcon;
 			message = "was shredded by";
 			message2 = "'s shrapnel";
 			break;
 		case MOD_ROCKET:
+			icon1 = cg_weapons[WP_ROCKET_LAUNCHER].weaponIcon;
 			message = "ate";
 			message2 = "'s rocket";
 			break;
 		case MOD_ROCKET_SPLASH:
+			icon1 = cg_weapons[WP_ROCKET_LAUNCHER].weaponIcon;
 			message = "almost dodged";
 			message2 = "'s rocket";
 			break;
 		case MOD_PLASMA:
+			icon1 = cg_weapons[WP_PLASMAGUN].weaponIcon;
 			message = "was melted by";
 			message2 = "'s plasmagun";
 			break;
 		case MOD_PLASMA_SPLASH:
+			icon1 = cg_weapons[WP_PLASMAGUN].weaponIcon;
 			message = "was melted by";
 			message2 = "'s plasmagun";
 			break;
 		case MOD_RAILGUN:
+			icon1 = cg_weapons[WP_RAILGUN].weaponIcon;
 			message = "was railed by";
 			break;
 		case MOD_LIGHTNING:
+			icon1 = cg_weapons[WP_LIGHTNING].weaponIcon;
 			message = "was electrocuted by";
 			break;
 		case MOD_BFG:
 		case MOD_BFG_SPLASH:
+			icon1 = cg_weapons[WP_BFG].weaponIcon;
 			message = "was blasted by";
 			message2 = "'s BFG";
 			break;
 //#ifdef MISSIONPACK
 		case MOD_NAIL:
+			icon1 = cg_weapons[WP_NAILGUN].weaponIcon;
 			message = "was nailed by";
 			break;
 		case MOD_CHAINGUN:
+			icon1 = cg_weapons[WP_CHAINGUN].weaponIcon;
 			message = "got lead poisoning from";
 			message2 = "'s Chaingun";
 			break;
 		case MOD_PROXIMITY_MINE:
+			icon1 = cg_weapons[WP_PROX_LAUNCHER].weaponIcon;
 			message = "was too close to";
 			message2 = "'s Prox Mine";
 			break;
 		case MOD_KAMIKAZE:
+			icon1 = cgs.media.worldDeathIcon;
 			message = "falls to";
 			message2 = "'s Kamikaze blast";
 			break;
 		case MOD_JUICED:
+			icon1 = cgs.media.worldDeathIcon;
 			message = "was juiced by";
 			break;
 //#endif
 		case MOD_HMG:
+			icon1 = cg_weapons[WP_HMG].weaponIcon;
 			message = "was heavy machinegunned by";
 			break;
 		case MOD_TELEFRAG:
+			icon1 = cgs.media.worldDeathIcon;
 			message = "tried to invade";
 			message2 = "'s personal space";
 			break;
 		default:
+			icon1 = cgs.media.worldDeathIcon;
 			message = "was killed by";
 			break;
 		}
 
 		if (message) {
-			CG_Printf( "%s %s %s%s\n", 
-				targetName, message, attackerName, message2);
+			CG_AddDeathNotice( va("%s", attackerName), cgs.clientinfo[attacker].team, va("%s",targetName), cgs.clientinfo[target].team, icon1);
+			//CG_Printf( "%s %s %s%s\n", targetName, message, attackerName, message2);
 			return;
 		}
+
 	}
 
 	// we don't know what it was
 	CG_Printf( "%s died.\n", targetName );
+}
+/*
+===============
+CG_AddDeathNotice
+===============
+*/
+
+void CG_AddDeathNotice( char name1[ MAX_NAME_LENGTH ], int team1, char name2[ MAX_NAME_LENGTH ], int team2, qhandle_t icon1 ) {
+    int i;
+    for ( i=MAX_DEATHNOTICE-1 ; i > 0 ; i-- ) {
+        if ( cgs.deathNoticeTime[ i-1 ] != 0 ) {
+            cgs.deathNoticeTime[ i ] = cgs.deathNoticeTime[ i-1 ];
+            Q_strncpyz(cgs.deathNoticeName1[ i ], cgs.deathNoticeName1[ i-1 ], sizeof(cgs.deathNoticeName1[ i ]));
+            Q_strncpyz(cgs.deathNoticeName2[ i ], cgs.deathNoticeName2[ i-1 ], sizeof(cgs.deathNoticeName2[ i ]));
+            cgs.deathNoticeTeam1[ i ] = cgs.deathNoticeTeam1[ i-1 ];
+            cgs.deathNoticeTeam2[ i ] = cgs.deathNoticeTeam2[ i-1 ];
+            cgs.deathNoticeIcon[ i ] = cgs.deathNoticeIcon[ i-1 ];
+        }
+    }
+    cgs.deathNoticeTime[ 0 ] = cg.time;
+    Q_strncpyz(cgs.deathNoticeName1[ 0 ], name1, sizeof(cgs.deathNoticeName1[ 0 ]));
+    Q_strncpyz(cgs.deathNoticeName2[ 0 ], name2, sizeof(cgs.deathNoticeName2[ 0 ]));
+    cgs.deathNoticeTeam1[ 0 ] = team1;
+    cgs.deathNoticeTeam2[ 0 ] = team2;
+    cgs.deathNoticeIcon[ 0 ] = icon1;
 }
 
 //==========================================================================
