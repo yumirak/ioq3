@@ -752,6 +752,9 @@ netField_t	entityStateFields[] =
 { NETF(apos.trBase[1]), 0 },
 { NETF(pos.trDelta[2]), 0 },
 { NETF(apos.trBase[0]), 0 },
+#if BUILD_PROTOCOL >= 73
+{ NETF(pos.trGravity), 32 },   // 73
+#endif
 { NETF(event), 10 },
 { NETF(angles2[1]), 0 },
 { NETF(eType), 8 },
@@ -788,12 +791,24 @@ netField_t	entityStateFields[] =
 { NETF(apos.trDelta[0]), 0 },
 { NETF(apos.trDelta[1]), 0 },
 { NETF(apos.trDelta[2]), 0 },
+#if BUILD_PROTOCOL >= 73
+{ NETF(apos.trGravity), 32 }, // 73
+#endif
 { NETF(time2), 32 },
 { NETF(angles[2]), 0 },
 { NETF(angles2[0]), 0 },
 { NETF(angles2[2]), 0 },
 { NETF(constantLight), 32 },
-{ NETF(frame), 16 }
+{ NETF(frame), 16 },
+#if BUILD_PROTOCOL >= 90
+{ NETF(jumpTime), 32 },
+{ NETF(doubleJumped), 1 },
+#endif
+#if BUILD_PROTOCOL >= 91
+{ NETF(health), 16 },
+{ NETF(armor), 16 },
+{ NETF(location), 8 },  // location
+#endif
 };
 
 
@@ -1079,7 +1094,11 @@ netField_t	playerStateFields[] =
 { PSF(events[0]), 8 },
 { PSF(legsAnim), 8 },
 { PSF(events[1]), 8 },
+#if BUILD_PROTOCOL >= 90
+{ PSF(pm_flags), 24 },
+#else
 { PSF(pm_flags), 16 },
+#endif
 { PSF(groundEntityNum), GENTITYNUM_BITS },
 { PSF(weaponstate), 4 },
 { PSF(eFlags), 16 },
@@ -1102,12 +1121,28 @@ netField_t	playerStateFields[] =
 { PSF(eventParms[1]), 8 },
 { PSF(clientNum), 8 },
 { PSF(weapon), 5 },
+#if BUILD_PROTOCOL >= 91
+{ PSF(weaponPrimary), 8 },
+#endif
 { PSF(viewangles[2]), 0 },
 { PSF(grapplePoint[0]), 0 },
 { PSF(grapplePoint[1]), 0 },
 { PSF(grapplePoint[2]), 0 },
 { PSF(jumppad_ent), GENTITYNUM_BITS },
-{ PSF(loopSound), 16 }
+{ PSF(loopSound), 16 },
+#if BUILD_PROTOCOL >= 90
+{ PSF(jumpTime), 32 },
+{ PSF(doubleJumped), 1 },
+#endif
+#if BUILD_PROTOCOL >= 91
+{ PSF(crouchTime), 32 },
+{ PSF(crouchSlideTime), 32 },
+{ PSF(location), 8 },
+{ PSF(fov), 8 },
+{ PSF(forwardmove), 8 },
+{ PSF(rightmove), 8 },
+{ PSF(upmove), 8 },
+#endif
 };
 
 /*

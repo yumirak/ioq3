@@ -244,8 +244,13 @@ PROTOCOL
 ==============================================================
 */
 
+#if BUILD_PROTOCOL >= 73
+#define	PROTOCOL_VERSION	BUILD_PROTOCOL
+#define	PROTOCOL_LEGACY_VERSION	0
+#else
 #define	PROTOCOL_VERSION	71
 #define PROTOCOL_LEGACY_VERSION	68
+#endif
 // 1.31 - 67
 
 // maintain a list of compatible protocols for demo playing

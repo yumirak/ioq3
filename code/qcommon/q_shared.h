@@ -1202,6 +1202,22 @@ typedef struct playerState_s {
 	int			pmove_framecount;
 	int			jumppad_frame;
 	int			entityEventSequence;
+#if BUILD_PROTOCOL >= 90
+	// ql protocol 90
+	qboolean doubleJumped;
+	int jumpTime;
+#endif
+#if BUILD_PROTOCOL >= 91
+	// ql protocol 91
+	int crouchTime;
+	int crouchSlideTime;
+	int location;
+	int fov;
+	int forwardmove;
+	int rightmove;
+	int upmove;
+	int weaponPrimary;
+#endif
 } playerState_t;
 
 
@@ -1263,6 +1279,10 @@ typedef struct {
 	int		trDuration;			// if non 0, trTime + trDuration = stop time
 	vec3_t	trBase;
 	vec3_t	trDelta;			// velocity, etc
+#if BUILD_PROTOCOL >= 73
+	// ql protocol 73
+	int	trGravity;
+#endif
 } trajectory_t;
 
 // entityState_t is the information conveyed from the server
@@ -1314,6 +1334,17 @@ typedef struct entityState_s {
 	int		torsoAnim;		// mask off ANIM_TOGGLEBIT
 
 	int		generic1;
+#if BUILD_PROTOCOL >= 90
+	// ql protocol 90
+	int jumpTime;
+	qboolean doubleJumped;
+#endif
+#if BUILD_PROTOCOL >= 91
+	// ql protocol 91
+	int health;
+	int armor;
+	int location;
+#endif
 } entityState_t;
 
 typedef enum {

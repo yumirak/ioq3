@@ -18,6 +18,7 @@ option(BUILD_RENDERER_GL2 "Build GL2 renderer" ON)
 option(BUILD_GAME_LIBRARIES "Build game module libraries" ON)
 option(BUILD_GAME_QVMS "Build game module qvms" ON)
 option(BUILD_STANDALONE "Build binaries for standalone games" OFF)
+set(BUILD_PROTOCOL 73) # 73, 90, 91
 
 option(USE_RENDERER_DLOPEN "Dynamically load the renderer(s)" ON)
 option(USE_OPENAL "OpenAL audio" ON)
@@ -45,6 +46,8 @@ endif()
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
+
+add_compile_definitions(BUILD_PROTOCOL=${BUILD_PROTOCOL})
 
 if(NOT PRODUCT_VERSION)
     set(PRODUCT_VERSION "${CMAKE_PROJECT_VERSION}")
