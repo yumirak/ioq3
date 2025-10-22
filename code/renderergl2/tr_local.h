@@ -492,6 +492,7 @@ typedef struct shader_s {
   struct shader_s *remappedShader;                  // current shader this one is remapped too
 
 	struct	shader_s	*next;
+	qboolean noVertexLightingCollapse;
 } shader_t;
 
 enum

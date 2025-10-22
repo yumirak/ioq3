@@ -590,6 +590,7 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 {
 	char *token;
 	int depthMaskBits = GLS_DEPTHMASK_TRUE, blendSrcBits = 0, blendDstBits = 0, atestBits = 0, depthFuncBits = 0;
+	int depthTestBits = 0;
 	qboolean depthMaskExplicit = qfalse;
 
 	stage->active = qtrue;
@@ -1040,6 +1041,16 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 
 			continue;
 		}
+		else if (!Q_stricmp(token, "depthtest")) {
+			token = COM_ParseExt(text, qfalse);
+			if (token[0] == 0) {
+				ri.Printf( PRINT_WARNING, "WARNING: missing depthtest parm in shader '%s'\n", shader.name );
+				continue;
+			}
+			if (!Q_stricmp(token, "disable")) {
+				depthTestBits = GLS_DEPTHTEST_DISABLE;
+			}
+		}
 		else
 		{
 			ri.Printf( PRINT_WARNING, "WARNING: unknown parameter '%s' in shader '%s'\n", token, shader.name );
@@ -1085,6 +1096,7 @@ static qboolean ParseStage( shaderStage_t *stage, char **text )
 	stage->stateBits = depthMaskBits | 
 		               blendSrcBits | blendDstBits | 
 					   atestBits | 
+					   depthTestBits |
 					   depthFuncBits;
 
 	return qtrue;
@@ -1653,6 +1665,11 @@ static qboolean ParseShader( char **text )
 		else if ( !Q_stricmp( token, "sort" ) )
 		{
 			ParseSort( text );
+			continue;
+		}
+		else if ( !Q_stricmp( token, "novlcollapse" ) )
+		{
+			shader.noVertexLightingCollapse = qtrue;
 			continue;
 		}
 		else
@@ -2344,7 +2361,7 @@ static shader_t *FinishShader( void ) {
 	//
 	// if we are in r_vertexLight mode, never use a lightmap texture
 	//
-	if ( stage > 1 && ( (r_vertexLight->integer && !r_uiFullScreen->integer) || glConfig.hardwareType == GLHW_PERMEDIA2 ) ) {
+	if ( stage > 1 && !shader.noVertexLightingCollapse && ( (r_vertexLight->integer && !r_uiFullScreen->integer) || glConfig.hardwareType == GLHW_PERMEDIA2 ) ) {
 		VertexLightingCollapse();
 		stage = 1;
 		hasLightmapStage = qfalse;
