@@ -87,7 +87,7 @@ gitem_t	bg_itemlist[] =
         { "models/powerups/armor/armor_yel.md3",
 		NULL, NULL, NULL},
 /* icon */		"icons/iconr_yellow",
-/* pickup */	"Armor",
+/* pickup */	"Yellow Armor",
 		50,
 		IT_ARMOR,
 		0,
@@ -103,8 +103,23 @@ gitem_t	bg_itemlist[] =
         { "models/powerups/armor/armor_red.md3",
 		NULL, NULL, NULL},
 /* icon */		"icons/iconr_red",
-/* pickup */	"Heavy Armor",
+/* pickup */	"Red Armor",
 		100,
+		IT_ARMOR,
+		0,
+/* precache */ "",
+/* sounds */ ""
+	},
+/*QUAKED item_armor_jacket (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"item_armor_jacket",
+		"sound/misc/ar2_pkup.wav",
+		{ "models/powerups/armor/armor_grn.md3",
+		NULL, NULL, NULL},
+/* icon */	"icons/iconr_green",
+/* pickup */	"Green Armor",
+		25,
 		IT_ARMOR,
 		0,
 /* precache */ "",
