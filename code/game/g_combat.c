@@ -211,26 +211,6 @@ void TossClientPersistantPowerups( gentity_t *ent ) {
 
 /*
 ==================
-LookAtKiller
-==================
-*/
-void LookAtKiller( gentity_t *self, gentity_t *inflictor, gentity_t *attacker ) {
-	vec3_t		dir;
-
-	if ( attacker && attacker != self ) {
-		VectorSubtract (attacker->s.pos.trBase, self->s.pos.trBase, dir);
-	} else if ( inflictor && inflictor != self ) {
-		VectorSubtract (inflictor->s.pos.trBase, self->s.pos.trBase, dir);
-	} else {
-		self->client->ps.stats[STAT_DEAD_YAW] = self->s.angles[YAW];
-		return;
-	}
-
-	self->client->ps.stats[STAT_DEAD_YAW] = vectoyaw ( dir );
-}
-
-/*
-==================
 GibEntity
 ==================
 */
@@ -595,7 +575,6 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 	self->s.angles[0] = 0;
 	self->s.angles[2] = 0;
-	LookAtKiller (self, inflictor, attacker);
 
 	VectorCopy( self->s.angles, self->client->ps.viewangles );
 
@@ -963,7 +942,6 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		} else {
 			attacker->client->ps.persistant[PERS_HITS]++;
 		}
-		attacker->client->ps.persistant[PERS_ATTACKEE_ARMOR] = (targ->health<<8)|(client->ps.stats[STAT_ARMOR]);
 	}
 
 	// always give half damage if hurting self

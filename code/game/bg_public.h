@@ -25,7 +25,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // because games can change separately from the main system version, we need a
 // second version that must match between game and cgame
 
+#ifdef BASEQZ
+#define	GAME_VERSION		"baseqz"
+#else
 #define	GAME_VERSION		BASEGAME "-1"
+#endif
 
 #define	DEFAULT_GRAVITY		800
 #define	GIB_HEALTH			-40
@@ -62,38 +66,103 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
 // CS_SERVERINFO and CS_SYSTEMINFO are defined in q_shared.h
-#define	CS_MUSIC				2
-#define	CS_MESSAGE				3		// from the map worldspawn's message field
-#define	CS_MOTD					4		// g_motd string for server message of the day
-#define	CS_WARMUP				5		// server time when the match will be restarted
-#define	CS_SCORES1				6
-#define	CS_SCORES2				7
-#define CS_VOTE_TIME			8
-#define CS_VOTE_STRING			9
-#define	CS_VOTE_YES				10
-#define	CS_VOTE_NO				11
+enum
+{
+	CS_MUSIC = 2,
+	CS_MESSAGE,
+	CS_MOTD,
+	CS_WARMUP,
+	CS_SCORES1,
+	CS_SCORES2,
+	CS_VOTE_TIME,
+	CS_VOTE_STRING,
+	CS_VOTE_YES,
+	CS_VOTE_NO, // 11
 
-#define CS_TEAMVOTE_TIME		12
-#define CS_TEAMVOTE_STRING		14
-#define	CS_TEAMVOTE_YES			16
-#define	CS_TEAMVOTE_NO			18
+	CS_GAME_VERSION,
+	CS_LEVEL_START_TIME,
+	CS_INTERMISSION,
+	CS_ITEMS,
 
-#define	CS_GAME_VERSION			20
-#define	CS_LEVEL_START_TIME		21		// so the timer only shows the current level
-#define	CS_INTERMISSION			22		// when 1, fraglimit/timelimit has been hit and intermission will start in a second or two
-#define CS_FLAGSTATUS			23		// string indicating flag status in CTF
-#define CS_SHADERSTATE			24
-#define CS_BOTINFO				25
+	CS_MODELS = CS_ITEMS + 2,
+	CS_SOUNDS = ( CS_MODELS + MAX_MODELS ), // 273
+	CS_PLAYERS = ( CS_SOUNDS + MAX_SOUNDS ), // 529
+	CS_LOCATIONS = ( CS_PLAYERS + MAX_CLIENTS ), // 593
+	CS_PARTICLES = ( CS_LOCATIONS + MAX_LOCATIONS ), // 657 CS_PARTICLES is unused. Needed for CS_LOCATIONS offset
 
-#define	CS_ITEMS				27		// string of 0's and 1's that tell which items are present
+	CS_FLAGSTATUS,
 
-#define	CS_MODELS				32
-#define	CS_SOUNDS				(CS_MODELS+MAX_MODELS)
-#define	CS_PLAYERS				(CS_SOUNDS+MAX_SOUNDS)
-#define CS_LOCATIONS			(CS_PLAYERS+MAX_CLIENTS)
-#define CS_PARTICLES			(CS_LOCATIONS+MAX_LOCATIONS) 
+	CS_FIRSTPLACE,
+	CS_SECONDPLACE,
 
-#define CS_MAX					(CS_PARTICLES+MAX_LOCATIONS)
+	CS_ROUND_STATUS, // also used for freezetag
+	CS_ROUND_TIME, // when -1 round is over, also used for freezetag
+
+	CS_RED_PLAYERS_LEFT, //		663
+	CS_BLUE_PLAYERS_LEFT, //	664
+
+	CS_SHADERSTATE, //			665  // was 24, 2008-69939-ZeRo4 - Clock (qzdm6)qcon08.rar
+	// protocol 91 (everything the same up to CG_SHADERSTATE:665
+	CS_NEXTMAP, //  666
+	CS_PRACTICE, // 667
+	CS_FREECAM, // 668
+	CS_PAUSE_START_TIME, // 669  // non-zero means paused
+	CS_PAUSE_END_TIME, //  670 // 0 is paused and non-zero is timeout
+	CS_TIMEOUTS_RED, // 671
+	CS_TIMEOUTS_BLUE, // 672
+	CS_MODEL_OVERRIDE, // 673
+	CS_PLAYER_CYLINDERS, // 674
+	CS_DEBUGFLAGS, // 675
+	CS_ENABLEBREATH, // 676
+	CS_DMGTHROUGHDEPTH, // 677
+	CS_AUTHOR, //678
+	CS_AUTHOR2, // 679
+	CS_ADVERT_DELAY, // 680
+	CS_PMOVEINFO, // 681
+	CS_ARMORINFO, // 682
+	CS_WEAPONINFO, // 683
+	CS_PLAYERINFO, // 684
+	CS_SCORE1STPLAYER, // 685  // score of duel player on left
+	CS_SCORE2NDPLAYER, // 686  // score of duel player on right
+	CS_CLIENTNUM1STPLAYER, // 687  // left
+	CS_CLIENTNUM2NDPLAYER, // 688
+	CS_NAME1STPLAYER, // 689
+	CS_NAME2NDPLAYER, // 690
+	CS_ATMOSEFFECT, // 691
+	CS_MOST_DAMAGEDEALT_PLYR, // 692
+	CS_MOST_ACCURATE_PLYR, // 693
+	CS_REDTEAMBASE, // 694
+	CS_BLUETEAMBASE, // 695
+	CS_BEST_ITEMCONTROL_PLYR, //696
+	CS_MOST_VALUABLE_OFFENSIVE_PLYR, // 697
+	CS_MOST_VALUABLE_DEFENSIVE_PLYR, // 698
+	CS_MOST_VALUABLE_PLYR, // 699
+	CS_GENERIC_COUNT_RED, // 700
+	CS_GENERIC_COUNT_BLUE, // 701
+	CS_AD_SCORES, // 702
+	CS_ROUND_WINNER, // 703
+	CS_CUSTOM_SETTINGS, // 704
+	CS_ROTATIONMAPS, // 705
+	CS_ROTATIONVOTES, // 706
+	CS_DISABLE_VOTE_UI, // 707
+	CS_ALLREADY_TIME, // 708
+	CS_INFECTED_SURVIVOR_MINSPEED, // 709
+	CS_RACE_POINTS, // 710
+	CS_DISABLE_LOADOUT, // 711
+	CS_MATCH_GUID, // 712
+	CS_STARTING_WEAPONS, // 713
+	CS_STEAM_ID, // 714
+	CS_STEAM_WORKSHOP_IDS, // 715
+
+	// unknown ones which haven't been seen in quake live, but kept for compiling
+
+	CS_TEAMVOTE_YES = 950,
+	CS_TEAMVOTE_NO = CS_TEAMVOTE_YES + 2,
+	CS_TEAMVOTE_TIME =  CS_TEAMVOTE_NO + 2,
+	CS_TEAMVOTE_STRING = CS_TEAMVOTE_TIME + 2,
+	CS_BOTINFO,
+	CS_MAX
+};
 
 #if (CS_MAX) > MAX_CONFIGSTRINGS
 #error overflow: (CS_MAX) > MAX_CONFIGSTRINGS
@@ -107,10 +176,15 @@ typedef enum {
 	//-- team games go after this --
 
 	GT_TEAM,			// team deathmatch
+	GT_CLAN_ARENA,		// clan arena
 	GT_CTF,				// capture the flag
 	GT_1FCTF,
 	GT_OBELISK,
 	GT_HARVESTER,
+	GT_FREEZETAG,
+	GT_DOMINATION,  // 10
+	GT_CTFS,
+	GT_RED_ROVER,
 	GT_MAX_GAME_TYPE
 } gametype_t;
 
@@ -208,14 +282,20 @@ void Pmove (pmove_t *pmove);
 typedef enum {
 	STAT_HEALTH,
 	STAT_HOLDABLE_ITEM,
-#ifdef MISSIONPACK
 	STAT_PERSISTANT_POWERUP,
-#endif
 	STAT_WEAPONS,					// 16 bit fields
 	STAT_ARMOR,				
-	STAT_DEAD_YAW,					// look this direction when dead (FIXME: get rid of?)
+	STAT_BATTLESUIT_KILL_COUNT,
 	STAT_CLIENTS_READY,				// bit mask of clients wishing to exit the intermission (FIXME: configstring?)
-	STAT_MAX_HEALTH					// health / armor limit, changeable by handicap
+	STAT_MAX_HEALTH,					// health / armor limit, changeable by handicap
+	STAT_CHAINGUN_SPIN_TIME,
+	STAT_UNKNOWN_9,		// set to "1200" when has flight
+	STAT_UNKNOWN_10,	// set to "16000" when has flight
+	STAT_POWERUP_REMAINING,
+	STAT_UNKNOWN_12,
+	STAT_QUAD_KILL_COUNT,
+	STAT_ARMOR_TIER,
+	STAT_MAP_KEYS,
 } statIndex_t;
 
 
@@ -231,7 +311,6 @@ typedef enum {
 	PERS_SPAWN_COUNT,				// incremented every respawn
 	PERS_PLAYEREVENTS,				// 16 bits that can be flipped for events
 	PERS_ATTACKER,					// clientnum of last damage inflicter
-	PERS_ATTACKEE_ARMOR,			// health/armor of last person we attacked
 	PERS_KILLED,					// count of the number of times you died
 	// player awards tracking
 	PERS_IMPRESSIVE_COUNT,			// two railgun hits in a row
@@ -239,7 +318,8 @@ typedef enum {
 	PERS_DEFEND_COUNT,				// defend awards
 	PERS_ASSIST_COUNT,				// assist awards
 	PERS_GAUNTLET_FRAG_COUNT,		// kills with the guantlet
-	PERS_CAPTURES					// captures
+	PERS_CAPTURES,					// captures
+	PERS_KILLS,			// health/armor of last person we attacked
 } persEnum_t;
 
 
@@ -271,26 +351,26 @@ typedef enum {
 // NOTE: may not have more than 16
 typedef enum {
 	PW_NONE,
+	PW_SPAWNARMOR = PW_NONE,
 
+	PW_REDFLAG,
+	PW_BLUEFLAG,
+	PW_NEUTRALFLAG,
 	PW_QUAD,
 	PW_BATTLESUIT,
 	PW_HASTE,
 	PW_INVIS,
 	PW_REGEN,
 	PW_FLIGHT,
-
-	PW_REDFLAG,
-	PW_BLUEFLAG,
-	PW_NEUTRALFLAG,
+	PW_INVULNERABILITY,
 
 	PW_SCOUT,
 	PW_GUARD,
 	PW_DOUBLER,
 	PW_AMMOREGEN,
-	PW_INVULNERABILITY,
 
+	PW_FROZEN,
 	PW_NUM_POWERUPS
-
 } powerup_t;
 
 typedef enum {
@@ -358,11 +438,6 @@ typedef enum {
 	EV_FOOTWADE,
 	EV_SWIM,
 
-	EV_STEP_4,
-	EV_STEP_8,
-	EV_STEP_12,
-	EV_STEP_16,
-
 	EV_FALL_SHORT,
 	EV_FALL_MEDIUM,
 	EV_FALL_FAR,
@@ -380,6 +455,7 @@ typedef enum {
 
 	EV_NOAMMO,
 	EV_CHANGE_WEAPON,
+	EV_DROP_WEAPON,
 	EV_FIRE_WEAPON,
 
 	EV_USE_ITEM0,
@@ -424,11 +500,13 @@ typedef enum {
 	EV_DEATH1,
 	EV_DEATH2,
 	EV_DEATH3,
+	EV_DROWN,
 	EV_OBITUARY,
 
 	EV_POWERUP_QUAD,
 	EV_POWERUP_BATTLESUIT,
 	EV_POWERUP_REGEN,
+	EV_POWERUP_ARMOR_REGEN,
 
 	EV_GIB_PLAYER,			// gib a previously living player
 	EV_SCOREPLUM,			// score plum
@@ -444,7 +522,6 @@ typedef enum {
 	EV_LIGHTNINGBOLT,		// lightning bolt bounced of invulnerability sphere
 //#endif
 
-	EV_DEBUG_LINE,
 	EV_STOPLOOPINGSOUND,
 	EV_TAUNT,
 	EV_TAUNT_YES,
@@ -452,8 +529,40 @@ typedef enum {
 	EV_TAUNT_FOLLOWME,
 	EV_TAUNT_GETFLAG,
 	EV_TAUNT_GUARDBASE,
-	EV_TAUNT_PATROL
+	EV_TAUNT_PATROL,
 
+	EV_FOOTSTEP_SNOW,
+	EV_FOOTSTEP_WOOD,
+	EV_ITEM_PICKUP_SPEC,
+	EV_OVERTIME,
+	EV_GAMEOVER,
+	EV_UNKNOWN_86,
+
+	EV_THAW_PLAYER,
+	EV_THAW_TICK,
+	EV_HEADSHOT,
+	EV_POI,
+
+	EV_UNKNOWN_91,
+	EV_UNKNOWN_92,
+	EV_RACE_START,
+	EV_RACE_CHECKPOINT,
+	EV_RACE_END,
+
+	EV_DAMAGEPLUM,
+	EV_AWARD,
+	EV_INFECTED,
+	EV_NEW_HIGH_SCORE,
+
+	EV_STEP_4 = 200,
+	EV_STEP_8,
+	EV_STEP_12,
+	EV_STEP_16,
+	EV_STEP_20,
+	EV_STEP_24,
+
+	//FIXME these are definately wrong -- just getting it to compile
+	EV_DEBUG_LINE,
 } entity_event_t;
 
 
@@ -471,7 +580,18 @@ typedef enum {
 	GTS_REDTEAM_TOOK_LEAD,
 	GTS_BLUETEAM_TOOK_LEAD,
 	GTS_TEAMS_ARE_TIED,
-	GTS_KAMIKAZE
+	GTS_KAMIKAZE,
+	GTS_RED_WINS,
+	GTS_BLUE_WINS,
+	GTS_RED_WINS_ROUND,
+	GTS_BLUE_WINS_ROUND,
+	GTS_ROUND_DRAW,
+	GTS_LAST_STANDING,
+	GTS_ROUND_OVER,
+	GTS_DENIED,
+	GTS_ENEMY_TEAM_KILLED,
+	GTS_DOMINATION_POINT_CAPTURE,
+	GTS_PLAYER_INFECTED,  // guess, in red rover halloween infected
 } global_team_sound_t;
 
 // animations
