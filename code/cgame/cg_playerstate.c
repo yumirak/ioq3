@@ -240,6 +240,22 @@ void CG_CheckPlayerstateEvents( playerState_t *ps, playerState_t *ops ) {
 			cg.eventSequence++;
 		}
 	}
+
+	// client side predicted events
+	// EV_STEP* is only client side like QL
+	for (i = cg.clientSideEvent.sequence - MAX_PS_EVENTS;  i < cg.clientSideEvent.sequence;  i++) {
+		// if we have a new predictable event
+		if (i >= cg.oldClientSideEvent.sequence) {
+			event = cg.clientSideEvent.event[ i & (MAX_PS_EVENTS-1) ];
+			cent->currentState.event = event;
+			cent->currentState.eventParm = cg.clientSideEvent.eventParms[ i & (MAX_PS_EVENTS-1) ];
+
+			if (cg_debugEvents.integer > 1) {
+				Com_Printf("^3CLIENT SIDE predictable event %d  i:sequence %d  old Sequence %d\n", event, i, cg.oldClientSideEvent.sequence);
+			}
+			CG_EntityEvent( cent, cent->lerpOrigin );
+		}
+	}
 }
 
 /*

@@ -1280,3 +1280,18 @@ void CG_CheckEvents( centity_t *cent ) {
 	CG_EntityEvent( cent, cent->lerpOrigin );
 }
 
+void CG_AddClientSidePredictableEvent (int event, int eventParam)
+{
+	if (cg.demoPlayback) {
+		return;
+	}
+
+	if (cg.clientSideEvent.sequence >= MAX_PREDICTED_EVENTS) {
+		CG_Printf("^3cg.clientSideEvent.sequence >= MAX_PREDICTED_EVENTS\n");
+		return;
+	}
+
+	cg.clientSideEvent.event[cg.clientSideEvent.sequence] = event;
+	cg.clientSideEvent.eventParms[cg.clientSideEvent.sequence] = eventParam;
+	cg.clientSideEvent.sequence++;
+}

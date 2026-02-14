@@ -457,6 +457,10 @@ void CG_PredictPlayerState( void ) {
 	// save the state before the pmove so we can detect transitions
 	oldPlayerState = cg.predictedPlayerState;
 
+	memcpy(cg.oldClientSideEvent.event, cg.clientSideEvent.event, sizeof(cg.oldClientSideEvent.event));
+	memcpy(cg.oldClientSideEvent.eventParms, cg.clientSideEvent.eventParms, sizeof(cg.oldClientSideEvent.eventParms));
+	cg.oldClientSideEvent.sequence = cg.clientSideEvent.sequence;
+
 	current = trap_GetCurrentCmdNumber();
 
 	// if we don't have the commands right after the snapshot, we
@@ -486,6 +490,10 @@ void CG_PredictPlayerState( void ) {
 		cg.predictedPlayerState = cg.snap->ps;
 		cg.physicsTime = cg.snap->serverTime;
 	}
+
+	memset(cg.clientSideEvent.event, 0, sizeof(cg.clientSideEvent.event));
+	memset(cg.clientSideEvent.eventParms, 0, sizeof(cg.clientSideEvent.eventParms));
+	cg.clientSideEvent.sequence = 0;
 
 	if ( pmove_msec.integer < 8 ) {
 		trap_Cvar_Set("pmove_msec", "8");

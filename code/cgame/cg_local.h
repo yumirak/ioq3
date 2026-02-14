@@ -448,6 +448,13 @@ typedef struct {
 
 #define MAX_PREDICTED_EVENTS	16
  
+
+typedef struct {
+	int event[MAX_PREDICTED_EVENTS];
+	int eventParms[MAX_PREDICTED_EVENTS];
+	int sequence;
+} clientSidedEvent_t;
+
 typedef struct {
 	int			clientFrame;		// incremented each frame
 
@@ -640,6 +647,9 @@ typedef struct {
 	char			testModelName[MAX_QPATH];
 	qboolean		testGun;
 
+	// Extend
+	clientSidedEvent_t clientSideEvent;
+	clientSidedEvent_t oldClientSideEvent;
 } cg_t;
 
 

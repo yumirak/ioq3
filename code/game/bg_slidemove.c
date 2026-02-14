@@ -312,25 +312,27 @@ void PM_StepSlideMove( qboolean gravity ) {
 		}
 	} else 
 #endif
+#if CGAME
 	{
 		// use the step move
 		float	delta;
 
 		delta = pm->ps->origin[2] - start_o[2];
 		if ( delta > 2 ) {
+			int newEvent = EV_STEP_16;
 			if ( delta < 7 ) {
-				PM_AddEvent( EV_STEP_4 );
+				newEvent = EV_STEP_4;
 			} else if ( delta < 11 ) {
-				PM_AddEvent( EV_STEP_8 );
+				newEvent = EV_STEP_8;
 			} else if ( delta < 15 ) {
-				PM_AddEvent( EV_STEP_12 );
-			} else {
-				PM_AddEvent( EV_STEP_16 );
+				newEvent = EV_STEP_12;
 			}
+			CG_AddClientSidePredictableEvent(newEvent, delta);
 		}
 		if ( pm->debugLevel ) {
 			Com_Printf("%i:stepped\n", c_pmove);
 		}
 	}
+#endif
 }
 
