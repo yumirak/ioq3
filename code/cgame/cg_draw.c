@@ -812,6 +812,8 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 	clientInfo_t *ci;
 	gitem_t	*item;
 	int ret_y, count;
+	const entityState_t *es;
+	int health, armor, location, curWeapon, powerups;
 
 	if ( !cg_drawTeamOverlay.integer ) {
 		return y;
@@ -888,7 +890,16 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 	trap_R_SetColor( NULL );
 
 	for (i = 0; i < count; i++) {
+		es = &cg_entities[sortedTeamPlayers[i]].currentState;
 		ci = cgs.clientinfo + sortedTeamPlayers[i];
+
+		powerups = es->powerups;
+		location = es->location;
+		curWeapon = es->weapon;
+		// these are 16 bit signed values
+		health = SIGNED_16_BIT(es->health);
+		armor = SIGNED_16_BIT(es->armor);
+
 		if ( ci->infoValid && ci->team == cg.snap->ps.persistant[PERS_TEAM]) {
 
 			hcolor[0] = hcolor[1] = hcolor[2] = hcolor[3] = 1.0;
@@ -900,7 +911,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 				TINYCHAR_WIDTH, TINYCHAR_HEIGHT, TEAM_OVERLAY_MAXNAME_WIDTH);
 
 			if (lwidth) {
-				p = CG_ConfigString(CS_LOCATIONS + ci->location);
+				p = CG_ConfigString(CS_LOCATIONS + location);
 				if (!p || !*p)
 					p = "unknown";
 //				len = CG_DrawStrlen(p);
@@ -915,9 +926,10 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 					TEAM_OVERLAY_MAXLOCATION_WIDTH);
 			}
 
-			CG_GetColorForHealth( ci->health, ci->armor, hcolor );
-
-			Com_sprintf (st, sizeof(st), "%3i %3i", ci->health,	ci->armor);
+			CG_GetColorForHealth( health, armor, hcolor );
+			Com_sprintf (st, sizeof(st), "%3i %3i", health,	armor);
+			if( health <= 0 )
+				Com_sprintf (st, sizeof(st), "DEAD");
 
 			xx = x + TINYCHAR_WIDTH * 3 + 
 				TINYCHAR_WIDTH * pwidth + TINYCHAR_WIDTH * lwidth;
@@ -929,9 +941,9 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 			// draw weapon icon
 			xx += TINYCHAR_WIDTH * 3;
 
-			if ( cg_weapons[ci->curWeapon].weaponIcon ) {
+			if ( cg_weapons[curWeapon].weaponIcon ) {
 				CG_DrawPic( xx, y, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 
-					cg_weapons[ci->curWeapon].weaponIcon );
+					cg_weapons[curWeapon].weaponIcon );
 			} else {
 				CG_DrawPic( xx, y, TINYCHAR_WIDTH, TINYCHAR_HEIGHT, 
 					cgs.media.deferShader );
@@ -944,7 +956,7 @@ static float CG_DrawTeamOverlay( float y, qboolean right, qboolean upper ) {
 				xx = x + w - TINYCHAR_WIDTH;
 			}
 			for (j = 0; j <= PW_NUM_POWERUPS; j++) {
-				if (ci->powerups & (1 << j)) {
+				if (powerups & (1 << j)) {
 
 					item = BG_FindItemForPowerup( j );
 

@@ -1054,7 +1054,6 @@ void TeamplayInfoMessage( gentity_t *ent ) {
 	int			i, j;
 	gentity_t	*player;
 	int			cnt;
-	int			h, a;
 	int			clients[TEAM_MAXOVERLAY];
 	int			team;
 
@@ -1096,17 +1095,7 @@ void TeamplayInfoMessage( gentity_t *ent ) {
 	for (i = 0, cnt = 0; i < g_maxclients.integer && cnt < TEAM_MAXOVERLAY; i++) {
 		player = g_entities + i;
 		if (player->inuse && player->client->sess.sessionTeam == team ) {
-
-			h = player->client->ps.stats[STAT_HEALTH];
-			a = player->client->ps.stats[STAT_ARMOR];
-			if (h < 0) h = 0;
-			if (a < 0) a = 0;
-
-			Com_sprintf (entry, sizeof(entry),
-				" %i %i %i %i %i %i", 
-//				level.sortedClients[i], player->client->pers.teamState.location, h, a, 
-				i, player->client->pers.teamState.location, h, a, 
-				player->client->ps.weapon, player->s.powerups);
+			Com_sprintf ( entry, sizeof(entry), " %i", i );
 			j = strlen(entry);
 			if (stringlength + j >= sizeof(string))
 				break;
@@ -1137,9 +1126,9 @@ void CheckTeamStatus(void) {
 			if (ent->inuse && (ent->client->sess.sessionTeam == TEAM_RED ||	ent->client->sess.sessionTeam == TEAM_BLUE)) {
 				loc = Team_GetLocation( ent );
 				if (loc)
-					ent->client->pers.teamState.location = loc->health;
+					ent->client->pers.teamState.location = ent->client->ps.location = ent->s.location = loc->health;
 				else
-					ent->client->pers.teamState.location = 0;
+					ent->client->pers.teamState.location = ent->client->ps.location = ent->s.location = 0;
 			}
 		}
 

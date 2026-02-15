@@ -1171,6 +1171,10 @@ void ClientEndFrame( gentity_t *ent ) {
 	}
 
 	ent->client->ps.stats[STAT_HEALTH] = ent->health;	// FIXME: get rid of ent->health...
+	// protocol 91
+	ent->s.location = ent->client->ps.location = ent->client->pers.teamState.location;
+	ent->s.health = ent->client->ps.stats[STAT_HEALTH];
+	ent->s.armor = ent->client->ps.stats[STAT_ARMOR];
 
 	G_SetClientSound (ent);
 
