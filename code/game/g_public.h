@@ -87,6 +87,7 @@ typedef struct {
 	// ent->r.ownerNum == passEntityNum	(don't interact with your own missiles)
 	// entity[ent->r.ownerNum].r.ownerNum == passEntityNum	(don't interact with other missiles from owner)
 	int			ownerNum;
+	int			teamNum;
 } entityShared_t;
 
 

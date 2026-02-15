@@ -293,6 +293,7 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 									snapshotEntityNumbers_t *eNums, qboolean portal ) {
 	int		e, i;
 	sharedEntity_t *ent;
+	sharedEntity_t *ent2;
 	svEntity_t	*svEnt;
 	int		l;
 	int		clientarea, clientcluster;
@@ -315,6 +316,7 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 	frame->areabytes = CM_WriteAreaBits( frame->areabits, clientarea );
 
 	clientpvs = CM_ClusterPVS (clientcluster);
+	ent2 = SV_GentityNum(frame->num_entities); // entity that capture snapshot;
 
 	for ( e = 0 ; e < sv.num_entities ; e++ ) {
 		ent = SV_GentityNum(e);
@@ -365,6 +367,14 @@ static void SV_AddEntitiesVisibleFromPoint( vec3_t origin, clientSnapshot_t *fra
 		if ( ent->r.svFlags & SVF_BROADCAST ) {
 			SV_AddEntToSnapshot( svEnt, ent, eNums );
 			continue;
+		}
+
+		// always sent player in same team or when spectating;
+		if ( ent->s.number < MAX_CLIENTS && ent->r.teamNum > TEAM_FREE ) {
+			if ( ent->r.teamNum == ent2->r.teamNum || ent2->r.teamNum == TEAM_SPECTATOR ) {
+				SV_AddEntToSnapshot( svEnt, ent, eNums );
+				continue;
+			}
 		}
 
 		// ignore if not touching a PV leaf
