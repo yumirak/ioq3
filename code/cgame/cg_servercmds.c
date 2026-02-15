@@ -66,6 +66,7 @@ CG_ParseScores
 */
 static void CG_ParseScores( void ) {
 	int		i, powerups;
+	const int SCSIZE = 18;
 
 	cg.numScores = atoi( CG_Argv( 1 ) );
 	if ( cg.numScores > MAX_CLIENTS ) {
@@ -78,20 +79,24 @@ static void CG_ParseScores( void ) {
 	memset( cg.scores, 0, sizeof( cg.scores ) );
 	for ( i = 0 ; i < cg.numScores ; i++ ) {
 		//
-		cg.scores[i].client = atoi( CG_Argv( i * 14 + 4 ) );
-		cg.scores[i].score = atoi( CG_Argv( i * 14 + 5 ) );
-		cg.scores[i].ping = atoi( CG_Argv( i * 14 + 6 ) );
-		cg.scores[i].time = atoi( CG_Argv( i * 14 + 7 ) );
-		cg.scores[i].scoreFlags = atoi( CG_Argv( i * 14 + 8 ) );
-		powerups = atoi( CG_Argv( i * 14 + 9 ) );
-		cg.scores[i].accuracy = atoi(CG_Argv(i * 14 + 10));
-		cg.scores[i].impressiveCount = atoi(CG_Argv(i * 14 + 11));
-		cg.scores[i].excellentCount = atoi(CG_Argv(i * 14 + 12));
-		cg.scores[i].guantletCount = atoi(CG_Argv(i * 14 + 13));
-		cg.scores[i].defendCount = atoi(CG_Argv(i * 14 + 14));
-		cg.scores[i].assistCount = atoi(CG_Argv(i * 14 + 15));
-		cg.scores[i].perfect = atoi(CG_Argv(i * 14 + 16));
-		cg.scores[i].captures = atoi(CG_Argv(i * 14 + 17));
+		cg.scores[i].client = atoi( CG_Argv( i * SCSIZE + 4 ));
+		cg.scores[i].score = atoi( CG_Argv( i * SCSIZE + 5 ));
+		cg.scores[i].ping = atoi( CG_Argv( i * SCSIZE + 6 ));
+		cg.scores[i].time = atoi( CG_Argv( i * SCSIZE + 7 ));
+		cg.scores[i].scoreFlags = atoi( CG_Argv( i * SCSIZE + 8 ));
+		powerups = atoi( CG_Argv( i * SCSIZE + 9 ));
+		cg.scores[i].accuracy = atoi( CG_Argv( i * SCSIZE + 10 ));
+		cg.scores[i].impressiveCount = atoi( CG_Argv( i * SCSIZE + 11 ));
+		cg.scores[i].excellentCount = atoi( CG_Argv( i * SCSIZE + 12 ));
+		cg.scores[i].guantletCount = atoi( CG_Argv( i * SCSIZE + 13 ));
+		cg.scores[i].defendCount = atoi( CG_Argv( i * SCSIZE + 14 ));
+		cg.scores[i].assistCount = atoi( CG_Argv( i * SCSIZE + 15 ));
+		cg.scores[i].perfect = atoi( CG_Argv( i * SCSIZE + 16 ));
+		cg.scores[i].captures = atoi( CG_Argv( i * SCSIZE + 17 ));
+		cg.scores[i].alive = atoi( CG_Argv( i * SCSIZE + 18 ));
+		cg.scores[i].kills = atoi( CG_Argv( i * SCSIZE + 19 ));
+		cg.scores[i].deaths = atoi( CG_Argv( i * SCSIZE + 20 ));
+		cg.scores[i].bestWeapon = atoi( CG_Argv( i * SCSIZE + 21 ));
 
 		if ( cg.scores[i].client < 0 || cg.scores[i].client >= MAX_CLIENTS ) {
 			cg.scores[i].client = 0;

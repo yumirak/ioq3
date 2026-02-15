@@ -72,16 +72,26 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 		perfect = ( cl->ps.persistant[PERS_RANK] == 0 && cl->ps.persistant[PERS_KILLED] == 0 ) ? 1 : 0;
 
 		Com_sprintf (entry, sizeof(entry),
-			" %i %i %i %i %i %i %i %i %i %i %i %i %i %i", level.sortedClients[i],
-			cl->ps.persistant[PERS_SCORE], ping, (level.time - cl->pers.enterTime)/60000,
-			scoreFlags, g_entities[level.sortedClients[i]].s.powerups, accuracy, 
-			cl->ps.persistant[PERS_IMPRESSIVE_COUNT],
-			cl->ps.persistant[PERS_EXCELLENT_COUNT],
-			cl->ps.persistant[PERS_GAUNTLET_FRAG_COUNT], 
-			cl->ps.persistant[PERS_DEFEND_COUNT], 
-			cl->ps.persistant[PERS_ASSIST_COUNT], 
-			perfect,
-			cl->ps.persistant[PERS_CAPTURES]);
+			   " %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
+			   level.sortedClients[i],
+			   cl->ps.persistant[PERS_SCORE],
+			   ping,
+			   (level.time - cl->pers.enterTime)/60000,
+			   scoreFlags,
+			   g_entities[level.sortedClients[i]].s.powerups,
+			   accuracy,
+			   cl->ps.persistant[PERS_IMPRESSIVE_COUNT],
+			   cl->ps.persistant[PERS_EXCELLENT_COUNT],
+			   cl->ps.persistant[PERS_GAUNTLET_FRAG_COUNT],
+			   cl->ps.persistant[PERS_DEFEND_COUNT],
+			   cl->ps.persistant[PERS_ASSIST_COUNT],
+			   perfect,
+			   cl->ps.persistant[PERS_CAPTURES],
+			   cl->ps.pm_type == PM_NORMAL,
+			   cl->ps.persistant[PERS_KILLS],
+			   cl->ps.persistant[PERS_KILLED],
+			   cl->pers.bestWeapon[0][1] > WP_NONE ? cl->pers.bestWeapon[0][0] : WP_MACHINEGUN
+		);
 		j = strlen(entry);
 		if (stringlength + j >= sizeof(string))
 			break;

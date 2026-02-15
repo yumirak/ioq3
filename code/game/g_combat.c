@@ -448,6 +448,12 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		killer = attacker->s.number;
 		if ( attacker->client ) {
 			killerName = attacker->client->pers.netname;
+			if( self != attacker ) {
+				int weapon = BG_ModToWeapon( meansOfDeath );
+				if( weapon != WP_NONE )
+					attacker->client->pers.weaponKills[weapon]++;
+				attacker->client->ps.persistant[PERS_KILLS]++;
+			}
 		} else {
 			killerName = "<non-client>";
 		}
@@ -1002,11 +1008,31 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
 	// do the damage
 	if (take) {
+		int damageTaken = ( take >= 0 ? take : 0 ) + ( asave >= 0 ? asave : 0 );
 		targ->health = targ->health - take;
 		if ( targ->client ) {
 			targ->client->ps.stats[STAT_HEALTH] = targ->health;
 		}
 			
+
+		// Log victim damage taken
+		if( targ->client && targ->client->ps.pm_type != PM_DEAD )
+			targ->client->pers.damageTaken += damageTaken;
+
+		// Log attacker damage given
+		if( targ != attacker ) {
+			if( attacker && attacker->client && targ->client
+				&& targ->client->ps.pm_type != PM_DEAD
+				&& !OnSameTeam( targ, attacker )) {
+				int weapon = BG_ModToWeapon( mod );
+				if( weapon != WP_NONE ) {
+					attacker->client->pers.damage[weapon] += damageTaken;
+				}
+				attacker->client->pers.damageGiven += damageTaken;
+				UpdateBestWeapon( attacker->client );
+			}
+		}
+
 		if ( targ->health <= 0 ) {
 			if ( client )
 				targ->flags |= FL_NO_KNOCKBACK;

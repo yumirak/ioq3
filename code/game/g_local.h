@@ -246,6 +246,12 @@ typedef struct {
 	int			voteCount;			// to prevent people from constantly calling votes
 	int			teamVoteCount;		// to prevent people from constantly calling votes
 	qboolean	teamInfo;			// send team overlay updates?
+	// Extend
+	int		damageTaken, damageGiven;
+	int		damage[WP_NUM_WEAPONS];
+	int		weaponKills[WP_NUM_WEAPONS];
+	int		accuracy[WP_NUM_WEAPONS][WP_ACC_MAX]; // 0 = shots, 1 = hits
+	int		bestWeapon[WP_NUM_WEAPONS][2]; // 0 = Index, 1 = Damage
 } clientPersistant_t;
 
 
@@ -555,6 +561,7 @@ void SnapVectorTowards( vec3_t v, vec3_t to );
 qboolean CheckGauntletAttack( gentity_t *ent );
 void Weapon_HookFree (gentity_t *ent);
 void Weapon_HookThink (gentity_t *ent);
+void UpdateBestWeapon(gclient_t *client);
 
 
 //

@@ -1623,3 +1623,44 @@ void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 	s->loopSound = ps->loopSound;
 	s->generic1 = ps->generic1;
 }
+
+weapon_t BG_ModToWeapon (int mod)
+{
+	weapon_t w = WP_NONE;
+
+	switch (mod) {
+		case MOD_GRENADE:
+		case MOD_GRENADE_SPLASH:
+			return WP_GRENADE_LAUNCHER;
+		case MOD_ROCKET:
+		case MOD_ROCKET_SPLASH:
+			return WP_ROCKET_LAUNCHER;
+		case MOD_PLASMA:
+		case MOD_PLASMA_SPLASH:
+			return WP_PLASMAGUN;
+		case MOD_BFG:
+		case MOD_BFG_SPLASH:
+			return WP_BFG;
+		case MOD_GAUNTLET:
+			return WP_GAUNTLET;
+		case MOD_MACHINEGUN:
+			return WP_MACHINEGUN;
+		case MOD_SHOTGUN:
+			return WP_SHOTGUN;
+		case MOD_RAILGUN:
+			return WP_RAILGUN;
+		case MOD_LIGHTNING:
+			return WP_LIGHTNING;
+#ifdef MISSIONPACK
+		case MOD_NAIL:
+			return WP_NAILGUN;
+		case MOD_PROXIMITY_MINE:
+			return WP_PROX_LAUNCHER;
+		case MOD_CHAINGUN:
+			return WP_CHAINGUN;
+#endif
+		default:
+			w = WP_NONE;
+	}
+	return w;
+}

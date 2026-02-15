@@ -296,6 +296,10 @@ typedef struct {
 	int				captures;
 	qboolean	perfect;
 	int				team;
+	// Extend
+	qboolean		alive;
+	int				kills, deaths;
+	int				bestWeapon;
 } score_t;
 
 // each client has an associated clientInfo_t

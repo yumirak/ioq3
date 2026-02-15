@@ -201,6 +201,7 @@ void Bullet_Fire (gentity_t *ent, float spread, int damage, int mod ) {
 			tent->s.eventParm = traceEnt->s.number;
 			if( LogAccuracyHit( traceEnt, ent ) ) {
 				ent->client->accuracy_hits++;
+				ent->client->pers.accuracy[ent->s.weapon][WP_ACC_HIT]++;
 			}
 		} else {
 			tent = G_TempEntity( tr.endpos, EV_BULLET_HIT_WALL );
@@ -341,6 +342,7 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 		if( ShotgunPellet( origin, end, ent ) && !hitClient ) {
 			hitClient = qtrue;
 			ent->client->accuracy_hits++;
+			ent->client->pers.accuracy[WP_SHOTGUN][WP_ACC_HIT]++;
 		}
 	}
 }
@@ -552,6 +554,7 @@ void weapon_railgun_fire (gentity_t *ent) {
 			ent->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 		}
 		ent->client->accuracy_hits++;
+		ent->client->pers.accuracy[WP_RAILGUN][WP_ACC_HIT]++;
 	}
 
 }
@@ -660,6 +663,7 @@ void Weapon_LightningFire( gentity_t *ent ) {
 #endif
 			if( LogAccuracyHit( traceEnt, ent ) ) {
 				ent->client->accuracy_hits++;
+				ent->client->pers.accuracy[WP_LIGHTNING][WP_ACC_HIT]++;
 			}
 			G_Damage( traceEnt, ent, ent, forward, tr.endpos, damage, 0, MOD_LIGHTNING);
 		}
@@ -816,11 +820,14 @@ void FireWeapon( gentity_t *ent ) {
 #ifdef MISSIONPACK
 		if( ent->s.weapon == WP_NAILGUN ) {
 			ent->client->accuracy_shots += NUM_NAILSHOTS;
+			ent->client->pers.accuracy[ent->s.weapon][WP_ACC_SHOT] += NUM_NAILSHOTS;
 		} else {
 			ent->client->accuracy_shots++;
+			ent->client->pers.accuracy[ent->s.weapon][WP_ACC_SHOT]++;
 		}
 #else
 		ent->client->accuracy_shots++;
+		ent->client->pers.accuracy[ent->s.weapon][WP_ACC_SHOT]++;
 #endif
 	}
 
@@ -1133,3 +1140,27 @@ void G_StartKamikaze( gentity_t *ent ) {
 	te->s.eventParm = GTS_KAMIKAZE;
 }
 #endif
+
+int QDECL SortWPDamages( const void *a, const void *b )
+{
+	const int *wpdmg1 = a;
+	const int *wpdmg2 = b;
+	if( wpdmg1[1] > wpdmg2[1] ) {
+		return -1;
+	}
+	if( wpdmg1[1] < wpdmg2[1] ) {
+		return 1;
+	}
+	return 0;
+}
+
+void UpdateBestWeapon( gclient_t *client )
+{
+	int i;
+	for( i = 1; i < WP_NUM_WEAPONS; ++i ) {
+		client->pers.bestWeapon[i][0] = i;
+		client->pers.bestWeapon[i][1] = client->pers.damage[i];
+	}
+	qsort( client->pers.bestWeapon, WP_NUM_WEAPONS,
+		   sizeof( client->pers.bestWeapon[0] ), SortWPDamages );
+}

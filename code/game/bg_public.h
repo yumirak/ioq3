@@ -817,6 +817,11 @@ typedef enum {
 } entityType_t;
 
 
+typedef enum {
+	WP_ACC_SHOT,
+	WP_ACC_HIT,
+	WP_ACC_MAX
+} weaponAccuracy_t;
 
 void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
 void	BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result );
@@ -830,6 +835,7 @@ void	BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 
 qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
 
+weapon_t BG_ModToWeapon (int mod);
 
 #define ARENAS_PER_TIER		4
 #define MAX_ARENAS			1024
