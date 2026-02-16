@@ -453,6 +453,13 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 				if( weapon != WP_NONE )
 					attacker->client->pers.weaponKills[weapon]++;
 				attacker->client->ps.persistant[PERS_KILLS]++;
+
+				if ( attacker->client->ps.powerups[PW_BATTLESUIT] ) {
+					attacker->client->ps.stats[STAT_BATTLESUIT_KILL_COUNT]++;
+				}
+				if ( attacker->client->ps.powerups[PW_QUAD] ) {
+					attacker->client->ps.stats[STAT_QUAD_KILL_COUNT]++;
+				}
 			}
 		} else {
 			killerName = "<non-client>";
