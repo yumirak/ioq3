@@ -844,6 +844,9 @@ void CalculateRanks( void ) {
 			} else {
 				cl->ps.persistant[PERS_RANK] = 1;
 			}
+			level.teamPlayerCount[level.clients[i].sess.sessionTeam][0]++;
+			if ( level.clients[i].ps.pm_type == PM_NORMAL )
+				level.teamPlayerCount[level.clients[i].sess.sessionTeam][1]++;
 		}
 	} else {	
 		rank = -1;
@@ -871,16 +874,34 @@ void CalculateRanks( void ) {
 	if ( g_gametype.integer >= GT_TEAM ) {
 		trap_SetConfigstring( CS_SCORES1, va("%i", level.teamScores[TEAM_RED] ) );
 		trap_SetConfigstring( CS_SCORES2, va("%i", level.teamScores[TEAM_BLUE] ) );
+
+		trap_SetConfigstring( CS_RED_PLAYERS_LEFT, va("%i", level.teamPlayerCount[TEAM_RED][1] ) );
+		trap_SetConfigstring( CS_BLUE_PLAYERS_LEFT, va("%i", level.teamPlayerCount[TEAM_BLUE][1] ) );
 	} else {
-		if ( level.numConnectedClients == 0 ) {
-			trap_SetConfigstring( CS_SCORES1, va("%i", SCORE_NOT_PRESENT) );
-			trap_SetConfigstring( CS_SCORES2, va("%i", SCORE_NOT_PRESENT) );
-		} else if ( level.numConnectedClients == 1 ) {
-			trap_SetConfigstring( CS_SCORES1, va("%i", level.clients[ level.sortedClients[0] ].ps.persistant[PERS_SCORE] ) );
-			trap_SetConfigstring( CS_SCORES2, va("%i", SCORE_NOT_PRESENT) );
-		} else {
-			trap_SetConfigstring( CS_SCORES1, va("%i", level.clients[ level.sortedClients[0] ].ps.persistant[PERS_SCORE] ) );
-			trap_SetConfigstring( CS_SCORES2, va("%i", level.clients[ level.sortedClients[1] ].ps.persistant[PERS_SCORE] ) );
+		int		playingIndex[2];
+		int		playingScore[2];
+		char	playingName[2][MAX_STRING_CHARS];
+
+		memset(playingIndex, 0, sizeof(playingIndex));
+		memset(playingScore, 0, sizeof(playingScore));
+		memset(playingName, 0, sizeof(playingName));
+
+		for ( i = 0;  i < 2; i++ ) {
+			if ( level.clients[ level.sortedClients[i] ].pers.connected == CON_CONNECTED
+			  && level.clients[ level.sortedClients[i] ].sess.sessionTeam != TEAM_SPECTATOR ) {
+				playingIndex[i] = level.sortedClients[i];
+				playingScore[i] = level.clients[level.sortedClients[i]].ps.persistant[PERS_SCORE];
+				Com_sprintf(playingName[i], sizeof(playingName[i]), "%s", level.clients[ level.sortedClients[i] ].pers.netname );
+			} else {
+				playingIndex[i] = -1;
+				playingScore[i] = SCORE_NOT_PRESENT;
+			}
+			// Com_Printf("%i = %s (%i)\n", playingScore[i], playingName[i], playingIndex[i]);
+			trap_SetConfigstring( CS_SCORES1 + i, va("%i", playingScore[i] ) );
+			trap_SetConfigstring( CS_SCORE1STPLAYER + i, va("%i", playingScore[i] ) );
+			trap_SetConfigstring( CS_FIRSTPLACE + i, playingName[i] );
+			trap_SetConfigstring( CS_NAME1STPLAYER + i, playingName[i] );
+			trap_SetConfigstring( CS_CLIENTNUM1STPLAYER + i, va("%i", playingIndex[i] ) );
 		}
 	}
 
@@ -1135,6 +1156,81 @@ void QDECL G_LogPrintf( const char *fmt, ... ) {
 	trap_FS_Write( string, strlen( string ), level.logFile );
 }
 
+enum
+{
+	MC_MVP,
+	MC_DAMAGE,
+	MC_ACCURACY,
+	MC_OFFENSIVE,
+	MC_DEFENSIVE,
+	MC_ITEM_CTRL,
+	MAX_MC
+};
+typedef struct
+{
+	int client;
+	int value;
+} mvpClients_t;
+
+void CalculateMVPs( void ) {
+	int		i, j;
+	gclient_t	*cl;
+	mvpClients_t mvpstat[MAX_MC]; // mvp, damage, acc, offensive, defensive, itemctrl;
+	int value;
+
+	memset(mvpstat, 0, sizeof(mvpstat));
+
+	for ( i = 0;  i < level.numPlayingClients; i++ ) {
+		cl = &level.clients[ level.sortedClients[i] ];
+		if (!cl)
+			continue;
+
+		for ( j = 0; j < MAX_MC; j++ ) {
+			switch( j ) {
+				case MC_MVP: value = cl->ps.persistant[PERS_SCORE]; break;
+				case MC_DAMAGE: value = cl->pers.bestWeapon[0][1]; break;
+				case MC_ACCURACY: value = cl->accuracy_shots ? cl->accuracy_hits * 100 / cl->accuracy_shots : 0; break;
+				case MC_OFFENSIVE: value = cl->pers.damageGiven + cl->pers.damageTaken; break;
+				case MC_DEFENSIVE: value = cl->pers.damageGiven - cl->pers.damageTaken; break;
+				case MC_ITEM_CTRL: {
+					int k, temp = 0;
+					for ( k = 0;  k < bg_numItems; k++ ) {
+						if( !(bg_itemlist[k].giType >= IT_ARMOR && bg_itemlist[k].giType <= IT_POWERUP) )
+							continue;
+						if( cl->pers.itemPickup[k][0] <= 0 )
+							continue;
+
+						temp += (bg_itemlist[k].quantity * cl->pers.itemPickup[k][0]) / 10;
+					}
+					value = temp;
+					break;
+				}
+			}
+
+			if ( value > mvpstat[j].value ) {
+				mvpstat[j].client = level.sortedClients[i];
+				mvpstat[j].value = value;
+			}
+		}
+	}
+#if 0
+	Com_Printf("mvp %s with %i\n", level.clients[mvpstat[MC_MVP].client].pers.netname, mvpstat[MC_MVP].value);
+	Com_Printf("most_damage %s with %i\n", level.clients[mvpstat[MC_DAMAGE].client].pers.netname, mvpstat[MC_DAMAGE].value);
+	Com_Printf("most_accurate %s with %i\n", level.clients[mvpstat[MC_ACCURACY].client].pers.netname, mvpstat[MC_ACCURACY].value);
+	Com_Printf("most_offensive %s with %i\n", level.clients[mvpstat[MC_OFFENSIVE].client].pers.netname, mvpstat[MC_OFFENSIVE].value);
+	Com_Printf("most_defensive %s with %i\n", level.clients[mvpstat[MC_DEFENSIVE].client].pers.netname, mvpstat[MC_DEFENSIVE].value);
+	Com_Printf("best_item_control %s with %i\n", level.clients[mvpstat[MC_ITEM_CTRL].client].pers.netname, mvpstat[MC_ITEM_CTRL].value);
+#endif
+#if 1
+	trap_SetConfigstring( CS_MOST_VALUABLE_PLYR, va("%i", mvpstat[MC_MVP].client ) );
+	trap_SetConfigstring( CS_MOST_DAMAGEDEALT_PLYR, va("%i", mvpstat[MC_DAMAGE].client ) );
+	trap_SetConfigstring( CS_MOST_ACCURATE_PLYR, va("%i", mvpstat[MC_ACCURACY].client ) );
+	trap_SetConfigstring( CS_MOST_VALUABLE_OFFENSIVE_PLYR, va("%i", mvpstat[MC_OFFENSIVE].client ) );
+	trap_SetConfigstring( CS_MOST_VALUABLE_DEFENSIVE_PLYR, va("%i", mvpstat[MC_DEFENSIVE].client ) );
+	trap_SetConfigstring( CS_BEST_ITEMCONTROL_PLYR, va("%i", mvpstat[MC_ITEM_CTRL].client ) );
+#endif
+}
+
 /*
 ================
 LogExit
@@ -1156,6 +1252,7 @@ void LogExit( const char *string ) {
 	// this will keep the clients from playing any voice sounds
 	// that will get cut off when the queued intermission starts
 	trap_SetConfigstring( CS_INTERMISSION, "1" );
+	CalculateMVPs();
 
 	// don't send more than 32 scores (FIXME?)
 	numSorted = level.numConnectedClients;

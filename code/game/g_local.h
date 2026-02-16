@@ -414,6 +414,7 @@ typedef struct {
 #ifdef MISSIONPACK
 	int			portalSequence;
 #endif
+	int			teamPlayerCount[TEAM_NUM_TEAMS][2]; // 0 - total; 1 - alive;
 } level_locals_t;
 
 
