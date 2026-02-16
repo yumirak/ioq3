@@ -379,6 +379,7 @@ void RespawnItem( gentity_t *ent ) {
 	ent->r.contents = CONTENTS_TRIGGER;
 	ent->s.eFlags &= ~EF_NODRAW;
 	ent->r.svFlags &= ~SVF_NOCLIENT;
+	ent->timestamp = level.time - level.startTime;
 	trap_LinkEntity (ent);
 
 	if ( ent->item->giType == IT_POWERUP ) {
@@ -426,6 +427,7 @@ Touch_Item
 void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 	int			respawn;
 	qboolean	predict;
+	int index = ITEM_INDEX(ent->item);
 
 	if (!other->client)
 		return;
@@ -436,6 +438,13 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 	if ( !BG_CanItemBeGrabbed( g_gametype.integer, &ent->s, &other->client->ps ) ) {
 		return;
 	}
+
+	// track player pickup
+	other->client->pers.itemPickup[index][0]++;
+	other->client->pers.itemPickup[index][1] = level.time - level.startTime;
+	other->client->pers.itemPickup[index][2] = (
+		( other->client->pers.itemPickup[index][1] - ent->timestamp) // get time difference
+		+ other->client->pers.itemPickup[index][2]) / other->client->pers.itemPickup[index][0]; // get average with last pickup
 
 	G_LogPrintf( "Item: %i %s\n", other->s.number, ent->item->classname );
 
