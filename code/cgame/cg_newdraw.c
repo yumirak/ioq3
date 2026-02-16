@@ -304,18 +304,17 @@ static void CG_DrawPlayerHead(rectDef_t *rect, qboolean draw2D) {
 }
 
 static void CG_DrawSelectedPlayerHealth( rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle ) {
-	clientInfo_t *ci;
 	int value;
 	char num[16];
+	const entityState_t *es = &cg_entities[sortedTeamPlayers[CG_GetSelectedPlayer()]].currentState;
 
-  ci = cgs.clientinfo + sortedTeamPlayers[CG_GetSelectedPlayer()];
-  if (ci) {
+	if (es) {
 		if (shader) {
 			trap_R_SetColor( color );
 			CG_DrawPic(rect->x, rect->y, rect->w, rect->h, shader);
 			trap_R_SetColor( NULL );
 		} else {
-			Com_sprintf (num, sizeof(num), "%i", ci->health);
+			Com_sprintf (num, sizeof(num), "%i", es->health);
 		  value = CG_Text_Width(num, scale, 0);
 		  CG_Text_Paint(rect->x + (rect->w - value) / 2, rect->y + rect->h, scale, color, num, 0, 0, textStyle);
 		}
@@ -323,18 +322,17 @@ static void CG_DrawSelectedPlayerHealth( rectDef_t *rect, float scale, vec4_t co
 }
 
 static void CG_DrawSelectedPlayerArmor( rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle ) {
-	clientInfo_t *ci;
 	int value;
 	char num[16];
-  ci = cgs.clientinfo + sortedTeamPlayers[CG_GetSelectedPlayer()];
-  if (ci) {
-    if (ci->armor > 0) {
+	const entityState_t *es = &cg_entities[sortedTeamPlayers[CG_GetSelectedPlayer()]].currentState;
+	if (es) {
+    if (es->armor > 0) {
 			if (shader) {
 				trap_R_SetColor( color );
 				CG_DrawPic(rect->x, rect->y, rect->w, rect->h, shader);
 				trap_R_SetColor( NULL );
 			} else {
-				Com_sprintf (num, sizeof(num), "%i", ci->armor);
+				Com_sprintf (num, sizeof(num), "%i", es->armor);
 				value = CG_Text_Width(num, scale, 0);
 				CG_Text_Paint(rect->x + (rect->w - value) / 2, rect->y + rect->h, scale, color, num, 0, 0, textStyle);
 			}
@@ -409,10 +407,9 @@ static void CG_DrawSelectedPlayerName( rectDef_t *rect, float scale, vec4_t colo
 }
 
 static void CG_DrawSelectedPlayerLocation( rectDef_t *rect, float scale, vec4_t color, int textStyle ) {
-	clientInfo_t *ci;
-  ci = cgs.clientinfo + sortedTeamPlayers[CG_GetSelectedPlayer()];
-  if (ci) {
-		const char *p = CG_ConfigString(CS_LOCATIONS + ci->location);
+	const entityState_t *es = &cg_entities[sortedTeamPlayers[CG_GetSelectedPlayer()]].currentState;
+	if (es) {
+		const char *p = CG_ConfigString(CS_LOCATIONS + es->location);
 		if (!p || !*p) {
 			p = "unknown";
 		}
@@ -421,9 +418,9 @@ static void CG_DrawSelectedPlayerLocation( rectDef_t *rect, float scale, vec4_t 
 }
 
 static void CG_DrawPlayerLocation( rectDef_t *rect, float scale, vec4_t color, int textStyle  ) {
-	clientInfo_t *ci = &cgs.clientinfo[cg.snap->ps.clientNum];
-  if (ci) {
-		const char *p = CG_ConfigString(CS_LOCATIONS + ci->location);
+	const entityState_t *es = &cg_entities[cg.snap->ps.clientNum].currentState;
+	if (es) {
+		const char *p = CG_ConfigString(CS_LOCATIONS + es->location);
 		if (!p || !*p) {
 			p = "unknown";
 		}
@@ -434,12 +431,10 @@ static void CG_DrawPlayerLocation( rectDef_t *rect, float scale, vec4_t color, i
 
 
 static void CG_DrawSelectedPlayerWeapon( rectDef_t *rect ) {
-	clientInfo_t *ci;
-
-  ci = cgs.clientinfo + sortedTeamPlayers[CG_GetSelectedPlayer()];
-  if (ci) {
-	  if ( cg_weapons[ci->curWeapon].weaponIcon ) {
-	    CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_weapons[ci->curWeapon].weaponIcon );
+	const entityState_t *es = &cg_entities[sortedTeamPlayers[CG_GetSelectedPlayer()]].currentState;
+	if (es) {
+	  if ( cg_weapons[es->weapon].weaponIcon ) {
+	    CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_weapons[es->weapon].weaponIcon );
 		} else {
   	  CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cgs.media.deferShader);
     }
@@ -892,20 +887,20 @@ static void CG_DrawAreaPowerUp(rectDef_t *rect, int align, float special, float 
 
 float CG_GetValue(int ownerDraw) {
 	centity_t	*cent;
- 	clientInfo_t *ci;
 	playerState_t	*ps;
+	entityState_t	*es;
 
   cent = &cg_entities[cg.snap->ps.clientNum];
 	ps = &cg.snap->ps;
 
   switch (ownerDraw) {
   case CG_SELECTEDPLAYER_ARMOR:
-    ci = cgs.clientinfo + sortedTeamPlayers[CG_GetSelectedPlayer()];
-    return ci->armor;
+    es = &cg_entities[sortedTeamPlayers[CG_GetSelectedPlayer()]].currentState;
+    return es->armor;
     break;
   case CG_SELECTEDPLAYER_HEALTH:
-    ci = cgs.clientinfo + sortedTeamPlayers[CG_GetSelectedPlayer()];
-    return ci->health;
+    es = &cg_entities[sortedTeamPlayers[CG_GetSelectedPlayer()]].currentState;
+    return es->health;
     break;
   case CG_PLAYER_ARMOR_VALUE:
 		return ps->stats[STAT_ARMOR];
@@ -1259,6 +1254,8 @@ void CG_DrawNewTeamInfo(rectDef_t *rect, float text_x, float text_y, float scale
 	clientInfo_t *ci;
 	gitem_t	*item;
 	qhandle_t h;
+	const entityState_t *es;
+	int health, armor, location, curWeapon, powerups;
 
 	// max player name width
 	pwidth = 0;
@@ -1286,12 +1283,20 @@ void CG_DrawNewTeamInfo(rectDef_t *rect, float text_x, float text_y, float scale
 	y = rect->y;
 
 	for (i = 0; i < count; i++) {
+		es = &cg_entities[sortedTeamPlayers[i]].currentState;
 		ci = cgs.clientinfo + sortedTeamPlayers[i];
+
+		powerups = es->powerups;
+		location = es->location;
+		curWeapon = es->weapon;
+		// these are 16 bit signed values
+		health = SIGNED_16_BIT(es->health);
+		armor = SIGNED_16_BIT(es->armor);
 		if ( ci->infoValid && ci->team == cg.snap->ps.persistant[PERS_TEAM]) {
 
 			xx = rect->x + 1;
 			for (j = 0; j <= PW_NUM_POWERUPS; j++) {
-				if (ci->powerups & (1 << j)) {
+				if (powerups & (1 << j)) {
 
 					item = BG_FindItemForPowerup( j );
 
@@ -1305,11 +1310,11 @@ void CG_DrawNewTeamInfo(rectDef_t *rect, float text_x, float text_y, float scale
 			// FIXME: max of 3 powerups shown properly
 			xx = rect->x + (PIC_WIDTH * 3) + 2;
 
-			CG_GetColorForHealth( ci->health, ci->armor, hcolor );
+			CG_GetColorForHealth( health, armor, hcolor );
 			trap_R_SetColor(hcolor);
 			CG_DrawPic( xx, y + 1, PIC_WIDTH - 2, PIC_WIDTH - 2, cgs.media.heartShader );
 
-			//Com_sprintf (st, sizeof(st), "%3i %3i", ci->health,	ci->armor);
+			//Com_sprintf (st, sizeof(st), "%3i %3i", health,	armor);
 			//CG_Text_Paint(xx, y + text_y, scale, hcolor, st, 0, 0); 
 
 			// draw weapon icon
@@ -1349,7 +1354,7 @@ void CG_DrawNewTeamInfo(rectDef_t *rect, float text_x, float text_y, float scale
 
 			CG_Text_Paint_Limit(&maxx, xx, y + text_y, scale, color, ci->name, 0, 0); 
 
-			p = CG_ConfigString(CS_LOCATIONS + ci->location);
+			p = CG_ConfigString(CS_LOCATIONS + location);
 			if (!p || !*p) {
 				p = "unknown";
 			}
