@@ -1583,6 +1583,11 @@ static void PM_Weapon( void ) {
 		if ( pm->ps->weapon != pm->cmd.weapon ) {
 			PM_BeginWeaponChange( pm->cmd.weapon );
 		}
+#ifdef MISSIONPACK
+		if( pm->ps->stats[STAT_CHAINGUN_SPIN_TIME] > 0 ) {
+			pm->ps->stats[STAT_CHAINGUN_SPIN_TIME] = MAX( 0, pm->ps->stats[STAT_CHAINGUN_SPIN_TIME] - pml.msec );
+		}
+#endif
 	}
 
 	if ( pm->ps->weaponTime > 0 ) {
@@ -1682,7 +1687,8 @@ static void PM_Weapon( void ) {
 		addTime = 800;
 		break;
 	case WP_CHAINGUN:
-		addTime = 30;
+		pm->ps->stats[STAT_CHAINGUN_SPIN_TIME] = MIN( pm->ps->stats[STAT_CHAINGUN_SPIN_TIME] + 100, 1000 );
+		addTime = pm->ps->stats[STAT_CHAINGUN_SPIN_TIME] >= 1000 ? 30 : 100;
 		break;
 #endif
 	}
