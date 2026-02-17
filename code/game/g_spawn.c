@@ -386,6 +386,31 @@ void G_ParseField( const char *key, const char *value, gentity_t *ent ) {
 		trap_AdjustAreaPortalState(ent, qtrue); \
 	}
 
+qboolean G_RemoveEntFromSpawn( gentity_t *ent, const char *key, char *value, const char *match, char *classname, qboolean remove_match )
+{
+	char *s = "";
+	qboolean found = qfalse;
+
+	if ( !ent ) {
+		return qfalse;
+	}
+
+	s = strstr( value, match );
+
+	if ( remove_match && s ) {
+		found = qtrue;
+	} else if ( !remove_match && !s ) {
+		found = qtrue;
+	}
+
+	if( found ) {
+		Com_Printf( "G_RemoveEntFromSpawn: [%s] %s removed. value '%s' is %s with '%s'\n", key, classname, value, remove_match ? "match" : "not match", s );
+		ADJUST_AREAPORTAL();
+		G_FreeEntity( ent );
+	}
+
+	return found;
+}
 /*
 ===================
 G_SpawnGEntityFromSpawnVars
@@ -397,11 +422,12 @@ level.spawnVars[], then call the class specific spawn function
 void G_SpawnGEntityFromSpawnVars( void ) {
 	int			i;
 	gentity_t	*ent;
-	char		*s, *value, *gametypeName;
-	static char *gametypeNames[] = {"ffa", "tournament", "single", "team", "ctf", "oneflag", "obelisk", "harvester"};
+	char		*value, *classname;
+	const char *s = "";
 
 	// get the next free entity
 	ent = G_Spawn();
+	G_SpawnString( "classname", NULL, &classname );
 
 	for ( i = 0 ; i < level.numSpawnVars ; i++ ) {
 		G_ParseField( level.spawnVars[i][0], level.spawnVars[i][1], ent );
@@ -449,16 +475,26 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 	}
 #endif
 
-	if( G_SpawnString( "gametype", NULL, &value ) ) {
-		if( g_gametype.integer >= GT_FFA && g_gametype.integer < GT_MAX_GAME_TYPE ) {
-			gametypeName = gametypeNames[g_gametype.integer];
-
-			s = strstr( value, gametypeName );
-			if( !s ) {
-				ADJUST_AREAPORTAL();
-				G_FreeEntity( ent );
-				return;
+	if( G_SpawnString( "not_gametype", NULL, &value )) {
+		qboolean isDigitString = qtrue;
+		for (i = 0;  i < strlen(value);  i++) {
+			if (!isdigit(value[i])  &&  value[i] != ' ') {
+				isDigitString = qfalse;
+				break;
 			}
+		}
+		s = isDigitString ? g_gametype.string : gametype_desc[g_gametype.integer].nameshort[1];
+		if( G_RemoveEntFromSpawn( ent, "not_gametype", value, s, classname, qtrue ) )
+			return;
+	}
+
+	if( G_SpawnString( "gametype", NULL, &value ) ) {
+		for ( i = 0 ; i < 2 ; i++ ) {
+			if ( strlen( s ) )
+				break;
+			s = gametype_desc[g_gametype.integer].nameshort[i];
+			if( G_RemoveEntFromSpawn( ent, "gametype", value, gametype_desc[g_gametype.integer].nameshort[i], classname, qfalse ) )
+				return;
 		}
 	}
 
