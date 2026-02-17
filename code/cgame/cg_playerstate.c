@@ -308,6 +308,35 @@ static void pushReward(sfxHandle_t sfx, qhandle_t shader, int rewardCount) {
 	}
 }
 
+void CG_PlayHitSound( playerState_t *ps, playerState_t *ops )
+{
+	size_t index, beepnum;
+
+	if( ps->persistant[PERS_KILLS] > ops->persistant[PERS_KILLS] ) {
+		beepnum = MIN( 8, cg_killBeep.integer );
+		if ( !beepnum )
+			return;
+		trap_S_StartLocalSound( cgs.media.killSound[beepnum - 1], CHAN_LOCAL_SOUND );
+		return;
+	}
+
+	index = ( ps->generic1 >> 6 );
+	beepnum = MIN( 3, cg_hitBeep.integer );
+
+	if ( !beepnum )
+		return;
+
+	if( beepnum == 1 ) {
+		trap_S_StartLocalSound( cgs.media.hitSound[1], CHAN_LOCAL_SOUND );
+		return;
+	}
+
+	if( beepnum == 3 )
+		index = 3 - index;
+
+	trap_S_StartLocalSound( cgs.media.hitSound[index], CHAN_LOCAL_SOUND );
+}
+
 /*
 ==================
 CG_CheckLocalSounds
@@ -327,7 +356,7 @@ void CG_CheckLocalSounds( playerState_t *ps, playerState_t *ops ) {
 
 	// hit changes
 	if ( ps->persistant[PERS_HITS] > ops->persistant[PERS_HITS] ) {
-		trap_S_StartLocalSound( cgs.media.hitSound, CHAN_LOCAL_SOUND );
+		CG_PlayHitSound( ps, ops );
 	} else if ( ps->persistant[PERS_HITS] < ops->persistant[PERS_HITS] ) {
 		trap_S_StartLocalSound( cgs.media.hitTeamSound, CHAN_LOCAL_SOUND );
 	}

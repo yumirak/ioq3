@@ -199,6 +199,8 @@ vmCvar_t	cg_recordSPDemo;
 vmCvar_t	cg_recordSPDemoName;
 vmCvar_t	cg_obeliskRespawnDelay;
 #endif
+vmCvar_t	cg_hitBeep;
+vmCvar_t	cg_killBeep;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -316,6 +318,9 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},
 	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
 #endif
+	{ &cg_hitBeep, "cg_hitBeep", "2", CVAR_ARCHIVE},
+	{ &cg_killBeep, "cg_killBeep", "7", CVAR_ARCHIVE},
+
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_oldRail, "cg_oldRail", "1", CVAR_ARCHIVE},
 	{ &cg_oldRocket, "cg_oldRocket", "1", CVAR_ARCHIVE},
@@ -646,12 +651,6 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.talkSound = trap_S_RegisterSound( "sound/player/talk.wav", qfalse );
 	cgs.media.landSound = trap_S_RegisterSound( "sound/player/land1.wav", qfalse);
 
-	cgs.media.hitSound = trap_S_RegisterSound( "sound/feedback/hit.wav", qfalse );
-#ifdef MISSIONPACK
-	cgs.media.hitSoundHighArmor = trap_S_RegisterSound( "sound/feedback/hithi.wav", qfalse );
-	cgs.media.hitSoundLowArmor = trap_S_RegisterSound( "sound/feedback/hitlo.wav", qfalse );
-#endif
-
 	cgs.media.impressiveSound = trap_S_RegisterSound( "sound/feedback/impressive.wav", qtrue );
 	cgs.media.excellentSound = trap_S_RegisterSound( "sound/feedback/excellent.wav", qtrue );
 	cgs.media.deniedSound = trap_S_RegisterSound( "sound/feedback/denied.wav", qtrue );
@@ -759,6 +758,27 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.n_healthSound = trap_S_RegisterSound("sound/items/n_health.wav", qfalse );
 	cgs.media.hgrenb1aSound = trap_S_RegisterSound("sound/weapons/grenade/hgrenb1a.wav", qfalse);
 	cgs.media.hgrenb2aSound = trap_S_RegisterSound("sound/weapons/grenade/hgrenb2a.wav", qfalse);
+
+	cgs.media.hitSound[0] = trap_S_RegisterSound( "sound/feedback/hithi.wav", qfalse );
+	cgs.media.hitSound[1] = trap_S_RegisterSound( "sound/feedback/hitlo.wav", qfalse );
+
+	for( i = 0; i < 4; i++) {
+#ifdef BASEQZ
+		cgs.media.hitSound[i] = trap_S_RegisterSound(  va( "sound/feedback/hit%d.ogg", i ), qfalse );
+#endif
+		if(!cgs.media.hitSound[i])
+			cgs.media.hitSound[i] = trap_S_RegisterSound( "sound/feedback/hit.wav", qfalse );
+	}
+
+#ifdef BASEQZ
+	for( i = 0; i < 8; i++) {
+		cgs.media.killSound[i] = trap_S_RegisterSound(va("sound/feedback/impact%i.ogg", i + 1), qfalse);
+		if(!cgs.media.killSound[i])
+			cgs.media.killSound[i] = trap_S_RegisterSound( "sound/world/bell_01.ogg", qfalse );
+	}
+	cgs.media.killSound[6] = trap_S_RegisterSound("sound/world/bell_01.ogg", qfalse);
+	cgs.media.killSound[7] = trap_S_RegisterSound("sound/misc/chaching.ogg", qfalse);
+#endif
 
 #ifdef MISSIONPACK
 	trap_S_RegisterSound("sound/player/james/death1.wav", qfalse );

@@ -896,9 +896,7 @@ typedef struct {
 	sfxHandle_t twoFragSound;
 	sfxHandle_t oneFragSound;
 
-	sfxHandle_t hitSound;
-	sfxHandle_t hitSoundHighArmor;
-	sfxHandle_t hitSoundLowArmor;
+	sfxHandle_t hitSound[4];
 	sfxHandle_t hitTeamSound;
 	sfxHandle_t impressiveSound;
 	sfxHandle_t excellentSound;
@@ -999,6 +997,7 @@ typedef struct {
 	sfxHandle_t	wstbimpdSound;
 	sfxHandle_t	wstbactvSound;
 
+	sfxHandle_t killSound[8];
 } cgMedia_t;
 
 
@@ -1208,6 +1207,8 @@ extern  vmCvar_t		cg_recordSPDemoName;
 extern	vmCvar_t		cg_obeliskRespawnDelay;
 #endif
 
+extern	vmCvar_t		cg_hitBeep;
+extern	vmCvar_t		cg_killBeep;
 //
 // cg_main.c
 //
