@@ -38,6 +38,7 @@ void P_DamageFeedback( gentity_t *player ) {
 	gclient_t	*client;
 	float	count;
 	vec3_t	angles;
+	gentity_t	*attacker;
 
 	client = player->client;
 	if ( client->ps.pm_type == PM_DEAD ) {
@@ -78,6 +79,15 @@ void P_DamageFeedback( gentity_t *player ) {
 
 
 	client->ps.damageCount = count;
+	attacker = &g_entities[ client->ps.persistant[PERS_ATTACKER] ];
+	if ( attacker && attacker->client ) {
+		size_t hitvalue = MIN( 3, count / 25 );
+		if( g_gametype.integer != GT_HARVESTER ) {
+			attacker->client->ps.generic1 = hitsound_value[hitvalue];
+		} else {
+			attacker->client->ps.generic1 = BG_GetHitValueResidual( attacker->client->ps.generic1 ) + hitsound_value[hitvalue];
+		}
+	}
 
 	//
 	// clear totals
