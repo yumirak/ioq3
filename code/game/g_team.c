@@ -309,7 +309,7 @@ void Team_FragBonuses(gentity_t *targ, gentity_t *inflictor, gentity_t *attacker
 	tokens = 0;
 #ifdef MISSIONPACK
 	if( g_gametype.integer == GT_HARVESTER ) {
-		tokens = targ->client->ps.generic1;
+		tokens = BG_GetHitValueResidual( targ->client->ps.generic1 );
 	}
 #endif
 	if (targ->client->ps.powerups[enemy_flag_pw]) {
@@ -499,9 +499,11 @@ void Team_CheckHurtCarrier(gentity_t *targ, gentity_t *attacker)
 		attacker->client->pers.teamState.lasthurtcarrier = level.time;
 
 	// skulls
-	if (targ->client->ps.generic1 &&
+	if( g_gametype.integer == GT_HARVESTER ) {
+	if (BG_GetHitValueResidual( targ->client->ps.generic1 ) &&
 		targ->client->sess.sessionTeam != attacker->client->sess.sessionTeam)
 		attacker->client->pers.teamState.lasthurtcarrier = level.time;
+	}
 }
 
 
@@ -1254,7 +1256,7 @@ static void ObeliskTouch( gentity_t *self, gentity_t *other, trace_t *trace ) {
 		return;
 	}
 
-	tokens = other->client->ps.generic1;
+	tokens = BG_GetHitValueResidual( other->client->ps.generic1 );
 	if( tokens <= 0 ) {
 		return;
 	}

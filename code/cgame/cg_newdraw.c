@@ -715,15 +715,13 @@ static void CG_HarvesterSkulls(rectDef_t *rect, float scale, vec4_t color, qbool
 	char num[16];
 	vec3_t origin, angles;
 	qhandle_t handle;
-	int value = cg.snap->ps.generic1;
+	int value;
 
 	if (cgs.gametype != GT_HARVESTER) {
 		return;
 	}
 
-	if( value > 99 ) {
-		value = 99;
-	}
+	value = BG_GetHitValueResidual( cg.snap->ps.generic1 ) & 0x3f;
 
 	Com_sprintf (num, sizeof(num), "%i", value);
 	value = CG_Text_Width(num, scale, 0);

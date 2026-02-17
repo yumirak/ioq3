@@ -1781,7 +1781,7 @@ static void CG_PlayerTokens( centity_t *cent, int renderfx ) {
 		return;
 	}
 	trail = &cg.skulltrails[cent->currentState.number];
-	tokens = cent->currentState.generic1;
+	tokens = BG_GetHitValueResidual( cent->currentState.generic1 ) & 0x3f;
 	if ( !tokens ) {
 		trail->numpositions = 0;
 		return;

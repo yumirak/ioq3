@@ -309,7 +309,7 @@ qboolean EntityCarriesCubes(aas_entityinfo_t *entinfo) {
 		return qfalse;
 	//FIXME: get this info from the aas_entityinfo_t ?
 	BotAI_GetEntityState(entinfo->number, &state);
-	if (state.generic1 > 0)
+	if ( BG_GetHitValueResidual( state.generic1 ) > 0)
 		return qtrue;
 	return qfalse;
 }

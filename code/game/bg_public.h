@@ -835,6 +835,7 @@ typedef enum {
 	WP_ACC_MAX
 } weaponAccuracy_t;
 
+extern size_t hitsound_value[4];
 extern gametypeDesc_t gametype_desc[];
 
 void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
@@ -850,6 +851,7 @@ void	BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
 
 weapon_t BG_ModToWeapon (int mod);
+int BG_GetHitValueResidual( int value );
 
 #define ARENAS_PER_TIER		4
 #define MAX_ARENAS			1024

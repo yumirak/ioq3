@@ -45,6 +45,8 @@ gametypeDesc_t gametype_desc[] = {
 	{  "", { "", ""}, "" }
 };
 
+size_t hitsound_value[4] = { 0, 64, 128, 192 };
+
 /*QUAKED item_***** ( 0 0 0 ) (-16 -16 -16) (16 16 16) suspended
 DO NOT USE THIS CLASS, IT JUST HOLDS GENERAL INFORMATION.
 The suspended flag will allow items to hang in the air, otherwise they are dropped to the next surface.
@@ -1691,4 +1693,18 @@ weapon_t BG_ModToWeapon (int mod)
 			w = WP_NONE;
 	}
 	return w;
+}
+
+int BG_GetHitValueResidual( int value ) {
+	int i;
+	int curvalue = 0;
+
+	for ( i = 3; i > 0 ;i-- ) {
+		curvalue = value - hitsound_value[i];
+		if( curvalue < 0 )
+			continue;
+		value = curvalue;
+	}
+
+	return value;
 }
