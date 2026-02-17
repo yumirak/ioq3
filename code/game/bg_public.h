@@ -169,6 +169,13 @@ enum
 #endif
 
 typedef enum {
+	RULESET_CLASSIC = 1,
+	RULESET_TURBO, // Renamed to Turbo. 15 Added December 2011 | 495
+	RULESET_CASUAL, // Added 27 August 2014 | 934
+	RULESET_MAX
+} ruleset_t;
+
+typedef enum {
 	GT_FFA,				// free for all
 	GT_TOURNAMENT,		// one on one tournament
 	GT_SINGLE_PLAYER,	// single player ffa

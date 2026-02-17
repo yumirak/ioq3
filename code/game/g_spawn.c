@@ -475,6 +475,18 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 	}
 #endif
 
+	if( g_ruleset.integer >= RULESET_CLASSIC && g_ruleset.integer < RULESET_MAX ) {
+		if( G_SpawnString( "not_ruleset", NULL, &value )) {
+			if( G_RemoveEntFromSpawn( ent, "not_ruleset", value, g_ruleset.string, classname, qtrue ) )
+				return;
+		}
+
+		if( G_SpawnString( "ruleset", NULL, &value )) {
+			if( G_RemoveEntFromSpawn( ent, "ruleset", value, g_ruleset.string, classname, qfalse ) )
+				return;
+		}
+	}
+
 	if( G_SpawnString( "not_gametype", NULL, &value )) {
 		qboolean isDigitString = qtrue;
 		for (i = 0;  i < strlen(value);  i++) {
