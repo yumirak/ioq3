@@ -25,6 +25,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/q_shared.h"
 #include "bg_public.h"
 
+gametypeDesc_t gametype_desc[] = {
+	// fullname				// nameshort					// scoreboard
+	{  "Free For All"		, { "ffa", "ffa" }				, "ffa"		},
+	{  "Tournament"			, { "tournament", "duel" }		, "duel"	},
+	{  "Single Player"		, { "single", "single"}			, "ffa"		},
+	{  "Team Deathmatch"	, { "team", "tdm" }				, "tdm"		},
+	{  "Clan Arena"			, { "ca", "ca" }				, "ca"		},
+	{  "Capture the Flag"	, { "ctf", "ctf" }				, "ctf"		},
+	// MISSIONPACK
+	{  "One Flag CTF"  		, { "oneflag", "1f" }			, "1fctf"	},
+	{  "Overload" 			, { "obelisk", "ob" }			, "tdm"		},
+	{  "Harvester"			, { "harvester", "har" }		, "har"		},
+	// END MISSIONPACK
+	{  "Freeze Tag"			, { "ft", "ft" }				, "ft"		},
+	{  "Domination"			, { "dom", "dom" }				, "dom"		},
+	{  "Attack and Defend"	, { "ad", "ad" }				, "ad"		},
+	{  "Red Rover"			, { "rr", "rr" }				, "rr"		},
+	{  "", { "", ""}, "" }
+};
+
 /*QUAKED item_***** ( 0 0 0 ) (-16 -16 -16) (16 16 16) suspended
 DO NOT USE THIS CLASS, IT JUST HOLDS GENERAL INFORMATION.
 The suspended flag will allow items to hang in the air, otherwise they are dropped to the next surface.

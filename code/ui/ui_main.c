@@ -88,19 +88,6 @@ static const serverFilter_t serverFilters[] = {
 static const int numServerFilters = ARRAY_LEN( serverFilters );
 
 
-static const char *teamArenaGameTypes[] = {
-	"FFA",
-	"TOURNAMENT",
-	"SP",
-	"TEAM DM",
-	"CTF",
-	"1FCTF",
-	"OVERLOAD",
-	"HARVESTER"
-};
-
-static int const numTeamArenaGameTypes = ARRAY_LEN( teamArenaGameTypes );
-
 
 static char* netnames[] = {
 	"???",
@@ -4360,8 +4347,11 @@ static const char *UI_FeederItemText(float feederID, int index, int column, qhan
 					return clientBuff;
 				case SORT_GAME : 
 					game = atoi(Info_ValueForKey(info, "gametype"));
-					if (game >= 0 && game < numTeamArenaGameTypes) {
-						return teamArenaGameTypes[game];
+					if (game >= 0 && game < GT_MAX_GAME_TYPE) {
+						char s[32];
+						Q_strncpyz( s, gametype_desc[game].nameshort[1], sizeof( s ) );
+						Q_strupr( s );
+						return va("%s", s );
 					} else {
 						return "Unknown";
 					}

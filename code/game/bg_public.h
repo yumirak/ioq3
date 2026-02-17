@@ -408,6 +408,11 @@ typedef enum {
 	WP_NUM_WEAPONS
 } weapon_t;
 
+typedef struct {
+	const char	*name;
+	const char	*nameshort[2];
+	const char	*scoreboard;
+} gametypeDesc_t;
 
 // reward sounds (stored in ps->persistant[PERS_PLAYEREVENTS])
 #define	PLAYEREVENT_DENIEDREWARD		0x0001
@@ -822,6 +827,8 @@ typedef enum {
 	WP_ACC_HIT,
 	WP_ACC_MAX
 } weaponAccuracy_t;
+
+extern gametypeDesc_t gametype_desc[];
 
 void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
 void	BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result );

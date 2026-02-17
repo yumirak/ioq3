@@ -1701,7 +1701,7 @@ void CG_Text_PaintWithCursor(float x, float y, float scale, vec4_t color, const 
 static int CG_OwnerDrawWidth(int ownerDraw, float scale) {
 	switch (ownerDraw) {
 	  case CG_GAME_TYPE:
-			return CG_Text_Width(CG_GameTypeString(), scale, 0);
+			return CG_Text_Width(gametype_desc[cgs.gametype].name, scale, 0);
 	  case CG_GAME_STATUS:
 			return CG_Text_Width(CG_GetGameStatusText(), scale, 0);
 			break;
