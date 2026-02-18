@@ -149,7 +149,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define Q3_BIG_ENDIAN
 #define HAVE_VM_COMPILED
 #elif defined __i386__
-#define ARCH_STRING "x86"
+#define ARCH_STRING "mac"
 #define Q3_LITTLE_ENDIAN
 #define HAVE_VM_COMPILED
 #elif defined __x86_64__
@@ -189,7 +189,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # define ARCH_STRING "x86_64"
 # define HAVE_VM_COMPILED
 #elif defined(__i386__)
-# define ARCH_STRING "x86"
+# define ARCH_STRING "i386"
 # define HAVE_VM_COMPILED
 #elif defined(__aarch64__)
 # define ARCH_STRING "arm64"
