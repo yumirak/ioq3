@@ -253,6 +253,10 @@ spawn_t	spawns[] = {
 	{"team_neutralobelisk", SP_team_neutralobelisk},
 #endif
 	{"item_botroam", SP_item_botroam},
+#ifdef BASEQZ
+	// FIXME: 'advertisement' should be client-sided
+	{"advertisement", SP_func_static},
+#endif
 
 	{NULL, 0}
 };
