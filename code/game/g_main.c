@@ -96,6 +96,7 @@ vmCvar_t	g_enableBreath;
 vmCvar_t	g_proxMineTimeout;
 #endif
 vmCvar_t	g_ruleset;
+vmCvar_t	g_levelStartTime;
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -179,6 +180,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO, 0, qfalse},
 
 	{ &g_ruleset, "ruleset", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH, 0, qfalse },
+	{ &g_levelStartTime, "g_levelStartTime", "",  CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE, 0, qfalse },
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
@@ -429,6 +431,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	level.startTime = levelTime;
 
 	level.snd_fry = G_SoundIndex("sound/player/fry.wav");	// FIXME standing in lava / slime
+
+	trap_Cvar_Set( "g_levelStartTime", va("%i", trap_RealTime(NULL)));
+	trap_Cvar_Update( &g_levelStartTime );
 
 	if ( g_gametype.integer != GT_SINGLE_PLAYER && g_logfile.string[0] ) {
 		if ( g_logfileSync.integer ) {
