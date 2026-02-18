@@ -17,7 +17,7 @@ option(BUILD_RENDERER_GL1 "Build GL1 renderer" ON)
 option(BUILD_RENDERER_GL2 "Build GL2 renderer" ON)
 option(BUILD_GAME_LIBRARIES "Build game module libraries" ON)
 option(BUILD_GAME_QVMS "Build game module qvms" ON)
-option(BUILD_STANDALONE "Build binaries for standalone games" OFF)
+option(BUILD_STANDALONE "Build binaries for standalone games" ON)
 
 option(BUILD_BASEGAME "Build Quake 3 Arena" ON)
 option(BUILD_MISSIONPACK "Build Quake 3 Team Arena" ON)
