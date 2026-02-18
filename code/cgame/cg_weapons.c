@@ -1248,22 +1248,7 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		}
 	}
 
-	trap_R_LerpTag(&lerped, parent->hModel, parent->oldframe, parent->frame,
-		1.0 - parent->backlerp, "tag_weapon");
-	VectorCopy(parent->origin, gun.origin);
-
-	VectorMA(gun.origin, lerped.origin[0], parent->axis[0], gun.origin);
-
-	// Make weapon appear left-handed for 2 and centered for 3
-	if(ps && cg_drawGun.integer == 2)
-		VectorMA(gun.origin, -lerped.origin[1], parent->axis[1], gun.origin);
-	else if(!ps || cg_drawGun.integer != 3)
-	       	VectorMA(gun.origin, lerped.origin[1], parent->axis[1], gun.origin);
-
-	VectorMA(gun.origin, lerped.origin[2], parent->axis[2], gun.origin);
-
-	MatrixMultiply(lerped.axis, ((refEntity_t *)parent)->axis, gun.axis);
-	gun.backlerp = parent->backlerp;
+	CG_PositionEntityOnTag( &gun, parent, parent->hModel, "tag_weapon");
 
 	CG_AddWeaponWithPowerups( &gun, cent->currentState.powerups );
 
