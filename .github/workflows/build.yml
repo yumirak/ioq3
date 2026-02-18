@@ -31,8 +31,6 @@ jobs:
       run: |
         cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build
-        cpack --config build/CPackConfig.cmake -B build/installer --verbose
-        mv build/installer/*.deb build/Release
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
@@ -40,7 +38,7 @@ jobs:
         path: |
           build/Release/**/*
   windows-msvc:
-    name: Windows MSVC
+    name: Windows MSVC x86_64
     runs-on: windows-2022
     needs: version
     steps:
@@ -49,12 +47,28 @@ jobs:
       run: |
         cmake -S . -B build -G "Visual Studio 17 2022"
         cmake --build build --config Release
-        cpack --config build/CPackConfig.cmake -B build/installer --verbose
-        Move-Item -Path "build/installer/*.exe" -Destination "build/Release"
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: ${{ github.event.repository.name }}-windows-msvc-${{ needs.version.outputs.version }}
+        path: |
+          build/Release/**/*.dll
+          build/Release/**/*.exe
+          build/Release/**/*.qvm
+  windows-msvc-32bit:
+    name: Windows MSVC 32bit
+    runs-on: windows-2022
+    needs: version
+    steps:
+    - uses: actions/checkout@v4
+    - name: Compile
+      run: |
+        cmake -S . -B build -G "Visual Studio 17 2022" -A Win32
+        cmake --build build --config Release
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-windows-msvc-32bit-${{ needs.version.outputs.version }}
         path: |
           build/Release/**/*.dll
           build/Release/**/*.exe
@@ -69,8 +83,6 @@ jobs:
       run: |
         cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
         cmake --build build
-        cpack --config build/CPackConfig.cmake -B build/installer --verbose
-        Move-Item -Path "build/installer/*.exe" -Destination "build/Release"
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
@@ -151,6 +163,7 @@ jobs:
   linux-external-libraries:
     name: Linux (USE_INTERNAL_LIBS OFF)
     runs-on: ubuntu-22.04
+    needs: version
     steps:
     - uses: actions/checkout@v4
     - name: Install Dependencies
@@ -162,9 +175,16 @@ jobs:
       run: |
         cmake -S . -B build -G Ninja -DUSE_INTERNAL_LIBS=OFF -DCMAKE_BUILD_TYPE=Release
         cmake --build build
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-linux-external-libraries-${{ needs.version.outputs.version }}
+        path: |
+          build/Release/**/*
   linux-32bit:
     name: Linux 32-bit
     runs-on: ubuntu-22.04
+    needs: version
     steps:
     - uses: actions/checkout@v4
     - name: Install Dependencies
@@ -176,9 +196,38 @@ jobs:
       run: |
         cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-m32 -msse -msse2"
         cmake --build build
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-linux-32bit-${{ needs.version.outputs.version }}
+        path: |
+          build/Release/**/*
+  linux-external-libraries-32bit:
+    name: Linux 32-bit (USE_INTERNAL_LIBS OFF)
+    runs-on: ubuntu-22.04
+    needs: version
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Dependencies
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install gcc-multilib libsdl2-dev:i386 zlib1g-dev:i386 libjpeg-dev:i386 libopenal-dev:i386 \
+          libogg-dev:i386 libvorbis-dev:i386 libopus-dev:i386 libopusfile-dev:i386 libcurl4-openssl-dev:i386
+    - name: Compile
+      run: |
+        cmake -S . -B build -G Ninja -DUSE_INTERNAL_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-m32 -msse -msse2" -D CMAKE_INSTALL_PREFIX=/usr/local
+        cmake --build build
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-linux-external-libraries-32bit-${{ needs.version.outputs.version }}
+        path: |
+          build/Release/**/*
   freebsd:
     name: FreeBSD
     runs-on: ubuntu-latest
+    needs: version
     steps:
     - uses: actions/checkout@v4
     - name: Compile
@@ -189,9 +238,16 @@ jobs:
         run: |
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
           cmake --build build
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-FreeBSD-${{ needs.version.outputs.version }}
+        path: |
+          build/Release/**/*
   openbsd:
     name: OpenBSD
     runs-on: ubuntu-latest
+    needs: version
     steps:
     - uses: actions/checkout@v4
     - name: Compile
@@ -202,7 +258,12 @@ jobs:
         run: |
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
           cmake --build build
-
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-OpenBSD-${{ needs.version.outputs.version }}
+        path: |
+          build/Release/**/*
   check-is-release:
     if: github.event_name != 'pull_request'
     name: Check For Release Tag
@@ -241,9 +302,15 @@ jobs:
       - version
       - check-is-release
       - windows-msvc
+      - windows-msvc-32bit
       - macos
       - linux
+      - linux-32bit
+      - linux-external-libraries
+      - linux-external-libraries-32bit
       - emscripten
+      - freebsd
+      - openbsd
     steps:
     - uses: actions/download-artifact@v4
     - name: Prepare Release Artifacts
@@ -253,7 +320,21 @@ jobs:
           release-artifacts
         zip -r9 release-artifacts/${{ github.event.repository.name }}-linux-${{ needs.version.outputs.version }}.zip \
           ${{ github.event.repository.name }}-linux-${{ needs.version.outputs.version }}
+        mv ${{ github.event.repository.name }}-linux-32bit-${{ needs.version.outputs.version }}/${{ github.event.repository.name }}-${{ needs.version.outputs.version }}.deb \
+          release-artifacts
+        zip -r9 release-artifacts/${{ github.event.repository.name }}-linux-32bit-${{ needs.version.outputs.version }}.zip \
+          ${{ github.event.repository.name }}-linux-32bit-${{ needs.version.outputs.version }}
+        mv ${{ github.event.repository.name }}-linux-external-libraries-${{ needs.version.outputs.version }}/${{ github.event.repository.name }}-${{ needs.version.outputs.version }}.deb \
+          release-artifacts
+        zip -r9 release-artifacts/${{ github.event.repository.name }}-linux-external-libraries-${{ needs.version.outputs.version }}.zip \
+          ${{ github.event.repository.name }}-linux-external-libraries-${{ needs.version.outputs.version }}
+        mv ${{ github.event.repository.name }}-linux-external-libraries-32bit-${{ needs.version.outputs.version }}/${{ github.event.repository.name }}-${{ needs.version.outputs.version }}.deb \
+          release-artifacts
+        zip -r9 release-artifacts/${{ github.event.repository.name }}-linux-external-libraries-32bit-${{ needs.version.outputs.version }}.zip \
+          ${{ github.event.repository.name }}-linux-external-libraries-32bit-${{ needs.version.outputs.version }}
         mv ${{ github.event.repository.name }}-windows-msvc-${{ needs.version.outputs.version }}/${{ github.event.repository.name }}-${{ needs.version.outputs.version }}.exe \
+          release-artifacts
+        mv ${{ github.event.repository.name }}-windows-msvc-32bit-${{ needs.version.outputs.version }}/${{ github.event.repository.name }}-${{ needs.version.outputs.version }}.exe \
           release-artifacts
         mv ${{ github.event.repository.name }}-macOS-${{ needs.version.outputs.version }}/${{ github.event.repository.name }}-${{ needs.version.outputs.version }}.dmg \
           release-artifacts
