@@ -5332,6 +5332,25 @@ qboolean ItemParse_cvarPresetList( itemDef_t *item, int handle ) {
 }
 
 
+static qboolean ItemParse_cvarInt( itemDef_t *item, int handle ) {
+	editFieldDef_t *editPtr;
+
+	Item_ValidateTypeData(item);
+
+	if (!item->typeData) {
+		return qfalse;
+	}
+
+	editPtr = (editFieldDef_t*)item->typeData;
+	if (PC_String_Parse(handle, &item->cvar) &&
+		PC_Float_Parse(handle, &editPtr->defVal) &&
+		PC_Float_Parse(handle, &editPtr->minVal) &&
+		PC_Float_Parse(handle, &editPtr->maxVal)) {
+		return qtrue;
+		}
+		return qfalse;
+}
+
 keywordHash_t itemParseKeywords[] = {
 	{"name", ItemParse_name, NULL},
 	{"text", ItemParse_text, NULL},
@@ -5396,6 +5415,8 @@ keywordHash_t itemParseKeywords[] = {
 	{"cinematic", ItemParse_cinematic, NULL},
 	{"doubleclick", ItemParse_doubleClick, NULL},
 
+	{"cvara", ItemParse_cvar, NULL},
+	{"cvarInt", ItemParse_cvarInt, NULL},
 	{"cvarPreset", ItemParse_cvarPresetList, NULL},
 	{"cvarPresetList", ItemParse_cvarPresetList, NULL},
 	{NULL, 0, NULL}
