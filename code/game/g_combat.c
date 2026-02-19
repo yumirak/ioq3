@@ -661,11 +661,12 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 CheckArmor
 ================
 */
-int CheckArmor (gentity_t *ent, int damage, int dflags)
+int CheckArmor (gentity_t *ent, gentity_t *attacker, int damage, int dflags)
 {
 	gclient_t	*client;
 	int			save;
 	int			count;
+	qboolean	self = (ent == attacker);
 
 	if (!damage)
 		return 0;
@@ -687,7 +688,8 @@ int CheckArmor (gentity_t *ent, int damage, int dflags)
 	if (!save)
 		return 0;
 
-	client->ps.stats[STAT_ARMOR] -= save;
+	if( !(self && (g_dmflags.integer & DF_NO_SELF_DMG_ARMOR)) )
+		client->ps.stats[STAT_ARMOR] -= save;
 
 	return save;
 }
@@ -992,8 +994,11 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	take = damage;
 
 	// save some from armor
-	asave = CheckArmor (targ, take, dflags);
+	asave = CheckArmor (targ, attacker, take, dflags);
 	take -= asave;
+
+	if( self && (g_dmflags.integer & DF_NO_SELF_DMG_HEALTH))
+		take = 0;
 
 	if ( g_debugDamage.integer ) {
 		G_Printf( "%i: client:%i health:%i damage:%i armor:%i\n", level.time, targ->s.number,
