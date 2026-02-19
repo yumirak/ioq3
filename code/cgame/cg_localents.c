@@ -125,6 +125,34 @@ void CG_BloodTrail( localEntity_t *le ) {
 	vec3_t	newOrigin;
 	localEntity_t	*blood;
 
+#ifdef BASEQZ
+	float         radius = 3.5;
+	int           i;
+	vec4_t        color;
+
+	color[0] = color[1] = color[2] = color[3] = 1.0;
+	step = 15.0;
+	t = step * (( cg.time - cg.frametime + step ) / step );
+	t2 = step * ( cg.time / step );
+
+	for( ; t <= t2; t += step ) {
+		for( i = 0; i < 1; i++ ) {
+			BG_EvaluateTrajectory( &le->pos, t, newOrigin );
+
+			// Com_Printf("trail t %d\n", t);
+			blood = CG_SmokePuff( newOrigin, vec3_origin, radius,
+								  color[0], color[1], color[2], color[3],
+						 1000 / 3,           // time
+						 t,                  // startTime
+						 0,                  // fadeInTime
+						 0,                  // flags
+						 cgs.media.tracerShader );
+
+			blood->leType = LE_MOVE_SCALE_FADE;
+			blood->leFlags = LEF_PUFF_DONT_SCALE;
+		}
+	}
+#else
 	step = 150;
 	t = step * ( (cg.time - cg.frametime + step ) / step );
 	t2 = step * ( cg.time / step );
@@ -145,6 +173,7 @@ void CG_BloodTrail( localEntity_t *le ) {
 		// drop a total of 40 units over its lifetime
 		blood->pos.trDelta[2] = 40;
 	}
+#endif
 }
 
 
@@ -155,17 +184,32 @@ CG_FragmentBounceMark
 */
 void CG_FragmentBounceMark( localEntity_t *le, trace_t *trace ) {
 	int			radius;
+	qhandle_t	shader;
 
-	if ( le->leMarkType == LEMT_BLOOD ) {
-
-		radius = 16 + (rand()&31);
-		CG_ImpactMark( cgs.media.bloodMarkShader, trace->endpos, trace->plane.normal, random()*360,
-			1,1,1,1, qtrue, radius, qfalse );
-	} else if ( le->leMarkType == LEMT_BURN ) {
-
-		radius = 8 + (rand()&15);
-		CG_ImpactMark( cgs.media.burnMarkShader, trace->endpos, trace->plane.normal, random()*360,
-			1,1,1,1, qtrue, radius, qfalse );
+	switch( le->leMarkType )
+	{
+		case LEMT_BLOOD:
+		{
+#ifdef BASEQZ
+			radius = 5;
+			shader = cgs.media.burnMarkShader;
+#else
+			radius = 16 + (rand()&31);
+			shader = cgs.media.bloodMarkShader;
+#endif
+			CG_ImpactMark( shader, trace->endpos, trace->plane.normal, random() * 360,
+						   1, 1, 1, 1, qtrue, radius, qfalse );
+			break;
+		}
+		case LEMT_BURN:
+		{
+			radius = 8 + ( rand() & 15 );
+			CG_ImpactMark( cgs.media.burnMarkShader, trace->endpos, trace->plane.normal, random() * 360,
+						   1, 1, 1, 1, qtrue, radius, qfalse );
+			break;
+		}
+		default:
+			break;
 	}
 
 
@@ -186,6 +230,7 @@ void CG_FragmentBounceSound( localEntity_t *le, trace_t *trace ) {
 			int r = rand()&3;
 			sfxHandle_t	s;
 
+#ifndef BASEQZ
 			if ( r == 0 ) {
 				s = cgs.media.gibBounce1Sound;
 			} else if ( r == 1 ) {
@@ -193,6 +238,9 @@ void CG_FragmentBounceSound( localEntity_t *le, trace_t *trace ) {
 			} else {
 				s = cgs.media.gibBounce3Sound;
 			}
+#else
+			s = cgs.media.electroGibBounceSound[r];
+#endif
 			trap_S_StartSound( trace->endpos, ENTITYNUM_WORLD, CHAN_AUTO, s );
 		}
 	} else if ( le->leBounceSoundType == LEBS_BRASS ) {

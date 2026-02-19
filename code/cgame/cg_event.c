@@ -1209,7 +1209,11 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		// with the kamikaze sound, downside is that the gib sound will also
 		// not be played when someone is gibbed while just carrying the kamikaze
 		if ( !(es->eFlags & EF_KAMIKAZE) ) {
+#ifndef BASEQZ
 			trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.gibSound );
+#else
+			trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.electroGibSound[rand() % 4] );
+#endif
 		}
 		CG_GibPlayer( cent->lerpOrigin );
 		break;

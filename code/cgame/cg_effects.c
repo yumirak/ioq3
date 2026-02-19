@@ -485,6 +485,36 @@ localEntity_t *CG_MakeExplosion( vec3_t origin, vec3_t dir,
 	return ex;
 }
 
+#ifdef BASEQZ
+void CG_DeathEffect( vec3_t org )
+{
+	localEntity_t *le;
+	refEntity_t   *re;
+
+	le = CG_AllocLocalEntity();
+	le->leFlags = 0;
+	le->leType = LE_SPRITE_EXPLOSION;
+	le->startTime = cg.time;
+	le->endTime = cg.time + 500;
+	le->lifeRate = 1.0 / ( le->endTime - le->startTime );
+
+	le->color[0] = le->color[1] = le->color[2] = le->color[3] = 1.0;
+
+	re = &le->refEntity;
+
+	re->reType = RT_SPRITE;
+	re->rotation = 0;
+	re->radius = 100;
+
+	re->shaderTime = cg.time / 1000.0f;
+	re->customShader = cgs.media.deathEffectShader;
+
+	AxisClear( re->axis );
+
+	VectorCopy( org, re->origin );
+	re->origin[2] += 16;
+}
+#endif
 
 /*
 =================
@@ -535,7 +565,11 @@ void CG_LaunchGib( vec3_t origin, vec3_t velocity, qhandle_t hModel ) {
 
 	le->leType = LE_FRAGMENT;
 	le->startTime = cg.time;
+#ifdef BASEQZ
+	le->endTime = le->startTime + 2000;
+#else
 	le->endTime = le->startTime + 5000 + random() * 3000;
+#endif
 
 	VectorCopy( origin, re->origin );
 	AxisCopy( axisDefault, re->axis );
@@ -559,8 +593,13 @@ CG_GibPlayer
 Generated a bunch of gibs launching out from the bodies location
 ===================
 */
+#ifdef BASEQZ
+#define	GIB_VELOCITY	75
+#define	GIB_JUMP		400
+#else
 #define	GIB_VELOCITY	250
 #define	GIB_JUMP		250
+#endif
 void CG_GibPlayer( vec3_t playerOrigin ) {
 	vec3_t velocity;
 	int    i;
@@ -577,9 +616,17 @@ void CG_GibPlayer( vec3_t playerOrigin ) {
 	for( i = 0; i < 10; i++ ) {
 		velocity[0] = crandom()*GIB_VELOCITY;
 		velocity[1] = crandom()*GIB_VELOCITY;
+#ifndef BASEQZ
 		velocity[2] = GIB_JUMP + crandom()*GIB_VELOCITY;
 		CG_LaunchGib( playerOrigin, velocity, cgs.media.gibModel[i] );
+#else
+		velocity[2] = crandom() * GIB_JUMP;
+		CG_LaunchGib( playerOrigin, velocity, cgs.media.gibSphere );
+#endif
 	}
+#ifdef BASEQZ
+	CG_DeathEffect( playerOrigin );
+#endif
 }
 
 /*

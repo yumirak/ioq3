@@ -772,6 +772,11 @@ static void CG_RegisterSounds( void ) {
 	}
 	cgs.media.killSound[6] = trap_S_RegisterSound("sound/world/bell_01.ogg", qfalse);
 	cgs.media.killSound[7] = trap_S_RegisterSound("sound/misc/chaching.ogg", qfalse);
+
+	for( i = 0; i < 4; i++) {
+		cgs.media.electroGibSound[i] = trap_S_RegisterSound( va( "sound/misc/electrogib_0%d.ogg", i + 1 ), qfalse );
+		cgs.media.electroGibBounceSound[i] = trap_S_RegisterSound( va( "sound/misc/electrogib_bounce_0%d.ogg", i + 1 ), qfalse );
+	}
 #endif
 
 #ifdef MISSIONPACK
@@ -1104,6 +1109,10 @@ static void CG_RegisterGraphics( void ) {
 		cgs.media.lightningShaderNew[i] = trap_R_RegisterShader( va("lightningBolt%d", i + 1) );
 	}
 
+#ifdef BASEQZ
+	cgs.media.gibSphere = trap_R_RegisterModel( "models/gibs/sphere.md3" );
+	cgs.media.deathEffectShader = trap_R_RegisterShader( "deathEffect" );
+#endif
 	CG_ClearParticles ();
 /*
 	for (i=1; i<MAX_PARTICLES_AREAS; i++)

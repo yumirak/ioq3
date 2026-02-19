@@ -988,6 +988,13 @@ typedef struct {
 	sfxHandle_t	wstbimpdSound;
 	sfxHandle_t	wstbactvSound;
 
+#ifdef BASEQZ
+	qhandle_t   gibSphere;
+	qhandle_t   deathEffectShader;
+	sfxHandle_t	electroGibSound[4];
+	sfxHandle_t	electroGibBounceSound[4];
+#endif
+
 	sfxHandle_t killSound[8];
 	qhandle_t lightningShaderNew[5];
 } cgMedia_t;
