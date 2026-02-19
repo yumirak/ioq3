@@ -181,6 +181,7 @@ vmCvar_t	cg_railStyle;
 vmCvar_t	cg_rocketStyle;
 vmCvar_t	cg_plasmaStyle;
 vmCvar_t	cg_trueLightning;
+vmCvar_t	cg_trueShotgun;
 
 #ifdef MISSIONPACK
 vmCvar_t 	cg_redTeamName;
@@ -378,6 +379,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_rocketStyle, "cg_rocketStyle", "1", CVAR_ARCHIVE},
 	{ &cg_plasmaStyle, "cg_plasmaStyle", "1", CVAR_ARCHIVE},
 	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE},
+	{ &cg_trueShotgun, "cg_trueShotgun", "0", CVAR_ARCHIVE},
 
 	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SERVERINFO},
 	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SERVERINFO},

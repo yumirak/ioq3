@@ -263,11 +263,6 @@ SHOTGUN
 
 ======================================================================
 */
-
-// DEFAULT_SHOTGUN_SPREAD and DEFAULT_SHOTGUN_COUNT	are in bg_public.h, because
-// client predicts same spreads
-#define	DEFAULT_SHOTGUN_DAMAGE	10
-
 qboolean ShotgunPellet( vec3_t start, vec3_t end, gentity_t *ent ) {
 	trace_t		tr;
 	int			damage, i, passent;
@@ -324,6 +319,7 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 	float		r, u;
 	vec3_t		end;
 	vec3_t		localForward, localRight, localUp;
+	vec3_t		newForward, tmp;
 	qboolean	hitClient = qfalse;
 
 	// derive the right and up vectors from the forward vector, because
@@ -332,13 +328,19 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 	PerpendicularVector( localRight, localForward );
 	CrossProduct( localForward, localRight, localUp );
 
-	// generate the "random" spread pattern
 	for ( i = 0 ; i < DEFAULT_SHOTGUN_COUNT ; i++ ) {
-		r = Q_crandom( &seed ) * DEFAULT_SHOTGUN_SPREAD * 16;
-		u = Q_crandom( &seed ) * DEFAULT_SHOTGUN_SPREAD * 16;
-		VectorMA( origin, 8192 * 16, localForward, end);
-		VectorMA (end, r, localRight, end);
-		VectorMA (end, u, localUp, end);
+		r = BG_ShotgunPattern(i, 0);
+		u = BG_ShotgunPattern(i, 1);
+
+		VectorCopy(localForward, newForward);
+
+		RotatePointAroundVector(tmp, localUp, newForward, r);
+		VectorCopy(tmp, newForward);
+		VectorNormalize(newForward);
+		RotatePointAroundVector(tmp, localRight, newForward, u);
+		VectorCopy(tmp, newForward);
+		VectorNormalize(newForward);
+		VectorMA(origin, 8192 * 16, newForward, end);
 		if( ShotgunPellet( origin, end, ent ) && !hitClient ) {
 			hitClient = qtrue;
 			ent->client->accuracy_hits++;

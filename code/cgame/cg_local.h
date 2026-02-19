@@ -1205,6 +1205,7 @@ extern	vmCvar_t		cg_railStyle;
 extern	vmCvar_t		cg_rocketStyle;
 extern	vmCvar_t		cg_plasmaStyle;
 extern	vmCvar_t		cg_trueLightning;
+extern	vmCvar_t		cg_trueShotgun;
 #ifdef MISSIONPACK
 extern	vmCvar_t		cg_redTeamName;
 extern	vmCvar_t		cg_blueTeamName;

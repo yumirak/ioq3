@@ -1728,3 +1728,77 @@ int weapon_ammo_limit[WP_NUM_WEAPONS][2] = // 0 - normal; 1 - turbo;
 	{ 200, 100 },	// WP_CHAINGUN
 #endif
 };
+
+#define BG_SHOTGUN_PATTERN_TABLE
+#ifdef BG_SHOTGUN_PATTERN_TABLE
+float bg_shotgun_pattern[DEFAULT_SHOTGUN_COUNT][2] = {
+	{ 1.955929, 0.000000 },
+	{ 0.978250, 1.694049 },
+	{ -0.978250, 1.694049 },
+	{ -1.955929, 0.000000 },
+	{ -0.978250, -1.694049 },
+	{ 0.978250, -1.694049 },
+	{ 0.603622, 3.860688 },
+	{ -3.043835, 2.454540 },
+	{ -3.645419, -1.410215 },
+	{ -0.603622, -3.860688 },
+	{ 3.043835, -2.454540 },
+	{ 3.645419, 1.410215 },
+	{ 5.849658, 0.000000 },
+	{ 4.143527, 4.143527 },
+	{ 0.000000, 5.849658 },
+	{ -4.143527, 4.143527 },
+	{ -5.849658, 0.000000 },
+	{ -4.143527, -4.143527 },
+	{ -0.000000, -5.849658 },
+	{ 4.143527, -4.143527 },
+};
+qboolean bg_shotgun_init = qtrue;
+#else
+float bg_shotgun_pattern[DEFAULT_SHOTGUN_COUNT][2];
+qboolean bg_shotgun_init = qfalse;
+#endif
+
+float BG_ShotgunPattern( int index, int rightup )
+{
+	int i;
+	float scale;
+	float pattern[DEFAULT_SHOTGUN_COUNT][2];
+
+	index = index % 20;
+
+	if( bg_shotgun_init ) {
+		return bg_shotgun_pattern[index][rightup];
+	}
+
+	// 360.0 / 6 = 60.0
+	// 360.0 / 8 = 45.0
+
+	scale = DEFAULT_SHOTGUN_SPREAD / 1000.0;
+
+	// inner ring
+	for (i = 0;  i < 6;  i++) {
+		pattern[i][0] = 10.0 * cos(DEG2RAD(60.0 * i));
+		pattern[i][1] = 10.0 * sin(DEG2RAD(60.0 * i));
+	}
+
+	// middle ring
+	for (i = 0;  i < 6;  i++) {
+		pattern[6 + i][0] = 20.0 * cos(DEG2RAD(60 * i) - 30);
+		pattern[6 + i][1] = 20.0 * sin(DEG2RAD(60 * i) - 30);
+	}
+
+	// outer ring
+	for (i = 0;  i < 8;  i++) {
+		pattern[12 + i][0] = 30.0 * cos(DEG2RAD(45.0 * i));
+		pattern[12 + i][1] = 30.0 * sin(DEG2RAD(45.0 * i));
+	}
+
+	for (i = 0;  i < DEFAULT_SHOTGUN_COUNT;  i++) {
+		bg_shotgun_pattern[i][0] = RAD2DEG(atan2(pattern[i][0] * scale, 292.82));
+		bg_shotgun_pattern[i][1] = RAD2DEG(atan2(pattern[i][1] * scale, 292.82));
+	}
+
+	bg_shotgun_init = qtrue;
+	return bg_shotgun_pattern[index][rightup];
+}

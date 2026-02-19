@@ -1985,6 +1985,7 @@ static void CG_ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, int othe
 	float		r, u;
 	vec3_t		end;
 	vec3_t		forward, right, up;
+	vec3_t		newForward, tmp;
 
 	// derive the right and up vectors from the forward vector, because
 	// the client won't have any other information
@@ -1992,13 +1993,23 @@ static void CG_ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, int othe
 	PerpendicularVector( right, forward );
 	CrossProduct( forward, right, up );
 
-	// generate the "random" spread pattern
 	for ( i = 0 ; i < DEFAULT_SHOTGUN_COUNT ; i++ ) {
-		r = Q_crandom( &seed ) * DEFAULT_SHOTGUN_SPREAD * 16;
-		u = Q_crandom( &seed ) * DEFAULT_SHOTGUN_SPREAD * 16;
-		VectorMA( origin, 8192 * 16, forward, end);
-		VectorMA (end, r, right, end);
-		VectorMA (end, u, up, end);
+		r = BG_ShotgunPattern(i, 0);
+		u = BG_ShotgunPattern(i, 1);
+		if (cg_trueShotgun.integer != 1.0) {
+			r += crandom();
+			u += crandom();
+		}
+
+		VectorCopy(forward, newForward);
+
+		RotatePointAroundVector(tmp, up, newForward, r);
+		VectorCopy(tmp, newForward);
+		VectorNormalize(newForward);
+		RotatePointAroundVector(tmp, right, newForward, u);
+		VectorCopy(tmp, newForward);
+		VectorNormalize(newForward);
+		VectorMA(origin, 8192 * 16, newForward, end);
 
 		CG_ShotgunPellet( origin, end, otherEntNum );
 	}
