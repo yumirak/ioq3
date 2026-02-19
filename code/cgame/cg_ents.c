@@ -232,6 +232,7 @@ static void CG_Item( centity_t *cent ) {
 	float			frac;
 	float			scale;
 	weaponInfo_t	*wi;
+	int radius, heightoffset;
 
 	es = &cent->currentState;
 	if ( es->modelindex >= bg_numItems ) {
@@ -245,15 +246,33 @@ static void CG_Item( centity_t *cent ) {
 
 	item = &bg_itemlist[ es->modelindex ];
 	if ( cg_simpleItems.integer && item->giType != IT_TEAM ) {
+		radius = Com_Clamp(8, 24, cg_simpleItemsRadius.integer);
+		heightoffset = Com_Clamp(0, 18, cg_simpleItemsHeightOffset.integer);
+
 		memset( &ent, 0, sizeof( ent ) );
 		ent.reType = RT_SPRITE;
 		VectorCopy( cent->lerpOrigin, ent.origin );
-		ent.radius = 14;
+		ent.radius = radius;
 		ent.customShader = cg_items[es->modelindex].icon;
 		ent.shaderRGBA[0] = 255;
 		ent.shaderRGBA[1] = 255;
 		ent.shaderRGBA[2] = 255;
 		ent.shaderRGBA[3] = 255;
+
+		// Only bob major items.
+		if ( cg_simpleItemsBob.integer &&
+		( (item->quantity > 5 && item->giType == IT_ARMOR ) ||
+		  (item->quantity > 50 && item->giType == IT_HEALTH ) ||
+		   item->giType >= IT_POWERUP )
+		)
+		{
+			scale = 0.005 + cent->currentState.number * 0.00001;
+			cent->lerpOrigin[2] += 4 + cos( ( cg.time + 1000 ) *  scale ) * 4;
+			ent.origin[2] = cent->lerpOrigin[2];
+		}
+
+		ent.origin[2] += heightoffset;
+
 		trap_R_AddRefEntityToScene(&ent);
 		return;
 	}

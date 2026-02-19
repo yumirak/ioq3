@@ -218,6 +218,9 @@ vmCvar_t	cg_screenDamage_Team;
 vmCvar_t	cg_screenDamageAlpha;
 vmCvar_t	cg_screenDamageAlpha_Team;
 vmCvar_t	cg_itemFx;
+vmCvar_t	cg_simpleItemsBob;
+vmCvar_t	cg_simpleItemsRadius;
+vmCvar_t	cg_simpleItemsHeightOffset;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -355,6 +358,9 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_screenDamageAlpha, "cg_screenDamageAlpha", "200", CVAR_ARCHIVE },
 	{ &cg_screenDamageAlpha_Team, "cg_screenDamageAlpha_Team", "200", CVAR_ARCHIVE },
 	{ &cg_itemFx, "cg_itemFx", "7", CVAR_ARCHIVE},
+	{ &cg_simpleItemsBob, "cg_simpleItemsBob", "1", CVAR_ARCHIVE },
+	{ &cg_simpleItemsRadius, "cg_simpleItemsRadius", "15", CVAR_ARCHIVE },
+	{ &cg_simpleItemsHeightOffset, "cg_simpleItemsHeightOffset", "8", CVAR_ARCHIVE },
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
