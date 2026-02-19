@@ -1079,9 +1079,32 @@ qboolean CG_YourTeamHasFlag(void) {
 	return qfalse;
 }
 
+static qboolean CG_PlayerIsFirstPlace( void )
+{
+	int team = cg.snap->ps.persistant[PERS_TEAM];
+
+	if( CG_IsTeamGame( cgs.gametype ))
+	{
+		if( cgs.scores1 == cgs.scores2 )
+			return qtrue;
+		else if( cgs.scores1 < cgs.scores2 )
+			return !( team == TEAM_RED );
+		else // cgs.scores2 < cgs.scores1
+			return !( team == TEAM_BLUE );
+	}
+
+	if(( cg.snap->ps.persistant[PERS_RANK] & ~RANK_TIED_FLAG ) == 0 )
+		return qtrue;
+
+	// other game types and cases:  we don't know, we don't have enough information in demo
+	return qfalse;
+}
+
 // THINKABOUTME: should these be exclusive or inclusive.. 
 // 
 qboolean CG_OwnerDrawVisible(int flags) {
+
+	int team;
 
 	if (flags & CG_SHOW_TEAMINFO) {
 		return (cg_currentSelectedPlayer.integer == numSortedTeamPlayers);
@@ -1190,6 +1213,83 @@ qboolean CG_OwnerDrawVisible(int flags) {
 			return qtrue;
 		}
 	}
+
+	// Extend
+#ifdef CG_SHOW_IF_PLYR_IS_FIRST_PLACE
+	if( flags & CG_SHOW_IF_PLYR_IS_FIRST_PLACE )
+		return CG_PlayerIsFirstPlace();
+#endif
+
+#ifdef CG_SHOW_IF_PLYR_IS_NOT_FIRST_PLACE
+	if( flags & CG_SHOW_IF_PLYR_IS_NOT_FIRST_PLACE )
+		return !CG_PlayerIsFirstPlace();
+#endif
+
+#ifdef CG_SHOW_IF_PLYR_IS_ON_RED
+	if( flags & CG_SHOW_IF_PLYR_IS_ON_RED )
+		return ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_RED );
+#endif
+
+#ifdef CG_SHOW_IF_PLYR_IS_ON_BLUE
+	if( flags & CG_SHOW_IF_PLYR_IS_ON_BLUE )
+		return ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_BLUE );
+#endif
+
+#ifdef CG_SHOW_IF_RED_IS_FIRST_PLACE
+	if( flags & CG_SHOW_IF_RED_IS_FIRST_PLACE )
+	{
+		team = cg.snap->ps.persistant[PERS_TEAM];
+
+		if( cgs.scores1 == cgs.scores2 && team == TEAM_RED )
+		{
+			return qtrue;
+		}
+		else if( cgs.scores1 > cgs.scores2 )
+		{
+			return qtrue;
+		}
+
+		return qfalse;
+	}
+#endif
+
+#ifdef CG_SHOW_IF_BLUE_IS_FIRST_PLACE
+	if( flags & CG_SHOW_IF_BLUE_IS_FIRST_PLACE )
+	{
+		team = cg.snap->ps.persistant[PERS_TEAM];
+
+		if( cgs.scores2 == cgs.scores1 && team == TEAM_BLUE )
+		{
+			return qtrue;
+		}
+		else if( cgs.scores2 > cgs.scores1 )
+		{
+			return qtrue;
+		}
+		return qfalse;
+	}
+#endif
+
+#ifdef CG_SHOW_IF_NOT_WARMUP
+	if( flags & CG_SHOW_IF_NOT_WARMUP )
+		return !cg.warmup;
+#endif
+
+#ifdef CG_SHOW_IF_WARMUP
+	if( flags & CG_SHOW_IF_WARMUP )
+		return cg.warmup;
+#endif
+
+#ifdef CG_SHOW_INTERMISSION
+	if( flags & CG_SHOW_INTERMISSION )
+		return cg.snap->ps.pm_type == PM_INTERMISSION;
+#endif
+
+#ifdef CG_SHOW_NOTINTERMISSION
+	if( flags & CG_SHOW_NOTINTERMISSION )
+		return cg.snap->ps.pm_type != PM_INTERMISSION;
+#endif
+
 	return qfalse;
 }
 
