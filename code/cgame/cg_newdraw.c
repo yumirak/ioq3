@@ -1945,6 +1945,16 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_DrawPic(rect.x, rect.y, rect.w, rect.h, shader);
 		break;
 #endif
+#ifdef CG_1ST_PLACE_SCORE
+	case CG_1ST_PLACE_SCORE:
+		CG_Draw1stPlaceScore( &rect, scale, color, textStyle );
+		break;
+#endif
+#ifdef CG_2ND_PLACE_SCORE
+	case CG_2ND_PLACE_SCORE:
+		CG_Draw2ndPlaceScore( &rect, scale, color, textStyle );
+		break;
+#endif
   default:
     break;
   }
