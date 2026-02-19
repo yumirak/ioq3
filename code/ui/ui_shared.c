@@ -2326,6 +2326,10 @@ static void Scroll_Slider_ThumbFunc(void *p) {
 	float x, value, cursorx;
 	scrollInfo_t *si = (scrollInfo_t*)p;
 	editFieldDef_t *editDef = si->item->typeData;
+	qboolean iscolor = qfalse;
+#ifdef ITEM_TYPE_SLIDER_COLOR
+	iscolor = si->item->type == ITEM_TYPE_SLIDER_COLOR;
+#endif
 
 	if (si->item->text) {
 		x = si->item->textRect.x + si->item->textRect.w + 8;
@@ -2344,6 +2348,10 @@ static void Scroll_Slider_ThumbFunc(void *p) {
 	value /= SLIDER_WIDTH;
 	value *= (editDef->maxVal - editDef->minVal);
 	value += editDef->minVal;
+	if ( iscolor ) {
+		DC->setCVar(si->item->cvar, va("%i", (int)value));
+		return;
+	}
 	DC->setCVar(si->item->cvar, va("%f", value));
 }
 
@@ -2377,6 +2385,9 @@ void Item_StartCapture(itemDef_t *item, int key) {
 			}
 			break;
 		}
+#ifdef ITEM_TYPE_SLIDER_COLOR
+		case ITEM_TYPE_SLIDER_COLOR:
+#endif
 		case ITEM_TYPE_SLIDER:
 		{
 			flags = Item_Slider_OverSlider(item, DC->cursorx, DC->cursory);
@@ -2400,9 +2411,13 @@ void Item_StopCapture(itemDef_t *item) {
 
 qboolean Item_Slider_HandleKey(itemDef_t *item, int key, qboolean down) {
 	float x, value, width, work;
+	qboolean iscolor = qfalse;
 
 	//DC->Print("slider handle key\n");
 	if (item->cvar) {
+#ifdef ITEM_TYPE_SLIDER_COLOR
+		iscolor = item->type == ITEM_TYPE_SLIDER_COLOR;
+#endif
 		if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_MOUSE3) {
 			editFieldDef_t *editDef = item->typeData;
 			if (editDef && Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS) {
@@ -2428,6 +2443,12 @@ qboolean Item_Slider_HandleKey(itemDef_t *item, int key, qboolean down) {
 					// vm fuckage
 					// value = (((float)(DC->cursorx - x)/ SLIDER_WIDTH) * (editDef->maxVal - editDef->minVal));
 					value += editDef->minVal;
+
+					if( iscolor )  {
+						DC->setCVar(item->cvar, va("%i", (int)value));
+						return qtrue;
+					}
+
 					DC->setCVar(item->cvar, va("%f", value));
 					return qtrue;
 				}
@@ -2444,6 +2465,11 @@ qboolean Item_Slider_HandleKey(itemDef_t *item, int key, qboolean down) {
 						value = editDef->minVal;
 					else if (value > editDef->maxVal)
 						value = editDef->maxVal;
+
+					if( iscolor )  {
+						DC->setCVar(item->cvar, va("%i", (int)value));
+						return qtrue;
+					}
 
 					DC->setCVar(item->cvar, va("%f", value));
 					return qtrue;
@@ -2553,6 +2579,9 @@ qboolean Item_HandleKey(itemDef_t *item, int key, qboolean down) {
     case ITEM_TYPE_BIND:
 			return Item_Bind_HandleKey(item, key, down);
       break;
+#ifdef ITEM_TYPE_SLIDER_COLOR
+	case ITEM_TYPE_SLIDER_COLOR:
+#endif
     case ITEM_TYPE_SLIDER:
       return Item_Slider_HandleKey(item, key, down);
       break;
@@ -3533,6 +3562,10 @@ void Item_Slider_Paint(itemDef_t *item) {
 	vec4_t newColor, lowLight;
 	float x, y;
 	menuDef_t *parent = (menuDef_t*)item->parent;
+	qboolean iscolor = qfalse;
+#ifdef ITEM_TYPE_SLIDER_COLOR
+	iscolor = (item->type == ITEM_TYPE_SLIDER_COLOR );
+#endif
 
 	if (item->window.flags & WINDOW_HASFOCUS) {
 		lowLight[0] = 0.8 * parent->focusColor[0]; 
@@ -3552,7 +3585,7 @@ void Item_Slider_Paint(itemDef_t *item) {
 		x = item->window.rect.x;
 	}
 	DC->setColor(newColor);
-	DC->drawHandlePic( x, y, SLIDER_WIDTH, SLIDER_HEIGHT, DC->Assets.sliderBar );
+	DC->drawHandlePic( x, y, SLIDER_WIDTH, SLIDER_HEIGHT, iscolor ? DC->Assets.fxBasePic : DC->Assets.sliderBar );
 
 	x = Item_Slider_ThumbPosition(item);
 	DC->drawHandlePic( x - (SLIDER_THUMB_WIDTH / 2), y - 2, SLIDER_THUMB_WIDTH, SLIDER_THUMB_HEIGHT, DC->Assets.sliderThumb );
@@ -4197,6 +4230,9 @@ void Item_Paint(itemDef_t *item) {
     case ITEM_TYPE_BIND:
       Item_Bind_Paint(item);
       break;
+#ifdef ITEM_TYPE_SLIDER_COLOR
+    case ITEM_TYPE_SLIDER_COLOR:
+#endif
     case ITEM_TYPE_SLIDER:
       Item_Slider_Paint(item);
       break;
@@ -4452,7 +4488,12 @@ void Item_ValidateTypeData(itemDef_t *item) {
 	if (item->type == ITEM_TYPE_LISTBOX) {
 		item->typeData = UI_Alloc(sizeof(listBoxDef_t));
 		memset(item->typeData, 0, sizeof(listBoxDef_t));
-	} else if (item->type == ITEM_TYPE_EDITFIELD || item->type == ITEM_TYPE_NUMERICFIELD || item->type == ITEM_TYPE_YESNO || item->type == ITEM_TYPE_BIND || item->type == ITEM_TYPE_SLIDER || item->type == ITEM_TYPE_TEXT) {
+	} else if (item->type == ITEM_TYPE_EDITFIELD || item->type == ITEM_TYPE_NUMERICFIELD || item->type == ITEM_TYPE_YESNO
+		|| item->type == ITEM_TYPE_BIND || item->type == ITEM_TYPE_SLIDER || item->type == ITEM_TYPE_TEXT
+#ifdef ITEM_TYPE_SLIDER_COLOR
+		|| item->type == ITEM_TYPE_SLIDER_COLOR
+#endif
+		) {
 		item->typeData = UI_Alloc(sizeof(editFieldDef_t));
 		memset(item->typeData, 0, sizeof(editFieldDef_t));
 		if (item->type == ITEM_TYPE_EDITFIELD) {
