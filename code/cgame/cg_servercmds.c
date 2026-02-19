@@ -212,6 +212,7 @@ Called on load to set the initial values from configure strings
 */
 void CG_SetConfigValues( void ) {
 	const char *s;
+	int i;
 
 	cgs.scores1 = atoi( CG_ConfigString( CS_SCORES1 ) );
 	cgs.scores2 = atoi( CG_ConfigString( CS_SCORES2 ) );
@@ -228,6 +229,15 @@ void CG_SetConfigValues( void ) {
 	}
 #endif
 	cg.warmup = atoi( CG_ConfigString( CS_WARMUP ) );
+
+	// Extend
+	for( i = CS_FLAGSTATUS; i < CS_STEAM_WORKSHOP_IDS + 1; i++ ) {
+		s = CG_ConfigString(i);
+		if ( strlen(s) > 0 ) {
+			Q_strncpyz(cgs.cs[i].string, s, MAX_STRING_CHARS);
+			cgs.cs[i].integer = atoi( s );
+		}
+	}
 }
 
 /*
@@ -298,6 +308,10 @@ static void CG_ConfigStringModified( void ) {
 
 	// look up the individual string that was modified
 	str = CG_ConfigString( num );
+
+	Q_strncpyz(cgs.cs[num].string, str, MAX_STRING_CHARS);
+	cgs.cs[num].integer = atoi( str );
+	// Com_Printf("cs %i : %s, %i \n", num, cgs.cs[num].string, cgs.cs[num].integer );
 
 	// do something with it if necessary
 	if ( num == CS_MUSIC ) {

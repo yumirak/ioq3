@@ -461,6 +461,11 @@ typedef struct {
 #define MAX_REWARDSTACK		10
 #define MAX_SOUNDBUFFER		20
 
+typedef struct {
+	char string[MAX_STRING_CHARS];
+	int integer;
+} cg_configString_t;
+
 //======================================================================
 
 // all cg.stepTime, cg.duckTime, cg.landTime, etc are set to cg.time when the action
@@ -1104,6 +1109,8 @@ typedef struct {
 	// media
 	cgMedia_t		media;
 
+	// Extend
+	cg_configString_t cs[CS_MAX];
 } cgs_t;
 
 //==============================================================================
