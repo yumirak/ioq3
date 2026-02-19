@@ -1,41 +1,4 @@
-/*
-===========================================================================
-Copyright (C) 1999-2005 Id Software, Inc.
 
-This file is part of Quake III Arena source code.
-
-Quake III Arena source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Quake III Arena source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Quake III Arena source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-#ifndef __MENUDEF_H__
-#define __MENUDEF_H__
-
-#ifdef BASEQZ
-    #if BASEQZ >= 1069  // steam latest
-    #include "menudef_1069.h"
-    #elif BASEQZ >= 947  //  Quake Live  0.1.0.1013 win-x86 Apr 28 2015 10:43:33
-    #include "menudef_947.h"
-    #elif BASEQZ >= 730  //  QuakeLive  0.1.0.730 linux-x64 Apr 16 2013 12:12:34
-    #include "menudef_730.h"
-    #elif BASEQZ >= 442  //  QuakeLive  0.1.0.495 linux-i386 Dec 14 2011 16:08:54
-    #include "menudef_442.h"
-    #else // QuakeLive  0.1.0.305 linux-i386 Feb 25 2010 20:23:54
-    #include "menudef_305.h"
-    #endif
-#else // !BASEQZ
-// Team Arena
 #define ITEM_TYPE_TEXT 0                  // simple text
 #define ITEM_TYPE_BUTTON 1                // button, basically text with a border 
 #define ITEM_TYPE_RADIOBUTTON 2           // toggle button, may be grouped 
@@ -49,8 +12,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define ITEM_TYPE_SLIDER 10               // mouse speed, volume, etc.
 #define ITEM_TYPE_YESNO 11                // yes no cvar setting
 #define ITEM_TYPE_MULTI 12                // multiple list setting, enumerated
-#define ITEM_TYPE_BIND 13		              // multiple list setting, enumerated
-    
+#define ITEM_TYPE_BIND 13		          // multiple list setting, enumerated
+#define ITEM_TYPE_SLIDER_COLOR 14         // team colors, etc.
+#define ITEM_TYPE_PRESET        15        //
+#define ITEM_TYPE_PRESETLIST    16        //
+
 #define ITEM_ALIGN_LEFT 0                 // left alignment
 #define ITEM_ALIGN_CENTER 1               // center alignment
 #define ITEM_ALIGN_RIGHT 2                // right alignment
@@ -105,42 +71,52 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define FEEDER_CINEMATICS					0x0f			// cinematics
 
 // display flags
-#define CG_SHOW_BLUE_TEAM_HAS_REDFLAG     0x00000001
-#define CG_SHOW_RED_TEAM_HAS_BLUEFLAG     0x00000002
-#define CG_SHOW_ANYTEAMGAME               0x00000004
-#define CG_SHOW_HARVESTER                 0x00000008
-#define CG_SHOW_ONEFLAG                   0x00000010
-#define CG_SHOW_CTF                       0x00000020
-#define CG_SHOW_OBELISK                   0x00000040
-#define CG_SHOW_HEALTHCRITICAL            0x00000080
-#define CG_SHOW_SINGLEPLAYER              0x00000100
-#define CG_SHOW_TOURNAMENT                0x00000200
-#define CG_SHOW_DURINGINCOMINGVOICE       0x00000400
-#define CG_SHOW_IF_PLAYER_HAS_FLAG				0x00000800
-#define CG_SHOW_LANPLAYONLY								0x00001000
-#define CG_SHOW_MINED											0x00002000
-#define CG_SHOW_HEALTHOK			            0x00004000
-#define CG_SHOW_TEAMINFO			            0x00008000
+#define CG_SHOW_BLUE_TEAM_HAS_REDFLAG		0x00000001
+#define CG_SHOW_RED_TEAM_HAS_BLUEFLAG		0x00000002
+#define CG_SHOW_ANYTEAMGAME					0x00000004
+#define CG_SHOW_HARVESTER					0x00000008
+#define CG_SHOW_ONEFLAG						0x00000010
+#define CG_SHOW_CTF							0x00000020
+#define CG_SHOW_OBELISK						0x00000040
+#define CG_SHOW_HEALTHCRITICAL				0x00000080
+#define CG_SHOW_CLAN_ARENA					0x00000100
+#define CG_SHOW_TOURNAMENT					0x00000200
+#define CG_SHOW_IF_NOT_WARMUP				0x00000400
+#define CG_SHOW_IF_PLAYER_HAS_FLAG			0x00000800
+#define CG_SHOW_IF_WARMUP					0x00001000
+#define CG_SHOW_IF_BLUE_IS_FIRST_PLACE		0x00002000
+#define CG_SHOW_HEALTHOK			        0x00004000
+#define CG_SHOW_TEAMINFO			        0x00008000
 #define CG_SHOW_NOTEAMINFO		            0x00010000
-#define CG_SHOW_OTHERTEAMHASFLAG          0x00020000
-#define CG_SHOW_YOURTEAMHASENEMYFLAG      0x00040000
-#define CG_SHOW_ANYNONTEAMGAME            0x00080000
-#define CG_SHOW_2DONLY										0x10000000
+#define CG_SHOW_OTHERTEAMHASFLAG			0x00020000
+#define CG_SHOW_YOURTEAMHASENEMYFLAG		0x00040000
+#define CG_SHOW_ANYNONTEAMGAME				0x00080000
+#define CG_SHOW_INTERMISSION				0x00100000
+#define CG_SHOW_NOTINTERMISSION				0x00200000
+#define CG_SHOW_IF_MSG_PRESENT				0x00400000
+#define CG_SHOW_IF_NOTICE_PRESENT			0x00800000
+#define CG_SHOW_IF_CHAT_VISIBLE				0x01000000
+#define CG_SHOW_IF_PLYR_IS_FIRST_PLACE		0x02000000
+#define CG_SHOW_IF_PLYR_IS_NOT_FIRST_PLACE	0x04000000
+#define CG_SHOW_IF_RED_IS_FIRST_PLACE		0x08000000
+#define CG_SHOW_2DONLY						0x10000000
+#define CG_SHOW_IF_PLYR_IS_ON_RED			0x20000000
+#define CG_SHOW_IF_PLYR_IS_ON_BLUE			0x40000000
 
 
-#define UI_SHOW_LEADER				            0x00000001
-#define UI_SHOW_NOTLEADER			            0x00000002
-#define UI_SHOW_FAVORITESERVERS						0x00000004
-#define UI_SHOW_ANYNONTEAMGAME						0x00000008
-#define UI_SHOW_ANYTEAMGAME								0x00000010
-#define UI_SHOW_NEWHIGHSCORE							0x00000020
-#define UI_SHOW_DEMOAVAILABLE							0x00000040
-#define UI_SHOW_NEWBESTTIME								0x00000080
-#define UI_SHOW_FFA												0x00000100
-#define UI_SHOW_NOTFFA										0x00000200
-#define UI_SHOW_NETANYNONTEAMGAME	 				0x00000400
-#define UI_SHOW_NETANYTEAMGAME		 				0x00000800
-#define UI_SHOW_NOTFAVORITESERVERS				0x00001000
+#define UI_SHOW_LEADER				    0x00000001
+#define UI_SHOW_NOTLEADER			    0x00000002
+#define UI_SHOW_FAVORITESERVERS			0x00000004
+#define UI_SHOW_ANYNONTEAMGAME			0x00000008
+#define UI_SHOW_ANYTEAMGAME				0x00000010
+#define UI_SHOW_NEWHIGHSCORE			0x00000020
+#define UI_SHOW_DEMOAVAILABLE			0x00000040
+#define UI_SHOW_NEWBESTTIME				0x00000080
+#define UI_SHOW_FFA						0x00000100
+#define UI_SHOW_NOTFFA					0x00000200
+#define UI_SHOW_NETANYNONTEAMGAME	 	0x00000400
+#define UI_SHOW_NETANYTEAMGAME		 	0x00000800
+#define UI_SHOW_NOTFAVORITESERVERS		0x00001000
 
 
 
@@ -225,9 +201,44 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CG_1STPLACE 67
 #define CG_2NDPLACE 68
 #define CG_CAPTURES 69
-
-
-
+#define CG_FULLTEAMINFO 70
+#define CG_LEVELTIMER 71
+#define CG_PLAYER_SKILL 72
+#define CG_PLAYER_OBIT 73
+#define CG_PLAYER_HEALTH_BAR_100 74
+#define CG_PLAYER_HEALTH_BAR_200 75
+#define CG_PLAYER_ARMOR_BAR_100 76
+#define CG_PLAYER_ARMOR_BAR_200 77
+#define CG_AREA_NEW_CHAT 78
+#define CG_TEAM_COLORIZED 79
+#define CG_1ST_PLACE_SCORE 80
+#define CG_2ND_PLACE_SCORE 81
+#define CG_GAME_TYPE_ICON 82
+#define CG_1STPLACE_PLYR_MODEL 83
+#define CG_MATCH_WINNER 84
+#define CG_MATCH_END_CONDITION 85
+#define CG_PLYR_END_GAME_SCORE 86
+#define CG_MAP_NAME 87
+#define CG_PLYR_BEST_WEAPON_NAME 88
+#define CG_SELECTED_PLYR_TEAM_COLOR 89
+#define CG_SELECTED_PLYR_ACCURACY 90
+#define CG_PLAYER_COUNTS 91
+#define CG_RED_PLAYER_COUNT 92
+#define CG_BLUE_PLAYER_COUNT 93
+#define CG_FOLLOW_PLAYER_NAME 94
+#define CG_RED_CLAN_PLYRS 95
+#define CG_BLUE_CLAN_PLYRS 96
+#define CG_GAME_LIMIT 97
+#define CG_ROUNDTIMER 98
+#define CG_NEXTMAP 99
+#define CG_RED_TIMEOUT_COUNT 100
+#define CG_BLUE_TIMEOUT_COUNT 101
+#define CG_1ST_PLACE_SCORE_EX 102
+#define CG_2ND_PLACE_SCORE_EX 103
+#define CG_FOLLOW_PLAYER_NAME_EX 104
+#define CG_SPEEDOMETER 105
+#define CG_WP_VERTICAL 106
+#define CG_ACC_VERTICAL 107
 
 #define UI_OWNERDRAW_BASE 200
 #define UI_HANDICAP 200
@@ -287,6 +298,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define UI_PREVIEWCINEMATIC 254
 #define UI_STARTMAPCINEMATIC 255
 #define UI_MAPS_SELECTION 256
+#define UI_ADVERT 257
+#define UI_CROSSHAIR_COLOR 258
+#define UI_NEXTMAP 259
+#define UI_VOTESTRING 260
+#define UI_TEAMPLAYERMODEL 261
+#define UI_ENEMYPLAYERMODEL 262
+#define UI_REDTEAMMODEL 263
+#define UI_BLUETEAMMODEL 264
 
 #define VOICECHAT_GETFLAG			"getflag"				// command someone to get the flag
 #define VOICECHAT_OFFENSE			"offense"				// command someone to go on offense
@@ -322,6 +341,3 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define VOICECHAT_DEATHINSULT		"death_insult"			// you just killed me
 #define VOICECHAT_KILLGAUNTLET		"kill_gauntlet"			// I just killed you with the gauntlet
 #define VOICECHAT_PRAISE			"praise"				// you did something good
-
-#endif // !BASEQZ
-#endif // __MENUDEF_H__
