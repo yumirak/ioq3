@@ -177,9 +177,9 @@ vmCvar_t	cg_bigFont;
 vmCvar_t	cg_noTaunt;
 #endif
 vmCvar_t	cg_noProjectileTrail;
-vmCvar_t	cg_oldRail;
-vmCvar_t	cg_oldRocket;
-vmCvar_t	cg_oldPlasma;
+vmCvar_t	cg_railStyle;
+vmCvar_t	cg_rocketStyle;
+vmCvar_t	cg_plasmaStyle;
 vmCvar_t	cg_trueLightning;
 
 #ifdef MISSIONPACK
@@ -316,9 +316,9 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_lightningStyle, "cg_lightningStyle", "1" },
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
-	{ &cg_oldRail, "cg_oldRail", "1", CVAR_ARCHIVE},
-	{ &cg_oldRocket, "cg_oldRocket", "1", CVAR_ARCHIVE},
-	{ &cg_oldPlasma, "cg_oldPlasma", "1", CVAR_ARCHIVE},
+	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
+	{ &cg_rocketStyle, "cg_rocketStyle", "1", CVAR_ARCHIVE},
+	{ &cg_plasmaStyle, "cg_plasmaStyle", "1", CVAR_ARCHIVE},
 	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE}
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };

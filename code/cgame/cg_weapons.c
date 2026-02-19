@@ -253,7 +253,7 @@ void CG_RailTrail (clientInfo_t *ci, vec3_t start, vec3_t end) {
 
 	AxisClear( re->axis );
  
-	if (cg_oldRail.integer)
+	if (cg_railStyle.integer == 2)
 	{
 		// nudge down a bit so it isn't exactly in center
 		re->origin[2] -= 8;
@@ -473,7 +473,7 @@ static void CG_PlasmaTrail( centity_t *cent, const weaponInfo_t *wi ) {
 
 	float	waterScale = 1.0f;
 
-	if ( cg_noProjectileTrail.integer || cg_oldPlasma.integer ) {
+	if ( cg_noProjectileTrail.integer || cg_plasmaStyle.integer == 1 ) {
 		return;
 	}
 
@@ -1751,7 +1751,7 @@ void CG_MissileHitWall( int weapon, int clientNum, vec3_t origin, vec3_t dir, im
 		lightColor[0] = 1;
 		lightColor[1] = 0.75;
 		lightColor[2] = 0.0;
-		if (cg_oldRocket.integer == 0) {
+		if (cg_rocketStyle.integer != 1) {
 			// explosion sprite animation
 			VectorMA( origin, 24, dir, sprOrg );
 			VectorScale( dir, 64, sprVel );
