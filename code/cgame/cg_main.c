@@ -1114,6 +1114,7 @@ static void CG_RegisterGraphics( void ) {
 	}
 
 #ifdef BASEQZ
+	cgs.media.ghostShader = trap_R_RegisterShader( "ghostWeaponShader" );
 	cgs.media.gibSphere = trap_R_RegisterModel( "models/gibs/sphere.md3" );
 	cgs.media.deathEffectShader = trap_R_RegisterShader( "deathEffect" );
 #endif

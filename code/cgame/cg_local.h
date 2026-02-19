@@ -993,6 +993,7 @@ typedef struct {
 	qhandle_t   deathEffectShader;
 	sfxHandle_t	electroGibSound[4];
 	sfxHandle_t	electroGibBounceSound[4];
+	sfxHandle_t ghostShader;
 #endif
 
 	sfxHandle_t killSound[8];
