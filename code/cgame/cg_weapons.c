@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // cg_weapons.c -- events and effects dealing with weapons
 #include "cg_local.h"
+#include "cg_utils.h"
 
 /*
 ==========================
@@ -1044,20 +1045,35 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 	if ( trace.fraction < 1.0 ) {
 		vec3_t	angles;
 		vec3_t	dir;
+		float  dist, cap, scale = 1.0f;
+
+		if( !cg_lightningImpact.integer )
+			return;
 
 		VectorSubtract( beam.oldorigin, beam.origin, dir );
+		dist = VectorLength( dir );
 		VectorNormalize( dir );
+		cap = fabs(cg_lightningImpactCap.value);
 
 		memset( &beam, 0, sizeof( beam ) );
 		beam.hModel = cgs.media.lightningExplosionModel;
 
-		VectorMA( trace.endpos, -16, dir, beam.origin );
+		VectorCopy( trace.endpos, beam.origin );
 
 		// make a random orientation
 		angles[0] = rand() % 360;
 		angles[1] = rand() % 360;
 		angles[2] = rand() % 360;
 		AnglesToAxis( angles, beam.axis );
+
+		if( dist < cap )
+		{
+			dist = Com_Clamp( 64.0, 768.0, dist );
+			scale = dist / cap;
+			scale = Com_Clamp( 0.2, 1.0, scale );
+		}
+
+		CG_ScaleModel( &beam, scale );
 		trap_R_AddRefEntityToScene( &beam );
 	}
 }

@@ -1205,6 +1205,9 @@ extern	vmCvar_t		cg_obeliskRespawnDelay;
 extern	vmCvar_t		cg_hitBeep;
 extern	vmCvar_t		cg_killBeep;
 extern	vmCvar_t		cg_lightningStyle;
+extern	vmCvar_t		cg_lightningImpact;
+extern	vmCvar_t		cg_lightningImpactCap;
+
 //
 // cg_main.c
 //

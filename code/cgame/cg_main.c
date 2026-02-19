@@ -198,6 +198,8 @@ vmCvar_t	cg_obeliskRespawnDelay;
 vmCvar_t	cg_hitBeep;
 vmCvar_t	cg_killBeep;
 vmCvar_t	cg_lightningStyle;
+vmCvar_t	cg_lightningImpact;
+vmCvar_t	cg_lightningImpactCap;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -314,6 +316,8 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_hitBeep, "cg_hitBeep", "2", CVAR_ARCHIVE},
 	{ &cg_killBeep, "cg_killBeep", "7", CVAR_ARCHIVE},
 	{ &cg_lightningStyle, "cg_lightningStyle", "1" },
+	{ &cg_lightningImpact, "cg_lightningImpact", "1", CVAR_ARCHIVE },
+	{ &cg_lightningImpactCap, "cg_lightningImpactCap", "192", CVAR_ARCHIVE },
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
