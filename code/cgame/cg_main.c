@@ -201,6 +201,7 @@ vmCvar_t	cg_obeliskRespawnDelay;
 #endif
 vmCvar_t	cg_hitBeep;
 vmCvar_t	cg_killBeep;
+vmCvar_t	cg_lightningStyle;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -320,6 +321,7 @@ static cvarTable_t cvarTable[] = {
 #endif
 	{ &cg_hitBeep, "cg_hitBeep", "2", CVAR_ARCHIVE},
 	{ &cg_killBeep, "cg_killBeep", "7", CVAR_ARCHIVE},
+	{ &cg_lightningStyle, "cg_lightningStyle", "1" },
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_oldRail, "cg_oldRail", "1", CVAR_ARCHIVE},
@@ -1102,6 +1104,14 @@ static void CG_RegisterGraphics( void ) {
 	trap_R_RegisterModel( "models/players/heads/janet/janet.md3" );
 
 #endif
+	cgs.media.lightningShader = trap_R_RegisterShader( "lightningBolt1");
+	if(!cgs.media.lightningShader)
+		cgs.media.lightningShader = trap_R_RegisterShader( "lightningBoltNew");
+
+	for( i = 0; i < 5; i++ ) {
+		cgs.media.lightningShaderNew[i] = trap_R_RegisterShader( va("lightningBolt%d", i + 1) );
+	}
+
 	CG_ClearParticles ();
 /*
 	for (i=1; i<MAX_PARTICLES_AREAS; i++)

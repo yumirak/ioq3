@@ -998,6 +998,7 @@ typedef struct {
 	sfxHandle_t	wstbactvSound;
 
 	sfxHandle_t killSound[8];
+	qhandle_t lightningShaderNew[5];
 } cgMedia_t;
 
 
@@ -1209,6 +1210,7 @@ extern	vmCvar_t		cg_obeliskRespawnDelay;
 
 extern	vmCvar_t		cg_hitBeep;
 extern	vmCvar_t		cg_killBeep;
+extern	vmCvar_t		cg_lightningStyle;
 //
 // cg_main.c
 //

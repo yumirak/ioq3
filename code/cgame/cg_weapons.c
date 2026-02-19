@@ -684,7 +684,7 @@ void CG_RegisterWeapon( int weaponNum ) {
 		weaponInfo->firingSound = trap_S_RegisterSound( "sound/weapons/lightning/lg_hum.wav", qfalse );
 
 		weaponInfo->flashSound[0] = trap_S_RegisterSound( "sound/weapons/lightning/lg_fire.wav", qfalse );
-		cgs.media.lightningShader = trap_R_RegisterShader( "lightningBoltNew");
+
 		cgs.media.lightningExplosionModel = trap_R_RegisterModel( "models/weaphits/crackle.md3" );
 		cgs.media.sfx_lghit1 = trap_S_RegisterSound( "sound/weapons/lightning/lg_hit.wav", qfalse );
 		cgs.media.sfx_lghit2 = trap_S_RegisterSound( "sound/weapons/lightning/lg_hit2.wav", qfalse );
@@ -700,7 +700,6 @@ void CG_RegisterWeapon( int weaponNum ) {
 		MAKERGB( weaponInfo->missileDlightColor, 1, 0.75f, 0 );
 		weaponInfo->readySound = trap_S_RegisterSound( "sound/weapons/melee/fsthum.wav", qfalse );
 		weaponInfo->firingSound = trap_S_RegisterSound( "sound/weapons/melee/fstrun.wav", qfalse );
-		cgs.media.lightningShader = trap_R_RegisterShader( "lightningBoltNew");
 		break;
 
 #ifdef MISSIONPACK
@@ -970,10 +969,15 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 	vec3_t   forward;
 	vec3_t   muzzlePoint, endPoint;
 	int      anim;
+	size_t index = 0;
 
 	if (cent->currentState.weapon != WP_LIGHTNING) {
 		return;
 	}
+
+#ifdef BASEQZ
+	index = abs(cg_lightningStyle.integer - 1) % 5;
+#endif
 
 	memset( &beam, 0, sizeof( beam ) );
 
@@ -1033,7 +1037,7 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 	VectorCopy( origin, beam.origin );
 
 	beam.reType = RT_LIGHTNING;
-	beam.customShader = cgs.media.lightningShader;
+	beam.customShader = cgs.media.lightningShaderNew[index];
 	trap_R_AddRefEntityToScene( &beam );
 
 	// add the impact flare if it hit something
