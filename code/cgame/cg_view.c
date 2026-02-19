@@ -511,6 +511,13 @@ static int CG_CalcFov( void ) {
 		}
 	}
 
+	{
+		// Based on LordHavoc's code for Darkplaces
+		// http://www.quakeworld.nu/forum/topic/53/what-does-your-qw-look-like/page/30
+		const float aspect = (float)cg.refdef.width / (float)cg.refdef.height;
+		fov_x = atan2( tan( fov_x * M_PI / 360.0f ) * 0.75f /* 3/4 */ * aspect, 1 ) * 360.0f / M_PI;
+	}
+
 	x = cg.refdef.width / tan( fov_x / 360 * M_PI );
 	fov_y = atan2( cg.refdef.height, x );
 	fov_y = fov_y * 360 / M_PI;
