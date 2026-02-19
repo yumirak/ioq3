@@ -195,6 +195,13 @@ vmCvar_t	cg_recordSPDemo;
 vmCvar_t	cg_recordSPDemoName;
 vmCvar_t	cg_obeliskRespawnDelay;
 #endif
+#ifdef BASEQZ
+vmCvar_t	cg_impactSparks;
+vmCvar_t	cg_impactSparksLifetime;
+vmCvar_t	cg_impactSparksSize;
+vmCvar_t	cg_impactSparksVelocity;
+#endif
+
 vmCvar_t	cg_hitBeep;
 vmCvar_t	cg_killBeep;
 vmCvar_t	cg_lightningStyle;
@@ -323,6 +330,13 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},
 	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
 #endif
+#ifdef BASEQZ
+	{ &cg_impactSparks, "cg_impactSparks", "1", CVAR_ARCHIVE },
+	{ &cg_impactSparksLifetime, "cg_impactSparksLifetime", "250", CVAR_ARCHIVE },
+	{ &cg_impactSparksSize, "cg_impactSparksSize", "8", CVAR_ARCHIVE },
+	{ &cg_impactSparksVelocity, "cg_impactSparksVelocity", "128", CVAR_ARCHIVE },
+#endif
+
 	{ &cg_hitBeep, "cg_hitBeep", "2", CVAR_ARCHIVE},
 	{ &cg_killBeep, "cg_killBeep", "7", CVAR_ARCHIVE},
 	{ &cg_lightningStyle, "cg_lightningStyle", "1" },

@@ -526,6 +526,40 @@ This is the spurt of blood when a character gets hit
 void CG_Bleed( vec3_t origin, int entityNum ) {
 	localEntity_t	*ex;
 
+#ifdef BASEQZ
+	qhandle_t     shader;
+	float  radius;
+	int    lifetime;
+	int    velocity;
+	vec4_t color;
+
+	if( !cg_impactSparks.integer ) {
+		return;
+	}
+
+	shader = cgs.media.tracerShader; // spark
+	color[0] = color[1] = color[2] = color[3] = 1.0;
+	radius = Com_Clamp( 2, 16, cg_impactSparksSize.value );
+	lifetime = Com_Clamp( 0, 1000, cg_impactSparksLifetime.value );
+	velocity = Com_Clamp( -128, 128, cg_impactSparksVelocity.value );
+	ex = CG_SmokePuff( origin, vec3_origin, radius,
+					   color[0], color[1], color[2], color[3],
+					lifetime,
+					cg.time,             // start time
+					0,                   // fade in time
+					0,                   // flags
+					shader );
+
+	ex->leType = LE_MOVE_SCALE_FADE;
+	ex->leFlags = LEF_PUFF_DONT_SCALE;
+	ex->pos.trDelta[2] = velocity;
+
+	// don't show player's own blood in view
+	if( entityNum == cg.snap->ps.clientNum )
+	{
+		ex->refEntity.renderfx |= RF_THIRD_PERSON;
+	}
+#else
 	if ( !cg_blood.integer ) {
 		return;
 	}
@@ -547,6 +581,7 @@ void CG_Bleed( vec3_t origin, int entityNum ) {
 	if ( entityNum == cg.snap->ps.clientNum ) {
 		ex->refEntity.renderfx |= RF_THIRD_PERSON;
 	}
+#endif
 }
 
 

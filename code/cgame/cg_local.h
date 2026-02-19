@@ -1202,6 +1202,12 @@ extern  vmCvar_t		cg_recordSPDemo;
 extern  vmCvar_t		cg_recordSPDemoName;
 extern	vmCvar_t		cg_obeliskRespawnDelay;
 #endif
+#ifdef BASEQZ
+extern	vmCvar_t		cg_impactSparks;
+extern	vmCvar_t		cg_impactSparksLifetime;
+extern	vmCvar_t		cg_impactSparksSize;
+extern	vmCvar_t		cg_impactSparksVelocity;
+#endif
 
 extern	vmCvar_t		cg_hitBeep;
 extern	vmCvar_t		cg_killBeep;
