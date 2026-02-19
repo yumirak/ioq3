@@ -7,6 +7,7 @@ include(utils/set_output_dirs)
 
 set(MPCGAME_SOURCES
     ${SOURCE_DIR}/cgame/cg_newdraw.c
+    ${SOURCE_DIR}/cgame/cg_newownerdraw.c
     ${SOURCE_DIR}/ui/ui_shared.c
 )
 

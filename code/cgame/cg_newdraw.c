@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #endif
 
 #include "cg_local.h"
+#include "cg_utils.h"
+#include "cg_newownerdraw.h"
 #include "../ui/ui_shared.h"
 
 extern displayContextDef_t cgDC;
@@ -1718,6 +1720,32 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
   case CG_2NDPLACE:
     CG_Draw2ndPlace(&rect, scale, color, shader, textStyle);
 		break;
+#ifdef CG_PLAYER_HEALTH_BAR_100
+	case CG_PLAYER_HEALTH_BAR_100:
+		CG_DrawHorizontalPlayerStatus(&rect, shader, cg.snap->ps.stats[STAT_HEALTH], cg.snap->ps.stats[STAT_MAX_HEALTH], qfalse);
+		break;
+#endif
+#ifdef CG_PLAYER_HEALTH_BAR_200
+	case CG_PLAYER_HEALTH_BAR_200:
+		CG_DrawVerticalPlayerStatus(&rect, shader, cg.snap->ps.stats[STAT_HEALTH] - cg.snap->ps.stats[STAT_MAX_HEALTH], cg.snap->ps.stats[STAT_MAX_HEALTH]);
+		break;
+#endif
+#ifdef CG_PLAYER_ARMOR_BAR_100
+	case CG_PLAYER_ARMOR_BAR_100:
+		CG_DrawHorizontalPlayerStatus(&rect, shader, cg.snap->ps.stats[STAT_ARMOR], cg.snap->ps.stats[STAT_MAX_HEALTH], qtrue);
+		break;
+#endif
+#ifdef CG_PLAYER_ARMOR_BAR_200
+	case CG_PLAYER_ARMOR_BAR_200:
+		CG_DrawVerticalPlayerStatus(&rect, shader, cg.snap->ps.stats[STAT_ARMOR] - cg.snap->ps.stats[STAT_MAX_HEALTH], cg.snap->ps.stats[STAT_MAX_HEALTH]);
+		break;
+#endif
+#ifdef CG_TEAM_COLORIZED
+	case CG_TEAM_COLORIZED:
+		CG_SetTeamColor(color[3]);
+		CG_DrawPic(rect.x, rect.y, rect.w, rect.h, shader);
+		break;
+#endif
   default:
     break;
   }
