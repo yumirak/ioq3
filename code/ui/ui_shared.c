@@ -1046,6 +1046,18 @@ void Menus_CloseAll(void) {
   }
 }
 
+itemDef_t *Items_FindByParent(menuDef_t *menu, const char *item) {
+	int i;
+	if(!menu)
+		return NULL;
+
+	for (i = 0; i < menu->itemCount; i++) {
+		if (Q_stricmp(menu->items[i]->window.name, item) == 0) {
+			return menu->items[i];
+		}
+	}
+	return NULL;
+}
 
 void Script_Show(itemDef_t *item, char **args) {
   const char *name;
@@ -2443,6 +2455,53 @@ qboolean Item_Slider_HandleKey(itemDef_t *item, int key, qboolean down) {
 	return qfalse;
 }
 
+qboolean Item_PresetList_HandleKey(itemDef_t *item, int key) {
+	int i;
+	int select = 0;
+	multiDef_t *multiPtr = (multiDef_t*)item->typeData;
+	itemDef_t *targetitem = NULL;
+	multiDef_t *targetmultiPtr = NULL;
+
+	if(!multiPtr || !item->cvar)
+		return qfalse;
+
+	if (key == K_MOUSE1 || key == K_MOUSE2 || key == K_MOUSE3) {
+		if (Rect_ContainsPoint(&item->window.rect, DC->cursorx, DC->cursory) && item->window.flags & WINDOW_HASFOCUS) {
+			select = (key == K_MOUSE2) ? -1 : 1;
+		}
+	} else {
+		select = UI_SelectForKey(key);
+	}
+
+	if (select != 0) {
+		int current = Item_Multi_FindCvarByValue(item) + select;
+		int max = Item_Multi_CountSettings(item);
+		if ( current < 0 ) {
+			current = max-1;
+		} else if ( current >= max ) {
+			current = 0;
+		}
+
+		if(!multiPtr->strDef) // should always true;
+			return qfalse;
+
+		DC->setCVar(item->cvar, multiPtr->cvarStr[current]);
+		targetitem = Items_FindByParent(item->parent, multiPtr->cvarStr[current]);
+
+		if(!targetitem)
+			return qfalse;
+
+		targetmultiPtr = (multiDef_t*)targetitem->typeData;
+
+		for(i = 0; i < targetmultiPtr->count; i++) {
+			// Com_Printf("%s, %s, %s\n", targetitem->window.name, targetmultiPtr->cvarList[i], targetmultiPtr->cvarStr[i]);
+			DC->setCVar(targetmultiPtr->cvarList[i], targetmultiPtr->cvarStr[i]);
+		}
+		return qtrue;
+	}
+
+	return qfalse;
+}
 
 qboolean Item_HandleKey(itemDef_t *item, int key, qboolean down) {
 
@@ -2497,6 +2556,11 @@ qboolean Item_HandleKey(itemDef_t *item, int key, qboolean down) {
     case ITEM_TYPE_SLIDER:
       return Item_Slider_HandleKey(item, key, down);
       break;
+#ifdef ITEM_TYPE_PRESETLIST
+	case ITEM_TYPE_PRESETLIST:
+		return Item_PresetList_HandleKey(item, key);
+		break;
+#endif
     //case ITEM_TYPE_IMAGE:
     //  Item_Image_Paint(item);
     //  break;
@@ -4136,6 +4200,11 @@ void Item_Paint(itemDef_t *item) {
     case ITEM_TYPE_SLIDER:
       Item_Slider_Paint(item);
       break;
+#ifdef ITEM_TYPE_PRESETLIST
+    case ITEM_TYPE_PRESETLIST:
+      Item_Multi_Paint(item);
+      break;
+#endif
     default:
       break;
   }
@@ -4396,6 +4465,11 @@ void Item_ValidateTypeData(itemDef_t *item) {
 	} else if (item->type == ITEM_TYPE_MODEL) {
 		item->typeData = UI_Alloc(sizeof(modelDef_t));
 	}
+#ifdef ITEM_TYPE_PRESET
+	else if (item->type == ITEM_TYPE_PRESET || item->type == ITEM_TYPE_PRESETLIST) {
+		item->typeData = UI_Alloc(sizeof(multiDef_t));
+	}
+#endif
 }
 
 /*
@@ -5165,6 +5239,57 @@ qboolean ItemParse_hideCvar( itemDef_t *item, int handle ) {
 }
 
 
+qboolean ItemParse_cvarPresetList( itemDef_t *item, int handle ) {
+	pc_token_t token;
+	multiDef_t *multiPtr;
+	int pass;
+
+	Item_ValidateTypeData(item);
+	if (!item->typeData)
+		return qfalse;
+	multiPtr = (multiDef_t*)item->typeData;
+	multiPtr->count = 0;
+	multiPtr->strDef = qtrue;
+	multiPtr->videoMode = qfalse;
+
+	if (!trap_PC_ReadToken(handle, &token))
+		return qfalse;
+	if (*token.string != '{') {
+		return qfalse;
+	}
+
+	pass = 0;
+	while ( 1 ) {
+		if (!trap_PC_ReadToken(handle, &token)) {
+			PC_SourceError(handle, "end of file inside menu item");
+			return qfalse;
+		}
+
+		if (*token.string == '}') {
+			return qtrue;
+		}
+
+		if (*token.string == ',' || *token.string == ';') {
+			continue;
+		}
+
+		if (pass == 0) {
+			multiPtr->cvarList[multiPtr->count] = String_Alloc(token.string);
+			pass = 1;
+		} else {
+			multiPtr->cvarStr[multiPtr->count] = String_Alloc(token.string);
+			pass = 0;
+			multiPtr->count++;
+			if (multiPtr->count >= MAX_MULTI_CVARS) {
+				return qfalse;
+			}
+		}
+
+	}
+	return qfalse;
+}
+
+
 keywordHash_t itemParseKeywords[] = {
 	{"name", ItemParse_name, NULL},
 	{"text", ItemParse_text, NULL},
@@ -5228,6 +5353,9 @@ keywordHash_t itemParseKeywords[] = {
 	{"hideCvar", ItemParse_hideCvar, NULL},
 	{"cinematic", ItemParse_cinematic, NULL},
 	{"doubleclick", ItemParse_doubleClick, NULL},
+
+	{"cvarPreset", ItemParse_cvarPresetList, NULL},
+	{"cvarPresetList", ItemParse_cvarPresetList, NULL},
 	{NULL, 0, NULL}
 };
 
