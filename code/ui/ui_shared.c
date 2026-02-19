@@ -5103,7 +5103,8 @@ qboolean ItemParse_maxPaintChars( itemDef_t *item, int handle ) {
 		return qfalse;
 	}
 	editPtr = (editFieldDef_t*)item->typeData;
-	editPtr->maxPaintChars = maxChars;
+	if(item->type != ITEM_TYPE_MULTI)
+		editPtr->maxPaintChars = maxChars;
 	return qtrue;
 }
 
