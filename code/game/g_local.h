@@ -769,6 +769,8 @@ extern	vmCvar_t	g_nailcount;
 extern	vmCvar_t	g_nailspread;
 extern	vmCvar_t	g_startingWeapons;
 extern	vmCvar_t	g_startingAmmo[WP_NUM_WEAPONS];
+extern	vmCvar_t	g_spawnItem;
+extern	vmCvar_t	g_spawnItemType[IT_TEAM];
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

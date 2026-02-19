@@ -111,6 +111,8 @@ vmCvar_t	g_nailcount;
 vmCvar_t	g_nailspread;
 vmCvar_t	g_startingWeapons;
 vmCvar_t	g_startingAmmo[WP_NUM_WEAPONS];
+vmCvar_t	g_spawnItem;
+vmCvar_t	g_spawnItemType[IT_TEAM];
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -281,6 +283,14 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_startingAmmo[WP_PROX_LAUNCHER], "g_startingAmmo_pl", "5", 0, 0, qtrue},
 	{ &g_startingAmmo[WP_CHAINGUN], "g_startingAmmo_cg", "100", 0, 0, qtrue},
 #endif
+	{ &g_spawnItem, "g_spawnItem", "1", 0, 0, qtrue, qtrue },
+	{ &g_spawnItemType[IT_AMMO], "g_spawnItemAmmo", "1", 0, 0, qtrue, qtrue },
+	{ &g_spawnItemType[IT_ARMOR], "g_spawnItemArmor", "1", 0, 0, qtrue, qtrue },
+	{ &g_spawnItemType[IT_HEALTH], "g_spawnItemHealth", "1", 0, 0, qtrue, qtrue },
+	{ &g_spawnItemType[IT_HOLDABLE], "g_spawnItemHoldable", "1", 0, 0, qtrue, qtrue },
+	{ &g_spawnItemType[IT_POWERUP], "g_spawnItemPowerup", "1", 0, 0, qtrue, qtrue },
+	{ &g_spawnItemType[IT_WEAPON], "g_spawnItemWeapons", "1", 0, 0, qtrue, qtrue },
+	{ &g_spawnItemType[IT_PERSISTANT_POWERUP], "g_spawnItemRune", "1", 0, 0, qtrue, qtrue },
 
 	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SYSTEMINFO, 0, qtrue},
 	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SYSTEMINFO, 0, qtrue},

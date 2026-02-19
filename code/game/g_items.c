@@ -907,6 +907,14 @@ void G_SpawnItem (gentity_t *ent, gitem_t *item) {
 	if ( G_ItemDisabled(item) )
 		return;
 
+	if( item->giType != IT_TEAM )
+	{
+		if( !g_spawnItem.integer )
+			return;
+		if( !g_spawnItemType[item->giType].integer )
+			return;
+	}
+
 	ent->item = item;
 	// some movers spawn on the second frame, so delay item
 	// spawns until the third frame so they can ride trains
