@@ -1090,7 +1090,7 @@ qboolean BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 		return qtrue;	// weapons are always picked up
 
 	case IT_AMMO:
-		if ( ps->ammo[ item->giTag ] >= 200 ) {
+		if ( ps->ammo[ item->giTag ] >= weapon_ammo_limit[item->giTag][0] ) {
 			return qfalse;		// can't hold any more
 		}
 		return qtrue;
@@ -1708,3 +1708,23 @@ int BG_GetHitValueResidual( int value ) {
 
 	return value;
 }
+
+int weapon_ammo_limit[WP_NUM_WEAPONS][2] = // 0 - normal; 1 - turbo;
+{
+	{ 0, 0 },		// WP_NONE
+	{ 0, 0 },		// WP_GAUNTLET
+	{ 150, 100 },	// WP_MACHINEGUN
+	{ 25, 20 },		// WP_SHOTGUN
+	{ 25, 20 },		// WP_GRENADE_LAUNCHER
+	{ 25, 20 },		// WP_ROCKET_LAUNCHER
+	{ 150, 100 },	// WP_LIGHTNING
+	{ 25, 20 },		// WP_RAILGUN
+	{ 150, 100 },	// WP_PLASMAGUN
+	{ 25, 10 },		// WP_BFG
+	{ 0, 0 },		// WP_GRAPPLING_HOOK
+#ifdef MISSIONPACK
+	{ 25, 20 },		// WP_NAILGUN
+	{ 5, 5 },		// WP_PROX_LAUNCHER
+	{ 200, 100 },	// WP_CHAINGUN
+#endif
+};

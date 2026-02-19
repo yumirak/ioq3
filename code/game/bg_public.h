@@ -837,6 +837,7 @@ typedef enum {
 
 extern size_t hitsound_value[4];
 extern gametypeDesc_t gametype_desc[];
+extern int weapon_ammo_limit[WP_NUM_WEAPONS][2];
 
 void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
 void	BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result );

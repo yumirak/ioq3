@@ -208,9 +208,12 @@ int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 
 void Add_Ammo (gentity_t *ent, int weapon, int count)
 {
+	int i, limit;
 	ent->client->ps.ammo[weapon] += count;
-	if ( ent->client->ps.ammo[weapon] > 200 ) {
-		ent->client->ps.ammo[weapon] = 200;
+	for (i = WP_MACHINEGUN;  i < WP_NUM_WEAPONS;  i++) {
+		limit = weapon_ammo_limit[i][0];
+		if (ent->client->ps.ammo[i] > limit)
+			ent->client->ps.ammo[i] = limit;
 	}
 }
 
@@ -244,6 +247,7 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 			quantity = ent->item->quantity;
 		}
 
+#if 0
 		// dropped items and teamplay weapons always have full ammo
 		if ( ! (ent->flags & FL_DROPPED_ITEM) && g_gametype.integer != GT_TEAM ) {
 			// respawning rules
@@ -254,6 +258,7 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 				quantity = 1;		// only add a single shot
 			}
 		}
+#endif
 	}
 
 	// add the weapon
