@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // cg_event.c -- handle entity events at snapshot or playerstate transitions
 
 #include "cg_local.h"
+#include "cg_utils.h"
 
 // for the voice chats
 #ifdef MISSIONPACK
@@ -984,6 +985,19 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		DEBUGNAME("EV_RAILTRAIL");
 		cent->currentState.weapon = WP_RAILGUN;
 		
+
+		if(es->clientNum == cg.snap->ps.clientNum && !cg.renderingThirdPerson)
+		{
+			if(cg_drawGun.integer) {
+				VectorMA(es->origin2, cg_gun_x.integer, cg.refdef.viewaxis[0], es->origin2);
+				VectorMA(es->origin2, cg_gun_y.integer, cg.refdef.viewaxis[1], es->origin2);
+				VectorMA(es->origin2, (cg_gun_z.value + CG_GetWeaponFovOffset(cg_fov.integer)), cg.refdef.viewaxis[2], es->origin2);
+			} else {
+				VectorMA(es->origin2, 4, cg.refdef.viewaxis[1], es->origin2);
+				VectorMA(es->origin2, -5, cg.refdef.viewaxis[2], es->origin2);
+			}
+		}
+
 		CG_RailTrail(ci, es->origin2, es->pos.trBase);
 
 		// if the end was on a nomark surface, don't make an explosion

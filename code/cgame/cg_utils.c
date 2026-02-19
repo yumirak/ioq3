@@ -265,3 +265,14 @@ const char* CG_GetLocalHourMinuteString (void)
 
 	return szDate;
 }
+
+int CG_GetWeaponFovOffset( int fov )
+{
+	int fovOffset = 0;
+
+	if ( fov > 90 ) {
+		fovOffset = -0.2 * ( fov - 90 );
+	}
+
+	return fovOffset;
+}

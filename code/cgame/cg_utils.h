@@ -19,3 +19,5 @@ const char* CG_GetTeamName (int team);
 int CG_GetCurrentTimeWithDirection (qboolean countdown);
 const char* CG_GetLocalTimeDateString (void);
 const char* CG_GetLocalHourMinuteString (void);
+
+int CG_GetWeaponFovOffset( int fov );
