@@ -5351,6 +5351,12 @@ static qboolean ItemParse_cvarInt( itemDef_t *item, int handle ) {
 		return qfalse;
 }
 
+static qboolean ItemParse_backgroundReset( itemDef_t *item, int handle ) {
+	item->window.background = 0;
+
+	return qtrue;
+}
+
 keywordHash_t itemParseKeywords[] = {
 	{"name", ItemParse_name, NULL},
 	{"text", ItemParse_text, NULL},
@@ -5419,6 +5425,8 @@ keywordHash_t itemParseKeywords[] = {
 	{"cvarInt", ItemParse_cvarInt, NULL},
 	{"cvarPreset", ItemParse_cvarPresetList, NULL},
 	{"cvarPresetList", ItemParse_cvarPresetList, NULL},
+	{"defaultContent", ItemParse_background, NULL},
+	{"backgroundreset", ItemParse_backgroundReset, NULL},
 	{NULL, 0, NULL}
 };
 
