@@ -537,8 +537,8 @@ gentity_t *fire_plasma (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
-	bolt->splashDamage = 15;
-	bolt->splashRadius = 20;
+	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
+	bolt->splashRadius = g_splashradius[bolt->s.weapon].integer;
 	bolt->methodOfDeath = MOD_PLASMA;
 	bolt->splashMethodOfDeath = MOD_PLASMA_SPLASH;
 	bolt->clipmask = MASK_SHOT;
@@ -579,8 +579,8 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
-	bolt->splashDamage = 100;
-	bolt->splashRadius = 150;
+	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
+	bolt->splashRadius = g_splashradius[bolt->s.weapon].integer;
 	bolt->methodOfDeath = MOD_GRENADE;
 	bolt->splashMethodOfDeath = MOD_GRENADE_SPLASH;
 	bolt->clipmask = MASK_SHOT;
@@ -620,8 +620,8 @@ gentity_t *fire_bfg (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
-	bolt->splashDamage = 100;
-	bolt->splashRadius = 120;
+	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
+	bolt->splashRadius = g_splashradius[bolt->s.weapon].integer;
 	bolt->methodOfDeath = MOD_BFG;
 	bolt->splashMethodOfDeath = MOD_BFG_SPLASH;
 	bolt->clipmask = MASK_SHOT;
@@ -660,8 +660,8 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
-	bolt->splashDamage = 100;
-	bolt->splashRadius = 120;
+	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
+	bolt->splashRadius = g_splashradius[bolt->s.weapon].integer;
 	bolt->methodOfDeath = MOD_ROCKET;
 	bolt->splashMethodOfDeath = MOD_ROCKET_SPLASH;
 	bolt->clipmask = MASK_SHOT;
@@ -787,8 +787,8 @@ gentity_t *fire_prox( gentity_t *self, vec3_t start, vec3_t dir ) {
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
-	bolt->splashDamage = 100;
-	bolt->splashRadius = 150;
+	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
+	bolt->splashRadius = g_splashradius[bolt->s.weapon].integer;
 	bolt->methodOfDeath = MOD_PROXIMITY_MINE;
 	bolt->splashMethodOfDeath = MOD_PROXIMITY_MINE;
 	bolt->clipmask = MASK_SHOT;

@@ -102,6 +102,8 @@ vmCvar_t	g_knockback_wpn[WP_NUM_WEAPONS];
 vmCvar_t	g_knockback_wpn_self[WP_NUM_WEAPONS];
 vmCvar_t	g_knockback_z[2];
 vmCvar_t	g_damage[WP_NUM_WEAPONS];
+vmCvar_t	g_splashdamage[WP_NUM_WEAPONS];
+vmCvar_t	g_splashradius[WP_NUM_WEAPONS];
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -225,6 +227,20 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_damage[WP_NAILGUN], "g_damage_ng", "12", 0, 0, qfalse},
 	{ &g_damage[WP_PROX_LAUNCHER], "g_damage_pl", "0", 0, 0, qfalse},
 	{ &g_damage[WP_CHAINGUN], "g_damage_cg", "8", 0, 0, qfalse},
+#endif
+	{ &g_splashdamage[WP_GRENADE_LAUNCHER], "g_splashdamage_gl", "100", 0, 0, qfalse},
+	{ &g_splashdamage[WP_ROCKET_LAUNCHER], "g_splashdamage_rl", "84", 0, 0, qfalse},
+	{ &g_splashdamage[WP_PLASMAGUN], "g_splashdamage_pg", "15", 0, 0, qfalse},
+	{ &g_splashdamage[WP_BFG], "g_splashdamage_bfg", "100", 0, 0, qfalse},
+#ifdef MISSIONPACK
+	{ &g_splashdamage[WP_PROX_LAUNCHER], "g_splashdamage_pl", "100", 0, 0, qfalse},
+#endif
+	{ &g_splashradius[WP_GRENADE_LAUNCHER], "g_splashradius_gl", "150", 0, 0, qfalse},
+	{ &g_splashradius[WP_ROCKET_LAUNCHER], "g_splashradius_rl", "120", 0, 0, qfalse},
+	{ &g_splashradius[WP_PLASMAGUN], "g_splashradius_pg", "20", 0, 0, qfalse},
+	{ &g_splashradius[WP_BFG], "g_splashradius_bfg", "80", 0, 0, qfalse},
+#ifdef MISSIONPACK
+	{ &g_splashradius[WP_PROX_LAUNCHER], "g_splashradius_pl", "150", 0, 0, qfalse},
 #endif
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
