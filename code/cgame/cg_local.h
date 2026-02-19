@@ -1228,6 +1228,7 @@ extern	vmCvar_t		cg_itemFx;
 extern	vmCvar_t		cg_simpleItemsBob;
 extern	vmCvar_t		cg_simpleItemsRadius;
 extern	vmCvar_t		cg_simpleItemsHeightOffset;
+extern	vmCvar_t		cg_muzzleFlash;
 
 //
 // cg_main.c

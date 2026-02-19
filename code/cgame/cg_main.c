@@ -221,6 +221,7 @@ vmCvar_t	cg_itemFx;
 vmCvar_t	cg_simpleItemsBob;
 vmCvar_t	cg_simpleItemsRadius;
 vmCvar_t	cg_simpleItemsHeightOffset;
+vmCvar_t	cg_muzzleFlash;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -361,6 +362,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_simpleItemsBob, "cg_simpleItemsBob", "1", CVAR_ARCHIVE },
 	{ &cg_simpleItemsRadius, "cg_simpleItemsRadius", "15", CVAR_ARCHIVE },
 	{ &cg_simpleItemsHeightOffset, "cg_simpleItemsHeightOffset", "8", CVAR_ARCHIVE },
+	{ &cg_muzzleFlash, "cg_muzzleFlash", "1", CVAR_ARCHIVE },
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
