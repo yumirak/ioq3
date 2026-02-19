@@ -693,9 +693,13 @@ NAILGUN
 
 void Weapon_Nailgun_Fire (gentity_t *ent) {
 	gentity_t	*m;
-	int			count;
+	int			i;
+	int			count = g_nailcount.integer;
 
-	for( count = 0; count < NUM_NAILSHOTS; count++ ) {
+	if( count < 1 )
+		return;
+
+	for( i = 0; i < count; i++ ) {
 		m = fire_nail (ent, muzzle, forward, right, up );
 		m->damage *= s_quadFactor;
 		m->splashDamage *= s_quadFactor;

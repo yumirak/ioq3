@@ -763,6 +763,10 @@ extern	vmCvar_t	g_damage[WP_NUM_WEAPONS];
 extern	vmCvar_t	g_splashdamage[WP_NUM_WEAPONS];
 extern	vmCvar_t	g_splashradius[WP_NUM_WEAPONS];
 extern	vmCvar_t	g_velocity_wpn[WP_NUM_WEAPONS];
+extern	vmCvar_t	g_nailbounce;
+extern	vmCvar_t	g_nailbouncepercentage;
+extern	vmCvar_t	g_nailcount;
+extern	vmCvar_t	g_nailspread;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

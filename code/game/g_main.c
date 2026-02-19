@@ -105,6 +105,10 @@ vmCvar_t	g_damage[WP_NUM_WEAPONS];
 vmCvar_t	g_splashdamage[WP_NUM_WEAPONS];
 vmCvar_t	g_splashradius[WP_NUM_WEAPONS];
 vmCvar_t	g_velocity_wpn[WP_NUM_WEAPONS];
+vmCvar_t	g_nailbounce;
+vmCvar_t	g_nailbouncepercentage;
+vmCvar_t	g_nailcount;
+vmCvar_t	g_nailspread;
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -251,6 +255,10 @@ static cvarTable_t		gameCvarTable[] = {
 #ifdef MISSIONPACK
 	{ &g_velocity_wpn[WP_NAILGUN], "g_nailspeed", "1000", 0, 0, qfalse},
 	{ &g_velocity_wpn[WP_PROX_LAUNCHER], "g_velocity_pl", "700", 0, 0, qfalse},
+	{ &g_nailbounce, "g_nailbounce", "1", 0, 0, qfalse},
+	{ &g_nailbouncepercentage, "g_nailbouncepercentage", "65", 0, 0, qfalse},
+	{ &g_nailcount, "g_nailcount", "10", 0, 0, qfalse},
+	{ &g_nailspread, "g_nailspeed", "400", 0, 0, qfalse},
 #endif
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},

@@ -280,9 +280,21 @@ void G_MissileImpact( gentity_t *ent, trace_t *trace ) {
 	// check for bounce
 	if ( !other->takedamage &&
 		( ent->s.eFlags & ( EF_BOUNCE | EF_BOUNCE_HALF ) ) ) {
-		G_BounceMissile( ent, trace );
-		G_AddEvent( ent, EV_GRENADE_BOUNCE, 0 );
-		return;
+		qboolean stopbounce = qfalse;
+
+		if( ent->s.time2 ) {
+			if ( ent->s.time2 < (rand() & 100) + 1 || !ent->s.time ) {
+				stopbounce = qtrue;
+			} else {
+				ent->s.time--;
+			}
+		}
+
+		if ( !stopbounce ) {
+			G_BounceMissile( ent, trace );
+			G_AddEvent( ent, EV_GRENADE_BOUNCE, 0 );
+			return;
+		}
 	}
 
 #ifdef MISSIONPACK
@@ -737,6 +749,7 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 	bolt->s.eType = ET_MISSILE;
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_NAILGUN;
+	bolt->s.eFlags = EF_BOUNCE;
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
@@ -746,11 +759,15 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 
 	bolt->s.pos.trType = TR_LINEAR;
 	bolt->s.pos.trTime = level.time;
+
+	bolt->s.time = MAX( 0, g_nailbounce.integer );
+	bolt->s.time2 = MAX( 0, g_nailbouncepercentage.integer );
+
 	VectorCopy( start, bolt->s.pos.trBase );
 
 	r = random() * M_PI * 2.0f;
-	u = sin(r) * crandom() * NAILGUN_SPREAD * 16;
-	r = cos(r) * crandom() * NAILGUN_SPREAD * 16;
+	u = sin(r) * crandom() * g_nailspread.integer * 16;
+	r = cos(r) * crandom() * g_nailspread.integer * 16;
 	VectorMA( start, 8192 * 16, forward, end);
 	VectorMA (end, r, right, end);
 	VectorMA (end, u, up, end);
