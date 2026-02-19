@@ -755,6 +755,10 @@ extern	vmCvar_t	g_singlePlayer;
 extern	vmCvar_t	g_proxMineTimeout;
 extern	vmCvar_t	g_localTeamPref;
 extern	vmCvar_t	g_ruleset;
+extern	vmCvar_t	g_max_knockback;
+extern	vmCvar_t	g_knockback_wpn[WP_NUM_WEAPONS];
+extern	vmCvar_t	g_knockback_wpn_self[WP_NUM_WEAPONS];
+extern	vmCvar_t	g_knockback_z[2];
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

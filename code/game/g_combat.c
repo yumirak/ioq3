@@ -767,6 +767,15 @@ int G_InvulnerabilityEffect( gentity_t *targ, vec3_t dir, vec3_t point, vec3_t i
 	}
 }
 #endif
+float G_WeaponKnockbackMulti( qboolean self, int mods )
+{
+	weapon_t weapon = BG_ModToWeapon( mods );
+
+	if( !weapon )
+		return 1.0;
+
+	return self ? g_knockback_wpn_self[weapon].value : g_knockback_wpn[weapon].value;
+}
 /*
 ============
 G_Damage
@@ -801,6 +810,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 #ifdef MISSIONPACK
 	vec3_t		bouncedir, impactpoint;
 #endif
+	qboolean self = (targ == attacker);
 
 	if (!targ->takedamage) {
 		return;
@@ -867,8 +877,10 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	}
 
 	knockback = damage;
-	if ( knockback > 200 ) {
-		knockback = 200;
+	knockback *= G_WeaponKnockbackMulti( self, mod );
+
+	if ( knockback > g_max_knockback.integer ) {
+		knockback = g_max_knockback.integer;
 	}
 	if ( targ->flags & FL_NO_KNOCKBACK ) {
 		knockback = 0;
@@ -1228,13 +1240,14 @@ qboolean G_RadiusDamage ( vec3_t origin, gentity_t *attacker, float damage, floa
 		points = damage * ( 1.0 - dist / radius );
 
 		if( CanDamage (ent, origin) ) {
+			qboolean self = (ent == attacker);
 			if( LogAccuracyHit( ent, attacker ) ) {
 				hitClient = qtrue;
 			}
 			VectorSubtract (ent->r.currentOrigin, origin, dir);
 			// push the center of mass higher than the origin so players
 			// get knocked into the air more
-			dir[2] += 24;
+			dir[2] += g_knockback_z[self].integer;
 			G_Damage (ent, NULL, attacker, dir, origin, (int)points, DAMAGE_RADIUS, mod);
 		}
 	}

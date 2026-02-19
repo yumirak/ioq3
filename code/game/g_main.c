@@ -97,6 +97,10 @@ vmCvar_t	g_proxMineTimeout;
 #endif
 vmCvar_t	g_ruleset;
 vmCvar_t	g_levelStartTime;
+vmCvar_t	g_max_knockback;
+vmCvar_t	g_knockback_wpn[WP_NUM_WEAPONS];
+vmCvar_t	g_knockback_wpn_self[WP_NUM_WEAPONS];
+vmCvar_t	g_knockback_z[2];
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -181,6 +185,31 @@ static cvarTable_t		gameCvarTable[] = {
 
 	{ &g_ruleset, "ruleset", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH, 0, qfalse },
 	{ &g_levelStartTime, "g_levelStartTime", "",  CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE, 0, qfalse },
+	{ &g_max_knockback, "g_max_knockback", "120", 0 , 0, qtrue},
+	{ &g_knockback_z[0], "g_knockback_z", "24", 0 , 0, qfalse},
+	{ &g_knockback_z[1], "g_knockback_z_self", "24", 0 , 0, qfalse},
+	{ &g_knockback_wpn[WP_GAUNTLET], "g_knockback_g", "1", 0 , 0, qfalse},
+	{ &g_knockback_wpn[WP_MACHINEGUN], "g_knockback_mg", "1", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_SHOTGUN], "g_knockback_sg", "1", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_GRENADE_LAUNCHER], "g_knockback_gl", "1.10", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_ROCKET_LAUNCHER], "g_knockback_rl", "0.90", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_LIGHTNING], "g_knockback_lg", "1.75", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_RAILGUN], "g_knockback_rg", "0.85", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_PLASMAGUN], "g_knockback_pg", "1.10", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_BFG], "g_knockback_bfg", "1", 0, 0, qtrue},
+	{ &g_knockback_wpn[WP_GRAPPLING_HOOK], "g_knockback_gh", "-5", 0, 0, qfalse},
+#ifdef MISSIONPACK
+	{ &g_knockback_wpn[WP_NAILGUN], "g_knockback_ng", "1", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_PROX_LAUNCHER], "g_knockback_pl", "1", 0, 0, qfalse},
+	{ &g_knockback_wpn[WP_CHAINGUN], "g_knockback_cg", "1", 0, 0, qfalse},
+#endif
+	{ &g_knockback_wpn_self[WP_GRENADE_LAUNCHER], "g_knockback_gl_self", "1.10", 0, 0, qfalse},
+	{ &g_knockback_wpn_self[WP_ROCKET_LAUNCHER], "g_knockback_rl_self", "1.10", 0, 0, qfalse},
+	{ &g_knockback_wpn_self[WP_PLASMAGUN], "g_knockback_pg_self", "1.30", 0, 0, qfalse},
+	{ &g_knockback_wpn_self[WP_BFG], "g_knockback_bfg_self", "1", 0, 0, qfalse},
+#ifdef MISSIONPACK
+	{ &g_knockback_wpn_self[WP_PROX_LAUNCHER], "g_knockback_pl_self", "1", 0, 0, qfalse},
+#endif
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
