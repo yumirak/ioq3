@@ -34,10 +34,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define MAX_ITEMACTION 64
 #define MAX_MENUDEFFILE 4096
 #define MAX_MENUFILE 32768
-#define MAX_MENUS 64
-#define MAX_MENUITEMS 96
+#define MAX_MENUS 64 * 4 // 128 in Quake Live
+#define MAX_MENUITEMS 96 * 8
 #define MAX_COLOR_RANGES 10
-#define MAX_OPEN_MENUS 16
+#define MAX_OPEN_MENUS 16 * 4
 
 #define WINDOW_MOUSEOVER			0x00000001	// mouse is over it, non exclusive
 #define WINDOW_HASFOCUS				0x00000002	// has cursor focus, exclusive
@@ -70,12 +70,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CURSOR_ARROW				0x00000002
 #define CURSOR_SIZER				0x00000004
 
-#ifdef CGAME
-#define STRING_POOL_SIZE 128*1024
-#else
 #define STRING_POOL_SIZE 384*1024
-#endif
-#define MAX_STRING_HANDLES 4096
+#define MEM_POOL_SIZE  1024 * 1024 * 2
 
 #define MAX_SCRIPT_ARGS 12
 #define MAX_EDITFIELD 256
