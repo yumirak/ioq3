@@ -101,6 +101,7 @@ vmCvar_t	g_max_knockback;
 vmCvar_t	g_knockback_wpn[WP_NUM_WEAPONS];
 vmCvar_t	g_knockback_wpn_self[WP_NUM_WEAPONS];
 vmCvar_t	g_knockback_z[2];
+vmCvar_t	g_damage[WP_NUM_WEAPONS];
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -209,6 +210,21 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_knockback_wpn_self[WP_BFG], "g_knockback_bfg_self", "1", 0, 0, qfalse},
 #ifdef MISSIONPACK
 	{ &g_knockback_wpn_self[WP_PROX_LAUNCHER], "g_knockback_pl_self", "1", 0, 0, qfalse},
+#endif
+	{ &g_damage[WP_GAUNTLET], "g_damage_g", "50", 0 , 0, qfalse},
+	{ &g_damage[WP_MACHINEGUN], "g_damage_mg", "5", 0, 0, qfalse},
+	{ &g_damage[WP_SHOTGUN], "g_damage_sg", "5", 0, 0, qfalse},
+	{ &g_damage[WP_GRENADE_LAUNCHER], "g_damage_gl", "100", 0, 0, qfalse},
+	{ &g_damage[WP_ROCKET_LAUNCHER], "g_damage_rl", "100", 0, 0, qfalse},
+	{ &g_damage[WP_LIGHTNING], "g_damage_lg", "6", 0, 0, qfalse},
+	{ &g_damage[WP_RAILGUN], "g_damage_rg", "80", 0, 0, qfalse},
+	{ &g_damage[WP_PLASMAGUN], "g_damage_pg", "20", 0, 0, qfalse},
+	{ &g_damage[WP_BFG], "g_damage_bfg", "100", 0, 0, qtrue},
+	{ &g_damage[WP_GRAPPLING_HOOK], "g_damage_gh", "0", CVAR_ROM, 0, qfalse},
+#ifdef MISSIONPACK
+	{ &g_damage[WP_NAILGUN], "g_damage_ng", "12", 0, 0, qfalse},
+	{ &g_damage[WP_PROX_LAUNCHER], "g_damage_pl", "0", 0, 0, qfalse},
+	{ &g_damage[WP_CHAINGUN], "g_damage_cg", "8", 0, 0, qfalse},
 #endif
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},

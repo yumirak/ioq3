@@ -536,7 +536,7 @@ gentity_t *fire_plasma (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.weapon = WP_PLASMAGUN;
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
-	bolt->damage = 20;
+	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = 15;
 	bolt->splashRadius = 20;
 	bolt->methodOfDeath = MOD_PLASMA;
@@ -578,7 +578,7 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.eFlags = EF_BOUNCE_HALF;
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
-	bolt->damage = 100;
+	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = 100;
 	bolt->splashRadius = 150;
 	bolt->methodOfDeath = MOD_GRENADE;
@@ -619,7 +619,7 @@ gentity_t *fire_bfg (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.weapon = WP_BFG;
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
-	bolt->damage = 100;
+	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = 100;
 	bolt->splashRadius = 120;
 	bolt->methodOfDeath = MOD_BFG;
@@ -659,7 +659,7 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.weapon = WP_ROCKET_LAUNCHER;
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
-	bolt->damage = 100;
+	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = 100;
 	bolt->splashRadius = 120;
 	bolt->methodOfDeath = MOD_ROCKET;
@@ -698,6 +698,7 @@ gentity_t *fire_grapple (gentity_t *self, vec3_t start, vec3_t dir) {
 	hook->methodOfDeath = MOD_GRAPPLE;
 	hook->clipmask = MASK_SHOT;
 	hook->parent = self;
+	hook->damage = g_damage[hook->s.weapon].integer;
 	hook->target_ent = NULL;
 
 	hook->s.pos.trType = TR_LINEAR;
@@ -737,7 +738,7 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 	bolt->s.weapon = WP_NAILGUN;
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
-	bolt->damage = 20;
+	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->methodOfDeath = MOD_NAIL;
 	bolt->clipmask = MASK_SHOT;
 	bolt->target_ent = NULL;
@@ -785,7 +786,7 @@ gentity_t *fire_prox( gentity_t *self, vec3_t start, vec3_t dir ) {
 	bolt->s.eFlags = 0;
 	bolt->r.ownerNum = self->s.number;
 	bolt->parent = self;
-	bolt->damage = 0;
+	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = 100;
 	bolt->splashRadius = 150;
 	bolt->methodOfDeath = MOD_PROXIMITY_MINE;
