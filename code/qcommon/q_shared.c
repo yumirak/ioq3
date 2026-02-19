@@ -1470,3 +1470,51 @@ char *Com_SkipTokens( char *s, int numTokens, char *sep )
 	else
 		return s;
 }
+
+const char* Q_RGBAToHex( int r, int g, int b, int a )
+{
+	return va( "0x%02x%02x%02x%02x", r & 255, g & 255, b & 255, a & 255 );
+}
+
+// for shader colors
+void Q_ByteVec4ColorFromCvar( byte *b, const vmCvar_t *cvar )
+{
+	int i;
+	int Hex = Com_HexStrToInt( cvar->string );
+
+	for( i = 0; i < 4; i++)
+		b[i] = Q_ColorFromHex( i, Hex );
+}
+
+void Q_Vec4ColorFloatFromCvar( vec4_t color, const vmCvar_t *colorCvar )
+{
+	int i;
+	int Hex = Com_HexStrToInt( colorCvar->string );
+
+	for( i = 0; i < 4; i++)
+		color[i] = (float)Q_ColorFromHex( i, Hex ) / 255.f;
+}
+
+void Q_Vec4ColorFromCvar( vec4_t color, const vmCvar_t *colorCvar )
+{
+	int i;
+	int Hex = Com_HexStrToInt( colorCvar->string );
+
+	for( i = 0; i < 4; i++)
+		color[i] = (float)Q_ColorFromHex( i, Hex );
+}
+
+void Q_SetByteColorFromVec4( byte target[4], vec4_t from )
+{
+	int i;
+
+	for( i = 0; i < 4; i++)
+		target[i] = from[i];
+}
+
+void Q_SetColorVec4( vec4_t target, vec4_t from )
+{
+	int i;
+	for( i = 0; i < 4; i++)
+		target[i] = from[i];
+}

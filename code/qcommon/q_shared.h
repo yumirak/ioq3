@@ -1442,4 +1442,16 @@ typedef enum _flag_status {
 #define LERP( a, b, w ) ( ( a ) * ( 1.0f - ( w ) ) + ( b ) * ( w ) )
 #define LUMA( red, green, blue ) ( 0.2126f * ( red ) + 0.7152f * ( green ) + 0.0722f * ( blue ) )
 
+void Q_HSV2RGB(float h, float s, float v, float *out);
+void Q_RGB2HSV(float *in, float *h, float *s, float *v);
+
+int Q_ColorFromHex( int rgba_num, int val );
+const char* Q_RGBAToHex(int r, int g, int b, int a);
+
+void Q_ByteVec4ColorFromCvar( byte *b, const vmCvar_t *cvar );
+void Q_Vec4ColorFloatFromCvar( vec4_t color, const vmCvar_t *cvar );
+void Q_Vec4ColorFromCvar( vec4_t color, const vmCvar_t *cvar );
+void Q_SetByteColorFromVec4( byte target[4], vec4_t from );
+void Q_SetColorVec4( vec4_t target, vec4_t from );
+
 #endif	// __Q_SHARED_H
