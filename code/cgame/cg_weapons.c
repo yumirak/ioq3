@@ -1399,6 +1399,14 @@ void CG_DrawWeaponSelect( void ) {
 	char	*name;
 	float	*color;
 
+	if( cg_weaponBar.integer < 0 ) {
+		return;
+	}
+
+	if( cg_weaponBar.integer < WP_BAR_LEGACY ) {
+		CG_DrawWeaponBar();
+		return;
+	}
 	// don't display if dead
 	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
 		return;
@@ -2198,4 +2206,194 @@ void CG_Bullet( vec3_t end, int sourceEntityNum, vec3_t normal, qboolean flesh, 
 		CG_MissileHitWall( WP_MACHINEGUN, 0, end, normal, IMPACTSOUND_DEFAULT );
 	}
 
+}
+
+void CG_DrawWeaponBar( void ) {
+	int		i;
+	int		count = 0;
+	float x, y;
+	vec4_t color;
+	const weaponInfo_t *wi;
+	int ammo;
+	vec4_t textColor;
+	qboolean haveWeapon;
+	int weapons;
+	int elementWidth;
+	int currentWeapon;
+	int style;
+	int xOffset;
+	int th, tw;
+	const char *s;
+#ifdef MISSIONPACK
+	float scale = 0.25;
+#endif
+
+	if (!cg.snap) {
+		return;
+	}
+
+	style = cg_weaponBar.integer;
+
+	if (style == WP_BAR_NONE) {
+		return;
+	}
+
+	// don't display if dead
+	if ( cg.predictedPlayerState.stats[STAT_HEALTH] <= 0 ) {
+		return;
+	}
+
+	currentWeapon = cg.snap->ps.weapon;
+	weapons = cg.snap->ps.stats[ STAT_WEAPONS ];
+
+#ifdef MISSIONPACK
+	th = CG_Text_Height("0", scale, 0);
+#else
+	th = SMALLCHAR_HEIGHT;
+#endif
+
+	Vector4Copy( colorWhite, color );
+	trap_R_SetColor( color );
+
+	for (i = WP_MACHINEGUN; i < WP_NUM_WEAPONS; i++) {
+		if (!cg_weapons[i].registered)
+			continue;
+
+		haveWeapon = ( weapons & ( 1 << i ));
+
+		if( !cg_drawFullWeaponBar.integer && !haveWeapon )
+			continue;
+
+		count++;
+	}
+
+	elementWidth = 54;
+	x = 320 - count * elementWidth / 2;
+	y = 410;
+#ifndef BASEQZ
+	y -= 15;
+#endif
+
+	if (style == WP_BAR_LEFT) {
+		y = 90;
+		x = 0;
+	}
+
+	if (style == WP_BAR_RIGHT) {
+		y = 90;
+		x = 640 - 50 - 4 - 4;
+	}
+
+	for ( i = WP_MACHINEGUN ; i < WP_NUM_WEAPONS; i++ ) {
+		wi = &cg_weapons[i];
+		if (!wi->registered) {
+			continue;
+		}
+
+		haveWeapon = ( weapons & ( 1 << i ));
+
+		if( !cg_drawFullWeaponBar.integer && !haveWeapon )
+			continue;
+
+		// draw selection marker
+		if (i == currentWeapon) {
+			qhandle_t weaplit = cgs.media.weaplit;
+			color[0] = 1; color[1] = 1; color[2] = 1;
+			color[3] = 0.8;
+
+			trap_R_SetColor( color );
+
+			xOffset = (style == WP_BAR_RIGHT) ? x + 8 : x - 2;
+			CG_DrawPic(xOffset, y - 2, 50, 20, weaplit);
+
+			trap_R_SetColor(colorWhite);
+		}
+
+		// draw weapon icon
+		xOffset = (style == WP_BAR_RIGHT) ? x + 40 : x;
+		CG_DrawPic(xOffset, y, 16, 16, wi->weaponIcon );
+
+		if (!haveWeapon) {
+			goto finishLoop;
+		}
+
+		ammo = cg.snap->ps.ammo[i];
+		Vector4Copy(colorWhite, textColor);
+
+		if (ammo >= 0) {
+			s = va(" %d", ammo);
+
+			if (cg_lowAmmoWeaponBarWarning.integer >= 1) {
+				switch(CG_GetAmmoWarning(i))
+				{
+					case AMMO_WARNING_EMPTY:
+						Vector4Copy(colorRed, textColor);
+						break;
+					case AMMO_WARNING_LOW:
+						if ( cg_lowAmmoWeaponBarWarning.integer >= 2 ) {
+							Vector4Copy(colorYellow, textColor);
+						}
+						break;
+				}
+			}
+
+			switch(style)
+			{
+				case WP_BAR_LEFT:
+				case WP_BAR_CENTER:
+#ifdef MISSIONPACK
+					CG_Text_Paint(x + 16, y + ( th  * 1.5 ), scale, textColor, s, 0, 0, 0);
+#else
+					CG_DrawStringExt( x + 14, y, s, textColor, qfalse, qfalse,
+									  SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+#endif
+					break;
+				default: {
+#ifdef MISSIONPACK
+					tw = CG_Text_Width(s, scale, 0);
+					CG_Text_Paint(x + 38 - tw, y + ( th  * 1.5 ), scale, textColor, s, 0, 0, 0);
+#else
+					tw = CG_DrawStrlen( s ) * SMALLCHAR_WIDTH;
+					CG_DrawStringExt( x + 36 - tw, y, s, textColor, qfalse, qfalse,
+									  SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+#endif
+				}
+			}
+		} else {
+			trap_R_SetColor(colorWhite);
+#ifdef BASEQZ
+			if(cgs.media.infiniteAmmo) CG_DrawPic(x + 18, y , 16, 16, cgs.media.infiniteAmmo);
+#endif
+		}
+
+		finishLoop:
+		if( style != WP_BAR_CENTER )
+			y += 22;
+		else
+			x += elementWidth;
+	}
+}
+
+weaponAmmoWarning_t CG_GetAmmoWarning (weapon_t weapon)
+{
+	weaponAmmoWarning_t ammoWarning;
+	int maxAmmo;
+	int currentAmmo;
+
+	ammoWarning = AMMO_WARNING_OK;
+	currentAmmo = cg.snap->ps.ammo[weapon];
+
+	if (currentAmmo < 0) {  // infinite
+		return AMMO_WARNING_OK;
+	}
+
+	maxAmmo = weapon_ammo_limit[weapon][0];
+
+	if (currentAmmo == 0) {
+		ammoWarning = AMMO_WARNING_EMPTY;
+	} else if ((float)currentAmmo / (float)maxAmmo < cg_lowAmmoWarningPercentile.value) {
+		ammoWarning = AMMO_WARNING_LOW;
+	}
+
+	return ammoWarning;
 }

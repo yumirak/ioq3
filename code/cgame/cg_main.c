@@ -222,6 +222,10 @@ vmCvar_t	cg_simpleItemsBob;
 vmCvar_t	cg_simpleItemsRadius;
 vmCvar_t	cg_simpleItemsHeightOffset;
 vmCvar_t	cg_muzzleFlash;
+vmCvar_t	cg_weaponBar;
+vmCvar_t	cg_drawFullWeaponBar;
+vmCvar_t	cg_lowAmmoWeaponBarWarning;
+vmCvar_t	cg_lowAmmoWarningPercentile;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -363,6 +367,10 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_simpleItemsRadius, "cg_simpleItemsRadius", "15", CVAR_ARCHIVE },
 	{ &cg_simpleItemsHeightOffset, "cg_simpleItemsHeightOffset", "8", CVAR_ARCHIVE },
 	{ &cg_muzzleFlash, "cg_muzzleFlash", "1", CVAR_ARCHIVE },
+	{ &cg_weaponBar, "cg_weaponBar", "1", CVAR_ARCHIVE },
+	{ &cg_drawFullWeaponBar, "cg_drawFullWeaponBar", "0", CVAR_ARCHIVE },
+	{ &cg_lowAmmoWeaponBarWarning, "cg_lowAmmoWeaponBarWarning", "2", CVAR_ARCHIVE },
+	{ &cg_lowAmmoWarningPercentile, "cg_lowAmmoWarningPercentile", "0.2", CVAR_ARCHIVE },
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
@@ -1160,10 +1168,15 @@ static void CG_RegisterGraphics( void ) {
 		cgs.media.lightningShaderNew[i] = trap_R_RegisterShader( va("lightningBolt%d", i + 1) );
 	}
 
+	cgs.media.weaplit = trap_R_RegisterShader( "ui/assets/hud/weaplit2" );
+	if(!cgs.media.weaplit)
+		cgs.media.weaplit = cgs.media.backTileShader;
+
 #ifdef BASEQZ
 	cgs.media.ghostShader = trap_R_RegisterShader( "ghostWeaponShader" );
 	cgs.media.gibSphere = trap_R_RegisterModel( "models/gibs/sphere.md3" );
 	cgs.media.deathEffectShader = trap_R_RegisterShader( "deathEffect" );
+	cgs.media.infiniteAmmo = trap_R_RegisterShader( "icons/infinite" );
 #endif
 	CG_ClearParticles ();
 /*

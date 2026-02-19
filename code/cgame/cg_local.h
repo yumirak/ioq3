@@ -112,6 +112,20 @@ typedef enum {
 	IMPACTSOUND_FLESH
 } impactSound_t;
 
+typedef enum {
+	AMMO_WARNING_OK,
+	AMMO_WARNING_LOW,
+	AMMO_WARNING_EMPTY,
+} weaponAmmoWarning_t;
+
+typedef enum {
+	WP_BAR_NONE,
+	WP_BAR_LEFT,
+	WP_BAR_RIGHT,
+	WP_BAR_CENTER,
+	WP_BAR_LEGACY
+} weaponBarType_t;
+
 //=================================================
 
 // player entities need to track more information
@@ -994,10 +1008,12 @@ typedef struct {
 	sfxHandle_t	electroGibSound[4];
 	sfxHandle_t	electroGibBounceSound[4];
 	sfxHandle_t ghostShader;
+	qhandle_t	infiniteAmmo;
 #endif
 
 	sfxHandle_t killSound[8];
 	qhandle_t lightningShaderNew[5];
+	qhandle_t	weaplit;
 } cgMedia_t;
 
 
@@ -1229,6 +1245,10 @@ extern	vmCvar_t		cg_simpleItemsBob;
 extern	vmCvar_t		cg_simpleItemsRadius;
 extern	vmCvar_t		cg_simpleItemsHeightOffset;
 extern	vmCvar_t		cg_muzzleFlash;
+extern	vmCvar_t		cg_weaponBar;
+extern	vmCvar_t		cg_drawFullWeaponBar;
+extern	vmCvar_t		cg_lowAmmoWeaponBarWarning;
+extern	vmCvar_t		cg_lowAmmoWarningPercentile;
 
 //
 // cg_main.c
@@ -1410,6 +1430,8 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 void CG_DrawWeaponSelect( void );
 
 void CG_OutOfAmmoChange( void );	// should this be in pmove?
+void CG_DrawWeaponBar (void);
+weaponAmmoWarning_t CG_GetAmmoWarning (weapon_t weapon);
 
 //
 // cg_marks.c
