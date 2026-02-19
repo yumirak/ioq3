@@ -1006,20 +1006,15 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 		}
 
 		AngleVectors(angle, forward, NULL, NULL );
-		VectorCopy(cent->lerpOrigin, muzzlePoint );
-//		VectorCopy(cg.refdef.vieworg, muzzlePoint );
+		VectorCopy(cg.refdef.vieworg, muzzlePoint );
 	} else {
 		// !CPMA
 		AngleVectors( cent->lerpAngles, forward, NULL, NULL );
 		VectorCopy(cent->lerpOrigin, muzzlePoint );
 	}
 
-	anim = cent->currentState.legsAnim & ~ANIM_TOGGLEBIT;
-	if ( anim == LEGS_WALKCR || anim == LEGS_IDLECR ) {
-		muzzlePoint[2] += CROUCH_VIEWHEIGHT;
-	} else {
-		muzzlePoint[2] += DEFAULT_VIEWHEIGHT;
-	}
+	if( cg_trueLightning.value == 0.0 )
+		muzzlePoint[2] += cg.predictedPlayerState.pm_flags & PMF_DUCKED ? CROUCH_VIEWHEIGHT : DEFAULT_VIEWHEIGHT;
 
 	VectorMA( muzzlePoint, 14, forward, muzzlePoint );
 
