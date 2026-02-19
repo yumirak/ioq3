@@ -887,11 +887,14 @@ static void CG_DrawAreaPowerUp(rectDef_t *rect, int align, float special, float 
 
 float CG_GetValue(int ownerDraw) {
 	centity_t	*cent;
+	clientInfo_t *ci;
 	playerState_t	*ps;
 	entityState_t	*es;
+	score_t *selectedScore;
 
   cent = &cg_entities[cg.snap->ps.clientNum];
 	ps = &cg.snap->ps;
+	selectedScore = &cg.scores[cg.selectedScore];
 
   switch (ownerDraw) {
 #ifdef CG_SELECTEDPLAYER_ARMOR
@@ -926,6 +929,102 @@ float CG_GetValue(int ownerDraw) {
   case CG_BLUE_SCORE:
 		return cgs.scores2;
     break;
+	// Extend
+	case CG_ACCURACY:
+		return selectedScore->accuracy;
+		break;
+
+	case CG_ASSISTS:
+		return selectedScore->assistCount;
+		break;
+
+	case CG_DEFEND:
+		return selectedScore->defendCount;
+		break;
+
+	case CG_CAPTURES:
+		return selectedScore->captures;
+		break;
+
+	case CG_EXCELLENT:
+		return selectedScore->excellentCount;
+		break;
+
+	case CG_IMPRESSIVE:
+		return selectedScore->impressiveCount;
+		break;
+
+	case CG_PERFECT:
+		return selectedScore->perfect;
+		break;
+
+	case CG_GAUNTLET:
+		return selectedScore->guantletCount;
+		break;
+#ifdef CG_SELECTEDPLAYER_WEAPON
+	case CG_SELECTEDPLAYER_WEAPON:
+		ci = cgs.clientinfo + sortedTeamPlayers[CG_GetSelectedPlayer()];
+		return ci->curWeapon;
+		break;
+#endif
+#ifdef CG_HARVESTER_SKULLS
+	case CG_HARVESTER_SKULLS:
+		if( cg.snap )
+			return( BG_GetHitValueResidual(cg.snap->ps.generic1) & 0x3f );
+		return 0;
+		break;
+#endif
+#ifdef CG_ONEFLAG_STATUS
+	case CG_ONEFLAG_STATUS:
+		return cgs.flagStatus;
+		break;
+#endif
+#ifdef CG_GAME_TYPE
+	case CG_GAME_TYPE:
+		return cgs.gametype;
+		break;
+#endif
+
+#ifdef CG_CAPFRAGLIMIT
+	case CG_CAPFRAGLIMIT: {
+		int limit;
+
+		if( CG_IsDuelGame( cgs.gametype ) || cgs.gametype == GT_TEAM ) {
+			limit = cgs.timelimit;
+		} else if( cgs.gametype == GT_CTF || cgs.gametype == GT_1FCTF ) {
+			limit = cgs.capturelimit ? cgs.capturelimit : cgs.timelimit;
+		} else {
+			limit = cgs.fraglimit;
+		}
+		return limit;
+		break;
+	}
+#endif
+#ifdef CG_SELECTED_PLYR_ACCURACY
+	case CG_SELECTED_PLYR_ACCURACY:
+		return cg.scores[cg.selectedScore].accuracy;
+		break;
+#endif
+#ifdef CG_PLAYER_COUNTS
+	case CG_PLAYER_COUNTS:
+		return CG_GetPlayerCount( -1 );
+		break;
+#endif
+#ifdef CG_RED_PLAYER_COUNT
+	case CG_RED_PLAYER_COUNT:
+		return CG_GetPlayerCount( TEAM_RED );
+		break;
+#endif
+#ifdef CG_BLUE_PLAYER_COUNT
+	case CG_BLUE_PLAYER_COUNT:
+		return CG_GetPlayerCount( TEAM_BLUE );
+		break;
+#endif
+#ifdef CG_SPEEDOMETER
+	case CG_SPEEDOMETER:
+		return cg.xyspeed;
+		break;
+#endif
   default:
     break;
   }
