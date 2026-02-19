@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // cg_view.c -- setup all the parameters (position, angle, etc)
 // for a 3D rendering
 #include "cg_local.h"
+#include "cg_utils.h"
 
 
 /*
@@ -582,6 +583,11 @@ static void CG_DamageBlendBlob( void ) {
 	int			t;
 	int			maxTime;
 	refEntity_t		ent;
+	vmCvar_t	colorCvar;
+	vmCvar_t	alphaCvar;
+	vec4_t	color;
+	float	alpha;
+	clientInfo_t	*ci;
 
 	if (!cg_blood.integer) {
 		return;
@@ -606,6 +612,24 @@ static void CG_DamageBlendBlob( void ) {
 		return;
 	}
 
+	ci = &cgs.clientinfo[ cg.predictedPlayerState.persistant[PERS_ATTACKER] ];
+	alphaCvar = cg_screenDamageAlpha;
+
+	if( CG_IsUs( ci )) {
+		colorCvar = cg_screenDamage_Self;
+	} else if( CG_IsTeammate( ci ) ) {
+		colorCvar = cg_screenDamage_Team;
+		alphaCvar = cg_screenDamageAlpha_Team;
+	} else {
+		colorCvar = cg_screenDamage;
+	}
+
+	alpha = Com_Clamp( 0.0f, 255.0f, alphaCvar.value );
+
+	if(alpha < 1)
+		return;
+
+	Q_Vec4ColorFromCvar( color, &colorCvar );
 
 	memset( &ent, 0, sizeof( ent ) );
 	ent.reType = RT_SPRITE;
@@ -617,10 +641,10 @@ static void CG_DamageBlendBlob( void ) {
 
 	ent.radius = cg.damageValue * 3;
 	ent.customShader = cgs.media.viewBloodShader;
-	ent.shaderRGBA[0] = 255;
-	ent.shaderRGBA[1] = 255;
-	ent.shaderRGBA[2] = 255;
-	ent.shaderRGBA[3] = 200 * ( 1.0 - ((float)t / maxTime) );
+	ent.shaderRGBA[0] = color[0];
+	ent.shaderRGBA[1] = color[1];
+	ent.shaderRGBA[2] = color[2];
+	ent.shaderRGBA[3] = alpha * ( 1.0 - ((float)t / maxTime) );
 	trap_R_AddRefEntityToScene( &ent );
 }
 

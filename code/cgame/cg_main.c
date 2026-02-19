@@ -205,6 +205,11 @@ vmCvar_t	cg_zoomScaling;
 vmCvar_t	cg_zoomSensitivity;
 vmCvar_t	cg_zoomToggle;
 vmCvar_t	cg_kickScale;
+vmCvar_t	cg_screenDamage;
+vmCvar_t	cg_screenDamage_Self;
+vmCvar_t	cg_screenDamage_Team;
+vmCvar_t	cg_screenDamageAlpha;
+vmCvar_t	cg_screenDamageAlpha_Team;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -329,6 +334,11 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_zoomSensitivity, "cg_zoomSensitivity", "1", CVAR_ARCHIVE},
 	{ &cg_zoomToggle, "cg_zoomToggle", "0", CVAR_ARCHIVE},
 	{ &cg_kickScale, "cg_kickScale", "0", CVAR_ARCHIVE},
+	{ &cg_screenDamage, "cg_screenDamage", "0x700000C8", CVAR_ARCHIVE },
+	{ &cg_screenDamage_Self, "cg_screenDamage_Self", "0x00000000", CVAR_ARCHIVE },
+	{ &cg_screenDamage_Team, "cg_screenDamage_Team", "0x700000C8", CVAR_ARCHIVE },
+	{ &cg_screenDamageAlpha, "cg_screenDamageAlpha", "200", CVAR_ARCHIVE },
+	{ &cg_screenDamageAlpha_Team, "cg_screenDamageAlpha_Team", "200", CVAR_ARCHIVE },
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
@@ -874,6 +884,8 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.botSkillShaders[4] = trap_R_RegisterShader( "menu/art/skill5.tga" );
 
 	cgs.media.viewBloodShader = trap_R_RegisterShader( "viewBloodBlend" );
+	if(!cgs.media.viewBloodShader)
+		cgs.media.viewBloodShader = trap_R_RegisterShader( "viewDamageBlend" );
 
 	cgs.media.deferShader = trap_R_RegisterShaderNoMip( "gfx/2d/defer.tga" );
 

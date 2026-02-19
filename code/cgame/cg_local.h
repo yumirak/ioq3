@@ -1213,6 +1213,11 @@ extern	vmCvar_t		cg_zoomScaling;
 extern	vmCvar_t		cg_zoomSensitivity;
 extern	vmCvar_t		cg_zoomToggle;
 extern	vmCvar_t		cg_kickScale;
+extern	vmCvar_t		cg_screenDamage;
+extern	vmCvar_t		cg_screenDamage_Self;
+extern	vmCvar_t		cg_screenDamage_Team;
+extern	vmCvar_t		cg_screenDamageAlpha;
+extern	vmCvar_t		cg_screenDamageAlpha_Team;
 
 //
 // cg_main.c
