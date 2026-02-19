@@ -1250,6 +1250,13 @@ extern	vmCvar_t		cg_weaponBar;
 extern	vmCvar_t		cg_drawFullWeaponBar;
 extern	vmCvar_t		cg_lowAmmoWeaponBarWarning;
 extern	vmCvar_t		cg_lowAmmoWarningPercentile;
+extern	vmCvar_t		cg_smokeRadius_GL;
+extern	vmCvar_t		cg_smokeRadius_RL;
+extern	vmCvar_t		cg_smokeRadius_NG;
+extern	vmCvar_t		cg_smokeRadius_haste;
+extern	vmCvar_t		cg_smokeRadius_flight;
+extern	vmCvar_t		cg_smokeRadius_dust;
+extern	vmCvar_t		cg_smoke_SG;
 
 //
 // cg_main.c

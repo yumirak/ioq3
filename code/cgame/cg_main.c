@@ -227,6 +227,14 @@ vmCvar_t	cg_weaponBar;
 vmCvar_t	cg_drawFullWeaponBar;
 vmCvar_t	cg_lowAmmoWeaponBarWarning;
 vmCvar_t	cg_lowAmmoWarningPercentile;
+vmCvar_t	cg_smokeRadius_GL;
+vmCvar_t	cg_smokeRadius_RL;
+vmCvar_t	cg_smokeRadius_NG;
+vmCvar_t	cg_smokeRadius_haste;
+vmCvar_t	cg_smokeRadius_flight;
+vmCvar_t	cg_smokeRadius_dust;
+vmCvar_t	cg_smoke_SG;
+
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
 typedef struct {
@@ -380,6 +388,14 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_plasmaStyle, "cg_plasmaStyle", "1", CVAR_ARCHIVE},
 	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE},
 	{ &cg_trueShotgun, "cg_trueShotgun", "0", CVAR_ARCHIVE},
+
+	{ &cg_smokeRadius_RL, "cg_smokeRadius_RL", "32", CVAR_ARCHIVE },
+	{ &cg_smokeRadius_NG, "cg_smokeRadius_NG", "16", CVAR_ARCHIVE },
+	{ &cg_smokeRadius_GL, "cg_smokeRadius_GL", "64", CVAR_ARCHIVE },
+	{ &cg_smokeRadius_flight, "cg_smokeRadius_flight", "8", 0}, // unused
+	{ &cg_smokeRadius_haste, "cg_smokeRadius_haste", "8", 0},
+	{ &cg_smokeRadius_dust, "cg_smokeRadius_dust", "24", 0},
+	{ &cg_smoke_SG, "cg_smoke_SG", "1", CVAR_ARCHIVE},
 
 	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SERVERINFO},
 	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SERVERINFO},

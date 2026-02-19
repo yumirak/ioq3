@@ -337,6 +337,7 @@ static void CG_RocketTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	entityState_t	*es;
 	vec3_t	up;
 	localEntity_t	*smoke;
+	int	trailradius;
 
 	if ( cg_noProjectileTrail.integer ) {
 		return;
@@ -354,6 +355,16 @@ static void CG_RocketTrail( centity_t *ent, const weaponInfo_t *wi ) {
 
 	BG_EvaluateTrajectory( &es->pos, cg.time, origin );
 	contents = CG_PointContents( origin, -1 );
+
+	switch(es->weapon)
+	{
+		case WP_ROCKET_LAUNCHER: trailradius = Com_Clamp( 0, 32, cg_smokeRadius_RL.integer ); break;
+		case WP_GRENADE_LAUNCHER: trailradius = Com_Clamp( 0, 64,cg_smokeRadius_GL.integer ); break;
+		default: trailradius = 0; break;
+	}
+
+	if( trailradius < 1 )
+		return;
 
 	// if object (e.g. grenade) is stationary, don't toss up smoke
 	if ( es->pos.trType == TR_STATIONARY ) {
@@ -377,7 +388,7 @@ static void CG_RocketTrail( centity_t *ent, const weaponInfo_t *wi ) {
 		BG_EvaluateTrajectory( &es->pos, t, lastPos );
 
 		smoke = CG_SmokePuff( lastPos, up, 
-					  wi->trailRadius, 
+					  trailradius,
 					  1, 1, 1, 0.33f,
 					  wi->wiTrailTime, 
 					  t,
@@ -405,10 +416,15 @@ static void CG_NailTrail( centity_t *ent, const weaponInfo_t *wi ) {
 	entityState_t	*es;
 	vec3_t	up;
 	localEntity_t	*smoke;
+	int	trailradius;
 
 	if ( cg_noProjectileTrail.integer ) {
 		return;
 	}
+
+	trailradius = Com_Clamp( 0, 16, cg_smokeRadius_NG.integer );
+	if( trailradius < 1 )
+		return;
 
 	up[0] = 0;
 	up[1] = 0;
@@ -445,7 +461,7 @@ static void CG_NailTrail( centity_t *ent, const weaponInfo_t *wi ) {
 		BG_EvaluateTrajectory( &es->pos, t, lastPos );
 
 		smoke = CG_SmokePuff( lastPos, up, 
-					  wi->trailRadius, 
+					  trailradius,
 					  1, 1, 1, 0.33f,
 					  wi->wiTrailTime, 
 					  t,
@@ -2028,7 +2044,7 @@ void CG_ShotgunFire( entityState_t *es ) {
 	VectorNormalize( v );
 	VectorScale( v, 32, v );
 	VectorAdd( es->pos.trBase, v, v );
-	if ( cgs.glconfig.hardwareType != GLHW_RAGEPRO ) {
+	if ( cgs.glconfig.hardwareType != GLHW_RAGEPRO && cg_smoke_SG.integer ) {
 		// ragepro can't alpha fade, so don't even bother with smoke
 		vec3_t			up;
 

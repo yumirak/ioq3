@@ -1505,10 +1505,16 @@ static void CG_HasteTrail( centity_t *cent ) {
 	localEntity_t	*smoke;
 	vec3_t			origin;
 	int				anim;
+	int				radius;
 
 	if ( cent->trailTime > cg.time ) {
 		return;
 	}
+
+	radius = Com_Clamp( 0, 16, cg_smokeRadius_haste.integer);
+	if ( radius < 1 )
+		return;
+
 	anim = cent->pe.legs.animationNumber & ~ANIM_TOGGLEBIT;
 	if ( anim != LEGS_RUN && anim != LEGS_BACK ) {
 		return;
@@ -1523,7 +1529,7 @@ static void CG_HasteTrail( centity_t *cent ) {
 	origin[2] -= 16;
 
 	smoke = CG_SmokePuff( origin, vec3_origin, 
-				  8, 
+				  radius,
 				  1, 1, 1, 1,
 				  500, 
 				  cg.time,
@@ -1581,11 +1587,17 @@ static void CG_DustTrail( centity_t *cent ) {
 	int				anim;
 	vec3_t end, vel;
 	trace_t tr;
+	int	radius;
 
 	if (!cg_enableDust.integer)
 		return;
 
 	if ( cent->dustTrailTime > cg.time ) {
+		return;
+	}
+
+	radius = Com_Clamp( 0, 32, cg_smokeRadius_dust.integer);
+	if ( radius < 1 ) {
 		return;
 	}
 
@@ -1611,7 +1623,7 @@ static void CG_DustTrail( centity_t *cent ) {
 
 	VectorSet(vel, 0, 0, -30);
 	CG_SmokePuff( end, vel,
-				  24,
+				  radius,
 				  .8f, .8f, 0.7f, 0.33f,
 				  500,
 				  cg.time,
