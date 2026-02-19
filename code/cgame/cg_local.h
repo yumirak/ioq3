@@ -1224,6 +1224,7 @@ extern	vmCvar_t		cg_screenDamage_Self;
 extern	vmCvar_t		cg_screenDamage_Team;
 extern	vmCvar_t		cg_screenDamageAlpha;
 extern	vmCvar_t		cg_screenDamageAlpha_Team;
+extern	vmCvar_t		cg_itemFx;
 
 //
 // cg_main.c

@@ -217,6 +217,7 @@ vmCvar_t	cg_screenDamage_Self;
 vmCvar_t	cg_screenDamage_Team;
 vmCvar_t	cg_screenDamageAlpha;
 vmCvar_t	cg_screenDamageAlpha_Team;
+vmCvar_t	cg_itemFx;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -353,6 +354,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_screenDamage_Team, "cg_screenDamage_Team", "0x700000C8", CVAR_ARCHIVE },
 	{ &cg_screenDamageAlpha, "cg_screenDamageAlpha", "200", CVAR_ARCHIVE },
 	{ &cg_screenDamageAlpha_Team, "cg_screenDamageAlpha_Team", "200", CVAR_ARCHIVE },
+	{ &cg_itemFx, "cg_itemFx", "7", CVAR_ARCHIVE},
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
