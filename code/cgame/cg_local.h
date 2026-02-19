@@ -1212,6 +1212,7 @@ extern	vmCvar_t		cg_zoomOutOnDeath;
 extern	vmCvar_t		cg_zoomScaling;
 extern	vmCvar_t		cg_zoomSensitivity;
 extern	vmCvar_t		cg_zoomToggle;
+extern	vmCvar_t		cg_kickScale;
 
 //
 // cg_main.c

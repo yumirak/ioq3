@@ -336,6 +336,7 @@ static void CG_OffsetFirstPersonView( void ) {
 	// add angles based on damage kick
 	if ( cg.damageTime ) {
 		ratio = cg.time - cg.damageTime;
+		ratio *= Com_Clamp( 0.0, 1.0f, cg_kickScale.value );
 		if ( ratio < DAMAGE_DEFLECT_TIME ) {
 			ratio /= DAMAGE_DEFLECT_TIME;
 			angles[PITCH] += ratio * cg.v_dmg_pitch;

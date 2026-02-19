@@ -204,6 +204,7 @@ vmCvar_t	cg_zoomOutOnDeath;
 vmCvar_t	cg_zoomScaling;
 vmCvar_t	cg_zoomSensitivity;
 vmCvar_t	cg_zoomToggle;
+vmCvar_t	cg_kickScale;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -327,6 +328,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_zoomScaling, "cg_zoomScaling", "1", CVAR_ARCHIVE},
 	{ &cg_zoomSensitivity, "cg_zoomSensitivity", "1", CVAR_ARCHIVE},
 	{ &cg_zoomToggle, "cg_zoomToggle", "0", CVAR_ARCHIVE},
+	{ &cg_kickScale, "cg_kickScale", "0", CVAR_ARCHIVE},
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
