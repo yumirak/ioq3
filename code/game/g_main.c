@@ -104,6 +104,7 @@ vmCvar_t	g_knockback_z[2];
 vmCvar_t	g_damage[WP_NUM_WEAPONS];
 vmCvar_t	g_splashdamage[WP_NUM_WEAPONS];
 vmCvar_t	g_splashradius[WP_NUM_WEAPONS];
+vmCvar_t	g_velocity_wpn[WP_NUM_WEAPONS];
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -241,6 +242,15 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_splashradius[WP_BFG], "g_splashradius_bfg", "80", 0, 0, qfalse},
 #ifdef MISSIONPACK
 	{ &g_splashradius[WP_PROX_LAUNCHER], "g_splashradius_pl", "150", 0, 0, qfalse},
+#endif
+	{ &g_velocity_wpn[WP_GRENADE_LAUNCHER], "g_velocity_gl", "700", 0, 0, qfalse},
+	{ &g_velocity_wpn[WP_ROCKET_LAUNCHER], "g_velocity_rl", "1000", 0, 0, qfalse},
+	{ &g_velocity_wpn[WP_PLASMAGUN], "g_velocity_pg", "2000", 0, 0, qfalse},
+	{ &g_velocity_wpn[WP_BFG], "g_velocity_bfg", "1800", 0, 0, qfalse},
+	{ &g_velocity_wpn[WP_GRAPPLING_HOOK], "g_velocity_gh", "700", 0, 0, qfalse},
+#ifdef MISSIONPACK
+	{ &g_velocity_wpn[WP_NAILGUN], "g_nailspeed", "1000", 0, 0, qfalse},
+	{ &g_velocity_wpn[WP_PROX_LAUNCHER], "g_velocity_pl", "700", 0, 0, qfalse},
 #endif
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
