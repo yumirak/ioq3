@@ -1630,9 +1630,11 @@ static int UI_OwnerDrawWidth(int ownerDraw, float scale) {
 				i = 20 - h / 5;
 				s = handicapValues[i];
       break;
+#ifdef UI_CLANNAME
     case UI_CLANNAME:
 				s = UI_Cvar_VariableString("ui_teamName");
       break;
+#endif
     case UI_GAMETYPE:
 				s = uiInfo.gameTypes[ui_gameType.integer].gameType;
       break;
@@ -1643,18 +1645,23 @@ static int UI_OwnerDrawWidth(int ownerDraw, float scale) {
 				}
 			  s = skillLevels[i-1];
       break;
+#ifdef UI_BLUETEAMNAME
     case UI_BLUETEAMNAME:
 			  i = UI_TeamIndexFromName(UI_Cvar_VariableString("ui_blueTeam"));
 			  if (i >= 0 && i < uiInfo.teamCount) {
 			    s = va("%s: %s", "Blue", uiInfo.teamList[i].teamName);
 			  }
       break;
+#endif
+#ifdef UI_REDTEAMNAME
     case UI_REDTEAMNAME:
 			  i = UI_TeamIndexFromName(UI_Cvar_VariableString("ui_redTeam"));
 			  if (i >= 0 && i < uiInfo.teamCount) {
 			    s = va("%s: %s", "Red", uiInfo.teamList[i].teamName);
 			  }
       break;
+#endif
+#ifdef UI_BLUETEAM1
     case UI_BLUETEAM1:
 		case UI_BLUETEAM2:
 		case UI_BLUETEAM3:
@@ -1674,6 +1681,8 @@ static int UI_OwnerDrawWidth(int ownerDraw, float scale) {
 			}
 			s = va("%i. %s", ownerDraw-UI_BLUETEAM1 + 1, text);
       break;
+#endif
+#ifdef UI_REDTEAM1
     case UI_REDTEAM1:
 		case UI_REDTEAM2:
 		case UI_REDTEAM3:
@@ -1693,6 +1702,7 @@ static int UI_OwnerDrawWidth(int ownerDraw, float scale) {
 			}
 			s = va("%i. %s", ownerDraw-UI_REDTEAM1 + 1, text);
       break;
+#endif
 		case UI_NETSOURCE:
 			if (ui_netSource.integer < 0 || ui_netSource.integer >= numNetSources) {
 				ui_netSource.integer = 0;
@@ -1973,18 +1983,24 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
     case UI_HANDICAP:
       UI_DrawHandicap(&rect, scale, color, textStyle);
       break;
+#ifdef UI_EFFECTS
     case UI_EFFECTS:
       UI_DrawEffects(&rect, scale, color);
       break;
+#endif
     case UI_PLAYERMODEL:
       UI_DrawPlayerModel(&rect);
       break;
+#ifdef UI_CLANNAME
     case UI_CLANNAME:
       UI_DrawClanName(&rect, scale, color, textStyle);
       break;
+#endif
+#ifdef UI_CLANLOGO
     case UI_CLANLOGO:
       UI_DrawClanLogo(&rect, scale, color);
       break;
+#endif
     case UI_CLANCINEMATIC:
       UI_DrawClanCinematic(&rect, scale, color);
       break;
@@ -2015,12 +2031,17 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
     case UI_SKILL:
       UI_DrawSkill(&rect, scale, color, textStyle);
       break;
+#ifdef UI_BLUETEAMNAME
     case UI_BLUETEAMNAME:
       UI_DrawTeamName(&rect, scale, color, qtrue, textStyle);
       break;
+#endif
+#ifdef UI_REDTEAMNAME
     case UI_REDTEAMNAME:
       UI_DrawTeamName(&rect, scale, color, qfalse, textStyle);
       break;
+#endif
+#ifdef UI_BLUETEAM1
     case UI_BLUETEAM1:
 		case UI_BLUETEAM2:
 		case UI_BLUETEAM3:
@@ -2028,6 +2049,8 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		case UI_BLUETEAM5:
       UI_DrawTeamMember(&rect, scale, color, qtrue, ownerDraw - UI_BLUETEAM1 + 1, textStyle);
       break;
+#endif
+#ifdef UI_REDTEAM1
     case UI_REDTEAM1:
 		case UI_REDTEAM2:
 		case UI_REDTEAM3:
@@ -2035,6 +2058,7 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		case UI_REDTEAM5:
       UI_DrawTeamMember(&rect, scale, color, qfalse, ownerDraw - UI_REDTEAM1 + 1, textStyle);
       break;
+#endif
 		case UI_NETSOURCE:
       UI_DrawNetSource(&rect, scale, color, textStyle);
 			break;
@@ -2062,24 +2086,36 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		case UI_TIERMAP3:
 			UI_DrawTierMap(&rect, 2);
 			break;
+#ifdef UI_PLAYERLOGO
 		case UI_PLAYERLOGO:
 			UI_DrawPlayerLogo(&rect, color);
 			break;
+#endif
+#ifdef UI_PLAYERLOGO_METAL
 		case UI_PLAYERLOGO_METAL:
 			UI_DrawPlayerLogoMetal(&rect, color);
 			break;
+#endif
+#ifdef UI_PLAYERLOGO_NAME
 		case UI_PLAYERLOGO_NAME:
 			UI_DrawPlayerLogoName(&rect, color);
 			break;
+#endif
+#ifdef UI_OPPONENTLOGO
 		case UI_OPPONENTLOGO:
 			UI_DrawOpponentLogo(&rect, color);
 			break;
+#endif
+#ifdef UI_OPPONENTLOGO_METAL
 		case UI_OPPONENTLOGO_METAL:
 			UI_DrawOpponentLogoMetal(&rect, color);
 			break;
+#endif
+#ifdef UI_OPPONENTLOGO_NAME
 		case UI_OPPONENTLOGO_NAME:
 			UI_DrawOpponentLogoName(&rect, color);
 			break;
+#endif
 		case UI_TIER_MAPNAME:
 			UI_DrawTierMapName(&rect, scale, color, textStyle);
 			break;
@@ -2624,12 +2660,16 @@ static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, 
     case UI_HANDICAP:
       return UI_Handicap_HandleKey(flags, special, key);
       break;
+#ifdef UI_EFFECTS
     case UI_EFFECTS:
       return UI_Effects_HandleKey(flags, special, key);
       break;
+#endif
+#ifdef UI_CLANNAME
     case UI_CLANNAME:
       return UI_ClanName_HandleKey(flags, special, key);
       break;
+#endif
     case UI_GAMETYPE:
       return UI_GameType_HandleKey(flags, special, key, qtrue);
       break;
@@ -2642,12 +2682,17 @@ static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, 
     case UI_SKILL:
       return UI_Skill_HandleKey(flags, special, key);
       break;
+#ifdef UI_BLUETEAMNAME
     case UI_BLUETEAMNAME:
       return UI_TeamName_HandleKey(flags, special, key, qtrue);
       break;
+#endif
+#ifdef UI_REDTEAMNAME
     case UI_REDTEAMNAME:
       return UI_TeamName_HandleKey(flags, special, key, qfalse);
       break;
+#endif
+#ifdef UI_BLUETEAM1
     case UI_BLUETEAM1:
 		case UI_BLUETEAM2:
 		case UI_BLUETEAM3:
@@ -2655,6 +2700,8 @@ static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, 
 		case UI_BLUETEAM5:
       UI_TeamMember_HandleKey(flags, special, key, qtrue, ownerDraw - UI_BLUETEAM1 + 1);
       break;
+#endif
+#ifdef UI_REDTEAM1
     case UI_REDTEAM1:
 		case UI_REDTEAM2:
 		case UI_REDTEAM3:
@@ -2662,6 +2709,7 @@ static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, 
 		case UI_REDTEAM5:
       UI_TeamMember_HandleKey(flags, special, key, qfalse, ownerDraw - UI_REDTEAM1 + 1);
       break;
+#endif
 		case UI_NETSOURCE:
       UI_NetSource_HandleKey(flags, special, key);
 			break;
@@ -5677,17 +5725,21 @@ vmCvar_t	ui_server16;
 vmCvar_t	ui_cdkeychecked;
 
 vmCvar_t	ui_redteam;
+#ifdef UI_REDTEAM1
 vmCvar_t	ui_redteam1;
 vmCvar_t	ui_redteam2;
 vmCvar_t	ui_redteam3;
 vmCvar_t	ui_redteam4;
 vmCvar_t	ui_redteam5;
+#endif
 vmCvar_t	ui_blueteam;
+#ifdef UI_BLUETEAM1
 vmCvar_t	ui_blueteam1;
 vmCvar_t	ui_blueteam2;
 vmCvar_t	ui_blueteam3;
 vmCvar_t	ui_blueteam4;
 vmCvar_t	ui_blueteam5;
+#endif
 vmCvar_t	ui_teamName;
 vmCvar_t	ui_dedicated;
 vmCvar_t	ui_gameType;
@@ -5807,16 +5859,20 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_joinGameType, "ui_joinGametype", "0", CVAR_ARCHIVE },
 	{ &ui_netGameType, "ui_netGametype", "3", CVAR_ARCHIVE },
 	{ &ui_actualNetGameType, "ui_actualNetGametype", "3", CVAR_ARCHIVE },
+#ifdef UI_REDTEAM1
 	{ &ui_redteam1, "ui_redteam1", "0", CVAR_ARCHIVE },
 	{ &ui_redteam2, "ui_redteam2", "0", CVAR_ARCHIVE },
 	{ &ui_redteam3, "ui_redteam3", "0", CVAR_ARCHIVE },
 	{ &ui_redteam4, "ui_redteam4", "0", CVAR_ARCHIVE },
 	{ &ui_redteam5, "ui_redteam5", "0", CVAR_ARCHIVE },
+#endif
+#ifdef UI_BLUETEAM1
 	{ &ui_blueteam1, "ui_blueteam1", "0", CVAR_ARCHIVE },
 	{ &ui_blueteam2, "ui_blueteam2", "0", CVAR_ARCHIVE },
 	{ &ui_blueteam3, "ui_blueteam3", "0", CVAR_ARCHIVE },
 	{ &ui_blueteam4, "ui_blueteam4", "0", CVAR_ARCHIVE },
 	{ &ui_blueteam5, "ui_blueteam5", "0", CVAR_ARCHIVE },
+#endif
 	{ &ui_netSource, "ui_netSource", "1", CVAR_ARCHIVE },
 	{ &ui_menuFiles, "ui_menuFiles", "ui/menus.txt", CVAR_ARCHIVE },
 	{ &ui_currentTier, "ui_currentTier", "0", CVAR_ARCHIVE },

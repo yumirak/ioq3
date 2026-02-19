@@ -892,14 +892,18 @@ float CG_GetValue(int ownerDraw) {
 	ps = &cg.snap->ps;
 
   switch (ownerDraw) {
+#ifdef CG_SELECTEDPLAYER_ARMOR
   case CG_SELECTEDPLAYER_ARMOR:
     es = &cg_entities[sortedTeamPlayers[CG_GetSelectedPlayer()]].currentState;
     return es->armor;
     break;
+#endif
+#ifdef CG_SELECTEDPLAYER_HEALTH
   case CG_SELECTEDPLAYER_HEALTH:
     es = &cg_entities[sortedTeamPlayers[CG_GetSelectedPlayer()]].currentState;
     return es->health;
     break;
+#endif
   case CG_PLAYER_ARMOR_VALUE:
 		return ps->stats[STAT_ARMOR];
     break;
@@ -1051,26 +1055,34 @@ qboolean CG_OwnerDrawVisible(int flags) {
 		}
 	}
 
+#ifdef CG_SHOW_HEALTHOK
 	if (flags & CG_SHOW_HEALTHOK) {
 		if (cg.snap->ps.stats[STAT_HEALTH] >= 25) {
 			return qtrue;
 		}
 	}
+#endif
 
+#ifdef CG_SHOW_SINGLEPLAYER
 	if (flags & CG_SHOW_SINGLEPLAYER) {
 		if( cgs.gametype == GT_SINGLE_PLAYER ) {
 			return qtrue;
 		}
 	}
+#endif
 
+#ifdef CG_SHOW_TOURNAMENT
 	if (flags & CG_SHOW_TOURNAMENT) {
 		if( cgs.gametype == GT_TOURNAMENT ) {
 			return qtrue;
 		}
 	}
+#endif
 
+#ifdef CG_SHOW_DURINGINCOMINGVOICE
 	if (flags & CG_SHOW_DURINGINCOMINGVOICE) {
 	}
+#endif
 
 	if (flags & CG_SHOW_IF_PLAYER_HAS_FLAG) {
 		if (cg.snap->ps.powerups[PW_REDFLAG] || cg.snap->ps.powerups[PW_BLUEFLAG] || cg.snap->ps.powerups[PW_NEUTRALFLAG]) {
@@ -1515,39 +1527,61 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
   case CG_PLAYER_AMMO_VALUE:
     CG_DrawPlayerAmmoValue(&rect, scale, color, shader, textStyle);
     break;
+#ifdef CG_SELECTEDPLAYER_HEAD
   case CG_SELECTEDPLAYER_HEAD:
     CG_DrawSelectedPlayerHead(&rect, ownerDrawFlags & CG_SHOW_2DONLY, qfalse);
     break;
+#endif
+#ifdef CG_VOICE_HEAD
   case CG_VOICE_HEAD:
     CG_DrawSelectedPlayerHead(&rect, ownerDrawFlags & CG_SHOW_2DONLY, qtrue);
     break;
+#endif
+#ifdef CG_VOICE_NAME
   case CG_VOICE_NAME:
     CG_DrawSelectedPlayerName(&rect, scale, color, qtrue, textStyle);
     break;
+#endif
+#ifdef CG_SELECTEDPLAYER_STATUS
   case CG_SELECTEDPLAYER_STATUS:
     CG_DrawSelectedPlayerStatus(&rect);
     break;
+#endif
+#ifdef CG_SELECTEDPLAYER_ARMOR
   case CG_SELECTEDPLAYER_ARMOR:
     CG_DrawSelectedPlayerArmor(&rect, scale, color, shader, textStyle);
     break;
+#endif
+#ifdef CG_SELECTEDPLAYER_HEALTH
   case CG_SELECTEDPLAYER_HEALTH:
     CG_DrawSelectedPlayerHealth(&rect, scale, color, shader, textStyle);
     break;
+#endif
+#ifdef CG_SELECTEDPLAYER_NAME
   case CG_SELECTEDPLAYER_NAME:
     CG_DrawSelectedPlayerName(&rect, scale, color, qfalse, textStyle);
     break;
+#endif
+#ifdef CG_SELECTEDPLAYER_LOCATION
   case CG_SELECTEDPLAYER_LOCATION:
     CG_DrawSelectedPlayerLocation(&rect, scale, color, textStyle);
     break;
+#endif
+#ifdef CG_SELECTEDPLAYER_WEAPON
   case CG_SELECTEDPLAYER_WEAPON:
     CG_DrawSelectedPlayerWeapon(&rect);
     break;
+#endif
+#ifdef CG_SELECTEDPLAYER_POWERUP
   case CG_SELECTEDPLAYER_POWERUP:
     CG_DrawSelectedPlayerPowerup(&rect, ownerDrawFlags & CG_SHOW_2DONLY);
     break;
+#endif
+#ifdef CG_PLAYER_HEAD
   case CG_PLAYER_HEAD:
     CG_DrawPlayerHead(&rect, ownerDrawFlags & CG_SHOW_2DONLY);
     break;
+#endif
   case CG_PLAYER_ITEM:
     CG_DrawPlayerItem(&rect, scale, ownerDrawFlags & CG_SHOW_2DONLY);
     break;
@@ -1569,24 +1603,34 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
   case CG_BLUE_NAME:
     CG_DrawBlueName(&rect, scale, color, textStyle);
     break;
+#ifdef CG_BLUE_FLAGHEAD
   case CG_BLUE_FLAGHEAD:
     CG_DrawBlueFlagHead(&rect);
     break;
+#endif
+#ifdef CG_BLUE_FLAGSTATUS
   case CG_BLUE_FLAGSTATUS:
     CG_DrawBlueFlagStatus(&rect, shader);
     break;
+#endif
+#ifdef CG_BLUE_FLAGNAME
   case CG_BLUE_FLAGNAME:
     CG_DrawBlueFlagName(&rect, scale, color, textStyle);
     break;
+#endif
+#ifdef CG_RED_FLAGHEAD
   case CG_RED_FLAGHEAD:
     CG_DrawRedFlagHead(&rect);
     break;
+#endif
   case CG_RED_FLAGSTATUS:
     CG_DrawRedFlagStatus(&rect, shader);
     break;
+#ifdef CG_RED_FLAGNAME
   case CG_RED_FLAGNAME:
     CG_DrawRedFlagName(&rect, scale, color, textStyle);
     break;
+#endif
   case CG_HARVESTER_SKULLS:
     CG_HarvesterSkulls(&rect, scale, color, qfalse, textStyle);
     break;
@@ -1596,9 +1640,11 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
   case CG_ONEFLAG_STATUS:
     CG_OneFlagStatus(&rect);
     break;
+#ifdef CG_PLAYER_LOCATION
   case CG_PLAYER_LOCATION:
     CG_DrawPlayerLocation(&rect, scale, color, textStyle);
     break;
+#endif
   case CG_TEAM_COLOR:
     CG_DrawTeamColor(&rect, color);
     break;
@@ -1608,24 +1654,32 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
   case CG_AREA_POWERUP:
 		CG_DrawAreaPowerUp(&rect, align, special, scale, color);
     break;
+#ifdef CG_PLAYER_STATUS
   case CG_PLAYER_STATUS:
     CG_DrawPlayerStatus(&rect);
     break;
+#endif
   case CG_PLAYER_HASFLAG:
     CG_DrawPlayerHasFlag(&rect, qfalse);
     break;
   case CG_PLAYER_HASFLAG2D:
     CG_DrawPlayerHasFlag(&rect, qtrue);
     break;
+#ifdef CG_AREA_SYSTEMCHAT
   case CG_AREA_SYSTEMCHAT:
     CG_DrawAreaSystemChat(&rect, scale, color, shader);
     break;
+#endif
+#ifdef CG_AREA_TEAMCHAT
   case CG_AREA_TEAMCHAT:
     CG_DrawAreaTeamChat(&rect, scale, color, shader);
     break;
+#endif
+#ifdef CG_AREA_CHAT
   case CG_AREA_CHAT:
     CG_DrawAreaChat(&rect, scale, color, shader);
     break;
+#endif
   case CG_GAME_TYPE:
     CG_DrawGameType(&rect, scale, color, shader, textStyle);
     break;
@@ -1648,11 +1702,13 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
   case CG_SPECTATORS:
 		CG_DrawTeamSpectators(&rect, scale, color, shader);
 		break;
+#ifdef CG_TEAMINFO
   case CG_TEAMINFO:
 		if (cg_currentSelectedPlayer.integer == numSortedTeamPlayers) {
 			CG_DrawNewTeamInfo(&rect, text_x, text_y, scale, color, shader);
 		}
 		break;
+#endif
   case CG_CAPFRAGLIMIT:
     CG_DrawCapFragLimit(&rect, scale, color, shader, textStyle);
 		break;
