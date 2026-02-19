@@ -234,6 +234,7 @@ vmCvar_t	cg_smokeRadius_haste;
 vmCvar_t	cg_smokeRadius_flight;
 vmCvar_t	cg_smokeRadius_dust;
 vmCvar_t	cg_smoke_SG;
+vmCvar_t	cg_levelTimerDirection;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -396,6 +397,8 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_smokeRadius_haste, "cg_smokeRadius_haste", "8", 0},
 	{ &cg_smokeRadius_dust, "cg_smokeRadius_dust", "24", 0},
 	{ &cg_smoke_SG, "cg_smoke_SG", "1", CVAR_ARCHIVE},
+
+	{ &cg_levelTimerDirection, "cg_levelTimerDirection", "1", CVAR_ARCHIVE},
 
 	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SERVERINFO},
 	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SERVERINFO},

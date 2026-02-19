@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // active (after loading) gameplay
 
 #include "cg_local.h"
+#include "cg_utils.h"
 
 #ifdef MISSIONPACK
 #include "../ui/ui_shared.h"
@@ -773,20 +774,13 @@ CG_DrawTimer
 =================
 */
 static float CG_DrawTimer( float y ) {
-	char		*s;
+	const char		*s;
 	int			w;
-	int			mins, seconds, tens;
 	int			msec;
 
-	msec = cg.time - cgs.levelStartTime;
+	msec = CG_GetCurrentTimeWithDirection( cg_levelTimerDirection.integer );
 
-	seconds = msec / 1000;
-	mins = seconds / 60;
-	seconds -= mins * 60;
-	tens = seconds / 10;
-	seconds -= tens * 10;
-
-	s = va( "%i:%i%i", mins, tens, seconds );
+	s = CG_GetTimeString( msec );
 	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
 
 	CG_DrawBigString( 635 - w, y + 2, s, 1.0F);

@@ -1264,6 +1264,7 @@ extern	vmCvar_t		cg_smokeRadius_haste;
 extern	vmCvar_t		cg_smokeRadius_flight;
 extern	vmCvar_t		cg_smokeRadius_dust;
 extern	vmCvar_t		cg_smoke_SG;
+extern	vmCvar_t		cg_levelTimerDirection;
 
 //
 // cg_main.c

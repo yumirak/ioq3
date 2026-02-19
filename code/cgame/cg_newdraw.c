@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "cg_utils.h"
 #include "cg_newownerdraw.h"
 #include "../ui/ui_shared.h"
+#include "cg_newdraw.h"
 
 extern displayContextDef_t cgDC;
 
@@ -1955,6 +1956,11 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_Draw2ndPlaceScore( &rect, scale, color, textStyle );
 		break;
 #endif
+#ifdef CG_LEVELTIMER
+	case CG_LEVELTIMER:
+		CG_Text_Paint_Align(&rect, scale, color, CG_GetTimeString( CG_GetCurrentTimeWithDirection( cg_levelTimerDirection.integer ) ), 0, 0, textStyle, align);
+		break;
+#endif
   default:
     break;
   }
@@ -2112,6 +2118,25 @@ void CG_GetTeamColor(vec4_t *color) {
     (*color)[0] = (*color)[2] = 0.0f;
     (*color)[1] = 0.17f;
     (*color)[3] = 0.25f;
+	}
+}
+
+void CG_Text_Paint_Align( const rectDef_t *rect, float scale, vec4_t color, const char *text, float adjust, int limit, int style, int align )
+{
+	float w;
+	w = CG_Text_Width( text, scale, limit );
+
+	switch( align )
+	{
+		case ITEM_ALIGN_CENTER:
+			CG_Text_Paint( rect->x - w / 2, rect->y, scale, color, text, adjust, limit, style );
+			return;
+		case ITEM_ALIGN_RIGHT:
+			CG_Text_Paint( rect->x - w, rect->y, scale, color, text, adjust, limit, style );
+			return;
+		default:
+			CG_Text_Paint( rect->x, rect->y, scale, color, text, adjust, limit, style );
+			return;
 	}
 }
 
