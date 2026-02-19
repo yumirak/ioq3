@@ -109,6 +109,8 @@ vmCvar_t	g_nailbounce;
 vmCvar_t	g_nailbouncepercentage;
 vmCvar_t	g_nailcount;
 vmCvar_t	g_nailspread;
+vmCvar_t	g_startingWeapons;
+vmCvar_t	g_startingAmmo[WP_NUM_WEAPONS];
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -262,6 +264,24 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_nailcount, "g_nailcount", "10", 0, 0, qfalse},
 	{ &g_nailspread, "g_nailspeed", "400", 0, 0, qfalse},
 #endif
+	{ &g_startingWeapons, "g_startingWeapons", "3", 0, 0, qtrue, qtrue },
+	//
+	{ &g_startingAmmo[WP_GAUNTLET], "g_startingAmmo_g", "-1", CVAR_ROM, 0, qtrue},
+	{ &g_startingAmmo[WP_MACHINEGUN], "g_startingAmmo_mg", "100", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_SHOTGUN], "g_startingAmmo_sg", "10", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_GRENADE_LAUNCHER], "g_startingAmmo_gl", "10", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_ROCKET_LAUNCHER], "g_startingAmmo_rl", "10", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_LIGHTNING], "g_startingAmmo_lg", "100", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_RAILGUN], "g_startingAmmo_rg", "10", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_PLASMAGUN], "g_startingAmmo_pg", "50", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_BFG], "g_startingAmmo_bfg", "10", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_GRAPPLING_HOOK], "g_startingAmmo_gh", "-1", CVAR_ROM, 0, qtrue},
+#ifdef MISSIONPACK
+	{ &g_startingAmmo[WP_NAILGUN], "g_startingAmmo_ng", "10", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_PROX_LAUNCHER], "g_startingAmmo_pl", "5", 0, 0, qtrue},
+	{ &g_startingAmmo[WP_CHAINGUN], "g_startingAmmo_cg", "100", 0, 0, qtrue},
+#endif
+
 	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SYSTEMINFO, 0, qtrue},
 	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SYSTEMINFO, 0, qtrue},
 	{ &weapon_reload[WP_SHOTGUN], "weapon_reload_sg", "1000", CVAR_SYSTEMINFO, 0, qtrue},

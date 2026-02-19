@@ -628,6 +628,22 @@ static void ForceClientSkin( gclient_t *client, char *model, const char *skin ) 
 }
 */
 
+void ClientWeaponSpawn( gentity_t *ent )
+{
+	gclient_t *client;
+	weapon_t  i;
+	client = ent->client;
+
+	for( i = WP_GAUNTLET; i < WP_NUM_WEAPONS; i++ )
+	{
+		if( g_startingWeapons.integer & ( 1 << ( i - 1 )))
+		{
+			client->ps.stats[STAT_WEAPONS] |= ( 1 << i );
+			client->ps.ammo[i] = g_startingAmmo[i].integer;
+		}
+	}
+}
+
 /*
 ===========
 ClientCleanName
@@ -1165,16 +1181,7 @@ void ClientSpawn(gentity_t *ent) {
 
 	client->ps.clientNum = index;
 
-	client->ps.stats[STAT_WEAPONS] = ( 1 << WP_MACHINEGUN );
-	if ( g_gametype.integer == GT_TEAM ) {
-		client->ps.ammo[WP_MACHINEGUN] = 50;
-	} else {
-		client->ps.ammo[WP_MACHINEGUN] = 100;
-	}
-
-	client->ps.stats[STAT_WEAPONS] |= ( 1 << WP_GAUNTLET );
-	client->ps.ammo[WP_GAUNTLET] = -1;
-	client->ps.ammo[WP_GRAPPLING_HOOK] = -1;
+	ClientWeaponSpawn( ent );
 
 	// health will count down towards max_health
 	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + 25;
