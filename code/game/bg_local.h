@@ -72,6 +72,8 @@ extern	float	pm_flightfriction;
 
 extern	int		c_pmove;
 
+extern	vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
+
 void PM_ClipVelocity( vec3_t in, vec3_t normal, vec3_t out, float overbounce );
 void PM_AddTouchEnt( int entityNum );
 void PM_AddEvent( int newEvent );

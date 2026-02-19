@@ -110,6 +110,8 @@ vmCvar_t	g_nailbouncepercentage;
 vmCvar_t	g_nailcount;
 vmCvar_t	g_nailspread;
 
+vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
+
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
 	{ &g_cheats, "sv_cheats", "", 0, 0, qfalse },
@@ -259,6 +261,21 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_nailbouncepercentage, "g_nailbouncepercentage", "65", 0, 0, qfalse},
 	{ &g_nailcount, "g_nailcount", "10", 0, 0, qfalse},
 	{ &g_nailspread, "g_nailspeed", "400", 0, 0, qfalse},
+#endif
+	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_SHOTGUN], "weapon_reload_sg", "1000", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_GRENADE_LAUNCHER], "weapon_reload_gl", "800", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_ROCKET_LAUNCHER], "weapon_reload_rl", "800", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_LIGHTNING], "weapon_reload_lg", "50", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_RAILGUN], "weapon_reload_rg", "1500", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_PLASMAGUN], "weapon_reload_pg", "100", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_BFG], "weapon_reload_bfg", "300", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_GRAPPLING_HOOK], "weapon_reload_hook", "100", CVAR_SYSTEMINFO, 0, qtrue},
+#ifdef MISSIONPACK
+	{ &weapon_reload[WP_NAILGUN], "weapon_reload_ng", "1000", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SYSTEMINFO, 0, qtrue},
+	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SYSTEMINFO, 0, qtrue},
 #endif
 
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},

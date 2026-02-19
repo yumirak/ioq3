@@ -226,6 +226,7 @@ vmCvar_t	cg_weaponBar;
 vmCvar_t	cg_drawFullWeaponBar;
 vmCvar_t	cg_lowAmmoWeaponBarWarning;
 vmCvar_t	cg_lowAmmoWarningPercentile;
+vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -376,7 +377,23 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
 	{ &cg_rocketStyle, "cg_rocketStyle", "1", CVAR_ARCHIVE},
 	{ &cg_plasmaStyle, "cg_plasmaStyle", "1", CVAR_ARCHIVE},
-	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE}
+	{ &cg_trueLightning, "cg_trueLightning", "0.0", CVAR_ARCHIVE},
+
+	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_SHOTGUN], "weapon_reload_sg", "1000", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_GRENADE_LAUNCHER], "weapon_reload_gl", "800", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_ROCKET_LAUNCHER], "weapon_reload_rl", "800", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_LIGHTNING], "weapon_reload_lg", "50", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_RAILGUN], "weapon_reload_rg", "1500", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_PLASMAGUN], "weapon_reload_pg", "100", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_BFG], "weapon_reload_bfg", "300", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_GRAPPLING_HOOK], "weapon_reload_hook", "100", CVAR_SERVERINFO},
+#ifdef MISSIONPACK
+	{ &weapon_reload[WP_NAILGUN], "weapon_reload_ng", "1000", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SERVERINFO},
+	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SERVERINFO},
+#endif
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
