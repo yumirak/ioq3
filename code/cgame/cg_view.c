@@ -433,8 +433,24 @@ static void CG_OffsetFirstPersonView( void ) {
 }
 
 //======================================================================
+void CG_ZoomIn( void )
+{
+	cg.zoomed = qtrue;
+	cg.zoomTime = cg.time;
+}
+
+void CG_ZoomOut( void )
+{
+	cg.zoomed = qfalse;
+	cg.zoomTime = cg.time;
+}
 
 void CG_ZoomDown_f( void ) { 
+	if( cg_zoomToggle.integer ) {
+		cg.zoomed ? CG_ZoomOut() : CG_ZoomIn();
+		return;
+	}
+
 	if ( cg.zoomed ) {
 		return;
 	}
@@ -443,6 +459,10 @@ void CG_ZoomDown_f( void ) {
 }
 
 void CG_ZoomUp_f( void ) { 
+	if( cg_zoomToggle.integer ) {
+		return;
+	}
+
 	if ( !cg.zoomed ) {
 		return;
 	}
@@ -496,18 +516,16 @@ static int CG_CalcFov( void ) {
 			zoomFov = 160;
 		}
 
-		if ( cg.zoomed ) {
-			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
-			if ( f > 1.0 ) {
-				fov_x = zoomFov;
-			} else {
-				fov_x = fov_x + f * ( zoomFov - fov_x );
-			}
-		} else {
-			f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
-			if ( f <= 1.0 ) {
-				fov_x = zoomFov + f * ( fov_x - zoomFov );
-			}
+		if( cg.predictedPlayerState.pm_type == PM_DEAD && cg_zoomOutOnDeath.integer ) {
+			cg.zoomed = qfalse;
+		}
+
+		f = ( cg.time - cg.zoomTime ) / (float)ZOOM_TIME;
+
+		if( f > 1.0 || !cg_zoomScaling.integer ) {
+			fov_x = cg.zoomed ? zoomFov : fov_x;
+		} else { //
+			fov_x = cg.zoomed ? fov_x + f * ( zoomFov - fov_x ) : zoomFov + f * ( fov_x - zoomFov );
 		}
 	}
 
@@ -544,6 +562,8 @@ static int CG_CalcFov( void ) {
 		cg.zoomSensitivity = 1;
 	} else {
 		cg.zoomSensitivity = cg.refdef.fov_y / 75.0;
+		if( cg_zoomSensitivity.value != 0.0 )
+			cg.zoomSensitivity *= cg_zoomSensitivity.value;
 	}
 
 	return inwater;

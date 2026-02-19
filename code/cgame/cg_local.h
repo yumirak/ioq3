@@ -1208,6 +1208,10 @@ extern	vmCvar_t		cg_killBeep;
 extern	vmCvar_t		cg_lightningStyle;
 extern	vmCvar_t		cg_lightningImpact;
 extern	vmCvar_t		cg_lightningImpactCap;
+extern	vmCvar_t		cg_zoomOutOnDeath;
+extern	vmCvar_t		cg_zoomScaling;
+extern	vmCvar_t		cg_zoomSensitivity;
+extern	vmCvar_t		cg_zoomToggle;
 
 //
 // cg_main.c

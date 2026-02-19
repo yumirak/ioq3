@@ -200,6 +200,10 @@ vmCvar_t	cg_killBeep;
 vmCvar_t	cg_lightningStyle;
 vmCvar_t	cg_lightningImpact;
 vmCvar_t	cg_lightningImpactCap;
+vmCvar_t	cg_zoomOutOnDeath;
+vmCvar_t	cg_zoomScaling;
+vmCvar_t	cg_zoomSensitivity;
+vmCvar_t	cg_zoomToggle;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -318,6 +322,11 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_lightningStyle, "cg_lightningStyle", "1" },
 	{ &cg_lightningImpact, "cg_lightningImpact", "1", CVAR_ARCHIVE },
 	{ &cg_lightningImpactCap, "cg_lightningImpactCap", "192", CVAR_ARCHIVE },
+
+	{ &cg_zoomOutOnDeath, "cg_zoomOutOnDeath", "1", CVAR_ARCHIVE},
+	{ &cg_zoomScaling, "cg_zoomScaling", "1", CVAR_ARCHIVE},
+	{ &cg_zoomSensitivity, "cg_zoomSensitivity", "1", CVAR_ARCHIVE},
+	{ &cg_zoomToggle, "cg_zoomToggle", "0", CVAR_ARCHIVE},
 
 	{ &cg_noProjectileTrail, "cg_noProjectileTrail", "0", CVAR_ARCHIVE},
 	{ &cg_railStyle, "cg_railStyle", "1", CVAR_ARCHIVE},
