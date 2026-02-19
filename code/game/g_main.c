@@ -59,8 +59,6 @@ vmCvar_t	g_inactivity;
 vmCvar_t	g_debugMove;
 vmCvar_t	g_debugDamage;
 vmCvar_t	g_debugAlloc;
-vmCvar_t	g_weaponRespawn;
-vmCvar_t	g_weaponTeamRespawn;
 vmCvar_t	g_motd;
 vmCvar_t	g_synchronousClients;
 vmCvar_t	g_warmup;
@@ -113,6 +111,7 @@ vmCvar_t	g_startingWeapons;
 vmCvar_t	g_startingAmmo[WP_NUM_WEAPONS];
 vmCvar_t	g_spawnItem;
 vmCvar_t	g_spawnItemType[IT_TEAM];
+vmCvar_t	g_respawnItemType[IT_TEAM];
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -162,8 +161,6 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_gravity, "g_gravity", "800", 0, 0, qtrue  },
 	{ &g_knockback, "g_knockback", "1000", 0, 0, qtrue  },
 	{ &g_quadfactor, "g_quadfactor", "3", 0, 0, qtrue  },
-	{ &g_weaponRespawn, "g_weaponrespawn", "5", 0, 0, qtrue  },
-	{ &g_weaponTeamRespawn, "g_weaponTeamRespawn", "30", 0, 0, qtrue },
 	{ &g_forcerespawn, "g_forcerespawn", "20", 0, 0, qtrue },
 	{ &g_inactivity, "g_inactivity", "0", 0, 0, qtrue },
 	{ &g_debugMove, "g_debugMove", "0", 0, 0, qfalse },
@@ -291,6 +288,13 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_spawnItemType[IT_POWERUP], "g_spawnItemPowerup", "1", 0, 0, qtrue, qtrue },
 	{ &g_spawnItemType[IT_WEAPON], "g_spawnItemWeapons", "1", 0, 0, qtrue, qtrue },
 	{ &g_spawnItemType[IT_PERSISTANT_POWERUP], "g_spawnItemRune", "1", 0, 0, qtrue, qtrue },
+	{ &g_respawnItemType[IT_AMMO], "g_ammoRespawn", "40", 0, 0, qtrue, qtrue },
+	{ &g_respawnItemType[IT_ARMOR], "g_armorRespawn", "25", 0, 0, qtrue, qtrue },
+	{ &g_respawnItemType[IT_HEALTH], "g_healthRespawn", "35", 0, 0, qtrue, qtrue },
+	{ &g_respawnItemType[IT_HOLDABLE], "g_holdableRespawn", "60", 0, 0, qtrue, qtrue },
+	{ &g_respawnItemType[IT_POWERUP], "g_powerupRespawn", "120", 0, 0, qtrue, qtrue },
+	{ &g_respawnItemType[IT_WEAPON], "g_weaponRespawn", "5", 0, 0, qtrue, qtrue },
+	{ &g_respawnItemType[IT_PERSISTANT_POWERUP], "g_runeRespawn", "10", 0, 0, qtrue, qtrue },
 
 	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SYSTEMINFO, 0, qtrue},
 	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SYSTEMINFO, 0, qtrue},

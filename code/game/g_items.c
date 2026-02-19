@@ -36,14 +36,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
-#define	RESPAWN_ARMOR		25
-#define	RESPAWN_HEALTH		35
-#define	RESPAWN_AMMO		40
-#define	RESPAWN_HOLDABLE	60
-#define	RESPAWN_MEGAHEALTH	35//120
-#define	RESPAWN_POWERUP		120
-
-
 //======================================================================
 
 int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
@@ -112,7 +104,7 @@ int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
 		// anti-reward
 		client->ps.persistant[PERS_PLAYEREVENTS] ^= PLAYEREVENT_DENIEDREWARD;
 	}
-	return RESPAWN_POWERUP;
+	return abs(g_respawnItemType[ent->item->giType].integer);
 }
 
 //======================================================================
@@ -200,7 +192,7 @@ int Pickup_Holdable( gentity_t *ent, gentity_t *other ) {
 		other->client->ps.eFlags |= EF_KAMIKAZE;
 	}
 
-	return RESPAWN_HOLDABLE;
+	return abs(g_respawnItemType[ent->item->giType].integer);
 }
 
 
@@ -229,7 +221,7 @@ int Pickup_Ammo (gentity_t *ent, gentity_t *other)
 
 	Add_Ammo (other, ent->item->giTag, quantity);
 
-	return RESPAWN_AMMO;
+	return abs(g_respawnItemType[ent->item->giType].integer);
 }
 
 //======================================================================
@@ -269,12 +261,7 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 	if (ent->item->giTag == WP_GRAPPLING_HOOK)
 		other->client->ps.ammo[ent->item->giTag] = -1; // unlimited ammo
 
-	// team deathmatch has slow weapon respawns
-	if ( g_gametype.integer == GT_TEAM ) {
-		return g_weaponTeamRespawn.integer;
-	}
-
-	return g_weaponRespawn.integer;
+	return abs(g_respawnItemType[ent->item->giType].integer);
 }
 
 
@@ -310,11 +297,7 @@ int Pickup_Health (gentity_t *ent, gentity_t *other) {
 	}
 	other->client->ps.stats[STAT_HEALTH] = other->health;
 
-	if ( ent->item->quantity == 100 ) {		// mega health respawns slow
-		return RESPAWN_MEGAHEALTH;
-	}
-
-	return RESPAWN_HEALTH;
+	return abs(g_respawnItemType[ent->item->giType].integer);
 }
 
 //======================================================================
@@ -342,7 +325,7 @@ int Pickup_Armor( gentity_t *ent, gentity_t *other ) {
 	}
 #endif
 
-	return RESPAWN_ARMOR;
+	return abs(g_respawnItemType[ent->item->giType].integer);
 }
 
 //======================================================================
