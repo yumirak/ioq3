@@ -25,6 +25,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifdef MISSIONPACK
 #include "../ui/ui_shared.h"
+#include "cg_utils.h"
+#ifdef BASEQZ
+#include "cg_scoreboard_ql.h"
+#endif
 // display context for new ui stuff
 displayContextDef_t cgDC;
 #endif
@@ -424,7 +428,7 @@ static cvarTable_t cvarTable[] = {
 	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SERVERINFO},
 	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SERVERINFO},
 #endif
-	{ &cg_premium, "cg_premium", "0", CVAR_SERVERINFO | CVAR_USERINFO },
+	{ &cg_premium, "cg_premium", "0", CVAR_ROM },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -1725,7 +1729,16 @@ static int CG_FeederCount(float feederID) {
 			}
 		}
 	} else if (feederID == FEEDER_SCOREBOARD) {
+#ifdef BASEQZ
+		for (i = 0;  i < cg.numScores;  i++) {
+			if (cg.scores[i].team == TEAM_SPECTATOR) {
+				continue;
+			}
+			count++;
+		}
+#else
 		return cg.numScores;
+#endif
 	}
 	return count;
 }
@@ -1766,7 +1779,7 @@ void CG_SetScoreSelection(void *p) {
 }
 
 // FIXME: might need to cache this info
-static clientInfo_t * CG_InfoFromScoreIndex(int index, int team, int *scoreIndex) {
+clientInfo_t * CG_InfoFromScoreIndex(int index, int team, int *scoreIndex) {
 	int i, count;
 	if ( cgs.gametype >= GT_TEAM ) {
 		count = 0;
@@ -1784,6 +1797,16 @@ static clientInfo_t * CG_InfoFromScoreIndex(int index, int team, int *scoreIndex
 	return &cgs.clientinfo[ cg.scores[index].client ];
 }
 
+#ifdef BASEQZ
+static const char *CG_FeederItemText(float feederID, int index, int column, qhandle_t *handle) {
+	// FIXME: newer client has different column structure
+	switch ( cg.scoreboardPremium ) {
+		case qfalse: return CG_FeederItemText_NonPremium(feederID, index, column, handle);
+		default: return CG_FeederItemText_Premium(feederID, index, column, handle);
+	}
+	return "";
+}
+#else
 static const char *CG_FeederItemText(float feederID, int index, int column, qhandle_t *handle) {
 	gitem_t *item;
 	int scoreIndex = 0;
@@ -1867,6 +1890,7 @@ static const char *CG_FeederItemText(float feederID, int index, int column, qhan
 
 	return "";
 }
+#endif
 
 static qhandle_t CG_FeederItemImage(float feederID, int index) {
 	return 0;

@@ -1329,6 +1329,7 @@ void CG_SetScoreSelection(void *menu);
 score_t *CG_GetSelectedScore( void );
 void CG_BuildSpectatorString( void );
 
+clientInfo_t * CG_InfoFromScoreIndex(int index, int team, int *scoreIndex);
 
 //
 // cg_view.c
