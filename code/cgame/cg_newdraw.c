@@ -444,10 +444,13 @@ static void CG_DrawSelectedPlayerWeapon( rectDef_t *rect ) {
   }
 }
 
-static void CG_DrawPlayerScore( rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle ) {
+static void CG_DrawPlayerScore( rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align ) {
   char num[16];
   int value = cg.snap->ps.persistant[PERS_SCORE];
 
+#if BASEQZ > 730
+	CG_Text_Paint_Align(rect, scale, color, va("%i", value), 0, 0, textStyle, align);
+#else
 	if (shader) {
 		trap_R_SetColor( color );
 		CG_DrawPic(rect->x, rect->y, rect->w, rect->h, shader);
@@ -457,6 +460,7 @@ static void CG_DrawPlayerScore( rectDef_t *rect, float scale, vec4_t color, qhan
 		value = CG_Text_Width(num, scale, 0);
 	  CG_Text_Paint(rect->x + (rect->w - value) / 2, rect->y + rect->h, scale, color, num, 0, 0, textStyle);
 	}
+#endif
 }
 
 static void CG_DrawPlayerItem( rectDef_t *rect, float scale, qboolean draw2D) {
@@ -578,7 +582,7 @@ static void CG_DrawPlayerHealth(rectDef_t *rect, float scale, vec4_t color, qhan
 }
 
 
-static void CG_DrawRedScore(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle ) {
+static void CG_DrawRedScore(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align ) {
 	int value;
 	char num[16];
 	if ( cgs.scores1 == SCORE_NOT_PRESENT ) {
@@ -587,11 +591,15 @@ static void CG_DrawRedScore(rectDef_t *rect, float scale, vec4_t color, qhandle_
 	else {
 		Com_sprintf (num, sizeof(num), "%i", cgs.scores1);
 	}
+#ifdef BASEQZ
+	CG_Text_Paint_Align(rect, scale, color, num, 0, 0, textStyle, align);
+#else
 	value = CG_Text_Width(num, scale, 0);
 	CG_Text_Paint(rect->x + rect->w - value, rect->y + rect->h, scale, color, num, 0, 0, textStyle);
+#endif
 }
 
-static void CG_DrawBlueScore(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle ) {
+static void CG_DrawBlueScore(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align ) {
 	int value;
 	char num[16];
 
@@ -601,17 +609,29 @@ static void CG_DrawBlueScore(rectDef_t *rect, float scale, vec4_t color, qhandle
 	else {
 		Com_sprintf (num, sizeof(num), "%i", cgs.scores2);
 	}
+#ifdef BASEQZ
+	CG_Text_Paint_Align(rect, scale, color, num, 0, 0, textStyle, align);
+#else
 	value = CG_Text_Width(num, scale, 0);
 	CG_Text_Paint(rect->x + rect->w - value, rect->y + rect->h, scale, color, num, 0, 0, textStyle);
+#endif
 }
 
 // FIXME: team name support
-static void CG_DrawRedName(rectDef_t *rect, float scale, vec4_t color, int textStyle ) {
+static void CG_DrawRedName(rectDef_t *rect, float scale, vec4_t color, int textStyle, int align ) {
+#ifdef BASEQZ
+  CG_Text_Paint_Align(rect, scale, color, cg_redTeamName.string , 0, 0, textStyle, align);
+#else
   CG_Text_Paint(rect->x, rect->y + rect->h, scale, color, cg_redTeamName.string , 0, 0, textStyle);
+#endif
 }
 
-static void CG_DrawBlueName(rectDef_t *rect, float scale, vec4_t color, int textStyle ) {
+static void CG_DrawBlueName(rectDef_t *rect, float scale, vec4_t color, int textStyle, int align ) {
+#ifdef BASEQZ
+  CG_Text_Paint_Align(rect, scale, color, cg_blueTeamName.string , 0, 0, textStyle, align);
+#else
   CG_Text_Paint(rect->x, rect->y + rect->h, scale, color, cg_blueTeamName.string, 0, 0, textStyle);
+#endif
 }
 
 static void CG_DrawBlueFlagName(rectDef_t *rect, float scale, vec4_t color, int textStyle ) {
@@ -1348,15 +1368,23 @@ static void CG_DrawCapFragLimit(rectDef_t *rect, float scale, vec4_t color, qhan
 	CG_Text_Paint(rect->x, rect->y, scale, color, va("%2i", limit),0, 0, textStyle); 
 }
 
-static void CG_Draw1stPlace(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle) {
+static void CG_Draw1stPlace(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align) {
 	if (cgs.scores1 != SCORE_NOT_PRESENT) {
+#if BASEQZ > 730
+		CG_Text_Paint_Align(rect, scale, color, va("%2i", cgs.scores1), 0, 0, textStyle, align);
+#else
 		CG_Text_Paint(rect->x, rect->y, scale, color, va("%2i", cgs.scores1),0, 0, textStyle); 
+#endif
 	}
 }
 
-static void CG_Draw2ndPlace(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle) {
+static void CG_Draw2ndPlace(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align) {
 	if (cgs.scores2 != SCORE_NOT_PRESENT) {
+#if BASEQZ > 730
+		CG_Text_Paint_Align(rect, scale, color, va("%2i", cgs.scores2), 0, 0, textStyle, align);
+#else
 		CG_Text_Paint(rect->x, rect->y, scale, color, va("%2i", cgs.scores2),0, 0, textStyle); 
+#endif
 	}
 }
 
@@ -1382,8 +1410,12 @@ static void CG_DrawGameStatus(rectDef_t *rect, float scale, vec4_t color, qhandl
 	CG_Text_Paint(rect->x, rect->y + rect->h, scale, color, CG_GetGameStatusText(), 0, 0, textStyle);
 }
 
-static void CG_DrawGameType(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle ) {
+static void CG_DrawGameType(rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align ) {
+#ifdef BASEQZ
+	CG_Text_Paint_Align( rect, scale, color, gametype_desc[cgs.gametype].name, 0, 0, textStyle, align);
+#else
 	CG_Text_Paint(rect->x, rect->y + rect->h, scale, color, gametype_desc[cgs.gametype].name, 0, 0, textStyle);
+#endif
 }
 
 static void CG_Text_Paint_Limit(float *maxX, float x, float y, float scale, vec4_t color, const char* text, float adjust, int limit) {
@@ -1689,9 +1721,16 @@ void CG_DrawMedal(int ownerDraw, rectDef_t *rect, float scale, vec4_t color, qha
 	CG_DrawPic( rect->x, rect->y, rect->w, rect->h, shader );
 
 	if (text) {
+#ifdef BASEQZ
+		float textSpacing = 3;
+		int th = CG_Text_Height(text, scale, 0);
+		color[3] = 1.0;
+		CG_Text_Paint(rect->x + rect->w + textSpacing, rect->y + rect->h / 2 + th / 2, scale, color, text, 0, 0, 0);
+#else
 		color[3] = 1.0;
 		value = CG_Text_Width(text, scale, 0);
 		CG_Text_Paint(rect->x + (rect->w - value) / 2, rect->y + rect->h + 10 , scale, color, text, 0, 0, 0);
+#endif
 	}
 	trap_R_SetColor(NULL);
 
@@ -1793,22 +1832,22 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
     CG_DrawPlayerItem(&rect, scale, ownerDrawFlags & CG_SHOW_2DONLY);
     break;
   case CG_PLAYER_SCORE:
-    CG_DrawPlayerScore(&rect, scale, color, shader, textStyle);
+    CG_DrawPlayerScore(&rect, scale, color, shader, textStyle, align);
     break;
   case CG_PLAYER_HEALTH:
     CG_DrawPlayerHealth(&rect, scale, color, shader, textStyle);
     break;
   case CG_RED_SCORE:
-    CG_DrawRedScore(&rect, scale, color, shader, textStyle);
+    CG_DrawRedScore(&rect, scale, color, shader, textStyle, align);
     break;
   case CG_BLUE_SCORE:
-    CG_DrawBlueScore(&rect, scale, color, shader, textStyle);
+    CG_DrawBlueScore(&rect, scale, color, shader, textStyle, align);
     break;
   case CG_RED_NAME:
-    CG_DrawRedName(&rect, scale, color, textStyle);
+    CG_DrawRedName(&rect, scale, color, textStyle, align);
     break;
   case CG_BLUE_NAME:
-    CG_DrawBlueName(&rect, scale, color, textStyle);
+    CG_DrawBlueName(&rect, scale, color, textStyle, align);
     break;
 #ifdef CG_BLUE_FLAGHEAD
   case CG_BLUE_FLAGHEAD:
@@ -1888,7 +1927,7 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
     break;
 #endif
   case CG_GAME_TYPE:
-    CG_DrawGameType(&rect, scale, color, shader, textStyle);
+    CG_DrawGameType(&rect, scale, color, shader, textStyle, align);
     break;
   case CG_GAME_STATUS:
     CG_DrawGameStatus(&rect, scale, color, shader, textStyle);
@@ -1920,10 +1959,10 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
     CG_DrawCapFragLimit(&rect, scale, color, shader, textStyle);
 		break;
   case CG_1STPLACE:
-    CG_Draw1stPlace(&rect, scale, color, shader, textStyle);
+    CG_Draw1stPlace(&rect, scale, color, shader, textStyle, align);
 		break;
   case CG_2NDPLACE:
-    CG_Draw2ndPlace(&rect, scale, color, shader, textStyle);
+    CG_Draw2ndPlace(&rect, scale, color, shader, textStyle, align);
 		break;
 #ifdef CG_PLAYER_HEALTH_BAR_100
 	case CG_PLAYER_HEALTH_BAR_100:
