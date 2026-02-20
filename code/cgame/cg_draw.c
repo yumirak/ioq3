@@ -31,7 +31,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 // used for scoreboard
 extern displayContextDef_t cgDC;
-menuDef_t *menuScoreboard = NULL;
 #else
 int drawTeamOverlayModificationCount = -1;
 #endif
@@ -2166,13 +2165,38 @@ static void CG_DrawTeamVote(void) {
 	CG_DrawSmallString( 0, 90, s, 1.0F );
 }
 
+#ifdef BASEQZ
+menuDef_t* CG_GetScoreboardMenu( qboolean end )
+{
+	char scoreboardName[32];
+	menuDef_t *menu = NULL;
+	char *teamprefix = CG_IsTeamGame( cgs.gametype ) ? "team" : "";
+	char *endprefix = end ? "end" : "";
+
+	Com_sprintf( scoreboardName, sizeof(scoreboardName), "%s%sscore_menu_%s", endprefix, teamprefix, gametype_desc[cgs.gametype].scoreboard );
+	menu = Menus_FindByName( scoreboardName );
+	if( !menu || !cg_premium.integer ) {
+		Com_sprintf( scoreboardName, sizeof(scoreboardName), "%s%sscore_menu", endprefix, teamprefix );
+		menu = Menus_FindByName( scoreboardName );
+	} else {
+		cg.scoreboardPremium = qtrue;
+	}
+
+	Com_Printf( "cg.scoreboardPremium = %s\n", cg.scoreboardPremium ? "qtrue" : "qfalse" );
+	return menu;
+}
+#endif
 
 static qboolean CG_DrawScoreboard( void ) {
 #ifdef MISSIONPACK
 	static qboolean firstTime = qtrue;
 
-	if (menuScoreboard) {
-		menuScoreboard->window.flags &= ~WINDOW_FORCED;
+#ifdef BASEQZ
+	qboolean intermission = cg.predictedPlayerState.pm_type == PM_INTERMISSION;
+#endif
+
+	if (cg.menuScoreboard) {
+		cg.menuScoreboard->window.flags &= ~WINDOW_FORCED;
 	}
 	if (cg_paused.integer) {
 		cg.deferredPlayerLoading = 0;
@@ -2203,20 +2227,34 @@ static qboolean CG_DrawScoreboard( void ) {
 		}
 	}
 
-	if (menuScoreboard == NULL) {
-		if ( cgs.gametype >= GT_TEAM ) {
-			menuScoreboard = Menus_FindByName("teamscore_menu");
-		} else {
-			menuScoreboard = Menus_FindByName("score_menu");
-		}
+#ifdef BASEQZ
+	if (cg.menuEndScoreboard == NULL) {
+		cg.menuEndScoreboard = CG_GetScoreboardMenu( qtrue );
 	}
 
-	if (menuScoreboard) {
+	if (cg.menuScoreboard == NULL) {
+		cg.menuScoreboard = CG_GetScoreboardMenu( qfalse );
+	}
+
+	if ( intermission ) {
+		cg.menuScoreboard = cg.menuEndScoreboard;
+	}
+#else
+	if (cg.menuScoreboard == NULL) {
+		if ( cgs.gametype >= GT_TEAM ) {
+			cg.menuScoreboard = Menus_FindByName("teamscore_menu");
+		} else {
+			cg.menuScoreboard = Menus_FindByName("score_menu");
+		}
+	}
+#endif
+
+	if (cg.menuScoreboard) {
 		if (firstTime) {
-			CG_SetScoreSelection(menuScoreboard);
+			CG_SetScoreSelection(cg.menuScoreboard);
 			firstTime = qfalse;
 		}
-		Menu_Paint(menuScoreboard, qtrue);
+		Menu_Paint(cg.menuScoreboard, qtrue);
 	}
 
 	// load any models that have been deferred

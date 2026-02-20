@@ -26,7 +26,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "cg_local.h"
 #ifdef MISSIONPACK
 #include "../ui/ui_shared.h"
-extern menuDef_t *menuScoreboard;
 #endif
 
 
@@ -116,7 +115,6 @@ static void CG_ScoresUp_f( void ) {
 }
 
 #ifdef MISSIONPACK
-extern menuDef_t *menuScoreboard;
 void Menu_Reset( void );			// FIXME: add to right include file
 
 static void CG_LoadHud_f( void) {
@@ -134,24 +132,26 @@ static void CG_LoadHud_f( void) {
 	}
 
 	CG_LoadMenus(hudSet);
-  menuScoreboard = NULL;
+  cg.menuScoreboard = NULL;
+  cg.menuEndScoreboard = NULL;
+  cg.scoreboardPremium = qfalse;
 }
 
 
 static void CG_scrollScoresDown_f( void) {
-	if (menuScoreboard && cg.scoreBoardShowing) {
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qtrue);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qtrue);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qtrue);
+	if (cg.menuScoreboard && cg.scoreBoardShowing) {
+		Menu_ScrollFeeder(cg.menuScoreboard, FEEDER_SCOREBOARD, qtrue);
+		Menu_ScrollFeeder(cg.menuScoreboard, FEEDER_REDTEAM_LIST, qtrue);
+		Menu_ScrollFeeder(cg.menuScoreboard, FEEDER_BLUETEAM_LIST, qtrue);
 	}
 }
 
 
 static void CG_scrollScoresUp_f( void) {
-	if (menuScoreboard && cg.scoreBoardShowing) {
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_SCOREBOARD, qfalse);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_REDTEAM_LIST, qfalse);
-		Menu_ScrollFeeder(menuScoreboard, FEEDER_BLUETEAM_LIST, qfalse);
+	if (cg.menuScoreboard && cg.scoreBoardShowing) {
+		Menu_ScrollFeeder(cg.menuScoreboard, FEEDER_SCOREBOARD, qfalse);
+		Menu_ScrollFeeder(cg.menuScoreboard, FEEDER_REDTEAM_LIST, qfalse);
+		Menu_ScrollFeeder(cg.menuScoreboard, FEEDER_BLUETEAM_LIST, qfalse);
 	}
 }
 

@@ -486,6 +486,10 @@ static void CG_MapRestart( void ) {
 	cg.rewardStack = 0;
 	cg.intermissionStarted = qfalse;
 	cg.levelShot = qfalse;
+#ifdef MISSIONPACK
+	cg.menuScoreboard = NULL;
+	cg.menuEndScoreboard = NULL;
+#endif
 
 	cgs.voteTime = 0;
 

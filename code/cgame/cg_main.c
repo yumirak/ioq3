@@ -239,6 +239,7 @@ vmCvar_t	cg_smokeRadius_flight;
 vmCvar_t	cg_smokeRadius_dust;
 vmCvar_t	cg_smoke_SG;
 vmCvar_t	cg_levelTimerDirection;
+vmCvar_t	cg_premium;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -423,6 +424,7 @@ static cvarTable_t cvarTable[] = {
 	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SERVERINFO},
 	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SERVERINFO},
 #endif
+	{ &cg_premium, "cg_premium", "0", CVAR_SERVERINFO | CVAR_USERINFO },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -1938,6 +1940,38 @@ static void CG_RunCinematicFrame(int handle) {
   trap_CIN_RunCinematic(handle);
 }
 
+void CG_LoadDefaultMenus (void)
+{
+#ifdef BASEQZ
+	int i, j;
+	char menuFileName[32];
+	const char *menuExt[2] = { "smenu", "menu" }; // QL 1069 no longer using smenu extension
+	const char *defaultMenu[9] =
+	{ "intro", "ingamestats",
+	  "ingamescoreteam", "ingamescorenoteam",
+	  "endscoreteam", "endscorenoteam",
+	  "spectator", "spectator_follow",
+	  "comp_spectator"
+	};
+
+	Com_Printf("loading default menus\n");
+
+	for( i = 0; i < 9; i++ ) {
+		for( j = 0; j < 2; j++ ) {
+			Com_sprintf( menuFileName, sizeof(menuFileName), "ui/%s.%s", defaultMenu[i], menuExt[j] );
+			CG_ParseMenu( menuFileName );
+		}
+	}
+
+	for( i = 0; i < 2; i++ ) {
+		Com_sprintf( menuFileName, sizeof(menuFileName), "ui/ingame_scoreboard_%s.%s", gametype_desc[cgs.gametype].scoreboard, menuExt[i] );
+		CG_ParseMenu( menuFileName );
+		Com_sprintf( menuFileName, sizeof(menuFileName), "ui/end_scoreboard_%s.%s", gametype_desc[cgs.gametype].scoreboard, menuExt[i] );
+		CG_ParseMenu( menuFileName );
+	}
+#endif
+}
+
 /*
 =================
 CG_LoadHudMenu();
@@ -2009,6 +2043,7 @@ void CG_LoadHudMenu( void ) {
 	}
 
 	CG_LoadMenus(hudSet);
+	CG_LoadDefaultMenus();
 }
 
 void CG_AssetCache( void ) {

@@ -24,7 +24,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../renderercommon/tr_types.h"
 #include "../game/bg_public.h"
 #include "cg_public.h"
-
+#ifdef MISSIONPACK
+#include "../../ui/menudef.h"
+#include "../ui/ui_shared.h"
+#endif
 
 // The entire cgame module is unloaded and reloaded on each level change,
 // so there is NO persistant data between levels on the client side.
@@ -696,6 +699,11 @@ typedef struct {
 	int numChatLinesVisible;
 	qboolean forceDrawChat;
 	newChatArea_t chatArea[MAX_CHAT_LINES];
+#ifdef MISSIONPACK
+	menuDef_t *menuScoreboard;
+	menuDef_t *menuEndScoreboard;
+	qboolean scoreboardPremium;
+#endif
 } cg_t;
 
 
@@ -1294,6 +1302,7 @@ extern	vmCvar_t		cg_smokeRadius_flight;
 extern	vmCvar_t		cg_smokeRadius_dust;
 extern	vmCvar_t		cg_smoke_SG;
 extern	vmCvar_t		cg_levelTimerDirection;
+extern	vmCvar_t		cg_premium;
 
 //
 // cg_main.c
