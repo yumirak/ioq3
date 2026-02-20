@@ -179,6 +179,10 @@ typedef struct listBoxDef_s {
 	columnInfo_t columnInfo[MAX_LB_COLUMNS];
 	const char *doubleClick;
 	qboolean notselectable;
+    // Extend
+    vec4_t elementColor;
+    vec4_t selectedColor;
+    vec4_t altRowColor;
 } listBoxDef_t;
 
 typedef struct editFieldDef_s {

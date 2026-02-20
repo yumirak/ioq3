@@ -5357,6 +5357,42 @@ static qboolean ItemParse_backgroundReset( itemDef_t *item, int handle ) {
 	return qtrue;
 }
 
+static qboolean ItemParse_elementColor( itemDef_t *item, int handle ) {
+	listBoxDef_t *listPtr;
+
+	Item_ValidateTypeData(item);
+	listPtr = (listBoxDef_t*)item->typeData;
+	if (!PC_Color_Parse(handle, &listPtr->elementColor)) {
+		return qfalse;
+	}
+
+	return qtrue;
+}
+
+static qboolean ItemParse_selectedColor( itemDef_t *item, int handle ) {
+	listBoxDef_t *listPtr;
+
+	Item_ValidateTypeData(item);
+	listPtr = (listBoxDef_t*)item->typeData;
+	if (!PC_Color_Parse(handle, &listPtr->selectedColor)) {
+		return qfalse;
+	}
+
+	return qtrue;
+}
+
+static qboolean ItemParse_altRowColor( itemDef_t *item, int handle ) {
+	listBoxDef_t *listPtr;
+
+	Item_ValidateTypeData(item);
+	listPtr = (listBoxDef_t*)item->typeData;
+	if (!PC_Color_Parse(handle, &listPtr->altRowColor)) {
+		return qfalse;
+	}
+
+	return qtrue;
+}
+
 keywordHash_t itemParseKeywords[] = {
 	{"name", ItemParse_name, NULL},
 	{"text", ItemParse_text, NULL},
@@ -5420,6 +5456,10 @@ keywordHash_t itemParseKeywords[] = {
 	{"hideCvar", ItemParse_hideCvar, NULL},
 	{"cinematic", ItemParse_cinematic, NULL},
 	{"doubleclick", ItemParse_doubleClick, NULL},
+
+	{"elementcolor", ItemParse_elementColor, NULL},
+	{"selectedcolor", ItemParse_selectedColor, NULL},
+	{"altrowcolor", ItemParse_altRowColor, NULL},
 
 	{"cvara", ItemParse_cvar, NULL},
 	{"cvarInt", ItemParse_cvarInt, NULL},
