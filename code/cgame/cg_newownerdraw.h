@@ -5,3 +5,4 @@ void CG_DrawVerticalPlayerStatus(rectDef_t *rect, qhandle_t shader, float num, f
 void CG_Draw1stPlaceScore( rectDef_t *rect, float scale, vec4_t color, int textStyle );
 void CG_Draw2ndPlaceScore( rectDef_t *rect, float scale, vec4_t color, int textStyle );
 void CG_DrawObit( rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle );
+void CG_DrawAreaNewChat( rectDef_t *rect, float scale, vec4_t color, int textStyle );

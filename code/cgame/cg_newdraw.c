@@ -1291,6 +1291,11 @@ qboolean CG_OwnerDrawVisible(int flags) {
 		return cg.snap->ps.pm_type != PM_INTERMISSION;
 #endif
 
+#ifdef CG_SHOW_IF_CHAT_VISIBLE
+	if (flags & CG_SHOW_IF_CHAT_VISIBLE)
+		return cg.numChatLinesVisible;
+#endif
+
 	return qfalse;
 }
 
@@ -1964,6 +1969,11 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 #ifdef CG_PLAYER_OBIT
 	case CG_PLAYER_OBIT:
 		CG_DrawObit( &rect, scale, color, shader, textStyle );
+		break;
+#endif
+#ifdef CG_AREA_NEW_CHAT
+	case CG_AREA_NEW_CHAT:
+		CG_DrawAreaNewChat( &rect, scale, color, textStyle );
 		break;
 #endif
 

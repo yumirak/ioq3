@@ -443,7 +443,15 @@ static void CG_Camera_f( void ) {
 	}
 }
 */
+static void CG_ChatDown_f (void)
+{
+	cg.forceDrawChat = qtrue;
+}
 
+static void CG_ChatUp_f (void)
+{
+	cg.forceDrawChat = qfalse;
+}
 
 typedef struct {
 	char	*cmd;
@@ -500,6 +508,10 @@ static consoleCommand_t	commands[] = {
 #endif
 	{ "startOrbit", CG_StartOrbit_f },
 	//{ "camera", CG_Camera_f },
+#ifdef MISSIONPACK
+	{ "+chat", CG_ChatDown_f },
+	{ "-chat", CG_ChatUp_f },
+#endif
 	{ "loaddeferred", CG_LoadDeferredPlayers }	
 };
 

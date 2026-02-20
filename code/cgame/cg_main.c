@@ -522,6 +522,43 @@ int CG_LastAttacker( void ) {
 	return cg.snap->ps.persistant[PERS_ATTACKER];
 }
 
+void CG_AddChatLine (const char *line)
+{
+	int i;
+	for( i = MAX_CHAT_LINES - 1; i > 0; i-- ) {
+		if( cg.chatArea[i-1].time != 0 )
+			memcpy(&cg.chatArea[i], &cg.chatArea[i-1], sizeof(cg.chatArea[i]));
+	}
+
+	Q_strncpyz(cg.chatArea[0].message, line, sizeof(cg.chatArea[i].message));
+	cg.chatArea[0].time = cg.time;
+}
+
+void CG_PrintToScreen ( const char *msg, ... ) {
+	va_list		argptr;
+	char		text[1024];
+	int i;
+
+	va_start (argptr, msg);
+	Q_vsnprintf (text, sizeof(text), msg, argptr);
+	va_end (argptr);
+
+	text[1023] = '\0';
+	for (i = 0;  i < 1024;  i++) {
+		if ((unsigned char)text[i] >= ' ') {
+			continue;
+		}
+
+		if (text[i] == '\0') {
+			break;
+		}
+
+		text[i] = ' ';
+	}
+
+	CG_AddChatLine(text);
+}
+
 void QDECL CG_Printf( const char *msg, ... ) {
 	va_list		argptr;
 	char		text[1024];

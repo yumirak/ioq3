@@ -476,6 +476,12 @@ typedef struct {
 	qhandle_t icon;
 	int time;
 } obituary_t;
+
+#define MAX_CHAT_LINES  5
+typedef struct {
+	char	message[MAX_SAY_TEXT];
+	int		time;
+} newChatArea_t;
 //======================================================================
 
 // all cg.stepTime, cg.duckTime, cg.landTime, etc are set to cg.time when the action
@@ -686,6 +692,10 @@ typedef struct {
 	clientSidedEvent_t clientSideEvent;
 	clientSidedEvent_t oldClientSideEvent;
 	obituary_t obituary[MAX_OBITUARY];
+	// chat area has additional info besides just chat:  'player connected', etc..
+	int numChatLinesVisible;
+	qboolean forceDrawChat;
+	newChatArea_t chatArea[MAX_CHAT_LINES];
 } cg_t;
 
 
@@ -1290,6 +1300,7 @@ extern	vmCvar_t		cg_levelTimerDirection;
 const char *CG_ConfigString( int index );
 const char *CG_Argv( int arg );
 
+void QDECL CG_PrintToScreen( const char *msg, ... ) Q_PRINTF_FUNC(1, 2);
 void QDECL CG_Printf( const char *msg, ... ) Q_PRINTF_FUNC(1, 2);
 void QDECL CG_Error( const char *msg, ... ) Q_NO_RETURN Q_PRINTF_FUNC(1, 2);
 

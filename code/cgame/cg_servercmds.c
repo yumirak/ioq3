@@ -1031,6 +1031,7 @@ static void CG_ServerCommand( void ) {
 
 	if ( !strcmp( cmd, "print" ) ) {
 		CG_Printf( "%s", CG_Argv(1) );
+		CG_PrintToScreen("%s", CG_Argv(1));
 #ifdef MISSIONPACK
 		cmd = CG_Argv(1);			// yes, this is obviously a hack, but so is the way we hear about
 									// votes passing or failing
@@ -1052,6 +1053,7 @@ static void CG_ServerCommand( void ) {
 		Q_strncpyz( text, CG_Argv(1), MAX_SAY_TEXT );
 		CG_RemoveChatEscapeChar( text );
 		CG_Printf( "%s\n", text );
+		CG_PrintToScreen("%s", text);
 		return;
 	}
 
@@ -1061,6 +1063,7 @@ static void CG_ServerCommand( void ) {
 		CG_RemoveChatEscapeChar( text );
 		CG_AddToTeamChat( text );
 		CG_Printf( "%s\n", text );
+		CG_PrintToScreen("%s", text);
 		return;
 	}
 

@@ -185,3 +185,24 @@ void CG_DrawObit( rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, 
     }
 }
 
+void CG_DrawAreaNewChat( rectDef_t *rect, float scale, vec4_t color, int textStyle )
+{
+    int i;
+    int yOffset;
+    int count = 0;
+    float textscale = 0.2f;
+    int h = CG_Text_Height("T", textscale, 0);
+
+    for( i = 0; i < MAX_CHAT_LINES; i++ ) {
+        if (!cg.scoreBoardShowing) {
+            if( !cg.forceDrawChat  && cg.time - cg.chatArea[i].time > 5000 )
+                break;
+        }
+
+        yOffset = ( h * 2 ) * i;
+        CG_Text_Paint( rect->x, rect->y + rect->h - yOffset, textscale, color, cg.chatArea[i].message, 0, 0, ITEM_TEXTSTYLE_SHADOWED /* textStyle */ );
+        count++;
+    }
+
+    cg.numChatLinesVisible = count;
+}
