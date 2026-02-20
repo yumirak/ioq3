@@ -1976,6 +1976,11 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_DrawAreaNewChat( &rect, scale, color, textStyle );
 		break;
 #endif
+#ifdef CG_GAME_TYPE_ICON
+	case CG_GAME_TYPE_ICON:
+		CG_DrawPic( rect.x, rect.y, rect.w, rect.h, cgs.media.gametypeIcon[cgs.gametype] );
+		break;
+#endif
 
   default:
     break;

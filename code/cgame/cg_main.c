@@ -1264,6 +1264,24 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.gibSphere = trap_R_RegisterModel( "models/gibs/sphere.md3" );
 	cgs.media.deathEffectShader = trap_R_RegisterShader( "deathEffect" );
 	cgs.media.infiniteAmmo = trap_R_RegisterShader( "icons/infinite" );
+
+	cgs.media.gametypeIcon[GT_FFA] = trap_R_RegisterShader("ui/assets/hud/ffa");
+	cgs.media.gametypeIcon[GT_SINGLE_PLAYER] = trap_R_RegisterShader("ui/assets/hud/ffa");
+	cgs.media.gametypeIcon[GT_TOURNAMENT] = trap_R_RegisterShader("ui/assets/hud/duel");
+	cgs.media.gametypeIcon[GT_TEAM] = trap_R_RegisterShader("ui/assets/hud/tdm");
+	cgs.media.gametypeIcon[GT_CTF] = trap_R_RegisterShader("ui/assets/hud/ctf");
+	cgs.media.gametypeIcon[GT_1FCTF] = trap_R_RegisterShader("ui/assets/hud/1f");
+	cgs.media.gametypeIcon[GT_HARVESTER] = trap_R_RegisterShader("ui/assets/hud/har");
+	cgs.media.gametypeIcon[GT_DOMINATION] = trap_R_RegisterShader("ui/assets/hud/dom");
+	cgs.media.gametypeIcon[GT_CTFS] = trap_R_RegisterShader("ui/assets/hud/ad");
+	cgs.media.gametypeIcon[GT_RED_ROVER] = trap_R_RegisterShader("ui/assets/hud/rr");
+
+	if(!cgs.media.gametypeIcon[GT_TOURNAMENT])
+		cgs.media.gametypeIcon[GT_TOURNAMENT] = trap_R_RegisterShader("ui/assets/hud/tourn");
+
+	for( i = 0; i < GT_MAX_GAME_TYPE; i++ ) {
+		if(!cgs.media.gametypeIcon[i]) cgs.media.gametypeIcon[i] = trap_R_RegisterShader("ui/assets/hud/dm");
+	}
 #endif
 	CG_ClearParticles ();
 /*
