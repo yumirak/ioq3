@@ -2020,6 +2020,72 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_DrawPic( rect.x, rect.y, rect.w, rect.h, cgs.media.gametypeIcon[cgs.gametype] );
 		break;
 #endif
+#ifdef CG_MATCH_WINNER
+	case CG_MATCH_WINNER:
+		CG_DrawMatchWinnerString(&rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_MATCH_END_CONDITION
+	case CG_MATCH_END_CONDITION:
+		CG_MatchEndCondition(&rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_PLYR_END_GAME_SCORE
+	case CG_PLYR_END_GAME_SCORE:
+		CG_EndGameScoreString(&rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_PLAYER_COUNTS
+	case CG_PLAYER_COUNTS:
+		CG_PlayerCountsString( -1, 1, &rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_BLUE_PLAYER_COUNT
+	case CG_BLUE_PLAYER_COUNT:
+		CG_PlayerCountsString( TEAM_BLUE, 2, &rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_BLUE_PLAYER_COUNT
+	case CG_RED_PLAYER_COUNT:
+		CG_PlayerCountsString( TEAM_RED, 2, &rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_GAME_LIMIT
+	case CG_GAME_LIMIT:
+		CG_GameLimitString(&rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_MATCH_STATE
+	case CG_MATCH_STATE:
+		CG_MatchStateString(&rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_SERVER_OWNER
+	case CG_SERVER_OWNER:
+		CG_ServerOwnerString(&rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_MAP_NAME
+	case CG_MAP_NAME:
+		CG_Text_Paint_Align(&rect, scale, color, CG_ConfigString(CS_MESSAGE), 0, 0, textStyle, align);
+		break;
+#endif
+#ifdef CG_MATCH_DETAILS
+	case CG_MATCH_DETAILS:
+		CG_Match_Details(&rect, scale, color, textStyle, align);
+		break;
+#endif
+#ifdef CG_PLYR_BEST_WEAPON_NAME
+	case CG_PLYR_BEST_WEAPON_NAME: {
+		CG_PlayerBestWeaponName(&rect, scale, color, textStyle, align);
+		break;
+	}
+#endif
+#ifdef CG_SELECTED_PLYR_ACCURACY
+	case CG_SELECTED_PLYR_ACCURACY:
+		CG_SelectedPlayerAccuracy(&rect, scale, color, textStyle, align);
+		break;
+#endif
 
   default:
     break;

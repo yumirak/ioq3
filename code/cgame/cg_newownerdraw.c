@@ -3,6 +3,7 @@
 #endif
 #include "cg_local.h"
 #include "cg_utils.h"
+#include "cg_newdraw.h"
 #include "cg_newownerdraw.h"
 
 void CG_DrawHorizontalPlayerStatus(rectDef_t *rect, qhandle_t shader, float num, float max_num, qboolean lefttoright)
@@ -205,4 +206,253 @@ void CG_DrawAreaNewChat( rectDef_t *rect, float scale, vec4_t color, int textSty
     }
 
     cg.numChatLinesVisible = count;
+}
+
+void CG_DrawMatchWinnerString( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	vec4_t ourColor;
+	float x;
+	char *s;
+
+	Vector4Copy(colorWhite, ourColor);
+	// 2018-07-13 only used in end_scoreboard* but ql shows 'player leads with a score of 2' if it isn't match end
+	// 2018-07-12 ql uses forecolor to set the player name but the rest of the message is forced to white
+	// 2018-09-25 if name is large uses '...'
+
+	if (!CG_IsTeamGame(cgs.gametype)) {
+		const char *playerName = "";
+		char endText[128];
+		const char *fullText = "";
+		float w;
+
+		playerName = cgs.cs[CS_FIRSTPLACE].string;
+
+		if (cg.snap->ps.pm_type == PM_INTERMISSION) {
+			Q_strncpyz(endText, " WINS", sizeof(endText));
+		} else {
+			Com_sprintf(endText, sizeof(endText), " leads with a score of %d", cgs.scores1);
+		}
+
+		fullText = va("%s ^7%s", playerName, endText);
+		w = CG_Text_Width(fullText, scale, 0);
+
+		switch(align) {
+			case ITEM_ALIGN_CENTER: x = rect->x - (w / 2); break;
+			case ITEM_ALIGN_RIGHT : x = rect->x - w; break;
+			default: x = rect->x; break;
+		}
+
+		// we have to split text painting since the first part (player name) might be using a different alpha value for color
+		CG_Text_Paint(x, rect->y, scale, color, playerName, 0, 0, textStyle);
+		x += CG_Text_Width(playerName, scale, 0);
+		CG_Text_Paint(x, rect->y, scale, ourColor, endText, 0, 0, textStyle);
+	} else {  // team game
+		ourColor[3] = color[3];
+		if (CG_ScoresEqual(cgs.scores1, cgs.scores2)) {  // shouldn't happen during intermission
+			s = va("Teams are tied with a score of %d", cgs.scores1);
+		} else if (cgs.scores1 > cgs.scores2) {
+			if (cg.snap->ps.pm_type == PM_INTERMISSION) {
+				s = va("^1Red Team ^7WINS by a score of %d to %d", cgs.scores1, cgs.scores2);
+			} else {
+				s = va("^1Red Team ^7leads with a score of %d", cgs.scores1);
+			}
+		} else {
+			if (cg.snap->ps.pm_type == PM_INTERMISSION) {
+				s = va("^4Blue Team ^7WINS by a score of %d to %d", cgs.scores2, cgs.scores1);
+			} else {
+				s = va("^4Blue Team ^7leads with a score of %d", cgs.scores2);
+			}
+		}
+
+		CG_Text_Paint_Align(rect, scale, color, s, 0, 0, textStyle, align);
+	}
+}
+
+void CG_MatchEndCondition( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	char *s = "Highest score at the end of the game";
+	if (cgs.gametype == GT_CTF) {
+		s = "First to reach the mercy limit";
+	} else if (cgs.gametype == GT_CLAN_ARENA) {
+		s = "First to reach the round limit";
+	} else if (cgs.gametype == GT_CTFS  ||  cgs.gametype == GT_DOMINATION) {
+		s = "First to reach the score limit";
+	}
+
+	CG_Text_Paint_Align(rect, scale, color, s, 0, 0, textStyle, align);
+}
+
+void CG_EndGameScoreString( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	// chopping off color code like ql
+	if (cgs.clientinfo[cg.clientNum].team != TEAM_SPECTATOR  &&  cgs.clientinfo[cg.clientNum].infoValid) {
+		int i;
+		const score_t *sc;
+		int assists = 0;
+		int captures = 0;
+		int defends = 0;
+		char placeString[32];
+		char *s;
+		char *fullStr;
+
+		for (i = 0;  i < cg.numScores;  i++) {
+			sc = &cg.scores[i];
+			if (sc->client == cg.snap->ps.clientNum) {
+				assists = sc->assistCount;
+				captures = sc->captures;
+				defends = sc->defendCount;
+				break;
+			}
+		}
+
+		// 2018-07-28 ignore RANK_TIED_FLAG to match quake live
+		//s = CG_PlaceString((cg.snap->ps.persistant[PERS_RANK] &= ~RANK_TIED_FLAG) + 1);
+		Q_strncpyz(placeString, CG_PlaceString((cg.snap->ps.persistant[PERS_RANK] &= ~RANK_TIED_FLAG) + 1), sizeof(placeString));
+		s = placeString;
+
+		// ignore colorized '1st', '2nd', etc.
+		if (s[0] == '^') {
+			s += 2;
+		}
+		if (strlen(s) > 1) {
+			if (s[strlen(s) - 2] == '^') {
+				s[strlen(s) - 2] = '\0';
+			}
+		}
+
+		if ( CG_IsTeamGame(cgs.gametype) && cgs.gametype != GT_TEAM ) {  //FIXME OBELISK like quakelive -- even if wrong
+			if (captures) {
+				if (cgs.gametype == GT_HARVESTER) {
+					fullStr = va("You captured %d skull%s", captures, captures == 1 ? "." : "s.");
+				} else {
+					fullStr = va("You had %d flag capture%s", captures, captures == 1 ? "." : "s.");
+				}
+			} else if (assists) {
+				fullStr = va("You had %d assist%s", assists, assists == 1 ? "." : "s.");
+			} else if (defends) {
+				fullStr = va("You had %d defend%s", defends, defends == 1 ? "." : "s.");
+			} else {
+				fullStr = va("You finished with a score of %d.", cg.snap->ps.persistant[PERS_SCORE]);
+			}
+		} else {  // other gametypes
+			fullStr = va("You finished %s with a score of %d.", s, cg.snap->ps.persistant[PERS_SCORE]);
+		}
+
+		CG_Text_Paint_Align(rect, scale, color, fullStr, 0, 0, textStyle, align);
+	}
+}
+void CG_PlayerCountsString( int team, int type, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	int count = 0;
+	int maxPlayers = cgs.maxclients;
+	char *s;
+
+	//FIXME don't do it every time
+	count = CG_GetPlayerCount( team );
+	switch(type)
+	{
+		case 1:
+			s = va("%d/%d Players", count, maxPlayers);
+			break;
+		case 2:
+			s = va("%d Players", count);
+			break;
+		case 3:
+			s = va("(%d/%d)", count, maxPlayers);
+			break;
+		case 4:
+			s = va("(%d)", count);
+			break;
+		default:
+			return;
+	}
+
+	CG_Text_Paint_Align(rect, scale, color, s, 0, 0, textStyle, align);
+}
+
+void CG_GameLimitString( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	// 2018-07-06 depends on game type (Round Limit, Frag Limit, Cap Limit, ...
+	// 2018-07-06 ql only supports left and center align, missing right align is probably a bug
+	char *s;
+	int type;
+
+	if (align == ITEM_ALIGN_RIGHT) {
+		align = ITEM_ALIGN_LEFT;
+	}
+
+	if (cgs.fraglimit > 0)
+		type = 1;
+	if (cgs.gametype == GT_CTF  ||  cgs.gametype == GT_1FCTF  ||  cgs.gametype == GT_HARVESTER)
+		type = 2;
+
+	switch(type)
+	{
+		case 1:
+			s = va("Frag Limit: %d", cgs.fraglimit);
+			break;
+		case 2:
+			s = va("Cap Limit: %d", cgs.capturelimit);
+			break;
+		default:
+			s = va("Time Limit: %d", cgs.timelimit);
+			break;
+	}
+
+	CG_Text_Paint_Align(rect, scale, color, s, 0, 0, textStyle, align);
+}
+
+const char* GetMatchState( void )
+{
+	const char *state = "MATCH IN PROGRESS";
+
+	if (cg.warmup) {
+		state = "MATCH WARMUP";
+	} else if (cg.snap->ps.pm_type == PM_INTERMISSION) {
+		state = "MATCH SUMMARY";
+	}
+
+	return state;
+}
+
+void CG_MatchStateString( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	CG_Text_Paint_Align(rect, scale, color, GetMatchState(), 0, 0, textStyle, align);
+}
+
+void CG_Match_Details( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	const char *s = va("%s - %s", GetMatchState(), CG_ConfigString(CS_MESSAGE));
+	CG_Text_Paint_Align(rect, scale, color, s, 0, 0, textStyle, align);
+}
+
+void CG_ServerOwnerString( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	const char *ownerName = "Quake Live";
+	// ownerName = Info_ValueForKey(CG_ConfigString(CS_SERVERINFO), "sv_owner");
+	CG_Text_Paint_Align(rect, scale, color, ownerName, 0, 0, textStyle, align);
+}
+
+void CG_PlayerBestWeaponName( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	int weapon;
+	gitem_t *item;
+
+	if( cg.selectedScore < 0 || cg.selectedScore > MAX_CLIENTS )
+		return;
+
+	weapon = Com_Clamp( WP_MACHINEGUN, WP_NUM_WEAPONS, cg.scores[cg.selectedScore].bestWeapon );
+	item = BG_FindItemForWeapon( weapon );
+	if( !item )
+		return;
+
+	CG_Text_Paint_Align( rect, scale, color, item->pickup_name, 0, 0, textStyle, align );
+}
+
+void CG_SelectedPlayerAccuracy( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	if( cg.selectedScore < 0 || cg.selectedScore > MAX_CLIENTS )
+		return;
+
+	CG_Text_Paint_Align( rect, scale, color, va( "%d%%", cg.scores[cg.selectedScore].accuracy ), 0, 0, textStyle, align );
 }
