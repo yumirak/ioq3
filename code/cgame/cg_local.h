@@ -1303,6 +1303,13 @@ extern	vmCvar_t		cg_smokeRadius_dust;
 extern	vmCvar_t		cg_smoke_SG;
 extern	vmCvar_t		cg_levelTimerDirection;
 extern	vmCvar_t		cg_premium;
+extern	vmCvar_t		cg_gametype;
+extern	vmCvar_t		cg_compMode;
+extern	vmCvar_t		cg_compHud;
+extern	vmCvar_t		cg_specOnly;
+extern	vmCvar_t		cg_spectating;
+extern	vmCvar_t		cg_placebo;
+extern	vmCvar_t		cg_drawSpecMessages;
 
 //
 // cg_main.c

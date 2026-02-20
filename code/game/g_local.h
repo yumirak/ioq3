@@ -770,6 +770,7 @@ extern	vmCvar_t	g_startingAmmo[WP_NUM_WEAPONS];
 extern	vmCvar_t	g_spawnItem;
 extern	vmCvar_t	g_spawnItemType[IT_TEAM];
 extern	vmCvar_t	g_respawnItemType[IT_TEAM];
+extern	vmCvar_t	g_training;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

@@ -244,6 +244,13 @@ vmCvar_t	cg_smokeRadius_dust;
 vmCvar_t	cg_smoke_SG;
 vmCvar_t	cg_levelTimerDirection;
 vmCvar_t	cg_premium;
+vmCvar_t	cg_gametype;
+vmCvar_t	cg_compMode;
+vmCvar_t	cg_compHud;
+vmCvar_t	cg_specOnly;
+vmCvar_t	cg_spectating;
+vmCvar_t	cg_placebo;
+vmCvar_t	cg_drawSpecMessages;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -429,6 +436,13 @@ static cvarTable_t cvarTable[] = {
 	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SERVERINFO},
 #endif
 	{ &cg_premium, "cg_premium", "0", CVAR_ROM },
+	{ &cg_gametype, "cg_gametype", "0", CVAR_ROM | CVAR_ARCHIVE },
+	{ &cg_compMode, "cg_compMode", "0", CVAR_ARCHIVE },
+	{ &cg_compHud, "cg_compHud", "0", CVAR_ARCHIVE },
+	{ &cg_spectating, "cg_specOnly", "0", CVAR_ROM },
+	{ &cg_spectating, "cg_spectating", "0", CVAR_ROM },
+	{ &cg_placebo, "cg_placebo", "0", CVAR_ARCHIVE },
+	{ &cg_drawSpecMessages, "cg_drawSpecMessages", "1", CVAR_ARCHIVE },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
