@@ -3950,6 +3950,10 @@ void Item_ListBox_Paint(itemDef_t *item) {
 				// always draw at least one
 				// which may overdraw the box if it is too small for the element
 
+				if (i == item->cursorPos) {
+					DC->fillRect(x + 2, y + 4, item->window.rect.w - SCROLLBAR_SIZE - 4, listPtr->elementHeight, item->window.outlineColor);
+				}
+
 				if (listPtr->numColumns > 0) {
 					int j;
 					for (j = 0; j < listPtr->numColumns; j++) {
@@ -3967,10 +3971,6 @@ void Item_ListBox_Paint(itemDef_t *item) {
 					} else if (text) {
 						DC->drawText(x + 4, y + listPtr->elementHeight, item->textscale, item->window.foreColor, text, 0, 0, item->textStyle);
 					}
-				}
-
-				if (i == item->cursorPos) {
-					DC->fillRect(x + 2, y + 2, item->window.rect.w - SCROLLBAR_SIZE - 4, listPtr->elementHeight, item->window.outlineColor);
 				}
 
 				size -= listPtr->elementHeight;
