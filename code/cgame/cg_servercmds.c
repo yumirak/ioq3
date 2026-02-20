@@ -188,6 +188,7 @@ static void CG_ParseWarmup( void ) {
 	cg.warmupCount = -1;
 
 	if ( warmup == 0 && cg.warmup ) {
+		memset(&cg.obituary, 0, sizeof(cg.obituary));
 
 	} else if ( warmup > 0 && cg.warmup <= 0 ) {
 #ifdef MISSIONPACK
@@ -495,6 +496,7 @@ static void CG_MapRestart( void ) {
 	trap_S_ClearLoopingSounds(qtrue);
 
 	// we really should clear more parts of cg here and stop sounds
+	memset(&cg.obituary, 0, sizeof(cg.obituary));
 
 	// play the "fight" sound if this is a restart without warmup
 	if ( cg.warmup == 0 /* && cgs.gametype == GT_TOURNAMENT */) {

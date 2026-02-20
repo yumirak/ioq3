@@ -1961,6 +1961,12 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_Text_Paint_Align(&rect, scale, color, CG_GetTimeString( CG_GetCurrentTimeWithDirection( cg_levelTimerDirection.integer ) ), 0, 0, textStyle, align);
 		break;
 #endif
+#ifdef CG_PLAYER_OBIT
+	case CG_PLAYER_OBIT:
+		CG_DrawObit( &rect, scale, color, shader, textStyle );
+		break;
+#endif
+
   default:
     break;
   }

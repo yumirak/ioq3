@@ -148,3 +148,40 @@ void CG_Draw2ndPlaceScore( rectDef_t *rect, float scale, vec4_t color, int textS
     if( s )
         CG_DrawPlaceScore( rect, scale, color, textStyle, s, score );
 }
+
+void CG_DrawObit( rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle )
+{
+    int i, w, h;
+    int picWidth, picHeight, picScale;
+    int spacing;
+    int yOffset;
+    qhandle_t icon;
+
+    picScale = 2.0;
+    spacing = 4;
+    h = CG_Text_Height( "T", scale, 0 );
+
+    for( i = 0; i < MAX_OBITUARY; i++ ) {
+        if( i >= cg_obituaryRowSize.integer )
+            return;
+
+        if( cg.time - cg.obituary[i].time > cg_obituaryRowTime.integer || !strlen( cg.obituary[i].victim ) ) {
+            memset(&cg.obituary[i], 0, sizeof(cg.obituary[i]));
+            break;
+        }
+
+        w = CG_Text_Width( cg.obituary[i].killer, scale, 0 );
+
+        picWidth = picHeight = h * picScale;
+        yOffset = ( h * 2 ) * i;
+        icon = cg.obituary[i].icon;
+
+        if( icon < 1 )
+            icon = cgs.media.worldDeathShader;
+
+        CG_Text_Paint( rect->x, rect->y + yOffset, scale, color, cg.obituary[i].killer, 0, 0, textStyle );
+        CG_DrawPic( rect->x + w + spacing, rect->y + yOffset - h - ( picHeight - h ) / 2, picWidth, picHeight, icon );
+        CG_Text_Paint( rect->x + w + spacing + picWidth + spacing, rect->y + yOffset, scale, color, cg.obituary[i].victim, 0, 0, textStyle );
+    }
+}
+

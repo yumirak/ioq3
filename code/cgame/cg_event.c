@@ -75,6 +75,25 @@ const char	*CG_PlaceString( int rank ) {
 	return str;
 }
 
+#ifdef MISSIONPACK
+void CG_AddDeathNotice( char name1[MAX_NAME_LENGTH], int killerClientNum, char name2[MAX_NAME_LENGTH], int victimClientNum, qhandle_t icon1 )
+{
+	int i;
+
+	for( i = MAX_OBITUARY - 1; i > 0; i-- ) {
+		if( cg.obituary[i-1].time != 0 )
+			memcpy(&cg.obituary[i], &cg.obituary[i-1], sizeof(cg.obituary[i]));
+	}
+
+	cg.obituary[0].time = cg.time;
+	Q_strncpyz( cg.obituary[0].killer, name1, sizeof( cg.obituary[0].killer ));
+	Q_strncpyz( cg.obituary[0].victim, name2, sizeof( cg.obituary[0].victim ));
+	cg.obituary[0].killerClientNum = killerClientNum;
+	cg.obituary[0].victimClientNum = victimClientNum;
+	cg.obituary[0].icon = icon1;
+}
+#endif
+
 /*
 =============
 CG_Obituary
@@ -91,6 +110,8 @@ static void CG_Obituary( entityState_t *ent ) {
 	char		attackerName[32];
 	gender_t	gender;
 	clientInfo_t	*ci;
+	qhandle_t	icon = 0;
+	int	modtoweapon;
 
 	target = ent->otherEntityNum;
 	attacker = ent->otherEntityNum2;
@@ -118,6 +139,11 @@ static void CG_Obituary( entityState_t *ent ) {
 	message2 = "";
 
 	// check for single client messages
+#ifdef MISSIONPACK
+	modtoweapon = BG_ModToWeapon( mod );
+	if( modtoweapon )
+		icon = cg_weapons[modtoweapon].weaponIcon;
+#endif
 
 	switch( mod ) {
 	case MOD_SUICIDE:
@@ -207,6 +233,9 @@ static void CG_Obituary( entityState_t *ent ) {
 	}
 
 	if (message) {
+#ifdef MISSIONPACK
+		CG_AddDeathNotice( va( "", targetName ), target, va( "%s", targetName ), target, icon );
+#endif
 		CG_Printf( "%s %s.\n", targetName, message);
 		return;
 	}
@@ -325,6 +354,9 @@ static void CG_Obituary( entityState_t *ent ) {
 		}
 
 		if (message) {
+#ifdef MISSIONPACK
+			CG_AddDeathNotice( va( "%s", attackerName ), attacker, va( "%s", targetName ), target, icon );
+#endif
 			CG_Printf( "%s %s %s%s\n", 
 				targetName, message, attackerName, message2);
 			return;

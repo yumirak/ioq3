@@ -196,6 +196,10 @@ vmCvar_t	cg_recordSPDemo;
 vmCvar_t	cg_recordSPDemoName;
 vmCvar_t	cg_obeliskRespawnDelay;
 #endif
+#ifdef MISSIONPACK
+vmCvar_t	cg_obituaryRowSize;
+vmCvar_t	cg_obituaryRowTime;
+#endif
 #ifdef BASEQZ
 vmCvar_t	cg_impactSparks;
 vmCvar_t	cg_impactSparksLifetime;
@@ -349,6 +353,10 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_smallFont, "ui_smallFont", "0.25", CVAR_ARCHIVE},
 	{ &cg_bigFont, "ui_bigFont", "0.4", CVAR_ARCHIVE},
 	{ &cg_noTaunt, "cg_noTaunt", "0", CVAR_ARCHIVE},
+#endif
+#ifdef MISSIONPACK
+	{ &cg_obituaryRowSize, "cg_obituaryRowSize", "3", CVAR_ARCHIVE },
+	{ &cg_obituaryRowTime, "cg_obituaryRowTime", "3000", CVAR_ARCHIVE },
 #endif
 #ifdef BASEQZ
 	{ &cg_impactSparks, "cg_impactSparks", "1", CVAR_ARCHIVE },
@@ -850,6 +858,10 @@ static void CG_RegisterSounds( void ) {
 
 	cgs.media.hitSound[0] = trap_S_RegisterSound( "sound/feedback/hithi.wav", qfalse );
 	cgs.media.hitSound[1] = trap_S_RegisterSound( "sound/feedback/hitlo.wav", qfalse );
+
+#ifdef MISSIONPACK
+	cgs.media.worldDeathShader = trap_R_RegisterShader( "icons/skull_red" );
+#endif
 
 	for( i = 0; i < 4; i++) {
 #ifdef BASEQZ

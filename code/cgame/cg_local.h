@@ -466,6 +466,16 @@ typedef struct {
 	int integer;
 } cg_configString_t;
 
+#define MAX_OBITUARY 5
+typedef struct {
+	char killer[MAX_NAME_LENGTH];
+	int killerClientNum; // reserved
+	char victim[MAX_NAME_LENGTH];
+	int victimClientNum; // reserved
+	int weapon;
+	qhandle_t icon;
+	int time;
+} obituary_t;
 //======================================================================
 
 // all cg.stepTime, cg.duckTime, cg.landTime, etc are set to cg.time when the action
@@ -675,6 +685,7 @@ typedef struct {
 	// Extend
 	clientSidedEvent_t clientSideEvent;
 	clientSidedEvent_t oldClientSideEvent;
+	obituary_t obituary[MAX_OBITUARY];
 } cg_t;
 
 
@@ -1015,6 +1026,9 @@ typedef struct {
 	sfxHandle_t ghostShader;
 	qhandle_t	infiniteAmmo;
 #endif
+#ifdef MISSIONPACK
+	qhandle_t   worldDeathShader;
+#endif
 
 	sfxHandle_t killSound[8];
 	qhandle_t lightningShaderNew[5];
@@ -1225,6 +1239,10 @@ extern	vmCvar_t		cg_singlePlayerActive;
 extern  vmCvar_t		cg_recordSPDemo;
 extern  vmCvar_t		cg_recordSPDemoName;
 extern	vmCvar_t		cg_obeliskRespawnDelay;
+#endif
+#ifdef MISSIONPACK
+extern	vmCvar_t		cg_obituaryRowSize;
+extern	vmCvar_t		cg_obituaryRowTime;
 #endif
 #ifdef BASEQZ
 extern	vmCvar_t		cg_impactSparks;
