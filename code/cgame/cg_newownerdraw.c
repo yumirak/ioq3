@@ -457,6 +457,20 @@ void CG_SelectedPlayerAccuracy( rectDef_t *rect, float scale, vec4_t color, int 
 	CG_Text_Paint_Align( rect, scale, color, va( "%d%%", cg.scores[cg.selectedScore].accuracy ), 0, 0, textStyle, align );
 }
 
+
+void CG_DrawFollowNameString( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align, qboolean drawfollowing )
+{
+	char *s = "";
+	char *full;
+
+	if( CG_IsTeamGame( cgs.gametype ) )
+		s = va(" (^1%s^7)", CG_GetTeamName( cgs.clientinfo[cg.snap->ps.clientNum].team ));
+
+	full = va("%s%s%s", drawfollowing ? "Following - " : "", cgs.clientinfo[cg.snap->ps.clientNum].name, s );
+
+	CG_Text_Paint_Align(rect, scale, color, full, 0, 0, textStyle, align);
+}
+
 void CG_Draw1stPlacePlayerModel (float x, float y, float w, float h)
 {
 	refdef_t refdef;

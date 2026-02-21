@@ -2091,6 +2091,26 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_Draw1stPlacePlayerModel(rect.x, rect.y, rect.w, rect.h);
 		break;
 #endif
+#ifdef CG_1ST_PLACE_SCORE_EX
+	case CG_1ST_PLACE_SCORE_EX:
+		CG_Draw1stPlaceScore( &rect, scale, color, textStyle );
+		break;
+	#endif
+#ifdef CG_2ND_PLACE_SCORE_EX
+	case CG_2ND_PLACE_SCORE_EX:
+		CG_Draw2ndPlaceScore( &rect, scale, color, textStyle );
+		break;
+#endif
+#ifdef CG_FOLLOW_PLAYER_NAME
+	case CG_FOLLOW_PLAYER_NAME:
+		CG_DrawFollowNameString( &rect, scale, color, textStyle, align, qtrue);
+		break;
+#endif
+#ifdef CG_FOLLOW_PLAYER_NAME_EX
+	case CG_FOLLOW_PLAYER_NAME_EX:
+		CG_DrawFollowNameString( &rect, scale, color, textStyle, align, qfalse );
+		break;
+#endif
 
   default:
     break;
