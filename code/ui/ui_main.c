@@ -5388,6 +5388,9 @@ void _UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			UI_BuildPlayerList();
 			Menus_CloseAll();
 			Menus_ActivateByName("ingame");
+#ifdef BASEQZ
+			Menus_ActivateByName("ingame_about");
+#endif
 		  return;
 	  }
   }
