@@ -836,6 +836,9 @@ typedef enum {
 	WP_ACC_MAX
 } weaponAccuracy_t;
 
+extern vec3_t bg_playerMins;
+extern vec3_t bg_playerMaxs;
+
 extern size_t hitsound_value[4];
 extern gametypeDesc_t gametype_desc[];
 extern int weapon_ammo_limit[WP_NUM_WEAPONS][2];

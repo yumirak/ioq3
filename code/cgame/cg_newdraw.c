@@ -2086,6 +2086,11 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_SelectedPlayerAccuracy(&rect, scale, color, textStyle, align);
 		break;
 #endif
+#ifdef CG_1STPLACE_PLYR_MODEL
+	case CG_1STPLACE_PLYR_MODEL:
+		CG_Draw1stPlacePlayerModel(rect.x, rect.y, rect.w, rect.h);
+		break;
+#endif
 
   default:
     break;

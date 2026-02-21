@@ -25,6 +25,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/q_shared.h"
 #include "bg_public.h"
 
+vec3_t bg_playerMins = { -15, -15, -24 };
+vec3_t bg_playerMaxs = { 15, 15, 32 };
+
 gametypeDesc_t gametype_desc[] = {
 	// fullname				// nameshort					// scoreboard
 	{  "Free For All"		, { "ffa", "ffa" }				, "ffa"		},

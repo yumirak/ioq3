@@ -514,6 +514,48 @@ static qboolean	CG_RegisterClientSkin( clientInfo_t *ci, const char *teamName, c
 	return qtrue;
 }
 
+static void CG_GetPlayerHeight (clientInfo_t *ci)
+{
+	vec3_t mins, maxs;
+	refEntity_t l, t, h, w;
+	vec3_t angles = { 0, 0, 0 };
+	float height;
+
+	memset(&l, 0, sizeof(l));
+	memset(&t, 0, sizeof(t));
+	memset(&h, 0, sizeof(h));
+	memset(&w, 0, sizeof(w));
+
+	l.hModel = ci->legsModel;
+	t.hModel = ci->torsoModel;
+	h.hModel = ci->headModel;
+
+	AnglesToAxis(angles, l.axis);
+	AnglesToAxis(angles, t.axis);
+	AnglesToAxis(angles, h.axis);
+
+	l.oldframe = l.frame = ci->animations[LEGS_IDLE].firstFrame;
+	t.oldframe = t.frame = ci->animations[TORSO_STAND].firstFrame;
+
+	VectorSet(l.origin, 0, 0, -bg_playerMins[2]);
+	VectorCopy(l.origin, l.oldorigin);
+	CG_PositionEntityOnTag(&t, &l, l.hModel, "tag_torso");
+	CG_PositionEntityOnTag(&h, &t, t.hModel, "tag_head");
+	CG_PositionEntityOnTag(&w, &t, t.hModel, "tag_weapon");
+
+	trap_R_ModelBounds(h.hModel, mins, maxs);
+
+	if (!Q_stricmpn(ci->modelName, "orbb", strlen("orbb") - 1)) {
+		height = w.origin[2];
+		trap_R_ModelBounds(cg_weapons[WP_MACHINEGUN].weaponModel, mins, maxs);
+		height += maxs[2];  // - mins[2];
+	} else {
+		height = h.origin[2];
+		height += maxs[2];  // - mins[2];
+	}
+
+	ci->playerModelHeight = height;
+}
 /*
 ==========================
 CG_RegisterClientModelname
@@ -612,6 +654,8 @@ static qboolean CG_RegisterClientModelname( clientInfo_t *ci, const char *modelN
 	if ( !ci->modelIcon ) {
 		return qfalse;
 	}
+
+	CG_GetPlayerHeight(ci);
 
 	return qtrue;
 }

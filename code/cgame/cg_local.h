@@ -395,6 +395,8 @@ typedef struct {
 	animation_t		animations[MAX_TOTALANIMATIONS];
 
 	sfxHandle_t		sounds[MAX_CUSTOM_SOUNDS];
+	// Extend
+	float		playerModelHeight;
 } clientInfo_t;
 
 

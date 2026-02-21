@@ -456,3 +456,220 @@ void CG_SelectedPlayerAccuracy( rectDef_t *rect, float scale, vec4_t color, int 
 
 	CG_Text_Paint_Align( rect, scale, color, va( "%d%%", cg.scores[cg.selectedScore].accuracy ), 0, 0, textStyle, align );
 }
+
+void CG_Draw1stPlacePlayerModel (float x, float y, float w, float h)
+{
+	refdef_t refdef;
+	refEntity_t legs, torso, head;
+	refEntity_t gun, barrel;
+	vec3_t origin;
+	int renderfx;
+	float len;
+	float xx;
+	clientInfo_t *ci;
+	int weaponNum;
+	const weaponInfo_t *weapon;
+	float xscale, yscale;
+	int torsoAnim;
+	int clientNum;
+	int i;
+	vec3_t legsAngles, torsoAngles, headAngles;
+
+	memset(&refdef, 0, sizeof(refdef));
+	memset(&legs, 0, sizeof(legs));
+	memset(&torso, 0, sizeof(torso));
+	memset(&head, 0, sizeof(head));
+
+	clientNum = cg.snap->ps.clientNum;
+
+	weaponNum = WP_MACHINEGUN;
+
+	clientNum = cgs.cs[CS_CLIENTNUM1STPLAYER].integer;
+	ci = &cgs.clientinfo[clientNum];
+
+	// CG_CheckForModelChange(&cg_entities[clientNum], ci, &legs, &torso, &head);
+
+	legs.hModel = ci->legsModel;
+	legs.customSkin = ci->legsSkin;
+
+	torso.hModel = ci->torsoModel;
+	torso.customSkin = ci->torsoSkin;
+
+	head.hModel = ci->headModel;
+	head.customSkin = ci->headSkin;
+
+	for (i = 0;  i < cg.numScores;  i++) {
+		if (cg.scores[i].client == clientNum) {
+			weaponNum = cg.scores[i].bestWeapon;
+			break;
+		}
+	}
+
+	if (weaponNum == WP_NONE  ||  weaponNum == WP_GAUNTLET) {
+		torsoAnim = TORSO_ATTACK2;
+	} else {
+		torsoAnim = TORSO_ATTACK;
+	}
+
+	CG_AdjustFrom640(&x, &y, &w, &h);
+
+	refdef.rdflags = RDF_NOWORLDMODEL;
+
+	AxisClear(refdef.viewaxis);
+
+	refdef.x = x;
+	refdef.y = y;
+	refdef.width = w;
+	refdef.height = h;
+
+	// 2018-08-03  match quake live and use fixed values to prevent x or y stretching with change of screen dimensions, taking values calculated from screensize 1365 x 768
+	xscale = 1365.0 / 640.0;
+	// 2018-08-05 make a little bigger to widden models a bit
+	xscale *= 1.05;
+	yscale = 768.0 / 480.0;
+
+	refdef.fov_x = (int)((float)refdef.width / xscale / 640.0f * 90.0f);
+	xx = refdef.width / xscale / tan( refdef.fov_x / 360 * M_PI );
+	refdef.fov_y = atan2( refdef.height / yscale, xx );
+	refdef.fov_y *= ( 360 / M_PI );
+
+	// 2018-08-03 match quake live, based on fixed values at 1365 x 768
+	refdef.fov_y *= 0.7;
+
+	// calculate distance so the player nearly fills the box
+	len = 0.7 * ( ci->playerModelHeight );  // 2018-08-13 tested with sarge, xaero, keel, but orbb a little bigger compared to quake live
+
+	// 2018-08-03 match quake live, based on fixed values at 1365 x 768
+	len *= 2.0;
+	len *= 0.78;
+
+	origin[0] = len / tan( DEG2RAD(refdef.fov_x) * 0.5 );
+	origin[1] = 0.5 * ( bg_playerMins[1] + bg_playerMaxs[1] );
+	origin[2] = -0.5 * ( bg_playerMins[2] + bg_playerMaxs[2] );
+
+	// 2018-08-05 match quake live
+	origin[2] -= 3;
+
+	refdef.time = cg.time;
+
+	trap_R_ClearScene();
+
+	headAngles[YAW] = 0;
+	headAngles[PITCH] = 0;
+	headAngles[ROLL] = 0;
+
+	if (weaponNum == WP_NONE  ||  weaponNum == WP_GAUNTLET) {
+		torsoAngles[YAW] = 0;
+		torsoAngles[PITCH] = -10;
+		torsoAngles[ROLL] = 0;
+	} else {
+		torsoAngles[YAW] = -5;
+		torsoAngles[PITCH] = -10;
+		torsoAngles[ROLL] = 0;
+	}
+
+	legsAngles[YAW] = 160;
+	legsAngles[PITCH] = 10;
+	legsAngles[ROLL] = 0;
+
+	AnglesToAxis( legsAngles, legs.axis );
+	AnglesToAxis( torsoAngles, torso.axis );
+	AnglesToAxis( headAngles, head.axis );
+
+	legs.oldframe = legs.frame = ci->animations[LEGS_IDLE].firstFrame + 0;
+	torso.oldframe = torso.frame = ci->animations[torsoAnim].firstFrame + 0;
+
+	renderfx = RF_NOSHADOW; // RF_LIGHTING_ORIGIN | RF_MINLIGHT
+
+	// add the legs
+	VectorCopy(origin, legs.origin);
+	VectorCopy(origin, legs.lightingOrigin);
+	legs.renderfx = renderfx;
+	VectorCopy(legs.origin, legs.oldorigin);
+
+	trap_R_AddRefEntityToScene(&legs);
+
+	// if the model failed, allow the default nullmodel to be displayed
+	if (!legs.hModel) {
+		return;
+	}
+
+	// add the torso
+	if (!torso.hModel) {
+		return;
+	}
+
+	VectorCopy(origin, torso.lightingOrigin);
+	CG_PositionRotatedEntityOnTag(&torso, &legs, ci->legsModel, "tag_torso");
+	torso.renderfx = renderfx;
+
+	trap_R_AddRefEntityToScene(&torso);
+
+	// add the head
+	if (!head.hModel) {
+		return;
+	}
+
+	VectorCopy(origin, head.lightingOrigin);
+
+	CG_PositionRotatedEntityOnTag(&head, &torso, ci->torsoModel, "tag_head");
+
+	head.renderfx = renderfx;
+
+	trap_R_AddRefEntityToScene(&head);
+
+	// add the gun
+	CG_RegisterWeapon(weaponNum);
+	weapon = &cg_weapons[weaponNum];
+
+	if (weaponNum != WP_NONE) {
+		memset(&gun, 0, sizeof(gun));
+		gun.hModel = weapon->weaponModel;
+		//FIXME railgun shader color
+		gun.shaderRGBA[0] = 255;
+		gun.shaderRGBA[1] = 255;
+		gun.shaderRGBA[2] = 255;
+		gun.shaderRGBA[3] = 255;
+
+		VectorCopy(origin, gun.origin);
+		VectorCopy(origin, gun.lightingOrigin);
+
+		CG_PositionEntityOnTag(&gun, &torso, ci->torsoModel, "tag_weapon");
+		gun.renderfx = renderfx;
+		trap_R_AddRefEntityToScene(&gun);
+	}
+
+	// add the spinning barrel
+	if (weapon->barrelModel) {
+		vec3_t angles;
+
+		memset(&barrel, 0, sizeof(barrel));
+		VectorCopy(origin, barrel.lightingOrigin);
+		barrel.renderfx = renderfx;
+
+		barrel.hModel = weapon->barrelModel;
+		angles[YAW] = 0;
+		angles[PITCH] = 0;
+		angles[ROLL] = 60;
+		AnglesToAxis(angles, barrel.axis);
+
+		CG_PositionRotatedEntityOnTag(&barrel, &gun, weapon->weaponModel, "tag_barrel");
+
+		trap_R_AddRefEntityToScene(&barrel);
+	}
+
+	// add an accent light
+	origin[0] -= 100;       // + = behind, - = in front
+	origin[1] += 100;       // + = left, - = right
+	origin[2] += 100;       // + = above, - = below
+
+	trap_R_AddLightToScene( origin, 400, 1.0, 1.0, 1.0 );  // 500
+
+	origin[0] -= 100;
+	origin[1] -= 100;
+	origin[2] -= 100;
+
+	trap_R_AddLightToScene( origin, 500, 1.0, 0.0, 0.0 );
+
+	trap_R_RenderScene(&refdef);
+}
