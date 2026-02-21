@@ -705,6 +705,8 @@ typedef struct {
 	menuDef_t *menuScoreboard;
 	menuDef_t *menuEndScoreboard;
 	qboolean scoreboardPremium;
+	menuDef_t *menuSpectator[2];
+	menuDef_t *menuCompSpectator;
 #endif
 } cg_t;
 

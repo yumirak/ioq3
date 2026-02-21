@@ -1984,17 +1984,19 @@ void CG_LoadDefaultMenus (void)
 	int i, j;
 	char menuFileName[32];
 	const char *menuExt[2] = { "smenu", "menu" }; // QL 1069 no longer using smenu extension
-	const char *defaultMenu[9] =
+	const char *defaultMenu[10] =
 	{ "intro", "ingamestats",
 	  "ingamescoreteam", "ingamescorenoteam",
 	  "endscoreteam", "endscorenoteam",
 	  "spectator", "spectator_follow",
-	  "comp_spectator"
+	  "comp_spectator", "comp_spectator_follow"
 	};
+	const char *spechud[] = { "spechud_menu", "specfollowhud_menu" };
+
 
 	Com_Printf("loading default menus\n");
 
-	for( i = 0; i < 9; i++ ) {
+	for( i = 0; i < 10; i++ ) {
 		for( j = 0; j < 2; j++ ) {
 			Com_sprintf( menuFileName, sizeof(menuFileName), "ui/%s.%s", defaultMenu[i], menuExt[j] );
 			CG_ParseMenu( menuFileName );
@@ -2007,6 +2009,11 @@ void CG_LoadDefaultMenus (void)
 		Com_sprintf( menuFileName, sizeof(menuFileName), "ui/end_scoreboard_%s.%s", gametype_desc[cgs.gametype].scoreboard, menuExt[i] );
 		CG_ParseMenu( menuFileName );
 	}
+
+	for( i = 0; i < 2; i++ )
+		cg.menuSpectator[i] = Menus_FindByName( spechud[i] );
+
+	cg.menuCompSpectator = Menus_FindByName( "comp_specfollowhud_menu" );
 #endif
 }
 

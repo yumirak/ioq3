@@ -984,6 +984,9 @@ static void CG_DrawUpperRight(stereoFrame_t stereoFrame)
 {
 	float	y;
 
+	if ( cg_compHud.integer )
+		return;
+
 	y = 0;
 
 	if ( cgs.gametype >= GT_TEAM && cg_drawTeamOverlay.integer == 1 ) {
@@ -2083,10 +2086,49 @@ static void CG_DrawCrosshairNames( void ) {
 
 /*
 =================
+CG_DrawSpectatorHUD
+=================
+*/
+#ifdef BASEQZ
+static void CG_DrawSpectatorHUD(void) {
+	int isfollow = (cg.snap->ps.pm_flags & PMF_FOLLOW) ? 1 : 0;
+	qboolean compHud = cg_compHud.integer;
+
+	if( cg.showScores )
+		return;
+
+	if ( compHud && cg.menuCompSpectator ) {
+		Menu_Paint( cg.menuCompSpectator, qtrue );
+		return;
+	}
+
+	if ( !compHud && cg.menuSpectator[isfollow] ) {
+		Menu_Paint( cg.menuSpectator[isfollow], qtrue );
+	}
+}
+#endif
+/*
+=================
 CG_DrawSpectator
 =================
 */
 static void CG_DrawSpectator(void) {
+#ifdef MISSIONPACK
+	int h, x, y;
+	float scale = 0.3;
+	const char *s = "press ESC and use the JOIN button";
+	const char *s2 = "to enter the game";
+
+	h = CG_Text_Height(s, scale, 0);
+	x = h;
+	y = 450;
+
+	CG_Text_Paint(x, y, scale, colorWhite, s, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
+	CG_Text_Paint(x, y + (h * 2), scale, colorWhite, s2, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
+#ifdef BASEQZ
+	CG_DrawSpectatorHUD();
+#endif
+#else
 	CG_DrawBigString(320 - 9 * 8, 440, "SPECTATOR", 1.0F);
 	if ( cgs.gametype == GT_TOURNAMENT ) {
 		CG_DrawBigString(320 - 15 * 8, 460, "waiting to play", 1.0F);
@@ -2094,6 +2136,7 @@ static void CG_DrawSpectator(void) {
 	else if ( cgs.gametype >= GT_TEAM ) {
 		CG_DrawBigString(320 - 39 * 8, 460, "press ESC and use the JOIN menu to play", 1.0F);
 	}
+#endif
 }
 
 /*
@@ -2228,6 +2271,10 @@ static qboolean CG_DrawScoreboard( void ) {
 	}
 
 #ifdef BASEQZ
+	if ( (cg.snap->ps.pm_flags & PMF_FOLLOW) && cg.snap->ps.pm_type == PM_DEAD  ){
+		return qfalse;
+	}
+
 	if (cg.menuEndScoreboard == NULL) {
 		cg.menuEndScoreboard = CG_GetScoreboardMenu( qtrue );
 	}
@@ -2586,7 +2633,13 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 
 #ifdef MISSIONPACK
 			if ( cg_drawStatus.integer ) {
+#ifdef BASEQZ
+				// use CG_DrawSpectatorHUD instead when following player
+				if( !(cg.snap->ps.pm_flags & PMF_FOLLOW) )
+					Menu_PaintAll();
+#else
 				Menu_PaintAll();
+#endif
 				CG_DrawTimedMenus();
 			}
 #else
@@ -2612,6 +2665,12 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 		}
 	}
 
+#ifdef BASEQZ
+	if ( cg.snap->ps.pm_flags & PMF_FOLLOW ) {
+		CG_DrawSpectatorHUD();
+	}
+#endif
+
 	if ( cgs.gametype >= GT_TEAM ) {
 #ifndef MISSIONPACK
 		CG_DrawTeamInfo();
@@ -2636,7 +2695,10 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	CG_DrawLowerLeft();
 #endif
 
-	if ( !CG_DrawFollow() ) {
+#ifndef BASEQZ
+	if ( !CG_DrawFollow() )
+#endif
+	{
 		CG_DrawWarmup();
 	}
 
