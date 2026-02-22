@@ -3577,6 +3577,18 @@ static void UI_RunMenuScript(char **args) {
 			int stat;
 			if ( Int_Parse( args, &stat ) )
 				trap_SetPbClStatus( stat );
+		} else if( Q_stricmp( command, "toggleFullscreen" ) == 0 ) {
+			int fullScreen = trap_Cvar_VariableValue( "r_fullScreen" );
+			trap_Cvar_Set( "r_fullScreen", fullScreen ? "0" : "1" );
+			// trap_Cvar_Set( "vid_restart", "1" );
+		} else if( Q_stricmp( command, "setFullScreen" ) == 0 ) {
+			trap_Cvar_Set( "r_fullScreen", "1" );
+			// trap_Cvar_Set( "vid_restart", "1" );
+		} else if( Q_stricmp( command, "setWindowed" ) == 0 ) {
+			trap_Cvar_Set( "r_fullScreen", "0" );
+			// trap_Cvar_Set( "vid_restart", "1" );
+		} else if( Q_stricmp( command, "clearComError" ) == 0 ) {
+			trap_Cvar_Set( "com_errorMessage", "" );
 		}
 		else {
 			Com_Printf("unknown UI script %s\n", command);
