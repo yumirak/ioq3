@@ -255,6 +255,15 @@ typedef int		clipHandle_t;
 
 #define	MAX_SAY_TEXT	150
 
+
+#if BASEQZ > 730
+#define	NUM_CROSSHAIRS		29
+#elif BASEQZ > 305
+#define	NUM_CROSSHAIRS		19 // pre-steam only have 18 crosshairs
+#else
+#define	NUM_CROSSHAIRS		10 // beta client only have 10 crosshairs
+#endif
+
 // parameters for command buffer stuffing
 typedef enum {
 	EXEC_NOW,			// don't return until completed, a VM should NEVER use this,
