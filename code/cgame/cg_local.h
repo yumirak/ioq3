@@ -1296,6 +1296,7 @@ extern	vmCvar_t		cg_simpleItemsHeightOffset;
 extern	vmCvar_t		cg_muzzleFlash;
 extern	vmCvar_t		cg_weaponBar;
 extern	vmCvar_t		cg_drawFullWeaponBar;
+extern	vmCvar_t		cg_lowAmmoWarningSound;
 extern	vmCvar_t		cg_lowAmmoWeaponBarWarning;
 extern	vmCvar_t		cg_lowAmmoWarningPercentile;
 extern	vmCvar_t		cg_smokeRadius_GL;

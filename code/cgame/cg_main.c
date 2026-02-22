@@ -233,6 +233,7 @@ vmCvar_t	cg_simpleItemsHeightOffset;
 vmCvar_t	cg_muzzleFlash;
 vmCvar_t	cg_weaponBar;
 vmCvar_t	cg_drawFullWeaponBar;
+vmCvar_t	cg_lowAmmoWarningSound;
 vmCvar_t	cg_lowAmmoWeaponBarWarning;
 vmCvar_t	cg_lowAmmoWarningPercentile;
 vmCvar_t	cg_smokeRadius_GL;
@@ -401,6 +402,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_muzzleFlash, "cg_muzzleFlash", "1", CVAR_ARCHIVE },
 	{ &cg_weaponBar, "cg_weaponBar", "1", CVAR_ARCHIVE },
 	{ &cg_drawFullWeaponBar, "cg_drawFullWeaponBar", "0", CVAR_ARCHIVE },
+	{ &cg_lowAmmoWarningSound, "cg_lowAmmoWarningSound", "1", CVAR_ARCHIVE },
 	{ &cg_lowAmmoWeaponBarWarning, "cg_lowAmmoWeaponBarWarning", "2", CVAR_ARCHIVE },
 	{ &cg_lowAmmoWarningPercentile, "cg_lowAmmoWarningPercentile", "0.2", CVAR_ARCHIVE },
 
