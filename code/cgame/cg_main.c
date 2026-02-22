@@ -251,6 +251,7 @@ vmCvar_t	cg_specOnly;
 vmCvar_t	cg_spectating;
 vmCvar_t	cg_placebo;
 vmCvar_t	cg_drawSpecMessages;
+vmCvar_t	cg_gameInfo[5];
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -443,6 +444,13 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_spectating, "cg_spectating", "0", CVAR_ROM },
 	{ &cg_placebo, "cg_placebo", "0", CVAR_ARCHIVE },
 	{ &cg_drawSpecMessages, "cg_drawSpecMessages", "1", CVAR_ARCHIVE },
+
+	{ &cg_gameInfo[0], "cg_gameInfo1", "", CVAR_ROM | CVAR_ARCHIVE },
+	{ &cg_gameInfo[1], "cg_gameInfo2", "", CVAR_ROM | CVAR_ARCHIVE },
+	{ &cg_gameInfo[2], "cg_gameInfo3", "", CVAR_ROM | CVAR_ARCHIVE },
+	{ &cg_gameInfo[3], "cg_gameInfo4", "", CVAR_ROM | CVAR_ARCHIVE },
+	{ &cg_gameInfo[4], "cg_gameInfo5", "", CVAR_ROM | CVAR_ARCHIVE },
+
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -2116,6 +2124,13 @@ void CG_AssetCache( void ) {
 	cgDC.Assets.sliderThumb = trap_R_RegisterShaderNoMip( ASSET_SLIDER_THUMB );
 }
 #endif
+
+void CG_SetGameInfo( void ) {
+	int i;
+	for ( i = 0; i < 5; i++ ) {
+		trap_Cvar_Set( va( "cg_gameInfo%i", i + 1), cg_gameinfo_str[cgs.gametype][i] );
+	}
+}
 /*
 =================
 CG_Init
@@ -2222,6 +2237,8 @@ void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum ) {
 #ifdef MISSIONPACK
 	CG_InitTeamChat();
 #endif
+
+	CG_SetGameInfo();
 
 	CG_ShaderStateChanged();
 

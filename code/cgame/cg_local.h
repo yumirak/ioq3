@@ -1314,6 +1314,7 @@ extern	vmCvar_t		cg_specOnly;
 extern	vmCvar_t		cg_spectating;
 extern	vmCvar_t		cg_placebo;
 extern	vmCvar_t		cg_drawSpecMessages;
+extern	vmCvar_t		cg_gameInfo[5];
 
 //
 // cg_main.c
@@ -1814,3 +1815,4 @@ extern qboolean		initparticles;
 int CG_NewParticleArea ( int num );
 
 
+extern const char *cg_gameinfo_str[GT_MAX_GAME_TYPE][5];

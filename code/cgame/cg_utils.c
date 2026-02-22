@@ -8,6 +8,96 @@ static const char *MonthAbbrev[] = {
 	"Oct","Nov","Dec"
 };
 
+const char *cg_gameinfo_str[GT_MAX_GAME_TYPE][5] = {
+	{	// GT_FFA
+		"This is a Free For All game",
+		"Shoot Everyone!",
+		"First player to reach the Frag Limit wins.",
+		"If time runs out, the player with the highest score wins.",
+		"If the time limit is hit and there is a tie, a Sudden Death round begins."
+	},
+	{	// GT_TOURNAMENT
+		"This is a 1 vs 1 Duel game",
+		"Defeat your opponent!",
+		"If time runs out, the player with the highest score wins.",
+		"If the time limit is hit and there is a tie, the match extends",
+		"into overtime.",
+	},
+	{	// GT_SINGLE_PLAYER
+		"This is a Single Player game",
+		"Shoot Everyone!",
+		"First player to reach the Frag Limit wins.",
+		"If time runs out, the player with the highest score wins.",
+		"If the time limit is hit and there is a tie, a Sudden Death round begins."
+	},
+	{	// GT_TEAM
+		"This is a Team Deathmatch game",
+		"Shoot anyone on the other team!",
+		"When time runs out, the team with the highest score wins.",
+		"If the time limit is hit and there is a tie, a Sudden Death round begins.",
+		"",
+	},
+	{	// GT_CLAN_ARENA
+		"This is a Clan Arena game",
+		"Shoot anyone on the other team!",
+		"You spawn equipped with all weapons and full armor.",
+		"Completely eliminate the opposing team to win the round.",
+		"The first team to reach the round limit wins.",
+	},
+	{	// GT_CTF
+		"This is a Capture the Flag game",
+		"Grab the other teams flag and bring it back to your own flag.",
+		"First team to reach the Capture Limit wins.",
+		"If time runs out, the team with most captures wins.",
+		"If the time limit is hit and there is a tie, a Sudden Death round begins.",
+	},
+	{	// GT_1FCTF
+		"This is a One Flag game",
+		"Grab the white flag in the center, and carry it to the enemy flag stand.",
+		"First team to reach the Capture Limit wins.",
+		"If time runs out, the team with most captures wins.",
+		"If the time limit is hit and there is a tie, a Sudden Death round begins.",
+	},
+	{	// GT_OBELISK
+		"This is a Overload game", "", "", "", "",
+	},
+	{	// GT_HARVESTER
+		"This is a Harvester game",
+		"When a player is fragged, a skull spawns from the skull generator.",
+		"Pick up enemy skulls.",
+		"Carry the skulls to the enemy flag stand.",
+		"First team to reach the Capture Limit wins.",
+	},
+	{	// GT_FREEZETAG
+		"This is a Freeze Tag game",
+		"Shoot everyone on the other team!",
+		"Fragging another player freezes them.",
+		"Freeze all enemy team members to score a team point.",
+		"Stand by frozen teammates for 3 seconds to thaw them.",
+	},
+	{	// GT_DOMINATION
+		"This is a Domination game",
+		"Capture domination points to earn points for your team.",
+		"Either team can capture any domination point.",
+		"Capture multiple points to earn more points for your team.",
+		"First team to reach the Score Limit wins.",
+	},
+	{	// GT_CTFS
+		"This is an Attack and Defend game",
+		"Alternate each round Attacking or Defending the flag.",
+		"You spawn equipped with all weapons and full armor.",
+		"Touch the enemy's flag to be awarded a bonus point.",
+		"Eliminate the opposing team or capture their flag to win the round.",
+	},
+	{	// GT_RED_ROVER
+		"This is a Red Rover game",
+		"You spawn equipped with all weapons and full armor.",
+		"Frag enemies and they will respawn onto your team.",
+		"Compete against your teammates for the most damage and frags.",
+		"The player with the highest score at the end of the round limit wins.",
+	},
+};
+
 void CG_ScaleModel( refEntity_t *re, float size )
 {
 	re->radius = size;
