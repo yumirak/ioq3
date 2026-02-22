@@ -195,8 +195,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_proxMineTimeout, "g_proxMineTimeout", "20000", 0, 0, qfalse },
 #endif
 	{ &g_smoothClients, "g_smoothClients", "1", 0, 0, qfalse},
-	{ &pmove_fixed, "pmove_fixed", "0", CVAR_SYSTEMINFO, 0, qfalse},
-	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO, 0, qfalse},
+	{ &pmove_fixed, "pmove_fixed", "1", CVAR_SYSTEMINFO | CVAR_ROM, 0, qfalse},
+	{ &pmove_msec, "pmove_msec", "8", CVAR_SYSTEMINFO | CVAR_ROM, 0, qfalse},
 
 	{ &g_ruleset, "ruleset", "1", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH, 0, qfalse },
 	{ &g_levelStartTime, "g_levelStartTime", "",  CVAR_SERVERINFO | CVAR_ROM | CVAR_ARCHIVE, 0, qfalse },
