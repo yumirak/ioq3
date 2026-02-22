@@ -107,6 +107,9 @@ vmCvar_t	g_nailbounce;
 vmCvar_t	g_nailbouncepercentage;
 vmCvar_t	g_nailcount;
 vmCvar_t	g_nailspread;
+vmCvar_t	g_startingHealth;
+vmCvar_t	g_startingHealthBonus;
+vmCvar_t	g_startingArmor;
 vmCvar_t	g_startingWeapons;
 vmCvar_t	g_startingAmmo[WP_NUM_WEAPONS];
 vmCvar_t	g_spawnItem;
@@ -264,6 +267,10 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_nailcount, "g_nailcount", "10", 0, 0, qfalse},
 	{ &g_nailspread, "g_nailspeed", "400", 0, 0, qfalse},
 #endif
+	{ &g_startingHealth, "g_startingHealth", "100", 0, 0, qtrue, qtrue },
+	{ &g_startingHealthBonus, "g_startingHealthBonus", "25", 0, 0, qtrue, qtrue },
+	{ &g_startingArmor, "g_startingArmor", "0", 0, 0, qtrue, qtrue },
+
 	{ &g_startingWeapons, "g_startingWeapons", "3", 0, 0, qtrue, qtrue },
 	//
 	{ &g_startingAmmo[WP_GAUNTLET], "g_startingAmmo_g", "-1", CVAR_ROM, 0, qtrue},

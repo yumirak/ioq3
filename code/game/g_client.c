@@ -729,6 +729,7 @@ void ClientUserinfoChanged( int clientNum ) {
 	char	redTeam[MAX_INFO_STRING];
 	char	blueTeam[MAX_INFO_STRING];
 	char	userinfo[MAX_INFO_STRING];
+	int		handicap;
 
 	ent = g_entities + clientNum;
 	client = ent->client;
@@ -771,21 +772,16 @@ void ClientUserinfoChanged( int clientNum ) {
 	// set max health
 #ifdef MISSIONPACK
 	if (client->ps.powerups[PW_GUARD]) {
-		client->pers.maxHealth = 200;
-	} else {
-		health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
-		client->pers.maxHealth = health;
-		if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-			client->pers.maxHealth = 100;
-		}
-	}
-#else
-	health = atoi( Info_ValueForKey( userinfo, "handicap" ) );
-	client->pers.maxHealth = health;
-	if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-		client->pers.maxHealth = 100;
-	}
+		client->pers.maxHealth = g_startingHealth.integer * 2;
+	} else
 #endif
+	{
+		handicap = atoi( Info_ValueForKey( userinfo, "handicap" ) );
+		health = g_startingHealth.integer;
+		if( handicap > 0 && handicap < 100 )
+			health -= Com_Clamp(0, g_startingHealth.integer, 100 - handicap);
+		client->pers.maxHealth = health; //
+	}
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
 
 	// set model
@@ -1072,7 +1068,6 @@ void ClientSpawn(gentity_t *ent) {
 //	char	*savedAreaBits;
 	int		accuracy_hits, accuracy_shots;
 	int		eventSequence;
-	char	userinfo[MAX_INFO_STRING];
 
 	index = ent - g_entities;
 	client = ent->client;
@@ -1153,12 +1148,6 @@ void ClientSpawn(gentity_t *ent) {
 
 	client->airOutTime = level.time + 12000;
 
-	trap_GetUserinfo( index, userinfo, sizeof(userinfo) );
-	// set max health
-	client->pers.maxHealth = atoi( Info_ValueForKey( userinfo, "handicap" ) );
-	if ( client->pers.maxHealth < 1 || client->pers.maxHealth > 100 ) {
-		client->pers.maxHealth = 100;
-	}
 	// clear entity values
 	client->ps.stats[STAT_MAX_HEALTH] = client->pers.maxHealth;
 	client->ps.eFlags = flags;
@@ -1184,7 +1173,13 @@ void ClientSpawn(gentity_t *ent) {
 	ClientWeaponSpawn( ent );
 
 	// health will count down towards max_health
-	ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + 25;
+	if ( ent->client->sess.sessionTeam != TEAM_SPECTATOR ) {
+		ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_MAX_HEALTH] + g_startingHealthBonus.integer;
+		if( g_startingArmor.integer > 0 )
+			client->ps.stats[STAT_ARMOR] = g_startingArmor.integer;
+	} else {
+		ent->health = client->ps.stats[STAT_HEALTH] = client->ps.stats[STAT_ARMOR] = GIB_HEALTH; // skip player_die
+	}
 
 	G_SetOrigin( ent, spawn_origin );
 	VectorCopy( spawn_origin, client->ps.origin );
