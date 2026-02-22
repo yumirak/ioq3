@@ -1774,7 +1774,13 @@ static void UI_DrawCrosshair(rectDef_t *rect, float scale, vec4_t color) {
 		return;
 	}
 	trap_R_SetColor( color );
+#ifdef BASEQZ
+	// Fixed size at 32 x 32.
+	// TODO: set color from 'cg_CrosshairColor' and when not 'cg_CrosshairHealth' (CG_ColorFromString).
+	UI_DrawHandlePic( rect->x, rect->y - ( rect->h / 2 ) - 1, 32, 32, uiInfo.uiDC.Assets.crosshairShader[uiInfo.currentCrosshair]);
+#else
 	UI_DrawHandlePic( rect->x, rect->y - rect->h, rect->w, rect->h, uiInfo.uiDC.Assets.crosshairShader[uiInfo.currentCrosshair]);
+#endif
  	trap_R_SetColor( NULL );
 }
 
