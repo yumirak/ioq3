@@ -116,6 +116,7 @@ vmCvar_t	g_spawnItem;
 vmCvar_t	g_spawnItemType[IT_TEAM];
 vmCvar_t	g_respawnItemType[IT_TEAM];
 vmCvar_t	g_training;
+vmCvar_t	g_battleSuitDampen;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -319,6 +320,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SYSTEMINFO, 0, qtrue},
 	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SYSTEMINFO, 0, qtrue},
 #endif
+
+	{ &g_battleSuitDampen, "g_battleSuitDampen", "0.25", 0, 0, qtrue  },
 
 	{ &g_training, "g_training", "0", CVAR_ROM, 0, qfalse },
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},

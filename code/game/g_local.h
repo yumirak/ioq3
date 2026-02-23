@@ -774,6 +774,7 @@ extern	vmCvar_t	g_spawnItem;
 extern	vmCvar_t	g_spawnItemType[IT_TEAM];
 extern	vmCvar_t	g_respawnItemType[IT_TEAM];
 extern	vmCvar_t	g_training;
+extern	vmCvar_t	g_battleSuitDampen;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;
