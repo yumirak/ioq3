@@ -138,6 +138,8 @@ typedef struct {
   vec4_t borderColor;             // border color
   vec4_t outlineColor;            // border color
   qhandle_t background;           // background asset  
+  // Extend
+  int ownerDrawFlags2;
 } windowDef_t;
 
 typedef windowDef_t Window;
@@ -333,9 +335,9 @@ typedef struct {
   void (*addRefEntityToScene) (const refEntity_t *re );
   void (*renderScene) ( const refdef_t *fd );
   void (*registerFont) (const char *pFontname, int pointSize, fontInfo_t *font);
-  void (*ownerDrawItem) (float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle);
+  void (*ownerDrawItem) (float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int ownerDrawFlags2, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle);
 	float (*getValue) (int ownerDraw);
-	qboolean (*ownerDrawVisible) (int flags);
+	qboolean (*ownerDrawVisible) (int flags, int flags2);
   void (*runScript)(char **p);
   void (*getTeamColor)(vec4_t *color);
   void (*getCVarString)(const char *cvar, char *buffer, int bufsize);
@@ -345,7 +347,7 @@ typedef struct {
   void (*setOverstrikeMode)(qboolean b);
   qboolean (*getOverstrikeMode)( void );
   void (*startLocalSound)( sfxHandle_t sfx, int channelNum );
-  qboolean (*ownerDrawHandleKey)(int ownerDraw, int flags, float *special, int key);
+  qboolean (*ownerDrawHandleKey)(int ownerDraw, int flags, int flags2, float *special, int key);
   int (*feederCount)(float feederID);
   const char *(*feederItemText)(float feederID, int index, int column, qhandle_t *handle);
   qhandle_t (*feederItemImage)(float feederID, int index);

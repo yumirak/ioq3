@@ -1135,11 +1135,66 @@ static qboolean CG_PlayerIsFirstPlace( void )
 	return qfalse;
 }
 
+static qboolean CG_OwnerDrawVisible2 (int flags)
+{
+	int clientNum = cg.snap->ps.clientNum;
+	int team = cgs.clientinfo[cg.snap->ps.clientNum].team;
+
+	// this is only used in duel scoreboard to prevent seeing pickups from other player
+#ifdef CG_SHOW_IF_PLYR1
+	if (flags & CG_SHOW_IF_PLYR1)
+		return (cg.demoPlayback || cgs.cs[CS_CLIENTNUM1STPLAYER].integer == clientNum);
+#endif
+
+#ifdef CG_SHOW_IF_PLYR2
+	if (flags & CG_SHOW_IF_PLYR2)
+		return (cg.demoPlayback || cgs.cs[CS_CLIENTNUM2NDPLAYER].integer == clientNum);
+#endif
+
+#ifdef CG_SHOW_IF_PLYR_IS_ON_RED_OR_SPEC
+	if (flags & CG_SHOW_IF_PLYR_IS_ON_RED_OR_SPEC)
+		return (team == TEAM_RED || team == TEAM_SPECTATOR);
+#endif
+
+#ifdef CG_SHOW_IF_PLYR_IS_ON_BLUE_OR_SPEC
+	if (flags & CG_SHOW_IF_PLYR_IS_ON_BLUE_OR_SPEC)
+		return (team == TEAM_BLUE || team == TEAM_SPECTATOR);
+#endif
+
+#ifdef CG_SHOW_IF_PLYR_IS_ON_RED_NO_SPEC
+	if (flags & CG_SHOW_IF_PLYR_IS_ON_RED_NO_SPEC)
+		return (team == TEAM_RED);
+#endif
+
+#ifdef CG_SHOW_IF_PLYR_IS_ON_BLUE_NO_SPEC
+	if (flags & CG_SHOW_IF_PLYR_IS_ON_BLUE_NO_SPEC)
+		return (team == TEAM_BLUE);
+#endif
+
+	// only in com_spectator_follow.menu and duel
+#ifdef CG_SHOW_IF_1ST_PLYR_FOLLOWED
+	if (flags & CG_SHOW_IF_1ST_PLYR_FOLLOWED)
+		return cgs.cs[CS_CLIENTNUM1STPLAYER].integer == clientNum;
+#endif
+
+#ifdef CG_SHOW_IF_2ND_PLYR_FOLLOWED
+	if (flags & CG_SHOW_IF_2ND_PLYR_FOLLOWED)
+		return cgs.cs[CS_CLIENTNUM2NDPLAYER].integer == clientNum;
+#endif
+
+	Com_Printf("^3CG_OwnerDrawVisible2: FIXME ownerdrawflag2 0x%08x\n", flags);
+	return qfalse;
+}
+
 // THINKABOUTME: should these be exclusive or inclusive.. 
 // 
-qboolean CG_OwnerDrawVisible(int flags) {
+qboolean CG_OwnerDrawVisible(int flags, int flags2) {
 
 	int team;
+
+	if (flags2) {
+		return CG_OwnerDrawVisible2(flags2);
+	}
 
 	if (flags & CG_SHOW_TEAMINFO) {
 		return (cg_currentSelectedPlayer.integer == numSortedTeamPlayers);
@@ -1752,7 +1807,7 @@ void CG_DrawMedal(int ownerDraw, rectDef_t *rect, float scale, vec4_t color, qha
 
 	
 //
-void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle) {
+void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int ownerDrawFlags2, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle) {
 	rectDef_t rect;
 
   if ( cg_drawStatus.integer == 0 ) {

@@ -1979,7 +1979,7 @@ static void UI_DrawGLInfo(rectDef_t *rect, float scale, vec4_t color, int textSt
 
 // FIXME: table drive
 //
-static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle) {
+static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int ownerDrawFlags2, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle) {
 	rectDef_t rect;
 
   rect.x = x + text_x;
@@ -2172,7 +2172,7 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 
 }
 
-static qboolean UI_OwnerDrawVisible(int flags) {
+static qboolean UI_OwnerDrawVisible(int flags, int flags2) {
 	qboolean vis = qtrue;
 
 	while (flags) {
@@ -2663,7 +2663,7 @@ static qboolean UI_SelectedPlayer_HandleKey(int flags, float *special, int key) 
 }
 
 
-static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, float *special, int key) {
+static qboolean UI_OwnerDrawHandleKey(int ownerDraw, int flags, int flags2, float *special, int key) {
   switch (ownerDraw) {
     case UI_HANDICAP:
       return UI_Handicap_HandleKey(flags, special, key);
