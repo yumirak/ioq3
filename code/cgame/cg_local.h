@@ -1047,6 +1047,7 @@ typedef struct {
 	sfxHandle_t ghostShader;
 	qhandle_t	infiniteAmmo;
 	qhandle_t	gametypeIcon[GT_MAX_GAME_TYPE];
+	qhandle_t	killCounterIcon;
 #endif
 #ifdef MISSIONPACK
 	qhandle_t   worldDeathShader;

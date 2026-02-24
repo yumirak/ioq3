@@ -894,11 +894,25 @@ static void CG_DrawAreaPowerUp(rectDef_t *rect, int align, float special, float 
 				trap_R_SetColor( modulate );
 			}
 
-			CG_DrawPic( r2.x, r2.y, r2.w * .75, r2.h, trap_R_RegisterShader( item->icon ) );
+			CG_DrawPic( r2.x, r2.y, r2.w, r2.h, trap_R_RegisterShader( item->icon ) );
 
 			Com_sprintf (num, sizeof(num), "%i", sortedTime[i] / 1000);
-			CG_Text_Paint(r2.x + (r2.w * .75) + 3 , r2.y + r2.h, scale, color, num, 0, 0, 0);
+			CG_Text_Paint(r2.x + r2.w + 4, r2.y + r2.h, scale, color, num, 0, 0, 0);
 			*inc += r2.w + special;
+#ifdef BASEQZ
+			{
+				const float iconscale = 0.25;
+				if (item->giTag == PW_QUAD && ps->stats[STAT_QUAD_KILL_COUNT] > 0) {
+					if ( cgs.media.killCounterIcon ) CG_DrawPic(r2.x + 35 + 4, r2.y - r2.h, r2.w * iconscale, r2.h * iconscale, cgs.media.killCounterIcon);
+					CG_Text_Paint(r2.x + 35 + 4 + 10, r2.y - r2.h + (r2.h * iconscale) - 1, 0.16296, colorWhite, va(" x %d", ps->stats[STAT_QUAD_KILL_COUNT]), 0, 0, 0);
+				}
+
+				if (item->giTag == PW_BATTLESUIT && ps->stats[STAT_BATTLESUIT_KILL_COUNT] > 0) {
+					if ( cgs.media.killCounterIcon ) CG_DrawPic(r2.x + 35 + 4, r2.y - r2.h, r2.w * iconscale, r2.h * iconscale, cgs.media.killCounterIcon);
+					CG_Text_Paint(r2.x + 35 + 4 + 10, r2.y - r2.h + (r2.h * iconscale) - 1, 0.16296, colorWhite, va(" x %d", ps->stats[STAT_BATTLESUIT_KILL_COUNT]), 0, 0, 0);
+				}
+			}
+#endif
 		}
 
 	}

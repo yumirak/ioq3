@@ -1296,6 +1296,7 @@ static void CG_RegisterGraphics( void ) {
 	cgs.media.gibSphere = trap_R_RegisterModel( "models/gibs/sphere.md3" );
 	cgs.media.deathEffectShader = trap_R_RegisterShader( "deathEffect" );
 	cgs.media.infiniteAmmo = trap_R_RegisterShader( "icons/infinite" );
+	cgs.media.killCounterIcon = trap_R_RegisterShader("icons/icon_frag");
 
 	cgs.media.gametypeIcon[GT_FFA] = trap_R_RegisterShader("ui/assets/hud/ffa");
 	cgs.media.gametypeIcon[GT_SINGLE_PLAYER] = trap_R_RegisterShader("ui/assets/hud/ffa");
