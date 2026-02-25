@@ -6,7 +6,7 @@ include(utils/qvm_tools)
 include(utils/set_output_dirs)
 
 set(BASEQZ "baseqz")
-set(BASEQZ_VERSION 305)
+set(BASEQZ_VERSION 495)
 
 set(BASEQZ_CGAME_SOURCES
     ${SOURCE_DIR}/cgame/cg_scoreboard_ql.c
