@@ -254,7 +254,7 @@ void CG_RailTrail (clientInfo_t *ci, vec3_t start, vec3_t end) {
 
 	AxisClear( re->axis );
  
-	if (cg_railStyle.integer == 2)
+	if (cg_railStyle.integer != 2)
 	{
 		// nudge down a bit so it isn't exactly in center
 		re->origin[2] -= 8;
@@ -989,15 +989,13 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 	vec3_t   forward;
 	vec3_t   muzzlePoint, endPoint;
 	int      anim;
-	size_t index = 0;
+#ifdef BASEQZ
+	size_t index = abs(cg_lightningStyle.integer - 1) % 5;
+#endif
 
 	if (cent->currentState.weapon != WP_LIGHTNING) {
 		return;
 	}
-
-#ifdef BASEQZ
-	index = abs(cg_lightningStyle.integer - 1) % 5;
-#endif
 
 	memset( &beam, 0, sizeof( beam ) );
 
@@ -1052,7 +1050,11 @@ static void CG_LightningBolt( centity_t *cent, vec3_t origin ) {
 	VectorCopy( origin, beam.origin );
 
 	beam.reType = RT_LIGHTNING;
+#ifdef BASEQZ
 	beam.customShader = cgs.media.lightningShaderNew[index];
+#else
+	beam.customShader = cgs.media.lightningShader;
+#endif
 	trap_R_AddRefEntityToScene( &beam );
 
 	// add the impact flare if it hit something
