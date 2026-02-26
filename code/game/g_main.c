@@ -1722,7 +1722,7 @@ void CheckTournament( void ) {
 		if ( level.numPlayingClients != 2 ) {
 			if ( level.warmupTime != -1 ) {
 				level.warmupTime = -1;
-				trap_SetConfigstring( CS_WARMUP, va("%i", level.warmupTime) );
+				trap_SetConfigstring( CS_WARMUP, va("\\time\\%i", level.warmupTime) );
 				G_LogPrintf( "Warmup:\n" );
 			}
 			return;
@@ -1748,7 +1748,7 @@ void CheckTournament( void ) {
 					level.warmupTime = 0;
 				}
 
-				trap_SetConfigstring( CS_WARMUP, va("%i", level.warmupTime) );
+				trap_SetConfigstring( CS_WARMUP, va("\\time\\%i", level.warmupTime) );
 			}
 			return;
 		}
@@ -1779,7 +1779,7 @@ void CheckTournament( void ) {
 		if ( notEnough ) {
 			if ( level.warmupTime != -1 ) {
 				level.warmupTime = -1;
-				trap_SetConfigstring( CS_WARMUP, va("%i", level.warmupTime) );
+				trap_SetConfigstring( CS_WARMUP, va("\\time\\%i", level.warmupTime) );
 				G_LogPrintf( "Warmup:\n" );
 			}
 			return; // still waiting for team members
@@ -1804,7 +1804,7 @@ void CheckTournament( void ) {
 				level.warmupTime = 0;
 			}
 
-			trap_SetConfigstring( CS_WARMUP, va("%i", level.warmupTime) );
+			trap_SetConfigstring( CS_WARMUP, va("\\time\\%i", level.warmupTime) );
 			return;
 		}
 

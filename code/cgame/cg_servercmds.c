@@ -186,7 +186,7 @@ static void CG_ParseWarmup( void ) {
 
 	info = CG_ConfigString( CS_WARMUP );
 
-	warmup = atoi( info );
+	warmup = atoi(Info_ValueForKey(info, "time"));
 	cg.warmupCount = -1;
 
 	if ( warmup == 0 && cg.warmup ) {
@@ -231,7 +231,8 @@ void CG_SetConfigValues( void ) {
 		cgs.flagStatus = s[0] - '0';
 	}
 #endif
-	cg.warmup = atoi( CG_ConfigString( CS_WARMUP ) );
+	s = CG_ConfigString( CS_WARMUP );
+	cg.warmup = atoi(Info_ValueForKey(s, "time"));
 
 	// Extend
 	for( i = CS_FLAGSTATUS; i < CS_STEAM_WORKSHOP_IDS + 1; i++ ) {
