@@ -317,7 +317,10 @@ int CG_GetCurrentTimeWithDirection (qboolean countdown)
 	levelStartTime = cgs.levelStartTime;
 	cgtime = cg.time;
 
-	if (cg.warmup || cgs.timelimit <= 0) {
+	if (cg.warmup)
+		return 0;
+
+	if (cgs.timelimit <= 0) {
 		msec = cg.time - levelStartTime;
 		return msec;
 	}
