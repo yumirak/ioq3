@@ -117,6 +117,40 @@ void Cmd_Score_f( gentity_t *ent ) {
 }
 
 
+void AccMessage( gentity_t *ent ) {
+	char string[1000];
+	int i;
+	gclient_t	*cl;
+	int accuracy;
+
+	// don't send scores to bots, they don't parse it
+	if ( ent->r.svFlags & SVF_BOT ) {
+		return;
+	}
+
+	string[0] = '\0';
+
+	// if following a player use their accuracy instead
+	if (ent->client->sess.spectatorState == SPECTATOR_FOLLOW || ent->client->sess.spectatorClient >= 0 ) {
+		cl = g_entities[ ent->client->sess.spectatorClient ].client;
+	}
+	if( !cl ) cl = ent->client;
+
+	for( i = WP_NONE; i < WP_NUM_WEAPONS; i++ ) {
+		if( cl->pers.accuracy[i][WP_ACC_SHOT] ) {
+			accuracy = cl->pers.accuracy[i][WP_ACC_HIT] * 100 / cl->pers.accuracy[i][WP_ACC_SHOT];
+		} else {
+			accuracy = 0;
+		}
+		Q_strcat( string, sizeof( string ), va(" %i", accuracy ));
+	}
+	trap_SendServerCommand( ent-g_entities, va("acc %s", string ) );
+}
+
+void Cmd_Acc_f( gentity_t *ent )
+{
+	AccMessage( ent );
+}
 
 /*
 ==================
@@ -1797,6 +1831,10 @@ void ClientCommand( int clientNum ) {
 #endif
 	if (Q_stricmp (cmd, "score") == 0) {
 		Cmd_Score_f (ent);
+		return;
+	}
+	if (Q_stricmp (cmd, "acc") == 0) {
+		Cmd_Acc_f (ent);
 		return;
 	}
 

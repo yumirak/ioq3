@@ -2180,6 +2180,16 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_DrawFollowNameString( &rect, scale, color, textStyle, align, qfalse );
 		break;
 #endif
+#ifdef CG_WP_VERTICAL
+	case CG_WP_VERTICAL:
+		CG_DrawWeaponVertical(&rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_ACC_VERTICAL
+	case CG_ACC_VERTICAL:
+		CG_DrawAccuracyVertical(&rect, scale, color, textStyle, align );
+		break;
+#endif
 
   default:
     break;

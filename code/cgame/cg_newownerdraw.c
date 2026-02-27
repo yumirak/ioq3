@@ -454,7 +454,8 @@ void CG_SelectedPlayerAccuracy( rectDef_t *rect, float scale, vec4_t color, int 
 	if( cg.selectedScore < 0 || cg.selectedScore > MAX_CLIENTS )
 		return;
 
-	CG_Text_Paint_Align( rect, scale, color, va( "%d%%", cg.scores[cg.selectedScore].accuracy ), 0, 0, textStyle, align );
+	CG_Text_Paint( rect->x, rect->y, scale, color, va( "%d%%", cg.scores[cg.selectedScore].accuracy ), 0, 0, textStyle );
+	// CG_Text_Paint_Align( rect, scale, color, va( "%d%%", cg.scores[cg.selectedScore].accuracy ), 0, 0, textStyle, align );
 }
 
 
@@ -686,4 +687,37 @@ void CG_Draw1stPlacePlayerModel (float x, float y, float w, float h)
 	trap_R_AddLightToScene( origin, 500, 1.0, 0.0, 0.0 );
 
 	trap_R_RenderScene(&refdef);
+}
+
+void CG_DrawWeaponVertical( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	int i;
+	int offset = 0;
+
+	for (i = WP_MACHINEGUN;  i < WP_NUM_WEAPONS;  i++) {
+		if (!cg_weapons[i].registered)
+			continue;
+
+		CG_DrawPic(rect->x, rect->y + offset, rect->w * 1.0, rect->w * 1.0, cg_weapons[i].weaponIcon);
+		offset += rect->h;
+	}
+}
+
+void CG_DrawAccuracyVertical( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	int i, acc;
+	int offset = 0;
+	rectDef_t textRect;
+
+	memcpy(&textRect, rect, sizeof(textRect));
+
+	for (i = WP_MACHINEGUN;  i < WP_NUM_WEAPONS;  i++) {
+		if (!cg_weapons[i].registered)
+			continue;
+
+		acc = cg.wpnStats.accuracy[i];
+		textRect.y = rect->y + offset;
+		CG_Text_Paint_Align( &textRect, scale, color, va("%d%%", acc), 0, 0, textStyle, align);
+		offset += rect->h;
+	}
 }

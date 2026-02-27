@@ -143,6 +143,13 @@ static void CG_ParseTeamInfo( void ) {
 	}
 }
 
+static void CG_ParseAccuracy( void ) {
+	int		i;
+	cg.wpnStatsTime = cg.time;
+	for ( i = WP_NONE; i < WP_NUM_WEAPONS; i++ ) {
+		cg.wpnStats.accuracy[i] = atoi(CG_Argv(i + 1));
+	}
+}
 
 /*
 ================
@@ -1134,6 +1141,11 @@ static void CG_ServerCommand( void ) {
 	// the menu system during development
 	if ( !strcmp( cmd, "clientLevelShot" ) ) {
 		cg.levelShot = qtrue;
+		return;
+	}
+
+	if ( !strcmp( cmd, "acc" ) ) {
+		CG_ParseAccuracy();
 		return;
 	}
 

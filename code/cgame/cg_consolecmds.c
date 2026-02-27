@@ -135,6 +135,7 @@ static void CG_LoadHud_f( void) {
   cg.menuScoreboard = NULL;
   cg.menuEndScoreboard = NULL;
   cg.scoreboardPremium = qfalse;
+  cg.menuAccuracy = NULL;
 }
 
 
@@ -452,7 +453,15 @@ static void CG_ChatUp_f (void)
 {
 	cg.forceDrawChat = qfalse;
 }
+static void CG_AccStatsUp_f (void)
+{
+	cg.drawAccStats = qfalse;
+}
 
+static void CG_AccStatsDown_f (void)
+{
+	cg.drawAccStats = qtrue;
+}
 typedef struct {
 	char	*cmd;
 	void	(*function)(void);
@@ -511,6 +520,8 @@ static consoleCommand_t	commands[] = {
 #ifdef MISSIONPACK
 	{ "+chat", CG_ChatDown_f },
 	{ "-chat", CG_ChatUp_f },
+	{ "+acc", CG_AccStatsDown_f },
+	{ "-acc", CG_AccStatsUp_f },
 #endif
 	{ "loaddeferred", CG_LoadDeferredPlayers }	
 };

@@ -496,6 +496,10 @@ typedef struct {
 	int			lines;
 	float		scale;
 } centerPrint_t;
+
+typedef struct {
+	int accuracy[WP_NUM_WEAPONS];
+} weaponStat_t;
 //======================================================================
 
 // all cg.stepTime, cg.duckTime, cg.landTime, etc are set to cg.time when the action
@@ -706,12 +710,16 @@ typedef struct {
 	int numChatLinesVisible;
 	qboolean forceDrawChat;
 	newChatArea_t chatArea[MAX_CHAT_LINES];
+	qboolean drawAccStats;
+	int wpnStatsTime;
+	weaponStat_t wpnStats;
 #ifdef MISSIONPACK
 	menuDef_t *menuScoreboard;
 	menuDef_t *menuEndScoreboard;
 	qboolean scoreboardPremium;
 	menuDef_t *menuSpectator[2];
 	menuDef_t *menuCompSpectator;
+	menuDef_t *menuAccuracy;
 #endif
 } cg_t;
 

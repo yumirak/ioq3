@@ -2682,6 +2682,23 @@ static void CG_DrawReady ( void ) {
 	CG_DrawStringExt( x, y - SMALLCHAR_HEIGHT, s, colorWhite, qtrue, qtrue, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
 #endif
 }
+
+static void CG_DrawAccuracy(void) {
+	if ( !cg.drawAccStats ) {
+		return;
+	}
+
+	if (cg.wpnStatsTime + 2000 < cg.time) {
+		cg.wpnStatsTime = cg.time;
+		trap_SendClientCommand("acc");
+	}
+
+#ifdef MISSIONPACK
+	cg.menuAccuracy = Menus_FindByName("stats_menu");
+	if (cg.menuAccuracy)
+		Menu_Paint(cg.menuAccuracy, qtrue);
+#endif
+}
 /*
 =================
 CG_Draw2D
@@ -2800,6 +2817,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	if ( !cg.scoreBoardShowing) {
 		CG_DrawCenterString();
 		CG_DrawReady();
+		CG_DrawAccuracy();
 	}
 }
 
