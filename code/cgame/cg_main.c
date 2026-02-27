@@ -261,6 +261,7 @@ vmCvar_t	cg_crosshairHitStyle;
 vmCvar_t	cg_crosshairHitColor;
 vmCvar_t	cg_crosshairHitTime;
 vmCvar_t	cg_drawItemPickups;
+vmCvar_t	cg_buzzerSound;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -469,6 +470,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_drawItemPickups, "cg_drawItemPickups", "3", CVAR_ARCHIVE },
 	{ &cg_drawRewardsRowSize, "cg_drawRewardsRowSize", "1", CVAR_ARCHIVE },
 	{ &cg_announcerRewardsVO, "cg_announcerRewardsVO", "1", CVAR_ARCHIVE },
+	{ &cg_buzzerSound, "cg_buzzerSound", "1", CVAR_ARCHIVE},
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -968,6 +970,8 @@ static void CG_RegisterSounds( void ) {
 		cgs.media.electroGibBounceSound[i] = trap_S_RegisterSound( va( "sound/misc/electrogib_bounce_0%d.ogg", i + 1 ), qfalse );
 	}
 #endif
+
+	cgs.media.buzzer = trap_S_RegisterSound("sound/world/buzzer.ogg", qtrue);
 
 #ifdef MISSIONPACK
 	trap_S_RegisterSound("sound/player/james/death1.wav", qfalse );

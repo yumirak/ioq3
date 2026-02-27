@@ -1075,6 +1075,7 @@ typedef struct {
 	sfxHandle_t killSound[8];
 	qhandle_t lightningShaderNew[5];
 	qhandle_t	weaplit;
+	sfxHandle_t	buzzer;
 } cgMedia_t;
 
 
@@ -1343,6 +1344,7 @@ extern	vmCvar_t		cg_crosshairHitStyle;
 extern	vmCvar_t		cg_crosshairHitColor;
 extern	vmCvar_t		cg_crosshairHitTime;
 extern	vmCvar_t		cg_drawItemPickups;
+extern	vmCvar_t		cg_buzzerSound;
 
 //
 // cg_main.c

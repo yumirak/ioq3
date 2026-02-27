@@ -303,6 +303,18 @@ void CG_ShaderStateChanged(void) {
 	}
 }
 
+void CG_InterMissionHit (void)
+{
+#if MISSIONPACK
+	if (cg_singlePlayerActive.integer && cg_cameraOrbit.integer)
+		return;
+#endif
+
+	if (cg_buzzerSound.integer) {
+		trap_S_StartLocalSound(cgs.media.buzzer, CHAN_LOCAL_SOUND);
+	}
+}
+
 /*
 ================
 CG_ConfigStringModified
@@ -369,6 +381,9 @@ static void CG_ConfigStringModified( void ) {
 #endif
 	} else if ( num == CS_INTERMISSION ) {
 		cg.intermissionStarted = atoi( str );
+		if (cg.intermissionStarted) {
+			CG_InterMissionHit();
+		}
 	} else if ( num >= CS_MODELS && num < CS_MODELS+MAX_MODELS ) {
 		cgs.gameModels[ num-CS_MODELS ] = trap_R_RegisterModel( str );
 	} else if ( num >= CS_SOUNDS && num < CS_SOUNDS+MAX_SOUNDS ) {
