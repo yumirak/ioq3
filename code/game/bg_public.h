@@ -421,6 +421,12 @@ typedef struct {
 	const char	*scoreboard;
 } gametypeDesc_t;
 
+typedef enum {
+	PRE_GAME,
+	COUNT_DOWN,
+	IN_PROGRESS,
+} gameMatchState_t;
+
 // reward sounds (stored in ps->persistant[PERS_PLAYEREVENTS])
 #define	PLAYEREVENT_DENIEDREWARD		0x0001
 #define	PLAYEREVENT_GAUNTLETREWARD		0x0002

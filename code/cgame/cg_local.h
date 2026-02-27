@@ -1345,6 +1345,7 @@ extern	vmCvar_t		cg_crosshairHitColor;
 extern	vmCvar_t		cg_crosshairHitTime;
 extern	vmCvar_t		cg_drawItemPickups;
 extern	vmCvar_t		cg_buzzerSound;
+extern	vmCvar_t		g_gameState;
 
 //
 // cg_main.c

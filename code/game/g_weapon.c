@@ -73,6 +73,9 @@ qboolean CheckGauntletAttack( gentity_t *ent ) {
 	gentity_t	*traceEnt;
 	int			damage;
 
+	if ( level.gameMatchState == COUNT_DOWN )
+		return qfalse;
+
 	// set aiming directions
 	AngleVectors (ent->client->ps.viewangles, forward, right, up);
 

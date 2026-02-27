@@ -121,6 +121,7 @@ vmCvar_t	g_warmupDelay;
 vmCvar_t	g_warmupReadyDelay;
 vmCvar_t	g_warmupReadyDelayAction;
 vmCvar_t	sv_warmupReadyPercentage;
+vmCvar_t	g_gameState;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -333,6 +334,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &sv_warmupReadyPercentage, "sv_warmupReadyPercentage", "0.51", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue  },
 
 	{ &g_training, "g_training", "0", CVAR_ROM, 0, qfalse },
+	{ &g_gameState, "g_gameState", "PRE_GAME", CVAR_ROM | CVAR_SYSTEMINFO, 0, qfalse },
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
 
@@ -2128,6 +2130,14 @@ void CheckCvars( void ) {
 	}
 }
 
+void CheckGameState( void ) {
+	int state = level.gameMatchState;
+	switch ( level.warmupTime ) {
+		case -1: if( state != PRE_GAME ) level.gameMatchState = PRE_GAME; trap_Cvar_Set( "g_gameState", "PRE_GAME" ); break;
+		case 0:  if( state != IN_PROGRESS ) level.gameMatchState = IN_PROGRESS; trap_Cvar_Set( "g_gameState", "IN_PROGRESS" ); break;
+		default: if( state != COUNT_DOWN ) level.gameMatchState = COUNT_DOWN; trap_Cvar_Set( "g_gameState", "COUNT_DOWN" ); break;
+	}
+}
 /*
 =============
 G_RunThink
@@ -2265,6 +2275,8 @@ void G_RunFrame( int levelTime ) {
 
 	// for tracking changes
 	CheckCvars();
+
+	CheckGameState();
 
 	if (g_listEntity.integer) {
 		for (i = 0; i < MAX_GENTITIES; i++) {

@@ -416,6 +416,7 @@ typedef struct {
 	int			teamPlayerCount[TEAM_NUM_TEAMS][2]; // 0 - total; 1 - alive;
 	int			numPlayerReady;
 	int			allReadyTime;
+	int			gameMatchState;
 } level_locals_t;
 
 
@@ -780,6 +781,7 @@ extern	vmCvar_t	g_warmupDelay;
 extern	vmCvar_t	g_warmupReadyDelay;
 extern	vmCvar_t	g_warmupReadyDelayAction;
 extern	vmCvar_t	sv_warmupReadyPercentage;
+extern	vmCvar_t	g_gameState;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

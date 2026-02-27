@@ -263,6 +263,7 @@ vmCvar_t	cg_crosshairHitTime;
 vmCvar_t	cg_drawItemPickups;
 vmCvar_t	cg_buzzerSound;
 vmCvar_t	cg_training;
+vmCvar_t	g_gameState;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -474,6 +475,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_buzzerSound, "cg_buzzerSound", "1", CVAR_ARCHIVE},
 	{ &cg_training, "g_training", "0", CVAR_ROM},
 
+	{ &g_gameState, "g_gameState", "PRE_GAME", CVAR_SERVERINFO },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
