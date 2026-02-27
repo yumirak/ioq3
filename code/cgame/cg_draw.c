@@ -1302,32 +1302,60 @@ static void CG_DrawLowerRight( void ) {
 CG_DrawPickupItem
 ===================
 */
-#ifndef MISSIONPACK
 static int CG_DrawPickupItem( int y ) {
 	int		value;
 	float	*fadeColor;
+	int msec, x;
+	char szName[32];
+	char szTime[16];
+	int	imagesize = 16;
 
 	if ( cg.snap->ps.stats[STAT_HEALTH] <= 0 ) {
 		return y;
 	}
+	if ( cg.scoreBoardShowing ) {
+		return y;
+	}
 
-	y -= ICON_SIZE;
+	x = 8;
+	y -= imagesize;
+	szName[0] = '\0';
+	szTime[0] = '\0';
 
 	value = cg.itemPickup;
 	if ( value ) {
 		fadeColor = CG_FadeColor( cg.itemPickupTime, 3000 );
 		if ( fadeColor ) {
+			msec = cg.itemPickupGameTime;
 			CG_RegisterItemVisuals( value );
 			trap_R_SetColor( fadeColor );
-			CG_DrawPic( 8, y, ICON_SIZE, ICON_SIZE, cg_items[ value ].icon );
-			CG_DrawBigString( ICON_SIZE + 16, y + (ICON_SIZE/2 - BIGCHAR_HEIGHT/2), bg_itemlist[ value ].pickup_name, fadeColor[0] );
+
+			if ( cg_drawItemPickups.integer & 0x4 ) {
+				Com_sprintf( szTime, sizeof(szTime), "%s", CG_GetTimeString( msec ) );
+				CG_DrawStringExt( x, y, szTime, fadeColor, qfalse, qfalse,
+								  SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+				x = x + 5 + CG_DrawStrlen( szTime ) * SMALLCHAR_WIDTH;
+			}
+
+			if ( cg_drawItemPickups.integer & 0x1 ) {
+				CG_DrawPic( x, y, imagesize, imagesize, cg_items[ value ].icon );
+				x = x + 5 + imagesize;
+			}
+
+			if ( cg_drawItemPickups.integer & 0x2 ) {
+				Com_sprintf( szName, sizeof(szName), "%s", bg_itemlist[value].pickup_name);
+				if( cg.itemPickupCount > 1 ) {
+					Q_strcat(szName, sizeof(szName), va(" x%d", cg.itemPickupCount) );
+				}
+				CG_DrawStringExt( x, y, szName, fadeColor, qfalse, qfalse,
+								  SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+			}
 			trap_R_SetColor( NULL );
 		}
 	}
 	
 	return y;
 }
-#endif // MISSIONPACK
 
 /*
 =====================
@@ -1347,6 +1375,10 @@ static void CG_DrawLowerLeft( void ) {
 
 
 	CG_DrawPickupItem( y );
+}
+#else
+static void CG_DrawLowerLeft( void ) {
+	CG_DrawPickupItem( 360 );
 }
 #endif // MISSIONPACK
 
@@ -2859,8 +2891,8 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 
 #ifndef MISSIONPACK
 	CG_DrawLowerRight();
-	CG_DrawLowerLeft();
 #endif
+	CG_DrawLowerLeft();
 
 #ifndef BASEQZ
 	if ( !CG_DrawFollow() )

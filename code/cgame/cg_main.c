@@ -260,6 +260,7 @@ vmCvar_t	cg_crosshairPulse;
 vmCvar_t	cg_crosshairHitStyle;
 vmCvar_t	cg_crosshairHitColor;
 vmCvar_t	cg_crosshairHitTime;
+vmCvar_t	cg_drawItemPickups;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -465,6 +466,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_gameInfo[3], "cg_gameInfo4", "", CVAR_ROM | CVAR_ARCHIVE },
 	{ &cg_gameInfo[4], "cg_gameInfo5", "", CVAR_ROM | CVAR_ARCHIVE },
 
+	{ &cg_drawItemPickups, "cg_drawItemPickups", "3", CVAR_ARCHIVE },
 	{ &cg_drawRewardsRowSize, "cg_drawRewardsRowSize", "1", CVAR_ARCHIVE },
 	{ &cg_announcerRewardsVO, "cg_announcerRewardsVO", "1", CVAR_ARCHIVE },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }

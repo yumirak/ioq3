@@ -437,9 +437,17 @@ A new item was picked up this frame
 ================
 */
 static void CG_ItemPickup( int itemNum ) {
+	if ( itemNum == cg.itemPickup  && bg_itemlist[itemNum].giType != IT_POWERUP
+		&& cg.time - cg.itemPickupTime < 3000
+	) {
+		cg.itemPickupCount++;
+	} else {
+		cg.itemPickupCount = 1;
+	}
 	cg.itemPickup = itemNum;
 	cg.itemPickupTime = cg.time;
 	cg.itemPickupBlendTime = cg.time;
+	cg.itemPickupGameTime = CG_GetCurrentTimeWithDirection( cg_levelTimerDirection.integer );
 	// see if it should be the grabbed weapon
 	if ( bg_itemlist[itemNum].giType == IT_WEAPON ) {
 		// select it immediately
