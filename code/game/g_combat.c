@@ -965,21 +965,10 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			&& targ != attacker && targ->health > 0
 			&& targ->s.eType != ET_MISSILE
 			&& targ->s.eType != ET_GENERAL) {
-		size_t hitvalue = MIN( 3, damage / 25 );
 		if ( OnSameTeam( targ, attacker ) ) {
 			attacker->client->ps.persistant[PERS_HITS]--;
 		} else {
 			attacker->client->ps.persistant[PERS_HITS]++;
-		}
-		// FIXME (done): Harvester are using generic1 to count player skulls
-		// Quake Live are also using generic1 to store player hitbeep stage
-		// hitbeep has 4 type with each value of 0, 64, 128 and 192
-		// remaining of generic1 after hitbeep value is harvester skulls
-		// e.g. generic1 has value of 198 meaning hitbeep stage 4 and carrying 6 skulls.
-		if( g_gametype.integer != GT_HARVESTER ) {
-			attacker->client->ps.generic1 = hitsound_value[hitvalue];
-		} else {
-			attacker->client->ps.generic1 = BG_GetHitValueResidual( attacker->client->ps.generic1 ) + hitsound_value[hitvalue];
 		}
 	}
 
