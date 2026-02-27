@@ -262,6 +262,7 @@ vmCvar_t	cg_crosshairHitColor;
 vmCvar_t	cg_crosshairHitTime;
 vmCvar_t	cg_drawItemPickups;
 vmCvar_t	cg_buzzerSound;
+vmCvar_t	cg_training;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -471,6 +472,8 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_drawRewardsRowSize, "cg_drawRewardsRowSize", "1", CVAR_ARCHIVE },
 	{ &cg_announcerRewardsVO, "cg_announcerRewardsVO", "1", CVAR_ARCHIVE },
 	{ &cg_buzzerSound, "cg_buzzerSound", "1", CVAR_ARCHIVE},
+	{ &cg_training, "g_training", "0", CVAR_ROM},
+
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
