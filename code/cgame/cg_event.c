@@ -1283,6 +1283,22 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		CG_Beam( cent );
 		break;
 
+	// Extend
+	case EV_FOOTSTEP_WOOD:
+		DEBUGNAME("EV_FOOTSTEP_WOOD");
+		if (cg_footsteps.integer) {
+			trap_S_StartSound (NULL, es->number, CHAN_BODY,
+				cgs.media.footsteps[ FOOTSTEP_WOOD ][rand()&3] );
+		}
+		break;
+	case EV_FOOTSTEP_SNOW:
+		DEBUGNAME("EV_FOOTSTEP_SNOW");
+		if (cg_footsteps.integer) {
+			trap_S_StartSound (NULL, es->number, CHAN_BODY,
+				cgs.media.footsteps[ FOOTSTEP_SNOW ][rand()&3] );
+		}
+		break;
+
 	default:
 		DEBUGNAME("UNKNOWN");
 		CG_Error( "Unknown event: %i", event );

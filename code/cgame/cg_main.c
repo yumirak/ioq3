@@ -887,6 +887,12 @@ static void CG_RegisterSounds( void ) {
 
 		Com_sprintf (name, sizeof(name), "sound/player/footsteps/clank%i.wav", i+1);
 		cgs.media.footsteps[FOOTSTEP_METAL][i] = trap_S_RegisterSound (name, qfalse);
+
+		Com_sprintf (name, sizeof(name), "sound/player/footsteps/wood%i.wav", i+1);
+		cgs.media.footsteps[FOOTSTEP_WOOD][i] = trap_S_RegisterSound (name, qfalse);
+
+		Com_sprintf (name, sizeof(name), "sound/player/footsteps/snow%i.wav", i+1);
+		cgs.media.footsteps[FOOTSTEP_SNOW][i] = trap_S_RegisterSound (name, qfalse);
 	}
 
 	// only register the items that the server says we need
