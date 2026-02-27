@@ -598,6 +598,13 @@ void SetTeam( gentity_t *ent, const char *s ) {
 			team = PickTeam( clientNum );
 		}
 
+		if ( g_teamsize.integer > 0 ) {
+			if ( TeamCount( -1, team ) >= g_teamsize.integer ) {
+				trap_SendServerCommand( clientNum, va("print \"Team is full. Team size is currently set to %i.\n\"", g_teamsize.integer) );
+				return; // ignore the request
+			}
+		}
+
 		if ( g_teamForceBalance.integer && !client->pers.localClient && !( ent->r.svFlags & SVF_BOT ) ) {
 			int		counts[TEAM_NUM_TEAMS];
 
@@ -1370,6 +1377,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	} else if ( !Q_stricmp( arg1, "g_doWarmup" ) ) {
 	} else if ( !Q_stricmp( arg1, "timelimit" ) ) {
 	} else if ( !Q_stricmp( arg1, "fraglimit" ) ) {
+	} else if ( !Q_stricmp( arg1, "teamsize" ) ) {
 	} else {
 		trap_SendServerCommand( ent-g_entities, "print \"Invalid vote string.\n\"" );
 		trap_SendServerCommand( ent-g_entities, "print \"Vote commands are: map_restart, nextmap, map <mapname>, g_gametype <n>, kick <player>, clientkick <clientnum>, g_doWarmup, timelimit <time>, fraglimit <frags>.\n\"" );
@@ -1434,6 +1442,15 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 
 		Com_sprintf( level.voteString, sizeof( level.voteString ), "clientkick %d", i );
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "kick %s", level.clients[i].pers.netname );
+	} else if ( !Q_stricmp( arg1, "teamsize" ) ) {
+		i = atoi( arg2 );
+		if( i < 0 || i > (g_maxclients.integer / 2) ) {
+			trap_SendServerCommand( ent-g_entities, "print \"Invalid teamsize.\n\"" );
+			return;
+		}
+
+		Com_sprintf( level.voteString, sizeof( level.voteString ), "%s %d", arg1, i );
+		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "%s %d", arg1, i );
 	} else {
 		Com_sprintf( level.voteString, sizeof( level.voteString ), "%s \"%s\"", arg1, arg2 );
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "%s", level.voteString );

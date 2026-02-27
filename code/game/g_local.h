@@ -782,6 +782,7 @@ extern	vmCvar_t	g_warmupReadyDelay;
 extern	vmCvar_t	g_warmupReadyDelayAction;
 extern	vmCvar_t	sv_warmupReadyPercentage;
 extern	vmCvar_t	g_gameState;
+extern	vmCvar_t	g_teamsize;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;
