@@ -1464,10 +1464,12 @@ static void CG_DrawReward( void ) {
 	int		i, count;
 	float	x, y;
 	char	buf[32];
-
-	if ( !cg_drawRewards.integer ) {
-		return;
-	}
+	int height;
+	int imagesize = 32;
+	int rowsize = MIN( 9, cg_drawRewardsRowSize.integer);
+#ifdef MISSIONPACK
+	float scale = 0.25;
+#endif
 
 	color = CG_FadeColor( cg.rewardTime, REWARD_TIME );
 	if ( !color ) {
@@ -1480,47 +1482,43 @@ static void CG_DrawReward( void ) {
 			cg.rewardTime = cg.time;
 			cg.rewardStack--;
 			color = CG_FadeColor( cg.rewardTime, REWARD_TIME );
-			trap_S_StartLocalSound(cg.rewardSound[0], CHAN_ANNOUNCER);
+			if ( cg_announcerRewardsVO.integer ) trap_S_StartLocalSound(cg.rewardSound[0], CHAN_ANNOUNCER);
 		} else {
 			return;
 		}
 	}
 
+	if ( !cg_drawRewards.integer )
+		return;
+
 	trap_R_SetColor( color );
 
-	/*
-	count = cg.rewardCount[0]/10;				// number of big rewards to draw
 
-	if (count) {
-		y = 4;
-		x = 320 - count * ICON_SIZE;
-		for ( i = 0 ; i < count ; i++ ) {
-			CG_DrawPic( x, y, (ICON_SIZE*2)-4, (ICON_SIZE*2)-4, cg.rewardShader[0] );
-			x += (ICON_SIZE*2);
-		}
-	}
+#ifdef MISSIONPACK
+	height = CG_Text_Height("0", scale, 0);
+#else
+	height = SMALLCHAR_HEIGHT;
+#endif
 
-	count = cg.rewardCount[0] - count*10;		// number of small rewards to draw
-	*/
-
-	if ( cg.rewardCount[0] >= 10 ) {
-		y = 56;
-		x = 320 - ICON_SIZE/2;
-		CG_DrawPic( x, y, ICON_SIZE-4, ICON_SIZE-4, cg.rewardShader[0] );
+	if ( cg.rewardCount[0] > rowsize ) {
+		y = SCREEN_HEIGHT * 0.10;
+		x = 320 - imagesize / 2;
+		CG_DrawPic( x, y, imagesize, imagesize, cg.rewardShader[0] );
 		Com_sprintf(buf, sizeof(buf), "%d", cg.rewardCount[0]);
-		x = ( SCREEN_WIDTH - SMALLCHAR_WIDTH * CG_DrawStrlen( buf ) ) / 2;
-		CG_DrawStringExt( x, y+ICON_SIZE, buf, color, qfalse, qtrue,
+#ifdef MISSIONPACK
+		CG_Text_Paint(x + imagesize + 3, y + (height * 2) + 3, scale, colorWhite, buf, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
+#else
+		CG_DrawStringExt( x + imagesize + 3, y + (height / 2) - 2, buf, color, qfalse, qtrue,
 								SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
-	}
-	else {
-
+#endif
+	} else {
+		float gapsize = 1.5;
 		count = cg.rewardCount[0];
-
-		y = 56;
-		x = 320 - count * ICON_SIZE/2;
+		y = SCREEN_HEIGHT * 0.10;
+		x = 320 - count * (imagesize / gapsize);
 		for ( i = 0 ; i < count ; i++ ) {
-			CG_DrawPic( x, y, ICON_SIZE-4, ICON_SIZE-4, cg.rewardShader[0] );
-			x += ICON_SIZE;
+			CG_DrawPic( x, y, imagesize, imagesize, cg.rewardShader[0] );
+			x += imagesize * gapsize;
 		}
 	}
 	trap_R_SetColor( NULL );

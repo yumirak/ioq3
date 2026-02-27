@@ -1322,6 +1322,8 @@ extern	vmCvar_t		cg_spectating;
 extern	vmCvar_t		cg_placebo;
 extern	vmCvar_t		cg_drawSpecMessages;
 extern	vmCvar_t		cg_gameInfo[5];
+extern	vmCvar_t		cg_drawRewardsRowSize;
+extern	vmCvar_t		cg_announcerRewardsVO;
 
 //
 // cg_main.c

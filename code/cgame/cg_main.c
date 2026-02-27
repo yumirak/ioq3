@@ -253,6 +253,8 @@ vmCvar_t	cg_spectating;
 vmCvar_t	cg_placebo;
 vmCvar_t	cg_drawSpecMessages;
 vmCvar_t	cg_gameInfo[5];
+vmCvar_t	cg_drawRewardsRowSize;
+vmCvar_t	cg_announcerRewardsVO;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -453,6 +455,8 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_gameInfo[3], "cg_gameInfo4", "", CVAR_ROM | CVAR_ARCHIVE },
 	{ &cg_gameInfo[4], "cg_gameInfo5", "", CVAR_ROM | CVAR_ARCHIVE },
 
+	{ &cg_drawRewardsRowSize, "cg_drawRewardsRowSize", "1", CVAR_ARCHIVE },
+	{ &cg_announcerRewardsVO, "cg_announcerRewardsVO", "1", CVAR_ARCHIVE },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
