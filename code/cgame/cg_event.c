@@ -252,12 +252,12 @@ static void CG_Obituary( entityState_t *ent ) {
 			s = va("You fragged %s", targetName );
 		}
 #ifdef MISSIONPACK
-		if (!(cg_singlePlayerActive.integer && cg_cameraOrbit.integer)) {
-			CG_CenterPrint( s, SCREEN_HEIGHT * (cg.warmup ? 0.30 : 0.20), SMALLCHAR_WIDTH );
-		} 
-#else
-		CG_CenterPrint( s, SCREEN_HEIGHT * (cg.warmup ? 0.30 : 0.20), SMALLCHAR_WIDTH );
+		if (!(cg_singlePlayerActive.integer && cg_cameraOrbit.integer))
 #endif
+		{
+			CG_CenterPrint( s, SCREEN_HEIGHT * (cg.warmup ? 0.30 : 0.225), SMALLCHAR_WIDTH, 0.3f );
+		}
+
 
 		// print the text message as well
 	}
@@ -390,10 +390,10 @@ static void CG_UseItem( centity_t *cent ) {
 	// print a message if the local player
 	if ( es->number == cg.snap->ps.clientNum ) {
 		if ( !itemNum ) {
-			CG_CenterPrint( "No item to use", SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH );
+			CG_CenterPrint( "No item to use", SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH, 0.4f );
 		} else {
 			item = BG_FindItemForHoldable( itemNum );
-			CG_CenterPrint( va("Use %s", item->pickup_name), SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH );
+			CG_CenterPrint( va("Use %s", item->pickup_name), SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH, 0.4f );
 		}
 	}
 

@@ -508,7 +508,7 @@ static void CG_MapRestart( void ) {
 	// play the "fight" sound if this is a restart without warmup
 	if ( cg.warmup == 0 /* && cgs.gametype == GT_TOURNAMENT */) {
 		trap_S_StartLocalSound( cgs.media.countFightSound, CHAN_ANNOUNCER );
-		CG_CenterPrint( "FIGHT!", 120, GIANTCHAR_WIDTH*2 );
+		CG_CenterPrint( "FIGHT!", 120, GIANTCHAR_WIDTH*2, 0.4f );
 	}
 #ifdef MISSIONPACK
 	if (cg_singlePlayerActive.integer) {
@@ -1027,7 +1027,7 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "cp" ) ) {
-		CG_CenterPrint( CG_Argv(1), SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH );
+		CG_CenterPrint( CG_Argv(1), SCREEN_HEIGHT * 0.325, BIGCHAR_WIDTH, 0.4f );
 		return;
 	}
 

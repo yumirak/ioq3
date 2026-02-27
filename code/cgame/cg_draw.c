@@ -1765,7 +1765,7 @@ Called for important messages that should stay in the center of the screen
 for a few moments
 ==============
 */
-void CG_CenterPrint( const char *str, int y, int charWidth ) {
+void CG_CenterPrint( const char *str, int y, int charWidth, float scale ) {
 	char	*s;
 
 	Q_strncpyz( cg.centerPrint.string, str, sizeof(cg.centerPrint.string) );
@@ -1773,6 +1773,7 @@ void CG_CenterPrint( const char *str, int y, int charWidth ) {
 	cg.centerPrint.time = cg.time;
 	cg.centerPrint.height = y;
 	cg.centerPrint.charwidth = charWidth;
+	cg.centerPrint.scale = scale;
 
 	// count the number of lines for centering
 	cg.centerPrint.lines = 1;
@@ -1796,6 +1797,7 @@ static void CG_DrawCenterString( void ) {
 	int		x, y, w;
 #ifdef MISSIONPACK
 	int h;
+	float scale;
 #endif
 	float	*color;
 
@@ -1826,10 +1828,11 @@ static void CG_DrawCenterString( void ) {
 		linebuffer[l] = 0;
 
 #ifdef MISSIONPACK
-		w = CG_Text_Width(linebuffer, 0.5, 0);
-		h = CG_Text_Height(linebuffer, 0.5, 0);
+		scale = cg.centerPrint.scale;
+		w = CG_Text_Width(linebuffer, scale, 0);
+		h = CG_Text_Height(linebuffer, scale, 0);
 		x = (SCREEN_WIDTH - w) / 2;
-		CG_Text_Paint(x, y + h, 0.5, color, linebuffer, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
+		CG_Text_Paint(x, y + h, scale, color, linebuffer, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
 		y += h + 6;
 #else
 		w = cg.centerPrint.charwidth * CG_DrawStrlen( linebuffer );
