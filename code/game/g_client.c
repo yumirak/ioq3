@@ -858,18 +858,29 @@ void ClientUserinfoChanged( int clientNum ) {
 	
 	// send over a subset of the userinfo keys so other clients can
 	// print scoreboards, display models, and play custom sounds
+
+	// protocol 91
+	// "n\Noob\t\0\model\sarge\hmodel\sarge\c1\7\c2\25\hc\100\w\0\l\0\tt\0\tl\0\rp\0\p\3\so\0\pq\0\st\76561198710399104\c\US"
+	// rp = readyplayer
+	// p = ???; bot is 0, player is 3
+	// so = spectate only
+	// pq = player queue
+	// st = steam id
+	// c = country
+	// su = subscriber (premium)
+
 	if (ent->r.svFlags & SVF_BOT)
 	{
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\skill\\%s\\tt\\%d\\tl\\%d",
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\skill\\%s\\tt\\%d\\tl\\%d\\rp\\%d",
 			client->pers.netname, client->sess.sessionTeam, model, headModel, c1, c2,
 			client->pers.maxHealth, client->sess.wins, client->sess.losses,
-			Info_ValueForKey( userinfo, "skill" ), teamTask, teamLeader );
+			Info_ValueForKey( userinfo, "skill" ), teamTask, teamLeader, /* client->pers.ready */ 1 );
 	}
 	else
 	{
-		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d",
+		s = va("n\\%s\\t\\%i\\model\\%s\\hmodel\\%s\\g_redteam\\%s\\g_blueteam\\%s\\c1\\%s\\c2\\%s\\hc\\%i\\w\\%i\\l\\%i\\tt\\%d\\tl\\%d\\rp\\%d",
 			client->pers.netname, client->sess.sessionTeam, model, headModel, redTeam, blueTeam, c1, c2, 
-			client->pers.maxHealth, client->sess.wins, client->sess.losses, teamTask, teamLeader);
+			client->pers.maxHealth, client->sess.wins, client->sess.losses, teamTask, teamLeader, client->pers.ready);
 	}
 
 	trap_SetConfigstring( CS_PLAYERS+clientNum, s );

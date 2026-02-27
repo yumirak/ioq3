@@ -396,6 +396,7 @@ typedef struct {
 	sfxHandle_t		sounds[MAX_CUSTOM_SOUNDS];
 	// Extend
 	float		playerModelHeight;
+	qboolean ready;
 } clientInfo_t;
 
 

@@ -112,6 +112,7 @@ typedef struct
 #define ID_CHAT3		32
 #define ID_CHAT4		33
 #define ID_TOGGLEMENU	34
+#define ID_READY		35
 
 // all others
 #define ID_FREELOOK		35
@@ -207,6 +208,7 @@ typedef struct
 	menuaction_s		chat3;
 	menuaction_s		chat4;
 	menuaction_s		togglemenu;
+	menuaction_s		readyup;
 	menuradiobutton_s	joyenable;
 	menuslider_s		joythreshold;
 	int					section;
@@ -264,6 +266,7 @@ static bind_t g_bindings[] =
 	{"messagemode3", 	"chat - target",	ID_CHAT3,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"messagemode4", 	"chat - attacker",	ID_CHAT4,		ANIM_CHAT,		-1,				-1,		-1, -1},
 	{"togglemenu", 		"toggle menu",		ID_TOGGLEMENU,	ANIM_IDLE,		K_ESCAPE,		-1,		-1, -1},
+	{"readyup", 		"ready",			ID_READY,		ANIM_IDLE,		K_F3,			-1,		-1, -1},
 	{(char*)NULL,		(char*)NULL,		0,				0,				-1,				-1,		-1,	-1},
 };
 
@@ -337,6 +340,7 @@ static menucommon_s *g_misc_controls[] = {
 	(menucommon_s *)&s_controls.chat3,
 	(menucommon_s *)&s_controls.chat4,
 	(menucommon_s *)&s_controls.togglemenu,
+	(menucommon_s *)&s_controls.readyup,
 	NULL,
 };
 
@@ -1535,6 +1539,12 @@ static void Controls_MenuInit( void )
 	s_controls.togglemenu.generic.ownerdraw = Controls_DrawKeyBinding;
 	s_controls.togglemenu.generic.id        = ID_TOGGLEMENU;
 
+	s_controls.readyup.generic.type		= MTYPE_ACTION;
+	s_controls.readyup.generic.flags     = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_GRAYED|QMF_HIDDEN;
+	s_controls.readyup.generic.callback  = Controls_ActionEvent;
+	s_controls.readyup.generic.ownerdraw = Controls_DrawKeyBinding;
+	s_controls.readyup.generic.id        = ID_READY;
+
 	s_controls.joyenable.generic.type      = MTYPE_RADIOBUTTON;
 	s_controls.joyenable.generic.flags	   = QMF_SMALLFONT;
 	s_controls.joyenable.generic.x	       = SCREEN_WIDTH/2;
@@ -1618,6 +1628,7 @@ static void Controls_MenuInit( void )
 	Menu_AddItem( &s_controls.menu, &s_controls.chat3 );
 	Menu_AddItem( &s_controls.menu, &s_controls.chat4 );
 	Menu_AddItem( &s_controls.menu, &s_controls.togglemenu );
+	Menu_AddItem( &s_controls.menu, &s_controls.readyup );
 
 	Menu_AddItem( &s_controls.menu, &s_controls.back );
 

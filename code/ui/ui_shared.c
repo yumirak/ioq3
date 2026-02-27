@@ -3368,6 +3368,9 @@ static bind_t g_bindings[] =
 	{"tauntGauntlet", K_F5,			-1,		-1, -1},
 	{"scoresUp", K_KP_PGUP,			-1,		-1, -1},
 	{"scoresDown", K_KP_PGDN,			-1,		-1, -1},
+	// Extend
+	{"readyup",		 K_F3,					-1,		-1, -1},
+	// end Extend
 	{"messagemode",  -1,					-1,		-1, -1},
 	{"messagemode2", -1,						-1,		-1, -1},
 	{"messagemode3", -1,						-1,		-1, -1},

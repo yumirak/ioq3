@@ -251,6 +251,7 @@ typedef struct {
 	int		accuracy[WP_NUM_WEAPONS][WP_ACC_MAX]; // 0 = shots, 1 = hits
 	int		bestWeapon[WP_NUM_WEAPONS][2]; // 0 = Index, 1 = Damage
 	int		itemPickup[MAX_ITEMS][3]; // 0 = Count, 1 - Last Time, 2 = Avg Time;
+	qboolean		ready;
 } clientPersistant_t;
 
 
@@ -413,6 +414,8 @@ typedef struct {
 	int			portalSequence;
 #endif
 	int			teamPlayerCount[TEAM_NUM_TEAMS][2]; // 0 - total; 1 - alive;
+	int			numPlayerReady;
+	int			allReadyTime;
 } level_locals_t;
 
 
@@ -773,6 +776,10 @@ extern	vmCvar_t	g_spawnItemType[IT_TEAM];
 extern	vmCvar_t	g_respawnItemType[IT_TEAM];
 extern	vmCvar_t	g_training;
 extern	vmCvar_t	g_battleSuitDampen;
+extern	vmCvar_t	g_warmupDelay;
+extern	vmCvar_t	g_warmupReadyDelay;
+extern	vmCvar_t	g_warmupReadyDelayAction;
+extern	vmCvar_t	sv_warmupReadyPercentage;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

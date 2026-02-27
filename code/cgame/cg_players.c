@@ -988,6 +988,10 @@ void CG_NewClientInfo( int clientNum ) {
 	v = Info_ValueForKey( configstring, "tl" );
 	newInfo.teamLeader = atoi(v);
 
+	// ready player
+	v = Info_ValueForKey( configstring, "rp" );
+	newInfo.ready = atoi(v);
+
 	v = Info_ValueForKey( configstring, "g_redteam" );
 	Q_strncpyz(newInfo.redTeam, v, MAX_TEAMNAME);
 

@@ -117,6 +117,10 @@ vmCvar_t	g_spawnItemType[IT_TEAM];
 vmCvar_t	g_respawnItemType[IT_TEAM];
 vmCvar_t	g_training;
 vmCvar_t	g_battleSuitDampen;
+vmCvar_t	g_warmupDelay;
+vmCvar_t	g_warmupReadyDelay;
+vmCvar_t	g_warmupReadyDelayAction;
+vmCvar_t	sv_warmupReadyPercentage;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -322,6 +326,11 @@ static cvarTable_t		gameCvarTable[] = {
 #endif
 
 	{ &g_battleSuitDampen, "g_battleSuitDampen", "0.25", 0, 0, qtrue  },
+
+	{ &g_warmupDelay, "g_warmupDelay", "15", 0, 0, qfalse  },
+	{ &g_warmupReadyDelay, "g_warmupReadyDelay", "0", 0, 0, qfalse  },
+	{ &g_warmupReadyDelayAction, "g_warmupReadyDelayAction", "1", 0, 0, qfalse  },
+	{ &sv_warmupReadyPercentage, "sv_warmupReadyPercentage", "0.51", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue  },
 
 	{ &g_training, "g_training", "0", CVAR_ROM, 0, qfalse },
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
@@ -752,6 +761,11 @@ void AddTournamentPlayer( void ) {
 		if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
 			continue;
 		}
+		// don't pull human player
+		if ( !(g_entities[client - level.clients].r.svFlags & SVF_BOT) ) {
+			continue;
+		}
+
 		// never select the dedicated follow or scoreboard clients
 		if ( client->sess.spectatorState == SPECTATOR_SCOREBOARD || 
 			client->sess.spectatorClient < 0  ) {
@@ -1695,7 +1709,105 @@ FUNCTIONS CALLED EVERY FRAME
 
 ========================================================================
 */
+qboolean G_WarmupDelay( void ) {
+	if( g_entities[0].client->pers.localClient )
+		return qfalse;
 
+	return ( abs(g_warmupDelay.integer) * 1000 > (level.time - level.startTime) );
+}
+
+qboolean G_WarmupForceStart( void ) {
+	int i;
+	int time;
+	gentity_t* ent;
+	int readycount = 0;
+	qboolean shouldstart = qfalse;
+
+	if ( g_gametype.integer != GT_TOURNAMENT )
+		return qfalse;
+
+	if ( g_warmupReadyDelay.integer <= 0 )
+		return qfalse;
+
+	for( i = 0; i < level.numPlayingClients; i++ ) {
+		ent = &g_entities[level.sortedClients[i]];
+		if( ent->client->pers.ready )
+			readycount++;
+	}
+
+	// look for any change in player ready status
+	if ( level.numPlayerReady != readycount ) {
+		level.numPlayerReady = readycount;
+		if ( level.numPlayerReady == 0 ) {
+			level.allReadyTime = 0;
+			trap_SetConfigstring( CS_ALLREADY_TIME, "" );
+		} else {
+			time = level.time + ( g_warmupReadyDelay.integer * 1000 );
+			level.allReadyTime = time;
+			trap_SetConfigstring( CS_ALLREADY_TIME, va("%i", time ) );
+		}
+	}
+
+	// Com_Printf ("%i > %i\n", level.time, level.allReadyTime)
+
+	if ( level.numPlayerReady == 2 )
+		return qtrue;
+
+	if ( level.allReadyTime == 0 )
+		return qfalse;
+
+	// if 1 player is ready then wait until level.allReadyTime before do any action
+	if ( level.numPlayerReady > 0 && level.time > level.allReadyTime ) {
+		// set level.allReadyTime to 0 so next player in queue don't automatically forced to spectate
+		level.allReadyTime = level.numPlayerReady = 0;
+		trap_SetConfigstring( CS_ALLREADY_TIME, "" );
+
+		// do action to player that not ready based on g_warmupReadyDelayAction
+		for( i = 0; i < level.numPlayingClients; i++ ) {
+			ent = &g_entities[level.sortedClients[i]];
+			if( !ent->client->pers.ready ) {
+				if( g_warmupReadyDelayAction.integer == 1 ) {
+					SetTeam( ent, "s" );
+					shouldstart = qfalse;
+				} else {
+					ent->client->pers.ready = qtrue;
+					shouldstart = qtrue;
+				}
+			}
+		}
+	}
+
+	return shouldstart;
+}
+
+qboolean G_PlayerReadyReached( void ) {
+	int i;
+	int playercount = 0;
+	int readycount = 0;
+	float readypercent;
+
+	if( level.numPlayingClients < 2 )
+		return qfalse;
+
+	if( G_WarmupDelay() )
+		return qfalse;
+
+	if( G_WarmupForceStart() )
+		return qtrue;
+
+	for( i = 0; i < level.numPlayingClients; i++ ) {
+		if ( g_entities[level.sortedClients[i]].r.svFlags & SVF_BOT )
+			continue;
+		playercount++;
+		if( g_entities[level.sortedClients[i]].client->pers.ready ) {
+			readycount++;
+		}
+	}
+
+	readypercent = (float)readycount / (float)playercount;
+
+	return (readypercent >= sv_warmupReadyPercentage.value);
+}
 
 /*
 =============
@@ -1707,6 +1819,7 @@ Once a frame, check for changes in tournement player state
 void CheckTournament( void ) {
 	// check because we run 3 game frames before calling Connect and/or ClientBegin
 	// for clients on a map_restart
+	// TODO: don't split duel and other gamemode g_doWarmup;
 	if ( level.numPlayingClients == 0 ) {
 		return;
 	}
@@ -1741,6 +1854,7 @@ void CheckTournament( void ) {
 		// if all players have arrived, start the countdown
 		if ( level.warmupTime < 0 ) {
 			if ( level.numPlayingClients == 2 ) {
+				if( ( g_doWarmup.integer && G_PlayerReadyReached() ) || !g_doWarmup.integer  ) {
 				// fudge by -1 to account for extra delays
 				if ( g_warmup.integer > 1 ) {
 					level.warmupTime = level.time + ( g_warmup.integer - 1 ) * 1000;
@@ -1749,6 +1863,7 @@ void CheckTournament( void ) {
 				}
 
 				trap_SetConfigstring( CS_WARMUP, va("\\time\\%i", level.warmupTime) );
+				}
 			}
 			return;
 		}
@@ -1773,6 +1888,10 @@ void CheckTournament( void ) {
 				notEnough = qtrue;
 			}
 		} else if ( level.numPlayingClients < 2 ) {
+			notEnough = qtrue;
+		}
+
+		if ( g_doWarmup.integer && !G_PlayerReadyReached() ) {
 			notEnough = qtrue;
 		}
 
@@ -1814,6 +1933,18 @@ void CheckTournament( void ) {
 			trap_Cvar_Set( "g_restarted", "1" );
 			trap_SendConsoleCommand( EXEC_APPEND, "map_restart 0\n" );
 			level.restarted = qtrue;
+			return;
+		}
+	}
+	else
+	{
+		// if we don't have two players, go back to "waiting for players"
+		if ( level.numPlayingClients < 2 && g_doWarmup.integer ) {
+			if ( level.warmupTime != -1 ) {
+				level.warmupTime = -1;
+				trap_SetConfigstring( CS_WARMUP, va("\\time\\%i", level.warmupTime) );
+				G_LogPrintf( "Warmup:\n" );
+			}
 			return;
 		}
 	}

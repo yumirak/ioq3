@@ -2431,6 +2431,26 @@ static void CG_DrawProxWarning( void ) {
 #endif
 
 
+static void CG_DrawWarmupString( const char *str, int linenum ) {
+	int width, height;
+	int x, y;
+#ifdef MISSIONPACK
+	float scale = 0.3;
+	width = CG_Text_Width( str, scale, 0 );
+	height = CG_Text_Height( "T", scale, 0 ) * 1.5;
+#else
+	width = CG_DrawStrlen( str ) * SMALLCHAR_WIDTH;
+	height = SMALLCHAR_HEIGHT;
+#endif
+	x = 320 - width / 2;
+	y = (SCREEN_HEIGHT * 0.2);
+	if ( linenum ) y = y + (height * linenum);
+#ifdef MISSIONPACK
+	CG_Text_Paint( x, y, scale, colorWhite, str, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
+#else
+	CG_DrawStringExt( x, y - (height * 1.5), str, colorWhite, qtrue, qtrue, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+#endif
+}
 /*
 =================
 CG_DrawWarmup
@@ -2447,16 +2467,28 @@ static void CG_DrawWarmup( void ) {
 #endif
 	clientInfo_t	*ci1, *ci2;
 	const char	*s;
+	int ready_time, ready_curtime;
 
 	sec = cg.warmup;
 	if ( !sec ) {
 		return;
 	}
 
+	ready_time = atoi(CG_ConfigString( CS_ALLREADY_TIME ));
+	ready_curtime = ((ready_time + 1000) - cg.time) / 1000;
+
 	if ( sec < 0 ) {
-		s = "Waiting for players";		
-		w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
-		CG_DrawBigString(320 - w / 2, 24, s, 1.0F);
+		if ( ready_time == 0 ) {
+			s = "The match will begin";
+			CG_DrawWarmupString(s, 0);
+			s = va("when more %s.", (CG_GetPlayerCount( -1 ) < 2 ) ? "player join" : "player are ready");
+			CG_DrawWarmupString(s, 1);
+		} else {
+			s = "Players must ready";
+			CG_DrawWarmupString(s, 0);
+			s = va("within %i %s.", ready_curtime, ready_curtime > 1 ? "seconds": "second");
+			CG_DrawWarmupString(s, 1);
+		}
 		cg.warmupCount = 0;
 		return;
 	}
@@ -2589,6 +2621,46 @@ void CG_DrawTimedMenus( void ) {
 	}
 }
 #endif
+
+static void CG_DrawReady ( void ) {
+	char *s;
+	int x;
+	int y;
+	clientInfo_t *ci;
+	int w;
+#ifdef MISSIONPACK
+	float scale = 0.25;
+#endif
+
+	if ( cg.warmup >= 0 )
+		return;
+
+	if ( cg.snap->ps.persistant[PERS_TEAM] == TEAM_SPECTATOR)
+		return;
+
+	if ( CG_GetPlayerCount( -1 ) < 2 )
+		return;
+
+	ci = &cgs.clientinfo[ cg.snap->ps.clientNum ];
+
+	if ( ci->ready ) {
+		s = S_COLOR_GREEN "You are ready!";
+	} else {
+		s = S_COLOR_RED "Press F3 to ready yourself";
+	}
+#ifdef MISSIONPACK
+	w = CG_Text_Width( s, scale, 0 );
+#else
+	w = CG_DrawStrlen( s ) * SMALLCHAR_WIDTH;
+#endif
+	x = 320 - w / 2;
+	y = SCREEN_HEIGHT * 0.26;
+#ifdef MISSIONPACK
+	CG_Text_Paint( x, y, scale, colorWhite, s, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
+#else
+	CG_DrawStringExt( x, y - SMALLCHAR_HEIGHT, s, colorWhite, qtrue, qtrue, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT, 0 );
+#endif
+}
 /*
 =================
 CG_Draw2D
@@ -2706,6 +2778,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame)
 	cg.scoreBoardShowing = CG_DrawScoreboard();
 	if ( !cg.scoreBoardShowing) {
 		CG_DrawCenterString();
+		CG_DrawReady();
 	}
 }
 

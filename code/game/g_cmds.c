@@ -1701,6 +1701,33 @@ void Cmd_Stats_f( gentity_t *ent ) {
 */
 }
 
+void Cmd_ReadyUp_f( gentity_t *ent ) {
+	char	userinfo[MAX_INFO_STRING];
+	int client = ent->client - level.clients;
+
+	if (level.warmupTime != -1)
+		return;
+
+	if (!g_doWarmup.integer)
+		return;
+
+	if (level.numPlayingClients < 2) {
+		ent->client->pers.ready = qfalse;
+		trap_SendServerCommand( ent-g_entities, va("print \"Cannot ready up until more players are present.\n\"" ) );
+		return;
+	}
+
+	ent->client->pers.ready = !ent->client->pers.ready;
+
+	trap_GetUserinfo(client, userinfo, sizeof(userinfo));
+	Info_SetValueForKey(userinfo, "rp", va("%d", ent->client->pers.ready));
+	trap_SetUserinfo(client, userinfo);
+	ClientUserinfoChanged(client);
+
+	trap_SendServerCommand( -1, va("cp \"%s" S_COLOR_WHITE " %s\n\"",
+			ent->client->pers.netname, ent->client->pers.ready ? "is Ready" : "is Not Ready") );
+}
+
 /*
 =================
 ClientCommand
@@ -1776,6 +1803,11 @@ void ClientCommand( int clientNum ) {
 	// ignore all other commands when at intermission
 	if (level.intermissiontime) {
 		Cmd_Say_f (ent, qfalse, qtrue);
+		return;
+	}
+
+	if( Q_stricmp( cmd, "readyup" ) == 0 ) {
+		Cmd_ReadyUp_f( ent );
 		return;
 	}
 
