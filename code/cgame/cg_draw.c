@@ -1768,18 +1768,18 @@ for a few moments
 void CG_CenterPrint( const char *str, int y, int charWidth ) {
 	char	*s;
 
-	Q_strncpyz( cg.centerPrint, str, sizeof(cg.centerPrint) );
+	Q_strncpyz( cg.centerPrint.string, str, sizeof(cg.centerPrint.string) );
 
-	cg.centerPrintTime = cg.time;
-	cg.centerPrintY = y;
-	cg.centerPrintCharWidth = charWidth;
+	cg.centerPrint.time = cg.time;
+	cg.centerPrint.height = y;
+	cg.centerPrint.charwidth = charWidth;
 
 	// count the number of lines for centering
-	cg.centerPrintLines = 1;
-	s = cg.centerPrint;
+	cg.centerPrint.lines = 1;
+	s = cg.centerPrint.string;
 	while( *s ) {
 		if (*s == '\n')
-			cg.centerPrintLines++;
+			cg.centerPrint.lines++;
 		s++;
 	}
 }
@@ -1799,20 +1799,20 @@ static void CG_DrawCenterString( void ) {
 #endif
 	float	*color;
 
-	if ( !cg.centerPrintTime ) {
+	if ( !cg.centerPrint.time ) {
 		return;
 	}
 
-	color = CG_FadeColor( cg.centerPrintTime, 1000 * cg_centertime.value );
+	color = CG_FadeColor( cg.centerPrint.time, 1000 * cg_centertime.value );
 	if ( !color ) {
 		return;
 	}
 
 	trap_R_SetColor( color );
 
-	start = cg.centerPrint;
+	start = cg.centerPrint.string;
 
-	y = cg.centerPrintY - cg.centerPrintLines * BIGCHAR_HEIGHT / 2;
+	y = cg.centerPrint.height - cg.centerPrint.lines * BIGCHAR_HEIGHT / 2;
 
 	while ( 1 ) {
 		char linebuffer[1024];
@@ -1832,14 +1832,14 @@ static void CG_DrawCenterString( void ) {
 		CG_Text_Paint(x, y + h, 0.5, color, linebuffer, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
 		y += h + 6;
 #else
-		w = cg.centerPrintCharWidth * CG_DrawStrlen( linebuffer );
+		w = cg.centerPrint.charwidth * CG_DrawStrlen( linebuffer );
 
 		x = ( SCREEN_WIDTH - w ) / 2;
 
 		CG_DrawStringExt( x, y, linebuffer, color, qfalse, qtrue,
-			cg.centerPrintCharWidth, (int)(cg.centerPrintCharWidth * 1.5), 0 );
+			cg.centerPrint.charwidth, (int)(cg.centerPrint.charwidth * 1.5), 0 );
 
-		y += cg.centerPrintCharWidth * 1.5;
+		y += cg.centerPrint.charwidth * 1.5;
 #endif
 		while ( *start && ( *start != '\n' ) ) {
 			start++;

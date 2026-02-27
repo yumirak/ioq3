@@ -487,6 +487,15 @@ typedef struct {
 	char	message[MAX_SAY_TEXT];
 	int		time;
 } newChatArea_t;
+
+typedef struct {
+	int			time;
+	int			charwidth;
+	int			height;
+	char		string[1024];
+	int			lines;
+	float		scale;
+} centerPrint_t;
 //======================================================================
 
 // all cg.stepTime, cg.duckTime, cg.landTime, etc are set to cg.time when the action
@@ -606,11 +615,7 @@ typedef struct {
 #endif
 
 	// centerprinting
-	int			centerPrintTime;
-	int			centerPrintCharWidth;
-	int			centerPrintY;
-	char		centerPrint[1024];
-	int			centerPrintLines;
+	centerPrint_t centerPrint;
 
 	// low ammo warning state
 	int			lowAmmoWarning;		// 1 = low, 2 = empty
