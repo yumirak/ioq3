@@ -713,6 +713,9 @@ typedef struct {
 	qboolean drawAccStats;
 	int wpnStatsTime;
 	weaponStat_t wpnStats;
+	int damageDoneTime;
+	int damageDoneTier;
+	vec4_t crossHairHitColor;
 #ifdef MISSIONPACK
 	menuDef_t *menuScoreboard;
 	menuDef_t *menuEndScoreboard;
@@ -1332,6 +1335,11 @@ extern	vmCvar_t		cg_drawSpecMessages;
 extern	vmCvar_t		cg_gameInfo[5];
 extern	vmCvar_t		cg_drawRewardsRowSize;
 extern	vmCvar_t		cg_announcerRewardsVO;
+extern	vmCvar_t		cg_crosshairColor;
+extern	vmCvar_t		cg_crosshairPulse;
+extern	vmCvar_t		cg_crosshairHitStyle;
+extern	vmCvar_t		cg_crosshairHitColor;
+extern	vmCvar_t		cg_crosshairHitTime;
 
 //
 // cg_main.c

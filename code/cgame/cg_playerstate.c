@@ -283,6 +283,8 @@ static void pushReward(sfxHandle_t sfx, qhandle_t shader, int rewardCount) {
 void CG_PlayHitSound( playerState_t *ps, playerState_t *ops )
 {
 	size_t index, beepnum;
+	cg.damageDoneTier = ( ps->generic1 >> 6 );
+	cg.damageDoneTime = cg.time;
 
 	if( ps->persistant[PERS_KILLS] > ops->persistant[PERS_KILLS] ) {
 		beepnum = MIN( 8, cg_killBeep.integer );

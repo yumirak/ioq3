@@ -255,6 +255,11 @@ vmCvar_t	cg_drawSpecMessages;
 vmCvar_t	cg_gameInfo[5];
 vmCvar_t	cg_drawRewardsRowSize;
 vmCvar_t	cg_announcerRewardsVO;
+vmCvar_t	cg_crosshairColor;
+vmCvar_t	cg_crosshairPulse;
+vmCvar_t	cg_crosshairHitStyle;
+vmCvar_t	cg_crosshairHitColor;
+vmCvar_t	cg_crosshairHitTime;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -287,9 +292,14 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_drawCrosshairNames, "cg_drawCrosshairNames", "1", CVAR_ARCHIVE },
 	{ &cg_drawRewards, "cg_drawRewards", "1", CVAR_ARCHIVE },
 	{ &cg_crosshairSize, "cg_crosshairSize", "24", CVAR_ARCHIVE },
-	{ &cg_crosshairHealth, "cg_crosshairHealth", "1", CVAR_ARCHIVE },
+	{ &cg_crosshairHealth, "cg_crosshairHealth", "0", CVAR_ARCHIVE },
 	{ &cg_crosshairX, "cg_crosshairX", "0", CVAR_ARCHIVE },
 	{ &cg_crosshairY, "cg_crosshairY", "0", CVAR_ARCHIVE },
+	{ &cg_crosshairColor, "cg_crosshairColor", "25", CVAR_ARCHIVE },
+	{ &cg_crosshairPulse, "cg_crosshairPulse", "1", CVAR_ARCHIVE },
+	{ &cg_crosshairHitStyle, "cg_crosshairHitStyle", "1", CVAR_ARCHIVE },
+	{ &cg_crosshairHitColor, "cg_crosshairHitColor", "1", CVAR_ARCHIVE },
+	{ &cg_crosshairHitTime, "cg_crosshairHitTime", "200.0", CVAR_ARCHIVE },
 	{ &cg_brassTime, "cg_brassTime", "2500", CVAR_ARCHIVE },
 	{ &cg_simpleItems, "cg_simpleItems", "0", CVAR_ARCHIVE },
 	{ &cg_addMarks, "cg_marks", "1", CVAR_ARCHIVE },

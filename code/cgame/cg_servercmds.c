@@ -198,6 +198,8 @@ static void CG_ParseWarmup( void ) {
 
 	if ( warmup == 0 && cg.warmup ) {
 		memset(&cg.obituary, 0, sizeof(cg.obituary));
+		cg.damageDoneTime = 0;
+		cg.damageDoneTier = 0;
 
 	} else if ( warmup > 0 && cg.warmup <= 0 ) {
 #ifdef MISSIONPACK
@@ -504,6 +506,8 @@ static void CG_MapRestart( void ) {
 	cgs.voteTime = 0;
 
 	cg.mapRestart = qtrue;
+	cg.damageDoneTime = 0;
+	cg.damageDoneTier = 0;
 
 	CG_StartMusic();
 

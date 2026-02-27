@@ -1864,6 +1864,52 @@ CROSSHAIR
 ================================================================================
 */
 
+// 0 = cyan, 1 = yellow, 2 = orange, 3 = red
+static vec4_t	crosshairDamageColor[5] = { { 0.22, 0.69, 0.87, 1 } , { 1, 1, 0, 1 }, { 1, 0.5, 0, 1 }, { 1, 0, 0, 1 }, { 1, 1, 1, 1 } };
+
+static void CG_CrosshairSetHitColor (qboolean damageColor)
+{
+	vec3_t color;
+
+	if ( damageColor ) {
+		VectorCopy(crosshairDamageColor[cg.damageDoneTier], color);
+	} else {
+		Q_ColorFromNum(cg_crosshairHitColor.string, color);
+	}
+
+	if (cg.time - cg.damageDoneTime < abs(cg_crosshairHitTime.integer) ) {
+		trap_R_SetColor( color );
+	}
+}
+
+static void CG_CrosshairPulse ( float f, float *w, float *h, qboolean itemPulseSize )
+{
+	int time = itemPulseSize ? ITEM_BLOB_TIME : abs(cg_crosshairHitTime.integer);
+	f = cg.time - cg.damageDoneTime;
+	if ( f > 0 && f < time ) {
+		f /= time;
+		*w *= ( 1 + f );
+		*h *= ( 1 + f );
+	}
+}
+// cvarFloatList { "No" 0 "Damage Color" 1 "Color Flash" 2 "Pulse" 6 "Damage Pulse" 7 "Color Pulse" 8 }
+static void CG_CrosshairSetHitStyle ( float f, float *w, float *h )
+{
+	vec4_t color;
+	int hitStyle = cg_crosshairHitStyle.integer;
+
+	switch(hitStyle) {
+		case 1: CG_CrosshairSetHitColor( qtrue ); break;
+		case 2: CG_CrosshairSetHitColor( qfalse ); break;
+		case 3: CG_CrosshairPulse( f, w, h, qfalse ); break;
+		case 4: CG_CrosshairSetHitColor( qtrue ); CG_CrosshairPulse( f, w, h, qfalse ); break;
+		case 5: CG_CrosshairSetHitColor( qfalse ); CG_CrosshairPulse( f, w, h, qfalse ); break;
+		case 6: CG_CrosshairPulse( f, w, h, qtrue ); break;
+		case 7: CG_CrosshairSetHitColor( qtrue ); CG_CrosshairPulse( f, w, h, qtrue ); break;
+		case 8: CG_CrosshairSetHitColor( qfalse ); CG_CrosshairPulse( f, w, h, qtrue ); break;
+		default: return;
+	}
+}
 
 /*
 =================
@@ -1874,9 +1920,10 @@ static void CG_DrawCrosshair(void)
 {
 	float		w, h;
 	qhandle_t	hShader;
-	float		f;
+	float		f = 0.0;
 	float		x, y;
 	int			ca;
+	vec4_t	color;
 
 	if ( !cg_drawCrosshair.integer ) {
 		return;
@@ -1897,17 +1944,24 @@ static void CG_DrawCrosshair(void)
 		CG_ColorForHealth( hcolor );
 		trap_R_SetColor( hcolor );
 	} else {
-		trap_R_SetColor( NULL );
+		if( cg_crosshairColor.integer ) {
+			Q_ColorFromNum(cg_crosshairColor.string, color);
+			trap_R_SetColor(color);
+		} else {
+			trap_R_SetColor( NULL );
+		}
 	}
 
 	w = h = cg_crosshairSize.value;
 
 	// pulse the size of the crosshair when picking up items
+	if (cg_crosshairPulse.integer) {
 	f = cg.time - cg.itemPickupBlendTime;
 	if ( f > 0 && f < ITEM_BLOB_TIME ) {
 		f /= ITEM_BLOB_TIME;
 		w *= ( 1 + f );
 		h *= ( 1 + f );
+	}
 	}
 
 	x = cg_crosshairX.integer;
@@ -1919,6 +1973,7 @@ static void CG_DrawCrosshair(void)
 		ca = 0;
 	}
 	hShader = cgs.media.crosshairShader[ ca % NUM_CROSSHAIRS ];
+	CG_CrosshairSetHitStyle( f, &w, &h );
 
 	trap_R_DrawStretchPic( x + cg.refdef.x + 0.5 * (cg.refdef.width - w), 
 		y + cg.refdef.y + 0.5 * (cg.refdef.height - h), 
@@ -1936,7 +1991,7 @@ static void CG_DrawCrosshair3D(void)
 {
 	float		w;
 	qhandle_t	hShader;
-	float		f;
+	float		f = 0.0;
 	int			ca;
 
 	trace_t trace;
@@ -1960,10 +2015,12 @@ static void CG_DrawCrosshair3D(void)
 	w = cg_crosshairSize.value;
 
 	// pulse the size of the crosshair when picking up items
+	if (cg_crosshairPulse.integer) {
 	f = cg.time - cg.itemPickupBlendTime;
 	if ( f > 0 && f < ITEM_BLOB_TIME ) {
 		f /= ITEM_BLOB_TIME;
 		w *= ( 1 + f );
+	}
 	}
 
 	ca = cg_drawCrosshair.integer;
