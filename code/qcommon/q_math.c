@@ -65,6 +65,36 @@ vec4_t	g_color_table[8] =
 };
 
 
+vec3_t	g_color_table_ext[26] =
+{
+	{0.996, 0.0,   0.0}, // Red
+	{0.996, 0.25,  0.0}, // Orange-Red
+	{0.996, 0.5,   0.0}, // Dark Orange
+	{0.996, 0.75,  0.0}, // Orange
+	{0.996, 0.996, 0.0}, // Yellow
+	{0.75,  0.996, 0.0}, // Green-Yellow
+	{0.5,   0.996, 0.0}, // Chartreuse
+	{0.25,  0.996, 0.0}, // Green 1
+	{0.0,   0.996, 0.0}, // Green 2
+	{0.0,   0.996, 0.25}, // Spring Green 1
+	{0.0,   0.996, 0.5}, // Spring Green 2
+	{0.0,   0.996, 0.75}, // Green-Cyan
+	{0.0,   0.996, 0.996}, // Cyan
+	{0.0,   0.75,  0.996}, // Deep Sky Blue
+	{0.0,   0.5,   0.996}, // Azure
+	{0.0,   0.25,  0.996}, // Cobalt
+	{0.0,   0.0,   0.996}, // Blue
+	{0.25,  0.0,   0.996}, // Electric Ultramarine
+	{0.5,   0.0,   0.996}, // Electric Purple
+	{0.75,  0.0,   0.996}, // Lilac
+	{0.996, 0.0,   0.996}, // Magenta 1
+	{0.996, 0.0,   0.75}, // Magenta 2
+	{0.996, 0.0,   0.5}, // Bright Pink
+	{0.996, 0.0,   0.25}, // Folly
+	{0.996, 0.996, 0.996}, // White
+	{0.5,   0.5,   0.5}, // Medium Grey
+};
+
 vec3_t	bytedirs[NUMVERTEXNORMALS] =
 {
 {-0.525731f, 0.000000f, 0.850651f}, {-0.442863f, 0.238856f, 0.864188f}, 
@@ -1175,4 +1205,19 @@ int Q_ColorFromHex( int rgba_num, int val )
 		default:
 			return 0;
 	}
+}
+
+void Q_ColorFromNum( const char *v, vec3_t color ) {
+	int val, i;
+
+	VectorClear( color );
+
+	val = atoi( v ) - 1;
+
+	if ( val < 0 || val > 25 ) {
+		VectorSet( color, 1, 1, 1 );
+		return;
+	}
+
+	VectorCopy(g_color_table_ext[val], color);
 }

@@ -431,6 +431,7 @@ qboolean Q_IsColorString(const char *p);  // ^[0-9a-zA-Z]
 #define S_COLOR_WHITE	"^7"
 
 extern vec4_t	g_color_table[8];
+extern vec3_t	g_color_table_ext[26];
 
 #define	MAKERGB( v, r, g, b ) v[0]=r;v[1]=g;v[2]=b
 #define	MAKERGBA( v, r, g, b, a ) v[0]=r;v[1]=g;v[2]=b;v[3]=a
@@ -1462,5 +1463,6 @@ void Q_Vec4ColorFloatFromCvar( vec4_t color, const vmCvar_t *cvar );
 void Q_Vec4ColorFromCvar( vec4_t color, const vmCvar_t *cvar );
 void Q_SetByteColorFromVec4( byte target[4], vec4_t from );
 void Q_SetColorVec4( vec4_t target, vec4_t from );
+void Q_ColorFromNum( const char *v, vec3_t color );
 
 #endif	// __Q_SHARED_H
