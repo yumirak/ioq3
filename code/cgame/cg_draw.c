@@ -2378,6 +2378,11 @@ CG_DrawAmmoWarning
 static void CG_DrawAmmoWarning( void ) {
 	const char	*s;
 	int			w;
+#ifdef MISSIONPACK
+	float scale;
+#else
+	int height, width;
+#endif
 
 	if ( cg_drawAmmoWarning.integer == 0 ) {
 		return;
@@ -2392,8 +2397,23 @@ static void CG_DrawAmmoWarning( void ) {
 	} else {
 		s = "LOW AMMO WARNING";
 	}
-	w = CG_DrawStrlen( s ) * BIGCHAR_WIDTH;
-	CG_DrawBigString(320 - w / 2, 64, s, 1.0F);
+
+#ifdef MISSIONPACK
+	scale = cg_drawAmmoWarning.integer == 2 ? 0.25 : 0.4;
+	w = CG_Text_Width(s, scale, 0);
+	CG_Text_Paint(320 - w / 2, SCREEN_HEIGHT * 0.1, scale, colorWhite, s, 0, 0, ITEM_TEXTSTYLE_SHADOWEDMORE);
+#else
+	if ( cg_drawAmmoWarning.integer == 2 ) {
+		height = BIGCHAR_HEIGHT * 0.75;
+		width = BIGCHAR_WIDTH * 0.75;
+	} else {
+		height = BIGCHAR_HEIGHT;
+		width = BIGCHAR_WIDTH;
+	}
+
+	w = CG_DrawStrlen( s ) * width;
+	CG_DrawStringExt( 320 - w / 2, SCREEN_HEIGHT * 0.1 - height, s, colorWhite, qtrue, qtrue, width, height, 0 );
+#endif
 }
 
 
