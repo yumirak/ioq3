@@ -81,11 +81,19 @@ void P_DamageFeedback( gentity_t *player ) {
 	client->ps.damageCount = count;
 	attacker = &g_entities[ client->ps.persistant[PERS_ATTACKER] ];
 	if ( attacker && attacker->client ) {
-		size_t hitvalue = MIN( 3, count / 25 );
+		gentity_t *tent;
+		int hitvalue = Com_Clamp( 0, 3, count / 25 );
 		if( g_gametype.integer != GT_HARVESTER ) {
 			attacker->client->ps.generic1 = hitsound_value[hitvalue];
 		} else {
 			attacker->client->ps.generic1 = BG_GetHitValueResidual( attacker->client->ps.generic1 ) + hitsound_value[hitvalue];
+		}
+		// EV_DAMAGEPLUM
+		if (player->client && attacker->client && attacker->client != client ) {
+			tent = G_TempEntity( player->r.currentOrigin, EV_DAMAGEPLUM );
+			tent->s.clientNum = attacker->s.number;
+			tent->s.generic1 = BG_ModToWeapon(player->client->lasthurt_mod);
+			tent->s.time = count;
 		}
 	}
 

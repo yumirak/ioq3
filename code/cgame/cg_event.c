@@ -1298,6 +1298,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 				cgs.media.footsteps[ FOOTSTEP_SNOW ][rand()&3] );
 		}
 		break;
+	case EV_DAMAGEPLUM:
+		DEBUGNAME("EV_DAMAGEPLUM");
+		break;
 
 	default:
 		DEBUGNAME("UNKNOWN");
