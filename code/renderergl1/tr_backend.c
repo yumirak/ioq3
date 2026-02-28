@@ -381,14 +381,21 @@ A player has predicted a teleport, but hasn't arrived yet
 ================
 */
 static void RB_Hyperspace( void ) {
-	float		c;
+	vec4_t color;
 
 	if ( !backEnd.isHyperspace ) {
 		// do initialization shit
 	}
 
-	c = ( backEnd.refdef.time & 255 ) / 255.0f;
-	qglClearColor( c, c, c, 1 );
+	if ( r_teleporterFlash->integer < 0 ) {
+		backEnd.isHyperspace = qtrue;
+		return;
+	}
+
+	color[0] = color[1] = color[2] = r_teleporterFlash->integer > 0 ? 0.0 : ( ( backEnd.refdef.time & 255 ) / 255.0f );
+	color[3] = 1.0;
+
+	qglClearColor( color[0], color[1], color[2], color[3] );
 	qglClear( GL_COLOR_BUFFER_BIT );
 
 	backEnd.isHyperspace = qtrue;
