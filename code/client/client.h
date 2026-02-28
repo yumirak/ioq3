@@ -348,6 +348,7 @@ typedef struct {
 	qhandle_t	charSetShader;
 	qhandle_t	whiteShader;
 	qhandle_t	consoleShader;
+	qhandle_t	recordShader;
 } clientStatic_t;
 
 extern	clientStatic_t		cls;
@@ -449,6 +450,7 @@ extern	cvar_t	*cl_voip;
 #define VOIP_MAX_PACKET_SAMPLES		( VOIP_MAX_FRAME_SAMPLES * VOIP_MAX_PACKET_FRAMES )
 #endif
 
+extern	cvar_t *cl_demoRecordMessage;
 //=================================================
 
 //

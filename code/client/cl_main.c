@@ -122,6 +122,8 @@ cvar_t	*cl_consoleKeys;
 
 cvar_t	*cl_rate;
 
+cvar_t *cl_demoRecordMessage;
+
 clientActive_t		cl;
 clientConnection_t	clc;
 clientStatic_t		cls;
@@ -3175,6 +3177,7 @@ void CL_InitRenderer( void ) {
 	cls.charSetShader = re.RegisterShader( "gfx/2d/bigchars" );
 	cls.whiteShader = re.RegisterShader( "white" );
 	cls.consoleShader = re.RegisterShader( "console" );
+	cls.recordShader = re.RegisterShader( "icons/record" );
 	g_console_field_width = cls.glconfig.vidWidth / g_smallchar_width - 2;
 	g_consoleField.widthInChars = g_console_field_width;
 }
@@ -3703,6 +3706,8 @@ void CL_Init( void ) {
 		Com_Printf("WARNING: couldn't initialize HTTP download support\n");
 	}
 #endif
+
+	cl_demoRecordMessage = Cvar_Get( "cl_demoRecordMessage", "1", CVAR_ARCHIVE);
 
 	// cgame might not be initialized before menu is used
 	Cvar_Get ("cg_viewsize", "100", CVAR_ARCHIVE );

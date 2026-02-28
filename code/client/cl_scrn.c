@@ -339,11 +339,31 @@ void SCR_DrawDemoRecording( void ) {
 	if ( clc.spDemoRecording ) {
 		return;
 	}
+	if ( !cl_demoRecordMessage->integer ) {
+		return;
+	}
 
-	pos = FS_FTell( clc.demofile );
-	sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
+	switch ( cl_demoRecordMessage->integer ) {
+		case 1: {
+			pos = FS_FTell( clc.demofile );
+			sprintf( string, "RECORDING %s: %ik", clc.demoName, pos / 1024 );
 
-	SCR_DrawStringExt( 320 - strlen( string ) * 4, 20, 8, string, g_color_table[7], qtrue, qfalse );
+			SCR_DrawStringExt( 320 - strlen( string ) * 4, 420, 8, string, g_color_table[7], qtrue, qfalse );
+			return;
+		}
+		default:
+		case 2: {
+			const int iconSize = 8;
+			int offset = 1;
+			int x = offset;
+			if ( cls.recordShader ) {
+				SCR_DrawPic( x, 470, iconSize, iconSize, cls.recordShader );
+				x += iconSize + offset;
+			}
+			SCR_DrawStringExt( x, 470, 8, "REC", colorWhite, qtrue, qfalse );
+			return;
+		}
+	}
 }
 
 
