@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../qcommon/cm_public.h"
 
 //#define	PRE_RELEASE_DEMO
+#define ENABLE_CMD_ALIAS
 
 //============================================================================
 
@@ -466,6 +467,9 @@ void	Cmd_ExecuteString( const char *text );
 // Parses a single line of text into arguments and tries to execute it
 // as if it was typed at the console
 
+#ifdef ENABLE_CMD_ALIAS
+void Cmd_WriteAlias( fileHandle_t f );
+#endif
 
 /*
 ==============================================================

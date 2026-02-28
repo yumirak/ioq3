@@ -37,6 +37,20 @@ int			cmd_wait;
 cmd_t		cmd_text;
 byte		cmd_text_buf[MAX_CMD_BUFFER];
 
+#ifdef ENABLE_CMD_ALIAS
+#define	MAX_ALIAS_NAME		64
+#define	ALIAS_LOOP_COUNT	32
+
+typedef struct cmdalias_s {
+	struct	cmdalias_s *next;
+	char	name[MAX_ALIAS_NAME];
+	char *value;
+	char *listval;
+} cmdalias_t;
+
+int			alias_count;		// for detecting runaway loops
+cmdalias_t *cmd_alias;
+#endif // ENABLE_CMD_ALIAS
 
 //=============================================================================
 
@@ -175,6 +189,9 @@ void Cbuf_Execute (void)
 	char	*text;
 	char	line[MAX_CMD_LINE];
 	int		quotes;
+#ifdef ENABLE_CMD_ALIAS
+	alias_count = 0;		// don't allow infinite alias loops
+#endif // ENABLE_CMD_ALIAS
 
 	// This will keep // style comments all on one line by not breaking on
 	// a semicolon.  It will keep /* ... */ style comments all on one line by not
@@ -328,6 +345,138 @@ void Cmd_Echo_f (void)
 	Com_Printf ("%s\n", Cmd_Args());
 }
 
+#ifdef ENABLE_CMD_ALIAS
+/*
+=============
+Cmd_WriteAlias
+
+Write aliases to config
+============
+*/
+void Cmd_WriteAlias(fileHandle_t f) {
+	cmdalias_t *a;
+
+	FS_Printf(f, "unaliasall\n");
+	for (a = cmd_alias; a; a = a->next)
+		FS_Printf(f, "alias %s \"%s\"\n", a->name, a->value);
+}
+
+/*
+===============
+Cmd_Alias_f
+
+Creates a new command that executes a command string (possibly ; seperated)
+===============
+*/
+qboolean alias_modified;
+void Cmd_Alias_f(void) {
+	cmdalias_t *a;
+	char		cmd[1024];
+	int i, c;
+	char *s;
+
+	if (Cmd_Argc() == 1) {
+		Com_Printf("Usage: alias \"command\"\n");
+		Com_Printf("Alias List:\n");
+		for (a = cmd_alias; a; a = a->next)
+			Com_Printf("  %s \"%s\"\n", a->name, a->value);
+		Com_Printf("\n");
+		return;
+	}
+
+	s = Cmd_Argv(1);
+	if (strlen(s) >= MAX_ALIAS_NAME) {
+		Com_Printf( "Alias name is too long." );
+		return;
+	}
+
+	// if the alias already exists, reuse it
+	for (a = cmd_alias; a; a = a->next) {
+		if (!strcmp(s, a->name)) {
+			Z_Free(a->value);
+			break;
+		}
+	}
+
+	if (!a) {
+		a = Z_Malloc(sizeof(cmdalias_t));
+		a->next = cmd_alias;
+		cmd_alias = a;
+	}
+	strcpy(a->name, s);
+
+	// copy the rest of the command line
+	cmd[0] = 0;		// start out with a null string
+	c = Cmd_Argc();
+	for (i = 2; i < c; i++) {
+		strcat(cmd, Cmd_Argv(i));
+		if (i != (c - 1))
+			strcat(cmd, " ");
+	}
+	//a->listval = CopyString( cmd );
+
+	//strcat( cmd, "\n" );
+	a->value = CopyString(cmd);
+	alias_modified = qtrue;
+}
+
+
+
+/*
+===============
+Cmd_UnAlias_f
+
+Removes the specified alias
+===============
+*/
+void Cmd_UnAlias_f(void) {
+	cmdalias_t *a;
+	char *s;
+
+	if (Cmd_Argc() == 1) {
+		Com_Printf("Usage: unalias \"command\"\n");
+		Com_Printf("Alias List:\n");
+		for (a = cmd_alias; a; a = a->next)
+			Com_Printf("  %s \"%s\"\n", a->name, a->value);
+		Com_Printf("\n");
+		return;
+	}
+
+	if (Cmd_Argc() == 1) {
+		return;
+	}
+
+	s = Cmd_Argv(1);
+
+	// if the alias exists, remove it
+	for (a = cmd_alias; a; a = a->next) {
+		if (!strcmp(s, a->name)) {
+			Z_Free(a->value);
+			Z_Free(a->name);
+			break;
+		}
+	}
+}
+
+
+/*
+===============
+Cmd_UnAliasAll_f
+
+Removes all aliases
+===============
+*/
+void Cmd_UnAliasAll_f(void) {
+	cmdalias_t *a;
+
+	// if an alias exists, remove it
+	for (a = cmd_alias; a; a = a->next) {
+		Z_Free(a->value);
+		Z_Free(a->name);
+		break;
+	}
+}
+#endif // ENABLE_CMD_ALIAS
 
 /*
 =============================================================================
@@ -728,9 +877,19 @@ Cmd_CommandCompletion
 void	Cmd_CommandCompletion( void(*callback)(const char *s) ) {
 	cmd_function_t	*cmd;
 	
+#ifdef ENABLE_CMD_ALIAS
+	cmdalias_t		*a;
+#endif // ENABLE_CMD_ALIAS
+
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next) {
 		callback( cmd->name );
 	}
+
+#ifdef ENABLE_CMD_ALIAS
+	for ( a = cmd_alias ; a ; a = a->next ) {
+		callback( a->name );
+	}
+#endif // ENABLE_CMD_ALIAS
 }
 
 /*
@@ -761,6 +920,9 @@ A complete command line has been parsed, so try to execute it
 */
 void	Cmd_ExecuteString( const char *text ) {	
 	cmd_function_t	*cmd, **prev;
+#ifdef ENABLE_CMD_ALIAS
+	cmdalias_t		*acd, **aprv;
+#endif // ENABLE_CMD_ALIAS
 
 	// execute the command line
 	Cmd_TokenizeString( text );		
@@ -789,6 +951,28 @@ void	Cmd_ExecuteString( const char *text ) {
 		}
 	}
 	
+#ifdef ENABLE_CMD_ALIAS
+	// check alias
+	for ( aprv = &cmd_alias ; *aprv ; aprv = &acd->next ) {
+		acd = *aprv;
+		if ( !Q_stricmp ( cmd_argv[0], acd->name ) ) {
+			// rearrange the links so that the command will be
+			// near the head of the list next time it is used
+			*aprv = acd->next;
+			acd->next = cmd_alias;
+			cmd_alias = acd;
+
+			if ( ++alias_count == ALIAS_LOOP_COUNT ) {
+				Com_Printf ("ALIAS_LOOP_COUNT\n");
+				return;
+			}
+			Cbuf_InsertText ( acd->value );
+
+			return;
+		}
+	}
+#endif // ENABLE_CMD_ALIAS
+
 	// check cvars
 	if ( Cvar_Command() ) {
 		return;
@@ -867,5 +1051,10 @@ void Cmd_Init (void) {
 	Cmd_SetCommandCompletionFunc( "vstr", Cvar_CompleteCvarName );
 	Cmd_AddCommand ("echo",Cmd_Echo_f);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
+#ifdef ENABLE_CMD_ALIAS
+	Cmd_AddCommand( "alias", Cmd_Alias_f );
+	Cmd_AddCommand( "unalias", Cmd_UnAlias_f );
+	Cmd_AddCommand( "unaliasall", Cmd_UnAliasAll_f );
+#endif // ENABLE_CMD_ALIAS
 }
 
