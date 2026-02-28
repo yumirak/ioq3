@@ -1675,7 +1675,10 @@ void CG_FireWeapon( centity_t *cent ) {
 
 	// play quad sound if needed
 	if ( cent->currentState.powerups & ( 1 << PW_QUAD ) ) {
-		trap_S_StartSound (NULL, cent->currentState.number, CHAN_ITEM, cgs.media.quadSound );
+		if (cg.time - cent->pe.quadFireTime > 1000 ) {
+			trap_S_StartSound (NULL, cent->currentState.number, CHAN_ITEM, cgs.media.quadSound );
+			cent->pe.quadFireTime = cg.time;
+		}
 	}
 
 	// play a sound

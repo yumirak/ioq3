@@ -173,6 +173,8 @@ typedef struct {
 	float			barrelAngle;
 	int				barrelTime;
 	qboolean		barrelSpinning;
+
+	int				quadFireTime;
 } playerEntity_t;
 
 //=================================================
