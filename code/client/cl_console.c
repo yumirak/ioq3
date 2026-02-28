@@ -62,6 +62,9 @@ cvar_t		*con_autoclear;
 cvar_t		*con_notifytime;
 cvar_t		*con_notifylines;
 cvar_t		*con_scale;
+cvar_t		*con_background;
+cvar_t		*con_opacity;
+cvar_t		*con_height;
 
 
 
@@ -288,8 +291,9 @@ void Con_CheckResize (void)
 
 	if (con_scale != NULL)
 	{
-		g_smallchar_width = (int)((float)SMALLCHAR_WIDTH * con_scale->value);
-		g_smallchar_height = (int)((float)SMALLCHAR_HEIGHT * con_scale->value);
+		float scale = con_scale->value * 1.5;
+		g_smallchar_width = (int)((float)SMALLCHAR_WIDTH * scale);
+		g_smallchar_height = (int)((float)SMALLCHAR_HEIGHT * scale);
 	}
 
 	width = (cls.glconfig.vidWidth / g_smallchar_width) - 2;
@@ -365,13 +369,19 @@ Con_Init
 void Con_Init (void) {
 	int		i;
 
-	con_notifytime = Cvar_Get ("con_notifytime", "3", CVAR_ARCHIVE);
+	con_notifytime = Cvar_Get ("con_notifytime", "-1", CVAR_ARCHIVE);
 	con_notifylines = Cvar_Get ("con_notifylines", "3", CVAR_ARCHIVE);
 	Cvar_CheckRange(con_notifylines, 1, NUM_CON_TIMES - 1, qtrue);
 	con_conspeed = Cvar_Get ("scr_conspeed", "3", CVAR_ARCHIVE);
 	con_autoclear = Cvar_Get("con_autoclear", "1", CVAR_ARCHIVE);
-	con_scale = Cvar_Get("con_scale", "1", CVAR_ARCHIVE);
-	Cvar_CheckRange(con_scale, 1.0f, 4.0f, qfalse);
+	con_scale = Cvar_Get("con_scale", "0.75", CVAR_ARCHIVE);
+	Cvar_CheckRange(con_scale, 0.5f, 1.0f, qfalse);
+
+	con_background = Cvar_Get("con_background", "0", CVAR_ARCHIVE);
+	con_opacity = Cvar_Get("con_opacity", "0.9", CVAR_ARCHIVE);
+	Cvar_CheckRange(con_opacity, 0.1f, 1.0f, qfalse);
+	con_height = Cvar_Get("con_height", "0.5", CVAR_ARCHIVE);
+	Cvar_CheckRange(con_height, 0.1f, 1.0f, qfalse);
 
 	Field_Clear( &g_consoleField );
 	g_consoleField.widthInChars = g_console_field_width;
@@ -686,13 +696,19 @@ void Con_DrawSolidConsole( float frac ) {
 		y = 0;
 	}
 	else {
+		if ( con_background->integer ) {
 		SCR_DrawPic( 0, 0, SCREEN_WIDTH, y, cls.consoleShader );
+		} else {
+			color[0] = color[1] = color[2] = 0;
+			color[3] = con_opacity->value;
+			SCR_FillRect( 0, 0, SCREEN_WIDTH, y, color );
+		}
 	}
 
 	color[0] = 1;
 	color[1] = 0;
 	color[2] = 0;
-	color[3] = 1;
+	color[3] = con_opacity->value;
 	SCR_FillRect( 0, y, SCREEN_WIDTH, 2, color );
 
 
@@ -805,7 +821,7 @@ Scroll it up or down
 void Con_RunConsole (void) {
 	// decide on the destination height of the console
 	if ( Key_GetCatcher( ) & KEYCATCH_CONSOLE )
-		con.finalFrac = 0.5;		// half screen
+		con.finalFrac = con_height->value;
 	else
 		con.finalFrac = 0;				// none visible
 	
