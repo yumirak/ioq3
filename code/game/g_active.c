@@ -168,6 +168,7 @@ void P_WorldEffects( gentity_t *ent ) {
 
 			if ( envirosuit ) {
 				G_AddEvent( ent, EV_POWERUP_BATTLESUIT, 0 );
+				ent->pain_debounce_time = level.time + 1000;
 			} else {
 				if (ent->watertype & CONTENTS_LAVA) {
 					G_Damage (ent, NULL, NULL, NULL, NULL, 
