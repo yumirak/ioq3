@@ -403,6 +403,11 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 		return;
 	}
 
+	// item just recently dropped. don't instantly pick it up.
+	if (ent->s.time && ent->s.clientNum == other->client->ps.clientNum && ent->s.time > level.time && ent->flags & FL_DROPPED_ITEM ) {
+		return;
+	}
+
 	// track player pickup
 	other->client->pers.itemPickup[index][0]++;
 	other->client->pers.itemPickup[index][1] = level.time - level.startTime;

@@ -123,6 +123,7 @@ vmCvar_t	g_warmupReadyDelayAction;
 vmCvar_t	sv_warmupReadyPercentage;
 vmCvar_t	g_gameState;
 vmCvar_t	g_teamsize;
+vmCvar_t	g_dropCmds;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -337,6 +338,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_training, "g_training", "0", CVAR_ROM, 0, qfalse },
 	{ &g_gameState, "g_gameState", "PRE_GAME", CVAR_ROM | CVAR_SYSTEMINFO, 0, qfalse },
 	{ &g_teamsize, "teamsize", "0", CVAR_SERVERINFO, 0, qfalse },
+	{ &g_dropCmds, "g_dropCmds", "7", 0, 0, qfalse },
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
 

@@ -281,6 +281,11 @@ static void CG_TouchItem( centity_t *cent ) {
 		return;		// can't hold it
 	}
 
+	// item just recently dropped. don't instantly pick it up.
+	if (cent->currentState.time && cent->currentState.clientNum == cg.snap->ps.clientNum && cent->currentState.time > cg.time) {
+		return;
+	}
+
 	item = &bg_itemlist[ cent->currentState.modelindex ];
 
 	// Special case for flags.  

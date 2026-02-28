@@ -1779,6 +1779,125 @@ void Cmd_ReadyUp_f( gentity_t *ent ) {
 			ent->client->pers.netname, ent->client->pers.ready ? "is Ready" : "is Not Ready") );
 }
 
+gentity_t *DropFlag( gentity_t *ent ) {
+	int item = 0;
+
+	if (ent->client->ps.pm_type == PM_DEAD) {
+		return NULL;
+	}
+
+	if (ent->client->ps.powerups[PW_REDFLAG]) {
+		item = PW_REDFLAG;
+	} else if (ent->client->ps.powerups[PW_BLUEFLAG]) {
+		item = PW_BLUEFLAG;
+	} else if (ent->client->ps.powerups[PW_NEUTRALFLAG]) {
+		item = PW_NEUTRALFLAG;
+	} else {
+		return NULL;
+	}
+	ent->client->ps.powerups[item] = 0;
+	return Drop_Item(ent, BG_FindItemForPowerup( item ), 0 );
+}
+
+// FIXME TODO: powerup time decay
+gentity_t *DropPowerup( gentity_t *ent ) {
+	int powerup;
+	gclient_t *cl;
+	gitem_t *gitem;
+	gentity_t *dropped;
+	int seconds;
+
+	if ( ent->client->ps.pm_type == PM_DEAD ) {
+		return NULL;
+	}
+
+	cl = ent->client;
+
+	for (powerup = PW_QUAD; powerup <= PW_FLIGHT; powerup++) {
+		if (cl->ps.powerups[powerup]) {
+			gitem = BG_FindItemForPowerup( powerup );
+			if (!gitem || gitem->giType != IT_POWERUP) {
+				continue;
+			}
+			seconds = (cl->ps.powerups[powerup] - level.time)/1000;
+			cl->ps.powerups[powerup] = 0;
+			if (seconds <= 0) {
+				// don't drop powerups that have no time left
+				// (this would give whoever picks it up the full duration again)
+				return NULL;
+			}
+			dropped = Drop_Item(ent, gitem, 0 );
+			dropped->count = seconds;
+			return dropped;
+		}
+	}
+
+	return NULL;
+}
+
+gentity_t *DropWeapon( gentity_t *ent ) {
+	int weapon;
+	int ammo;
+	gentity_t *item;
+
+	if ( ent->client->ps.pm_type == PM_DEAD ) {
+		return NULL;
+	}
+
+	weapon = ent->s.weapon;
+
+	if ( weapon <= WP_MACHINEGUN || weapon >= WP_NUM_WEAPONS) {
+		return NULL;
+	}
+
+	// doesn't have the weapon
+	if (!(ent->client->ps.stats[STAT_WEAPONS] & (1 << weapon))) {
+		return NULL;
+	}
+
+	ammo = ent->client->ps.ammo[weapon];
+
+	// don't drop weapon unlimited ammo or empty
+	if (ammo <= 0) {
+		return NULL;
+	}
+
+	ent->client->ps.ammo[weapon] = 0;
+	ent->client->ps.stats[STAT_WEAPONS] &= ~(1 << weapon );
+
+
+	item = Drop_Item(ent, BG_FindItemForWeapon(weapon), 0);
+	item->count = ammo;
+	BG_AddPredictableEventToPlayerstate(EV_DROP_WEAPON, weapon, &ent->client->ps);
+	return item;
+}
+
+
+void Cmd_Drop_f( gentity_t *ent, int droptype ) {
+	gentity_t *item = NULL;
+	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR )
+		return;
+
+	if ( g_gametype.integer < GT_TEAM )
+		return;
+
+	if ( !(g_dropCmds.integer & droptype) ) {
+		return;
+	}
+
+	switch( droptype ) {
+		case ITEMDROP_FLAG: item = DropFlag(ent); break;
+		case ITEMDROP_POWERUP: item = DropPowerup(ent); break;
+		case ITEMDROP_WEAPON: item = DropWeapon(ent); break;
+		default: return;
+	}
+
+	if (item != NULL) {
+		item->s.time = level.time + 1000; // so client can know about it and avoid predicting pickup
+		item->s.clientNum = ent->client->ps.clientNum;
+	}
+
+}
 /*
 =================
 ClientCommand
@@ -1863,6 +1982,18 @@ void ClientCommand( int clientNum ) {
 
 	if( Q_stricmp( cmd, "readyup" ) == 0 ) {
 		Cmd_ReadyUp_f( ent );
+		return;
+	}
+	if( Q_stricmp( cmd, "dropweapon" ) == 0 ) {
+		Cmd_Drop_f( ent, ITEMDROP_WEAPON );
+		return;
+	}
+	if( Q_stricmp( cmd, "droppowerup" ) == 0 ) {
+		Cmd_Drop_f( ent, ITEMDROP_POWERUP );
+		return;
+	}
+	if( Q_stricmp( cmd, "dropflag" ) == 0 ) {
+		Cmd_Drop_f( ent, ITEMDROP_FLAG );
 		return;
 	}
 

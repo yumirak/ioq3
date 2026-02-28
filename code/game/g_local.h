@@ -60,6 +60,10 @@ typedef enum {
 
 #define SP_PODIUM_MODEL		"models/mapobjects/podium/podium4.md3"
 
+#define ITEMDROP_FLAG 		1
+#define ITEMDROP_POWERUP 	2
+#define ITEMDROP_WEAPON 	4
+
 //============================================================================
 
 typedef struct gentity_s gentity_t;
@@ -783,6 +787,7 @@ extern	vmCvar_t	g_warmupReadyDelayAction;
 extern	vmCvar_t	sv_warmupReadyPercentage;
 extern	vmCvar_t	g_gameState;
 extern	vmCvar_t	g_teamsize;
+extern	vmCvar_t	g_dropCmds;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

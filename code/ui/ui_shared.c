@@ -3370,6 +3370,9 @@ static bind_t g_bindings[] =
 	{"scoresDown", K_KP_PGDN,			-1,		-1, -1},
 	// Extend
 	{"readyup",		 K_F3,					-1,		-1, -1},
+	{"dropflag",		 -1,					-1,		-1, -1},
+	{"droppowerup",		 -1,					-1,		-1, -1},
+	{"dropweapon",		 -1,					-1,		-1, -1},
 	// end Extend
 	{"messagemode",  -1,					-1,		-1, -1},
 	{"messagemode2", -1,						-1,		-1, -1},

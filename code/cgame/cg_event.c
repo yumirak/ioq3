@@ -1298,6 +1298,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 				cgs.media.footsteps[ FOOTSTEP_SNOW ][rand()&3] );
 		}
 		break;
+	case EV_DROP_WEAPON:
+		DEBUGNAME("EV_DROP_WEAPON");
+		CG_PrevWeapon_f(); // FIXME: dropped weapon ammo is set to 0 from server and causes noAmmoSound
+ 		break;
 	case EV_DAMAGEPLUM:
 		DEBUGNAME("EV_DAMAGEPLUM");
 		break;
