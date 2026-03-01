@@ -955,10 +955,6 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.hitSound[0] = trap_S_RegisterSound( "sound/feedback/hithi.wav", qfalse );
 	cgs.media.hitSound[1] = trap_S_RegisterSound( "sound/feedback/hitlo.wav", qfalse );
 
-#ifdef MISSIONPACK
-	cgs.media.worldDeathShader = trap_R_RegisterShader( "icons/skull_red" );
-#endif
-
 	for( i = 0; i < 4; i++) {
 #ifdef BASEQZ
 		cgs.media.hitSound[i] = trap_S_RegisterSound(  va( "sound/feedback/hit%d.ogg", i ), qfalse );
@@ -1323,12 +1319,17 @@ static void CG_RegisterGraphics( void ) {
 	if(!cgs.media.weaplit)
 		cgs.media.weaplit = cgs.media.backTileShader;
 
+#ifdef MISSIONPACK
+	cgs.media.worldDeathShader = trap_R_RegisterShader("icons/icon_frag");
+	if(!cgs.media.worldDeathShader)
+		cgs.media.worldDeathShader = trap_R_RegisterShader("icons/skull_red");
+#endif
+
 #ifdef BASEQZ
 	cgs.media.ghostShader = trap_R_RegisterShader( "ghostWeaponShader" );
 	cgs.media.gibSphere = trap_R_RegisterModel( "models/gibs/sphere.md3" );
 	cgs.media.deathEffectShader = trap_R_RegisterShader( "deathEffect" );
 	cgs.media.infiniteAmmo = trap_R_RegisterShader( "icons/infinite" );
-	cgs.media.killCounterIcon = trap_R_RegisterShader("icons/icon_frag");
 
 	cgs.media.gametypeIcon[GT_FFA] = trap_R_RegisterShader("ui/assets/hud/ffa");
 	cgs.media.gametypeIcon[GT_SINGLE_PLAYER] = trap_R_RegisterShader("ui/assets/hud/ffa");

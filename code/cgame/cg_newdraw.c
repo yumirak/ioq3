@@ -899,17 +899,26 @@ static void CG_DrawAreaPowerUp(rectDef_t *rect, int align, float special, float 
 			Com_sprintf (num, sizeof(num), "%i", sortedTime[i] / 1000);
 			CG_Text_Paint(r2.x + r2.w + 4, r2.y + r2.h, scale, color, num, 0, 0, 0);
 			*inc += r2.w + special;
-#ifdef BASEQZ
+#ifdef MISSIONPACK
 			{
+				int x, y, textx, texty;
 				const float iconscale = 0.25;
+				const float textscale = 0.15;
+
+				// HUD_HORIZONTAL only tested in MISSIONPACK
+				x = (align == HUD_VERTICAL) ? r2.x + r2.w : r2.x - (r2.x * iconscale) - 5;
+				y = (align == HUD_VERTICAL) ? r2.y - r2.h : r2.y;
+				textx = (align == HUD_VERTICAL) ? x + (r2.w * iconscale)     : r2.x - (r2.w * iconscale) - 5;
+				texty = (align == HUD_VERTICAL) ? y + (r2.h * iconscale) - 1 : r2.y + (r2.h * iconscale) + 1;
+
 				if (item->giTag == PW_QUAD && ps->stats[STAT_QUAD_KILL_COUNT] > 0) {
-					if ( cgs.media.killCounterIcon ) CG_DrawPic(r2.x + 35 + 4, r2.y - r2.h, r2.w * iconscale, r2.h * iconscale, cgs.media.killCounterIcon);
-					CG_Text_Paint(r2.x + 35 + 4 + 10, r2.y - r2.h + (r2.h * iconscale) - 1, 0.16296, colorWhite, va(" x %d", ps->stats[STAT_QUAD_KILL_COUNT]), 0, 0, 0);
+					CG_DrawPic(x, y, r2.w * iconscale, r2.h * iconscale, cgs.media.worldDeathShader);
+					CG_Text_Paint(textx, texty, textscale, colorWhite, va(" x %d", ps->stats[STAT_QUAD_KILL_COUNT]), 0, 0, 0);
 				}
 
 				if (item->giTag == PW_BATTLESUIT && ps->stats[STAT_BATTLESUIT_KILL_COUNT] > 0) {
-					if ( cgs.media.killCounterIcon ) CG_DrawPic(r2.x + 35 + 4, r2.y - r2.h, r2.w * iconscale, r2.h * iconscale, cgs.media.killCounterIcon);
-					CG_Text_Paint(r2.x + 35 + 4 + 10, r2.y - r2.h + (r2.h * iconscale) - 1, 0.16296, colorWhite, va(" x %d", ps->stats[STAT_BATTLESUIT_KILL_COUNT]), 0, 0, 0);
+					CG_DrawPic(x, y, r2.w * iconscale, r2.h * iconscale, cgs.media.worldDeathShader);
+					CG_Text_Paint(textx, texty, textscale, colorWhite, va(" x %d", ps->stats[STAT_BATTLESUIT_KILL_COUNT]), 0, 0, 0);
 				}
 			}
 #endif
