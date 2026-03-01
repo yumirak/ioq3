@@ -124,6 +124,7 @@ vmCvar_t	sv_warmupReadyPercentage;
 vmCvar_t	g_gameState;
 vmCvar_t	g_teamsize;
 vmCvar_t	g_dropCmds;
+vmCvar_t	g_overtime;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -339,6 +340,7 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_gameState, "g_gameState", "PRE_GAME", CVAR_ROM | CVAR_SYSTEMINFO, 0, qfalse },
 	{ &g_teamsize, "teamsize", "0", CVAR_SERVERINFO, 0, qfalse },
 	{ &g_dropCmds, "g_dropCmds", "7", 0, 0, qfalse },
+	{ &g_overtime, "g_overtime", "120", CVAR_SERVERINFO, 0, qfalse },
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
 
@@ -1628,7 +1630,7 @@ void CheckExitRules( void ) {
 	}
 
 	// check for sudden death
-	if ( ScoreIsTied() ) {
+	if ( ScoreIsTied() && g_overtime.integer <= 0 ) {
 		// always wait for sudden death
 		return;
 	}
@@ -1640,9 +1642,16 @@ void CheckExitRules( void ) {
 	}
 
 	if ( g_timelimit.integer && !level.warmupTime ) {
-		if ( level.time - level.startTime >= g_timelimit.integer*60000 ) {
-			trap_SendServerCommand( -1, "print \"Timelimit hit.\n\"");
-			LogExit( "Timelimit hit." );
+		if ( level.time - level.startTime >= g_timelimit.integer * 60000 + g_overtime.integer * level.overtimeCount * 1000 ) {
+			if (ScoreIsTied() && g_overtime.integer > 0) {
+				gentity_t	*ent;
+				ent = G_TempEntity( level.intermission_origin, EV_OVERTIME );
+				ent->r.svFlags = SVF_BROADCAST;	// send to everyone
+				level.overtimeCount++;
+			} else {
+				trap_SendServerCommand( -1, "print \"Timelimit hit.\n\"");
+				LogExit( "Timelimit hit.");
+			}
 			return;
 		}
 	}

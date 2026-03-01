@@ -2190,6 +2190,11 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_DrawAccuracyVertical(&rect, scale, color, textStyle, align );
 		break;
 #endif
+#ifdef CG_OVERTIME
+	case CG_OVERTIME:
+		CG_DrawOvertime(&rect, scale, color, textStyle, align );
+		break;
+#endif
 
   default:
     break;

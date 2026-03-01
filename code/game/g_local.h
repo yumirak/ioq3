@@ -421,6 +421,8 @@ typedef struct {
 	int			numPlayerReady;
 	int			allReadyTime;
 	int			gameMatchState;
+
+	int			overtimeCount;
 } level_locals_t;
 
 

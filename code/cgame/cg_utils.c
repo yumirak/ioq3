@@ -312,25 +312,29 @@ const char* CG_GetTeamName (int team)
 
 int CG_GetCurrentTimeWithDirection (qboolean countdown)
 {
-	int msec, cgtime, levelStartTime;
+	int msec, basetime;
 
-	levelStartTime = cgs.levelStartTime;
-	cgtime = cg.time;
+	basetime = cgs.levelStartTime;
 
 	if (cg.warmup)
 		return 0;
 
 	if (cgs.timelimit <= 0) {
-		msec = cg.time - levelStartTime;
+		msec = cg.time - basetime;
 		return msec;
+	}
+
+	if( cg.overtime.count > 0 && countdown ) {
+		basetime += cg.overtime.totaltime * 1000;
 	}
 
 	switch(countdown) {
 		case qtrue:
-			msec = (levelStartTime + (cgs.timelimit * 60 * 1000)) - cgtime;
+			basetime += cgs.timelimit * 60 * 1000;
+			msec = basetime - cg.time;
 			break;
 		case qfalse:
-			msec = cgtime - levelStartTime;
+			msec = cg.time - basetime;
 			break;
 	}
 

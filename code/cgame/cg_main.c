@@ -983,6 +983,7 @@ static void CG_RegisterSounds( void ) {
 #endif
 
 	cgs.media.buzzer = trap_S_RegisterSound("sound/world/buzzer.ogg", qtrue);
+	cgs.media.klaxon2 = trap_S_RegisterSound("sound/world/klaxon2.wav", qfalse);
 
 #ifdef MISSIONPACK
 	trap_S_RegisterSound("sound/player/james/death1.wav", qfalse );

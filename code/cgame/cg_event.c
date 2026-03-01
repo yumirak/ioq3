@@ -1305,6 +1305,15 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 	case EV_DAMAGEPLUM:
 		DEBUGNAME("EV_DAMAGEPLUM");
 		break;
+	case EV_OVERTIME: {
+		DEBUGNAME("EV_OVERTIME");
+		cg.overtime.count++;
+		cg.overtime.time = atoi(Info_ValueForKey(CG_ConfigString(CS_SERVERINFO), "g_overtime"));
+		cg.overtime.totaltime += cg.overtime.time;
+		CG_CenterPrint(va("Overtime! %d seconds added", cg.overtime.time), SCREEN_HEIGHT * 0.30, BIGCHAR_WIDTH, 0.4f);
+		trap_S_StartLocalSound( cgs.media.klaxon2, CHAN_LOCAL_SOUND );
+		break;
+	}
 
 	default:
 		DEBUGNAME("UNKNOWN");

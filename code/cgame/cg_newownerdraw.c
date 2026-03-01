@@ -721,3 +721,17 @@ void CG_DrawAccuracyVertical( rectDef_t *rect, float scale, vec4_t color, int te
 		offset += rect->h;
 	}
 }
+
+void CG_DrawOvertime( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+	const char *s;
+	int numOverTimes = cg.overtime.count;
+
+	if ( cg.snap->ps.pm_type == PM_INTERMISSION || numOverTimes <= 0 ) {
+		return;
+	}
+
+	s = numOverTimes > 1 ? va("Overtime x%d", numOverTimes) : "Overtime";
+
+	CG_Text_Paint_Align(rect, scale, color, s, 0, 0, textStyle, align);
+}

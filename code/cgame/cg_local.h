@@ -504,6 +504,13 @@ typedef struct {
 typedef struct {
 	int accuracy[WP_NUM_WEAPONS];
 } weaponStat_t;
+
+typedef struct {
+	int count;
+	int time;
+	int totaltime;
+} overtime_t;
+
 //======================================================================
 
 // all cg.stepTime, cg.duckTime, cg.landTime, etc are set to cg.time when the action
@@ -722,6 +729,8 @@ typedef struct {
 	int damageDoneTime;
 	int damageDoneTier;
 	vec4_t crossHairHitColor;
+
+	overtime_t overtime;
 #ifdef MISSIONPACK
 	menuDef_t *menuScoreboard;
 	menuDef_t *menuEndScoreboard;
@@ -1080,6 +1089,7 @@ typedef struct {
 	qhandle_t lightningShaderNew[5];
 	qhandle_t	weaplit;
 	sfxHandle_t	buzzer;
+	sfxHandle_t klaxon2;
 } cgMedia_t;
 
 

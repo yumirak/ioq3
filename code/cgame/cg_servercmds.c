@@ -530,6 +530,7 @@ static void CG_MapRestart( void ) {
 
 	// we really should clear more parts of cg here and stop sounds
 	memset(&cg.obituary, 0, sizeof(cg.obituary));
+	memset(&cg.overtime, 0, sizeof(cg.overtime));
 
 	// play the "fight" sound if this is a restart without warmup
 	if ( cg.warmup == 0 /* && cgs.gametype == GT_TOURNAMENT */) {
