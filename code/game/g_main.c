@@ -129,6 +129,11 @@ vmCvar_t	g_flightThrust;
 vmCvar_t	g_maxFlightFuel;
 vmCvar_t	g_flightRefuelRate;
 
+#if BASEQZ > 934
+vmCvar_t	g_ammoPack;
+vmCvar_t	g_ammoPackHack;
+#endif
+
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
 static cvarTable_t		gameCvarTable[] = {
@@ -359,6 +364,10 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_teamsize, "teamsize", "0", CVAR_SERVERINFO, 0, qfalse },
 	{ &g_dropCmds, "g_dropCmds", "7", 0, 0, qfalse },
 	{ &g_overtime, "g_overtime", "120", CVAR_SERVERINFO, 0, qfalse },
+#if BASEQZ > 934
+	{ &g_ammoPack, "g_ammoPack", "0", CVAR_LATCH, 0, qfalse },
+	{ &g_ammoPackHack, "g_ammoPackHack", "0", CVAR_LATCH, 0, qfalse },
+#endif
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
 

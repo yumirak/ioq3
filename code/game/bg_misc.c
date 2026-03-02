@@ -1000,6 +1000,20 @@ Only in One Flag CTF games
 /* precache */ "",
 /* sounds */""
 	},
+/*QUAKED ammo_pack (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"ammo_pack",
+		"sound/misc/am_pkup.wav",
+		{ "models/powerups/ammo/ammopack.md3", 0, 0, 0 },
+/* icon */		"icons/ammo_pack",
+/* pickup */	"Ammo Pack",
+		-1,
+		IT_AMMO,
+		WP_NUM_WEAPONS,
+/* precache */ "",
+/* sounds */""
+	},
 #endif
 #endif
 
@@ -1140,6 +1154,17 @@ qboolean BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 		return qtrue;	// weapons are always picked up
 
 	case IT_AMMO:
+		if ( item->giTag == WP_NUM_WEAPONS ) {
+			int i;
+			qboolean result = qfalse;
+			for ( i = WP_MACHINEGUN; i < WP_NUM_WEAPONS; i++ ) {
+				if ( !( ps->stats[STAT_WEAPONS] & ( 1 << i ) ) )
+					continue;
+				if ( ps->ammo[ i ] < weapon_ammo_limit[ i ][0] )
+					result = qtrue;
+			}
+			return result;
+		}
 		if ( ps->ammo[ item->giTag ] >= weapon_ammo_limit[item->giTag][0] ) {
 			return qfalse;		// can't hold any more
 		}

@@ -201,7 +201,28 @@ int Pickup_Ammo (gentity_t *ent, gentity_t *other)
 		quantity = ent->item->quantity;
 	}
 
+#if BASEQZ > 934
+	if ( ent->item->giTag == WP_NUM_WEAPONS ) {
+		int i;
+		for (i = 0;  i < bg_numItems;  i++) {
+			const gitem_t *item = &bg_itemlist[i];
+
+			if ( item->giType != IT_AMMO || item->giTag == WP_NUM_WEAPONS )  {
+				continue; // skip
+			}
+
+			if ( !( other->client->ps.stats[STAT_WEAPONS] & ( 1 << item->giTag ) ) ) {
+				continue; // only add ammo for owned weapon
+			}
+
+			Add_Ammo(other, item->giTag, item->quantity);
+		}
+	} else {
+		Add_Ammo (other, ent->item->giTag, quantity);
+	}
+#else
 	Add_Ammo (other, ent->item->giTag, quantity);
+#endif
 
 	return abs(g_respawnItemType[ent->item->giType].integer);
 }

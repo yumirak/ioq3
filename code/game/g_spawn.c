@@ -437,6 +437,28 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 		G_ParseField( level.spawnVars[i][0], level.spawnVars[i][1], ent );
 	}
 
+#if BASEQZ > 934
+	// look for ammo spawn
+	if ( !Q_stricmpn( ent->classname, "ammo_", 5 ) ) {
+		if (g_ammoPackHack.integer) { // substitute ammo_* with ammo_pack
+			if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, "ammo_pack", ent->classname, qtrue ) ) {
+				return;
+			}
+			ent->classname = G_NewString("ammo_pack");
+		} else if (g_ammoPack.integer) { // remove all ammo except ammo_pack
+			if ( !Q_stricmp( ent->classname, "ammo_pack") ) {
+				// pass, add it
+			} else if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, "ammo_", ent->classname, qtrue ) ) {
+				return;
+			}
+		} else { // remove all ammo_pack
+			if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, "ammo_pack", ent->classname, qtrue ) ) {
+				return;
+			}
+		}
+	}
+#endif
+
 	// check for "notsingle" flag
 	if ( g_gametype.integer == GT_SINGLE_PLAYER ) {
 		G_SpawnInt( "notsingle", "0", &i );

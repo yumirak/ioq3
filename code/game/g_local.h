@@ -794,6 +794,11 @@ extern	vmCvar_t	g_flightThrust;
 extern	vmCvar_t	g_maxFlightFuel;
 extern	vmCvar_t	g_flightRefuelRate;
 
+#if BASEQZ > 934
+extern	vmCvar_t	g_ammoPack;
+extern	vmCvar_t	g_ammoPackHack;
+#endif
+
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;
 int		trap_Milliseconds( void );
