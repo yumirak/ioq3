@@ -56,7 +56,15 @@ int Pickup_Powerup( gentity_t *ent, gentity_t *other ) {
 		quantity = ent->item->quantity;
 	}
 
-	other->client->ps.powerups[ent->item->giTag] += quantity * 1000;
+	if ( ent->item->giTag == PW_FLIGHT ) {
+		other->client->ps.stats[STAT_HOLDABLE_ITEM] = ent->item - bg_itemlist;
+		other->client->ps.stats[STAT_FLIGHT_THRUST] = g_flightThrust.integer;
+		other->client->ps.stats[STAT_FLIGHT_REFUEL] = g_flightRefuelRate.integer;
+		other->client->ps.stats[STAT_FLIGHT_MAX_FUEL] = g_maxFlightFuel.integer;
+		other->client->ps.stats[STAT_FLIGHT_CUR_FUEL] = g_maxFlightFuel.integer;
+	} else {
+		other->client->ps.powerups[ent->item->giTag] += quantity * 1000;
+	}
 
 	// give any nearby players a "denied" anti-reward
 	for ( i = 0 ; i < level.maxclients ; i++ ) {

@@ -1143,6 +1143,10 @@ qboolean BG_CanItemBeGrabbed( int gametype, const entityState_t *ent, const play
 		return qtrue;
 
 	case IT_POWERUP:
+		if ( bg_itemlist[ps->stats[STAT_HOLDABLE_ITEM]].giType == item->giType )
+			return qfalse; // can only hold one flight powerup at a time
+		if ( bg_itemlist[ps->stats[STAT_HOLDABLE_ITEM]].giType == IT_HOLDABLE && item->giTag == PW_FLIGHT )
+			return qfalse; // can only pickup flight when not own holdable
 		return qtrue;	// powerups are always picked up
 
 #ifdef MISSIONPACK

@@ -296,10 +296,10 @@ typedef enum {
 	STAT_CLIENTS_READY,				// bit mask of clients wishing to exit the intermission (FIXME: configstring?)
 	STAT_MAX_HEALTH,					// health / armor limit, changeable by handicap
 	STAT_CHAINGUN_SPIN_TIME,
-	STAT_UNKNOWN_9,		// set to "1200" when has flight
-	STAT_UNKNOWN_10,	// set to "16000" when has flight
-	STAT_POWERUP_REMAINING,
-	STAT_UNKNOWN_12,
+	STAT_FLIGHT_THRUST, // flight vertical velocity (g_flightThrust). divided by 100.
+	STAT_FLIGHT_MAX_FUEL, // flight time given (g_maxFlightFuel). in milliseconds.
+	STAT_FLIGHT_CUR_FUEL,
+	STAT_FLIGHT_REFUEL, // flight time recovery when not using flight (g_flightRefuelRate). in milliseconds.
 	STAT_QUAD_KILL_COUNT,
 	STAT_ARMOR_TIER,
 	STAT_MAP_KEYS,

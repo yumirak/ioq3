@@ -207,10 +207,12 @@ static void PM_Friction( void ) {
 		drop += speed*pm_waterfriction*pm->waterlevel*pml.frametime;
 	}
 
+#if 0
 	// apply flying friction
 	if ( pm->ps->powerups[PW_FLIGHT]) {
 		drop += speed*pm_flightfriction*pml.frametime;
 	}
+#endif
 
 	if ( pm->ps->pm_type == PM_SPECTATOR) {
 		drop += speed*pm_spectatorfriction*pml.frametime;
@@ -1560,8 +1562,19 @@ static void PM_Weapon( void ) {
 	}
 
 	// check for item using
+	// TODO: move item related code from PM_Weapon
 	if ( pm->cmd.buttons & BUTTON_USE_HOLDABLE ) {
-		if ( ! ( pm->ps->pm_flags & PMF_USE_ITEM_HELD ) ) {
+		if ( bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag == PW_FLIGHT ) {
+			if ( pm->ps->stats[STAT_FLIGHT_CUR_FUEL] > 0 ) {
+				pm->ps->pm_flags |= PMF_USE_ITEM_HELD;
+				pm->ps->powerups[PW_FLIGHT] = INT_MAX;
+				pm->ps->stats[STAT_FLIGHT_CUR_FUEL] -= pml.msec;
+				pm->ps->velocity[2] += (float)pm->ps->stats[STAT_FLIGHT_THRUST] / 100.0f;
+			} else if ( pm->ps->stats[STAT_FLIGHT_REFUEL] <= 0 ) {
+				pm->ps->pm_flags &= ~PMF_USE_ITEM_HELD;
+				pm->ps->powerups[PW_FLIGHT] = pm->ps->stats[STAT_HOLDABLE_ITEM] = 0; // QL doesn't reset thrust and maxfuel
+			}
+		} else if ( ! ( pm->ps->pm_flags & PMF_USE_ITEM_HELD ) ) {
 			if ( bg_itemlist[pm->ps->stats[STAT_HOLDABLE_ITEM]].giTag == HI_MEDKIT
 				&& pm->ps->stats[STAT_HEALTH] >= (pm->ps->stats[STAT_MAX_HEALTH] + 25) ) {
 				// don't use medkit if at max health
@@ -1574,7 +1587,13 @@ static void PM_Weapon( void ) {
 		}
 	} else {
 		pm->ps->pm_flags &= ~PMF_USE_ITEM_HELD;
+
+		if( pm->ps->powerups[PW_FLIGHT] )
+			pm->ps->powerups[PW_FLIGHT] = 0;
+		if( pm->ps->stats[STAT_FLIGHT_REFUEL] && pm->ps->stats[STAT_FLIGHT_CUR_FUEL] < pm->ps->stats[STAT_FLIGHT_MAX_FUEL] )
+			pm->ps->stats[STAT_FLIGHT_CUR_FUEL] += MAX( 1, (float)pm->ps->stats[STAT_FLIGHT_REFUEL] / 1000.0f * pml.msec );
 	}
+	// end item related
 
 
 	// make weapon function
@@ -1950,10 +1969,7 @@ void PmoveSingle (pmove_t *pmove) {
 		PM_InvulnerabilityMove();
 	} else
 #endif
-	if ( pm->ps->powerups[PW_FLIGHT] ) {
-		// flight powerup doesn't allow jump and has different friction
-		PM_FlyMove();
-	} else if (pm->ps->pm_flags & PMF_GRAPPLE_PULL) {
+	if (pm->ps->pm_flags & PMF_GRAPPLE_PULL) {
 		PM_GrappleMove();
 		// We can wiggle a bit
 		PM_AirMove();

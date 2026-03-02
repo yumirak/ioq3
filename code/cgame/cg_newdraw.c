@@ -474,6 +474,13 @@ static void CG_DrawPlayerItem( rectDef_t *rect, float scale, qboolean draw2D) {
 		if (qtrue) {
 		  CG_RegisterItemVisuals( value );
 		  CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].icon );
+		  if ( bg_itemlist[ value ].giTag == PW_FLIGHT) {
+			  float textscale = scale * 0.25;
+			  const char *s = va("%0.1f%%", (float)cg.snap->ps.stats[STAT_FLIGHT_CUR_FUEL] / (float)cg.snap->ps.stats[STAT_FLIGHT_MAX_FUEL] * 100.0);
+			  float textwidth = CG_Text_Width(s, textscale, 0);
+
+			  CG_Text_Paint(rect->x + (rect->w / 2) - (textwidth / 2), rect->y + rect->h, textscale, colorWhite, s, 0, 0, 0);
+		  }
 		} else {
  			VectorClear( angles );
 			origin[0] = 90;

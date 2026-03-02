@@ -790,6 +790,9 @@ extern	vmCvar_t	sv_warmupReadyPercentage;
 extern	vmCvar_t	g_gameState;
 extern	vmCvar_t	g_teamsize;
 extern	vmCvar_t	g_dropCmds;
+extern	vmCvar_t	g_flightThrust;
+extern	vmCvar_t	g_maxFlightFuel;
+extern	vmCvar_t	g_flightRefuelRate;
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

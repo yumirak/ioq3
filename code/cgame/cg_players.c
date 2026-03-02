@@ -1530,7 +1530,7 @@ static void CG_PlayerAngles( centity_t *cent, vec3_t legs[3], vec3_t torso[3], v
 CG_HasteTrail
 ===============
 */
-static void CG_HasteTrail( centity_t *cent ) {
+static void CG_HasteTrail( centity_t *cent, int type ) {
 	localEntity_t	*smoke;
 	vec3_t			origin;
 	int				anim;
@@ -1540,12 +1540,17 @@ static void CG_HasteTrail( centity_t *cent ) {
 		return;
 	}
 
-	radius = Com_Clamp( 0, 16, cg_smokeRadius_haste.integer);
+	switch ( type ) {
+		case PW_HASTE: radius = Com_Clamp( 0, 16, cg_smokeRadius_haste.integer); break;
+		case PW_FLIGHT: radius = Com_Clamp( 0, 16, cg_smokeRadius_flight.integer); break;
+		default: return;
+	}
+
 	if ( radius < 1 )
 		return;
 
 	anim = cent->pe.legs.animationNumber & ~ANIM_TOGGLEBIT;
-	if ( anim != LEGS_RUN && anim != LEGS_BACK ) {
+	if ( type == PW_HASTE && anim != LEGS_RUN && anim != LEGS_BACK ) {
 		return;
 	}
 
@@ -1902,6 +1907,7 @@ static void CG_PlayerPowerups( centity_t *cent, refEntity_t *torso ) {
 
 	// flight plays a looped sound
 	if ( powerups & ( 1 << PW_FLIGHT ) ) {
+		CG_HasteTrail( cent, PW_FLIGHT );
 		trap_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flightSound );
 	}
 
@@ -1941,7 +1947,7 @@ static void CG_PlayerPowerups( centity_t *cent, refEntity_t *torso ) {
 
 	// haste leaves smoke trails
 	if ( powerups & ( 1 << PW_HASTE ) ) {
-		CG_HasteTrail( cent );
+		CG_HasteTrail( cent, PW_HASTE );
 	}
 }
 

@@ -125,6 +125,9 @@ vmCvar_t	g_gameState;
 vmCvar_t	g_teamsize;
 vmCvar_t	g_dropCmds;
 vmCvar_t	g_overtime;
+vmCvar_t	g_flightThrust;
+vmCvar_t	g_maxFlightFuel;
+vmCvar_t	g_flightRefuelRate;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
@@ -330,6 +333,9 @@ static cvarTable_t		gameCvarTable[] = {
 #endif
 
 	{ &g_battleSuitDampen, "g_battleSuitDampen", "0.25", 0, 0, qtrue  },
+	{ &g_flightThrust, "g_flightThrust", "1200", 0, 0, qtrue  },
+	{ &g_maxFlightFuel, "g_maxFlightFuel", "16000", 0, 0, qtrue  },
+	{ &g_flightRefuelRate, "g_flightRefuelRate", "0", 0, 0, qtrue  },
 
 	{ &g_warmupDelay, "g_warmupDelay", "15", 0, 0, qfalse  },
 	{ &g_warmupReadyDelay, "g_warmupReadyDelay", "0", 0, 0, qfalse  },
