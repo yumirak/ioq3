@@ -230,6 +230,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_knockback_wpn[WP_PROX_LAUNCHER], "g_knockback_pl", "1", 0, 0, qfalse},
 	{ &g_knockback_wpn[WP_CHAINGUN], "g_knockback_cg", "1", 0, 0, qfalse},
 #endif
+#if BASEQZ > 934
+	{ &g_knockback_wpn[WP_HEAVY_MACHINEGUN], "g_knockback_hmg", "1", 0, 0, qfalse},
+#endif
 	{ &g_knockback_wpn_self[WP_GRENADE_LAUNCHER], "g_knockback_gl_self", "1.10", 0, 0, qfalse},
 	{ &g_knockback_wpn_self[WP_ROCKET_LAUNCHER], "g_knockback_rl_self", "1.10", 0, 0, qfalse},
 	{ &g_knockback_wpn_self[WP_PLASMAGUN], "g_knockback_pg_self", "1.30", 0, 0, qfalse},
@@ -251,6 +254,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_damage[WP_NAILGUN], "g_damage_ng", "12", 0, 0, qfalse},
 	{ &g_damage[WP_PROX_LAUNCHER], "g_damage_pl", "0", 0, 0, qfalse},
 	{ &g_damage[WP_CHAINGUN], "g_damage_cg", "8", 0, 0, qfalse},
+#endif
+#if BASEQZ > 934
+	{ &g_damage[WP_HEAVY_MACHINEGUN], "g_damage_hmg", "8", 0, 0, qfalse},
 #endif
 	{ &g_splashdamage[WP_GRENADE_LAUNCHER], "g_splashdamage_gl", "100", 0, 0, qfalse},
 	{ &g_splashdamage[WP_ROCKET_LAUNCHER], "g_splashdamage_rl", "84", 0, 0, qfalse},
@@ -300,6 +306,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_startingAmmo[WP_PROX_LAUNCHER], "g_startingAmmo_pl", "5", 0, 0, qtrue},
 	{ &g_startingAmmo[WP_CHAINGUN], "g_startingAmmo_cg", "100", 0, 0, qtrue},
 #endif
+#if BASEQZ > 934
+	{ &g_startingAmmo[WP_HEAVY_MACHINEGUN], "g_startingAmmo_hmg", "50", 0, 0, qfalse},
+#endif
 	{ &g_spawnItem, "g_spawnItem", "1", 0, 0, qtrue, qtrue },
 	{ &g_spawnItemType[IT_AMMO], "g_spawnItemAmmo", "1", 0, 0, qtrue, qtrue },
 	{ &g_spawnItemType[IT_ARMOR], "g_spawnItemArmor", "1", 0, 0, qtrue, qtrue },
@@ -330,6 +339,9 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &weapon_reload[WP_NAILGUN], "weapon_reload_ng", "1000", CVAR_SYSTEMINFO, 0, qtrue},
 	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SYSTEMINFO, 0, qtrue},
 	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SYSTEMINFO, 0, qtrue},
+#endif
+#if BASEQZ > 934
+	{ &weapon_reload[WP_HEAVY_MACHINEGUN], "weapon_reload_hmg", "75", CVAR_SERVERINFO},
 #endif
 
 	{ &g_battleSuitDampen, "g_battleSuitDampen", "0.25", 0, 0, qtrue  },

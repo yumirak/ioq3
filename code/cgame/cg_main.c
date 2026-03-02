@@ -454,6 +454,9 @@ static cvarTable_t cvarTable[] = {
 	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SERVERINFO},
 	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SERVERINFO},
 #endif
+#if BASEQZ > 934
+	{ &weapon_reload[WP_HEAVY_MACHINEGUN], "weapon_reload_hmg", "75", CVAR_SERVERINFO},
+#endif
 	{ &cg_premium, "cg_premium", "0", CVAR_ROM },
 	{ &cg_gametype, "cg_gametype", "0", CVAR_ROM | CVAR_ARCHIVE },
 	{ &cg_compMode, "cg_compMode", "0", CVAR_ARCHIVE },

@@ -411,6 +411,9 @@ typedef enum {
 	WP_PROX_LAUNCHER,
 	WP_CHAINGUN,
 #endif
+#if BASEQZ > 934
+	WP_HEAVY_MACHINEGUN,
+#endif
 
 	WP_NUM_WEAPONS
 } weapon_t;
@@ -743,7 +746,8 @@ typedef enum {
 	MOD_KAMIKAZE,
 	MOD_JUICED,
 #endif
-	MOD_GRAPPLE
+	MOD_GRAPPLE,
+	MOD_HEAVY_MACHINEGUN = 32,
 } meansOfDeath_t;
 
 

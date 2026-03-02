@@ -969,7 +969,38 @@ Only in One Flag CTF games
 /* precache */ "",
 /* sounds */""
 	},
+#if BASEQZ > 934
+/*QUAKED weapon_hmg (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"weapon_hmg",
+		"sound/misc/w_pkup.wav",
+		{ "models/weapons3/hmg/hmg.md3",
+		NULL, NULL, NULL},
+/* icon */		"icons/weap_hmg",
+/* pickup */	"Heavy Machinegun",
+		100,
+		IT_WEAPON,
+		WP_HEAVY_MACHINEGUN,
+/* precache */ "",
+/* sounds */""
 	},
+/*QUAKED ammo_hmg (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"ammo_hmg",
+		"sound/misc/am_pkup.wav",
+		{ "models/powerups/ammo/hmgam.md3",
+		NULL, NULL, NULL},
+/* icon */		"icons/ammo_hmg",
+/* pickup */	"Heavy Bullets",
+		50,
+		IT_AMMO,
+		WP_HEAVY_MACHINEGUN,
+/* precache */ "",
+/* sounds */""
+	},
+#endif
 #endif
 
 	// end of list marker
@@ -1712,6 +1743,10 @@ weapon_t BG_ModToWeapon (int mod)
 		case MOD_CHAINGUN:
 			return WP_CHAINGUN;
 #endif
+#if BASEQZ > 934
+		case MOD_HEAVY_MACHINEGUN:
+			return WP_HEAVY_MACHINEGUN;
+#endif
 		default:
 			w = WP_NONE;
 	}
@@ -1749,6 +1784,9 @@ int weapon_ammo_limit[WP_NUM_WEAPONS][2] = // 0 - normal; 1 - turbo;
 	{ 25, 20 },		// WP_NAILGUN
 	{ 5, 5 },		// WP_PROX_LAUNCHER
 	{ 200, 100 },	// WP_CHAINGUN
+#endif
+#if BASEQZ > 934
+	{ 150, 100 },	// WP_HEAVY_MACHINEGUN
 #endif
 };
 

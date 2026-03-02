@@ -888,6 +888,11 @@ void FireWeapon( gentity_t *ent ) {
 		Bullet_Fire( ent, CHAINGUN_SPREAD, g_damage[WP_CHAINGUN].integer, MOD_CHAINGUN );
 		break;
 #endif
+#if BASEQZ > 934
+	case WP_HEAVY_MACHINEGUN:
+		Bullet_Fire( ent, MACHINEGUN_SPREAD * 2, g_damage[WP_HEAVY_MACHINEGUN].integer, MOD_HEAVY_MACHINEGUN );
+		break;
+#endif
 	default:
 // FIXME		G_Error( "Bad ent->s.weapon" );
 		break;

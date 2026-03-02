@@ -3373,6 +3373,7 @@ static bind_t g_bindings[] =
 	{"dropflag",		 -1,					-1,		-1, -1},
 	{"droppowerup",		 -1,					-1,		-1, -1},
 	{"dropweapon",		 -1,					-1,		-1, -1},
+	{"weapon 14", -1, -1, -1, -1},
 	// end Extend
 	{"messagemode",  -1,					-1,		-1, -1},
 	{"messagemode2", -1,						-1,		-1, -1},
