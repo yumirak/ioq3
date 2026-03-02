@@ -797,6 +797,9 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 					case PW_AMMOREGEN:
 						trap_S_StartSound (NULL, es->number, CHAN_AUTO,	cgs.media.ammoregenSound );
 					break;
+					case PW_KEY:
+						trap_S_StartSound (NULL, es->number, CHAN_AUTO, trap_S_RegisterSound(item->pickup_sound, qfalse));
+						break;
 				}
 #endif
 			} else {

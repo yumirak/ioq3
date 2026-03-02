@@ -379,6 +379,7 @@ typedef enum {
 	PW_FROZEN,
 	PW_NUM_POWERUPS
 } powerup_t;
+#define PW_KEY 601  // hack to use PW_ for keys
 
 typedef enum {
 	HI_NONE,

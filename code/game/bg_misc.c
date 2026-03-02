@@ -1015,6 +1015,50 @@ Only in One Flag CTF games
 /* sounds */""
 	},
 #endif
+#if BASEQZ >= 1013
+/*QUAKED item_key_silver (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"item_key_silver",
+		"sound/items/key_silver.wav",
+		{ "models/powerups/keys/key_silver.md3", 0, 0, 0 },
+/* icon */		"icons/key_silver",
+/* pickup */	"Silver Key",
+		1,
+		IT_PERSISTANT_POWERUP,
+		PW_KEY,
+/* precache */ "",
+/* sounds */""
+	},
+/*QUAKED item_key_gold (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"item_key_gold",
+		"sound/items/key_gold.wav",
+		{ "models/powerups/keys/key_gold.md3", 0, 0, 0 },
+/* icon */		"icons/key_gold",
+/* pickup */	"Gold Key",
+		2,
+		IT_PERSISTANT_POWERUP,
+		PW_KEY,
+/* precache */ "",
+/* sounds */""
+	},
+/*QUAKED item_key_master (.3 .3 1) (-16 -16 -16) (16 16 16) suspended
+*/
+	{
+		"item_key_master",
+		NULL,
+		{ "models/powerups/keys/key_master.md3", 0, 0, 0 },
+/* icon */		"icons/key_master",
+/* pickup */	"Master Key",
+		4,
+		IT_PERSISTANT_POWERUP,
+		PW_KEY,
+/* precache */ "",
+/* sounds */""
+	},
+#endif
 #endif
 
 	// end of list marker

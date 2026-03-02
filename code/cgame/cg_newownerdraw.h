@@ -21,3 +21,4 @@ void CG_DrawFollowNameString( rectDef_t *rect, float scale, vec4_t color, int te
 void CG_DrawWeaponVertical( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
 void CG_DrawAccuracyVertical( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
 void CG_DrawOvertime( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
+void CG_DrawPlayerKey( rectDef_t *rect );

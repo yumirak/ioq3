@@ -735,3 +735,17 @@ void CG_DrawOvertime( rectDef_t *rect, float scale, vec4_t color, int textStyle,
 
 	CG_Text_Paint_Align(rect, scale, color, s, 0, 0, textStyle, align);
 }
+
+void CG_DrawPlayerKey( rectDef_t *rect )
+{
+	int value;
+
+	if ( !cg.snap->ps.stats[STAT_MAP_KEYS] )
+		return;
+
+	value = cg.snap->ps.stats[STAT_PERSISTANT_POWERUP];
+	if ( value ) {
+		CG_RegisterItemVisuals( value );
+		CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].icon );
+	}
+}

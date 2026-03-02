@@ -156,6 +156,9 @@ int Pickup_PersistantPowerup( gentity_t *ent, gentity_t *other ) {
 	case PW_AMMOREGEN:
 		memset(other->client->ammoTimes, 0, sizeof(other->client->ammoTimes));
 		break;
+	case PW_KEY:
+		other->client->ps.stats[STAT_MAP_KEYS] = ent->item->quantity;
+		break;
 	default:
 		break;
 	}

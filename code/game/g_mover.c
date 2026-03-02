@@ -24,6 +24,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "g_local.h"
 
 
+// spawnflags
+// func_button, func_door: 8 = disable return to original position;
+// func_door trigger: 16 - silver key required; 32 - gold key required;
+// NOTE: i don't really know why elder easter egg door trigger doesn't spawn.
+// thus it cannot be opened.
+#if BASEQZ > 934
+#define ELDER_LOCKED_DOOR
+#endif
+
 
 /*
 ===============================================================================
@@ -565,6 +574,12 @@ ReturnToPos1
 ================
 */
 void ReturnToPos1( gentity_t *ent ) {
+#ifdef ELDER_LOCKED_DOOR
+	// Elder 1-Way Platform: keep at POS2
+	if( ent->spawnflags & 8 )
+		return;
+#endif
+
 	MatchTeam( ent, MOVER_2TO1, level.time );
 
 	// looping sound
@@ -849,12 +864,31 @@ static void Touch_DoorTriggerSpectator( gentity_t *ent, gentity_t *other, trace_
 	TeleportPlayer(other, origin, tv(10000000.0, 0, 0));
 }
 
+#ifdef ELDER_LOCKED_DOOR
+qboolean Touch_DoorLocked( gentity_t *ent, gentity_t *other )
+{
+	if( !( ent->spawnflags & 48 ) )
+		return qtrue;
+
+	if( !other->client->ps.stats[STAT_MAP_KEYS] )
+		return qfalse;
+
+	if( ent->spawnflags & 8 << MIN( 48, other->client->ps.stats[STAT_MAP_KEYS] ) )
+		return qtrue;
+
+	return qfalse;
+}
+#endif
 /*
 ================
 Touch_DoorTrigger
 ================
 */
 void Touch_DoorTrigger( gentity_t *ent, gentity_t *other, trace_t *trace ) {
+#ifdef ELDER_LOCKED_DOOR
+	if( !Touch_DoorLocked( ent, other ) )
+		return;
+#endif
 	if ( other->client && other->client->sess.sessionTeam == TEAM_SPECTATOR ) {
 		// if the door is not open and not opening
 		if ( ent->parent->moverState != MOVER_1TO2 &&
@@ -887,6 +921,11 @@ void Think_SpawnNewDoorTrigger( gentity_t *ent ) {
 
 	// set all of the members as shootable
 	for ( other = ent ; other ; other = other->teamchain ) {
+#ifdef ELDER_LOCKED_DOOR
+		// locked door: won't open by shooting even by key holder
+		if( ent->spawnflags & 48 )
+			continue;
+#endif
 		other->takedamage = qtrue;
 	}
 
@@ -919,6 +958,11 @@ void Think_SpawnNewDoorTrigger( gentity_t *ent ) {
 	other->touch = Touch_DoorTrigger;
 	// remember the thinnest axis
 	other->count = best;
+#ifdef ELDER_LOCKED_DOOR
+	if( ent->spawnflags & 48 ) { // locked door: copy door spawnflags to it's trigger
+		other->spawnflags = ent->spawnflags;
+	}
+#endif
 	trap_LinkEntity (other);
 
 	MatchTeam( ent, ent->moverState, level.time );
