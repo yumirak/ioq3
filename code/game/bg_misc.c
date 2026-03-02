@@ -955,6 +955,22 @@ Only in One Flag CTF games
 /* sounds */ "sound/weapons/vulcan/wvulwind.wav"
 	},
 #endif
+#ifdef BASEQZ
+	{
+		// protocol 73 compat
+		"item_spawnarmor",
+		NULL,
+		{ NULL, NULL, NULL, NULL},
+/* icon */		"icons/spawnarmor",
+/* pickup */	"Spawn Armor",
+		0,
+		IT_BAD,  // IT_ ??
+		PW_NONE,  // ?
+/* precache */ "",
+/* sounds */""
+	},
+	},
+#endif
 
 	// end of list marker
 	{NULL}
