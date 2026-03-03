@@ -79,9 +79,12 @@ void TossClientItems( gentity_t *self ) {
 	float		angle;
 	int			i;
 	gentity_t	*drop;
+	int	wp_start;
 
 	// drop the weapon if not a gauntlet or machinegun
 	weapon = self->s.weapon;
+	// allow to drop machinegun in casual ruleset
+	wp_start = g_ruleset.integer == RULESET_CASUAL ? WP_MACHINEGUN : WP_SHOTGUN;
 
 	// make a special check to see if they are changing to a new
 	// weapon that isn't the mg or gauntlet.  Without this, a client
@@ -96,7 +99,7 @@ void TossClientItems( gentity_t *self ) {
 		}
 	}
 
-	if ( weapon > WP_MACHINEGUN && weapon != WP_GRAPPLING_HOOK && 
+	if ( weapon >= wp_start && weapon != WP_GRAPPLING_HOOK &&
 		self->client->ps.ammo[ weapon ] ) {
 		// find the item type for this weapon
 		item = BG_FindItemForWeapon( weapon );
