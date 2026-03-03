@@ -632,15 +632,29 @@ void ClientWeaponSpawn( gentity_t *ent )
 {
 	gclient_t *client;
 	weapon_t  i;
-	client = ent->client;
+	gitem_t *item;
+	int weapon, state, rulset;
 
-	for( i = WP_GAUNTLET; i < WP_NUM_WEAPONS; i++ )
-	{
-		if( g_startingWeapons.integer & ( 1 << ( i - 1 )))
-		{
-			client->ps.stats[STAT_WEAPONS] |= ( 1 << i );
-			client->ps.ammo[i] = g_startingAmmo[i].integer;
-		}
+	client = ent->client;
+	state = level.gameMatchState;
+	rulset = g_ruleset.integer;
+
+	for ( i = 0 ; i < bg_numItems ; i++ ) {
+		if ( !itemRegistered[i] )
+			continue;
+
+		item = &bg_itemlist[i];
+
+		if ( item->giType != IT_WEAPON )
+			continue;
+
+		weapon = item->giTag;
+
+		if ( state == IN_PROGRESS && !( g_startingWeapons.integer & 1 << ( weapon - 1 ) ) )
+			continue;
+
+		client->ps.stats[STAT_WEAPONS] |= 1 << weapon;
+		client->ps.ammo[weapon] = state == IN_PROGRESS ? item->quantity : weapon_ammo_limit[weapon][rulset == RULESET_TURBO];
 	}
 }
 

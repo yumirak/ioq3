@@ -236,7 +236,7 @@ gitem_t	bg_itemlist[] =
 		NULL, NULL, NULL},
 /* icon */		"icons/iconw_gauntlet",
 /* pickup */	"Gauntlet",
-		0,
+		-1,
 		IT_WEAPON,
 		WP_GAUNTLET,
 /* precache */ "",
@@ -267,8 +267,8 @@ gitem_t	bg_itemlist[] =
         { "models/weapons2/machinegun/machinegun.md3", 
 		NULL, NULL, NULL},
 /* icon */		"icons/iconw_machinegun",
-/* pickup */	"Machinegun",
-		40,
+/* pickup */	"Machine Gun",
+		100,
 		IT_WEAPON,
 		WP_MACHINEGUN,
 /* precache */ "",
@@ -364,7 +364,7 @@ gitem_t	bg_itemlist[] =
 		NULL, NULL, NULL},
 /* icon */		"icons/iconw_bfg",
 /* pickup */	"BFG10K",
-		20,
+		10,
 		IT_WEAPON,
 		WP_BFG,
 /* precache */ "",
@@ -380,7 +380,7 @@ gitem_t	bg_itemlist[] =
 		NULL, NULL, NULL},
 /* icon */		"icons/iconw_grapple",
 /* pickup */	"Grappling Hook",
-		0,
+		-1,
 		IT_WEAPON,
 		WP_GRAPPLING_HOOK,
 /* precache */ "",
@@ -400,7 +400,7 @@ gitem_t	bg_itemlist[] =
 		NULL, NULL, NULL},
 /* icon */		"icons/icona_shotgun",
 /* pickup */	"Shells",
-		10,
+		5,
 		IT_AMMO,
 		WP_SHOTGUN,
 /* precache */ "",
@@ -448,7 +448,7 @@ gitem_t	bg_itemlist[] =
 		NULL, NULL, NULL},
 /* icon */		"icons/icona_plasma",
 /* pickup */	"Cells",
-		30,
+		50,
 		IT_AMMO,
 		WP_PLASMAGUN,
 /* precache */ "",
@@ -464,7 +464,7 @@ gitem_t	bg_itemlist[] =
 		NULL, NULL, NULL},
 /* icon */		"icons/icona_lightning",
 /* pickup */	"Lightning",
-		60,
+		50,
 		IT_AMMO,
 		WP_LIGHTNING,
 /* precache */ "",
@@ -496,7 +496,7 @@ gitem_t	bg_itemlist[] =
 		NULL, NULL, NULL},
 /* icon */		"icons/icona_railgun",
 /* pickup */	"Slugs",
-		10,
+		5,
 		IT_AMMO,
 		WP_RAILGUN,
 /* precache */ "",
@@ -512,7 +512,7 @@ gitem_t	bg_itemlist[] =
 		NULL, NULL, NULL},
 /* icon */		"icons/icona_bfg",
 /* pickup */	"Bfg Ammo",
-		15,
+		5,
 		IT_AMMO,
 		WP_BFG,
 /* precache */ "",
@@ -948,7 +948,7 @@ Only in One Flag CTF games
 		NULL, NULL, NULL},
 /* icon */		"icons/iconw_chaingun",
 /* pickup */	"Chaingun",
-		80,
+		100,
 		IT_WEAPON,
 		WP_CHAINGUN,
 /* precache */ "",
@@ -1839,7 +1839,7 @@ int BG_GetHitValueResidual( int value ) {
 int weapon_ammo_limit[WP_NUM_WEAPONS][2] = // 0 - normal; 1 - turbo;
 {
 	{ 0, 0 },		// WP_NONE
-	{ 0, 0 },		// WP_GAUNTLET
+	{ -1, -1 },		// WP_GAUNTLET
 	{ 150, 100 },	// WP_MACHINEGUN
 	{ 25, 20 },		// WP_SHOTGUN
 	{ 25, 20 },		// WP_GRENADE_LAUNCHER
@@ -1848,7 +1848,7 @@ int weapon_ammo_limit[WP_NUM_WEAPONS][2] = // 0 - normal; 1 - turbo;
 	{ 25, 20 },		// WP_RAILGUN
 	{ 150, 100 },	// WP_PLASMAGUN
 	{ 25, 10 },		// WP_BFG
-	{ 0, 0 },		// WP_GRAPPLING_HOOK
+	{ -1, -1 },		// WP_GRAPPLING_HOOK
 #ifdef MISSIONPACK
 	{ 25, 20 },		// WP_NAILGUN
 	{ 5, 5 },		// WP_PROX_LAUNCHER
