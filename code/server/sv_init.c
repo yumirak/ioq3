@@ -687,6 +687,10 @@ void SV_Init (void)
 	sv_strictAuth = Cvar_Get ("sv_strictAuth", "1", CVAR_ARCHIVE );
 #endif
 	sv_banFile = Cvar_Get("sv_banFile", "serverbans.dat", CVAR_ARCHIVE);
+	sv_owner = Cvar_Get ("sv_owner", "", CVAR_SERVERINFO | CVAR_ARCHIVE );
+	sv_location = Cvar_Get ("sv_location", "none", CVAR_SERVERINFO | CVAR_ARCHIVE );
+	sv_ranked = Cvar_Get ("sv_ranked", "0", CVAR_SERVERINFO | CVAR_ARCHIVE );
+	sv_premium = Cvar_Get ("sv_premium", "0", CVAR_SERVERINFO | CVAR_ARCHIVE );
 
 	// initialize bot cvars so they are listed and can be set before loading the botlib
 	SV_BotInitCvars();

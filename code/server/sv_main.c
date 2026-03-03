@@ -62,6 +62,10 @@ cvar_t	*sv_lanForceRate; // dedicated 1 (LAN) server forces local client rates t
 cvar_t	*sv_strictAuth;
 #endif
 cvar_t	*sv_banFile;
+cvar_t	*sv_owner;
+cvar_t	*sv_location;
+cvar_t	*sv_premium;
+cvar_t	*sv_ranked;
 
 serverBan_t serverBans[SERVER_MAXBANS];
 int serverBansCount = 0;
@@ -683,6 +687,10 @@ void SVC_Info( netadr_t from ) {
 	if( *gamedir ) {
 		Info_SetValueForKey( infostring, "game", gamedir );
 	}
+	Info_SetValueForKey( infostring, "owner", sv_owner->string );
+	Info_SetValueForKey( infostring, "location", sv_location->string );
+	Info_SetValueForKey( infostring, "ranked", sv_ranked->string );
+	Info_SetValueForKey( infostring, "premium", sv_premium->string );
 
 	NET_OutOfBandPrint( NS_SERVER, from, "infoResponse\n%s", infostring );
 }

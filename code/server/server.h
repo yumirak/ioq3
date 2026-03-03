@@ -303,6 +303,10 @@ extern	int serverBansCount;
 extern	cvar_t	*sv_voip;
 extern	cvar_t	*sv_voipProtocol;
 #endif
+extern	cvar_t	*sv_owner;
+extern	cvar_t	*sv_location;
+extern	cvar_t	*sv_ranked;
+extern	cvar_t	*sv_premium;
 
 
 //===========================================================
