@@ -180,6 +180,7 @@ void CG_ParseServerinfo( void ) {
 	trap_Cvar_Set("g_blueTeam", cgs.blueTeam);
 
 	trap_Cvar_Set("cg_gametype", va("%i", cgs.gametype));
+	trap_Cvar_Set("cg_loadout", Info_ValueForKey( info, "g_loadout" ));
 }
 
 /*

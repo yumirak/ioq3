@@ -309,6 +309,7 @@ typedef struct {
 	qhandle_t fxBasePic;
   qhandle_t fxPic[7];
 	qhandle_t	crosshairShader[NUM_CROSSHAIRS];
+    qhandle_t	weaponIconShader[MAX_WEAPONS];
 
 } cachedAssets_t;
 

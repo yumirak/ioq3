@@ -23,6 +23,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "g_local.h"
 
+int startingWeaponModificationCount = 0;
+int loadoutModificationCount = 0;
+
 level_locals_t	level;
 
 typedef struct {
@@ -128,6 +131,7 @@ vmCvar_t	g_overtime;
 vmCvar_t	g_flightThrust;
 vmCvar_t	g_maxFlightFuel;
 vmCvar_t	g_flightRefuelRate;
+vmCvar_t	g_loadout;
 
 #if BASEQZ > 934
 vmCvar_t	g_ammoPack;
@@ -135,6 +139,7 @@ vmCvar_t	g_ammoPackHack;
 #endif
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
+vmCvar_t	g_disableLoadout[WP_NUM_WEAPONS];
 
 static cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
@@ -368,6 +373,26 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_ammoPack, "g_ammoPack", "0", CVAR_LATCH, 0, qfalse },
 	{ &g_ammoPackHack, "g_ammoPackHack", "0", CVAR_LATCH, 0, qfalse },
 #endif
+
+	{ &g_loadout, "g_loadout", "0", CVAR_SERVERINFO},
+	{ &g_disableLoadout[WP_GAUNTLET], "cg_disableLoadout_g", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_MACHINEGUN], "cg_disableLoadout_mg", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_SHOTGUN], "cg_disableLoadout_sg", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_GRENADE_LAUNCHER], "cg_disableLoadout_gl", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_ROCKET_LAUNCHER], "cg_disableLoadout_rl", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_LIGHTNING], "cg_disableLoadout_lg", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_RAILGUN], "cg_disableLoadout_rg", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_PLASMAGUN], "cg_disableLoadout_pg", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_BFG], "cg_disableLoadout_bfg", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_GRAPPLING_HOOK], "cg_disableLoadout_gh", "", CVAR_SYSTEMINFO},
+#ifdef MISSIONPACK
+	{ &g_disableLoadout[WP_NAILGUN], "cg_disableLoadout_ng", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_PROX_LAUNCHER], "cg_disableLoadout_pl", "", CVAR_SYSTEMINFO},
+	{ &g_disableLoadout[WP_CHAINGUN], "cg_disableLoadout_cg", "", CVAR_SYSTEMINFO},
+#endif
+#if BASEQZ > 934
+	{ &g_disableLoadout[WP_HEAVY_MACHINEGUN], "cg_disableLoadout_hmg", "", CVAR_SYSTEMINFO},
+#endif
 	{ &g_rankings, "g_rankings", "0", 0, 0, qfalse},
 	{ &g_localTeamPref, "g_localTeamPref", "", 0, 0, qfalse }
 
@@ -554,6 +579,8 @@ void G_RegisterCvars( void ) {
 	}
 
 	level.warmupModificationCount = g_warmup.modificationCount;
+	startingWeaponModificationCount = g_startingWeapons.modificationCount;
+	loadoutModificationCount = g_loadout.modificationCount;
 }
 
 /*
@@ -587,6 +614,17 @@ void G_UpdateCvars( void ) {
 
 	if (remapped) {
 		G_RemapTeamShaders();
+	}
+
+	// if starting weapon changed
+	if ( startingWeaponModificationCount != g_startingWeapons.modificationCount ) {
+		startingWeaponModificationCount = g_startingWeapons.modificationCount;
+		trap_SetConfigstring( CS_STARTING_WEAPONS, va( "%i", g_startingWeapons.integer ) );
+	}
+	// if loadout changed
+	if ( loadoutModificationCount != g_loadout.modificationCount ) {
+		loadoutModificationCount = g_loadout.modificationCount;
+		trap_SetConfigstring( CS_DISABLE_LOADOUT, va( "%s", g_loadout.integer ? "0" : "1" ) );
 	}
 }
 
@@ -687,6 +725,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 
 	SaveRegisteredItems();
+	GetRegisteredWeapon();
 
 	G_Printf ("-----------------------------------\n");
 
@@ -703,6 +742,9 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	G_RemapTeamShaders();
 
 	trap_SetConfigstring( CS_INTERMISSION, "" );
+
+	trap_SetConfigstring( CS_DISABLE_LOADOUT, va( "%s", g_loadout.integer ? "0" : "1" ) );
+	trap_SetConfigstring( CS_STARTING_WEAPONS, va( "%i", g_startingWeapons.integer ) );
 }
 
 

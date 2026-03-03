@@ -872,6 +872,29 @@ void SaveRegisteredItems( void ) {
 	trap_SetConfigstring(CS_ITEMS, string);
 }
 
+void GetRegisteredWeapon( void ) {
+	int		i, wp;
+	gitem_t *item;
+	const char *s;
+
+	for ( i = 0; i < bg_numItems; i++ ) {
+		item = &bg_itemlist[i];
+
+		if ( item->giType != IT_WEAPON )
+			continue;
+
+		wp = item->giTag;
+
+		if ( wp < WP_MACHINEGUN || wp >= WP_NUM_WEAPONS )
+			continue;
+
+		if ( g_loadout.integer ) {
+			s = va( "cg_disableLoadout_%s", bg_weapon_abbrev[wp] );
+			trap_Cvar_Set( s, itemRegistered[i] ? "0" : "1" );
+		}
+	}
+}
+
 /*
 ============
 G_ItemDisabled

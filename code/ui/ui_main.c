@@ -188,6 +188,21 @@ Q_EXPORT intptr_t vmMain( int command, int arg0, int arg1, int arg2, int arg3, i
 }
 
 
+void UI_RegisterWeapon ( void ) {
+	int i, weapon;
+	gitem_t			*item;
+	for ( i = 0 ; i < bg_numItems ; i++ ) {
+		item = &bg_itemlist[i];
+
+		if ( item->giType != IT_WEAPON )
+			continue;
+
+		weapon = item->giTag;
+
+		if ( item->icon )
+			uiInfo.uiDC.Assets.weaponIconShader[weapon] = trap_R_RegisterShaderNoMip( item->icon );
+	}
+}
 
 void AssetCache( void ) {
 	int n;
@@ -218,6 +233,8 @@ void AssetCache( void ) {
 		if(!uiInfo.uiDC.Assets.crosshairShader[n])
 			uiInfo.uiDC.Assets.crosshairShader[n] = trap_R_RegisterShaderNoMip( va("gfx/2d/crosshair%d", n + 1 ) );
 	}
+
+	UI_RegisterWeapon();
 
 	uiInfo.newHighScoreSound = trap_S_RegisterSound("sound/feedback/voc_newhighscore.wav", qfalse);
 }
@@ -1977,6 +1994,43 @@ static void UI_DrawGLInfo(rectDef_t *rect, float scale, vec4_t color, int textSt
 
 }
 
+static void UI_DrawStartingWeapon(rectDef_t *rect, float scale, vec4_t color, int textStyle) {
+	int i, offset, iconsize, weapon, noloadout;
+	char info[32];
+	offset = 0;
+	iconsize = 16;
+
+	trap_GetConfigString( CS_STARTING_WEAPONS, info, sizeof(info) );
+	weapon = atoi( info );
+	trap_GetConfigString( CS_DISABLE_LOADOUT, info, sizeof(info) );
+	noloadout = atoi( info );
+
+	for( i = WP_GAUNTLET; i < WP_NUM_WEAPONS; i++ ) {
+		if ( !uiInfo.uiDC.Assets.weaponIconShader[i] )
+			continue;
+		if ( !( weapon & 1 << ( i - 1 ) ) )
+			continue;
+
+		UI_DrawHandlePic( rect->x + offset, rect->y, iconsize, iconsize, uiInfo.uiDC.Assets.weaponIconShader[i]);
+		offset += iconsize + 2;
+	}
+
+	if ( !noloadout ) {
+		char wp[3];
+		trap_Cvar_VariableStringBuffer( "wp", wp, sizeof(wp) );
+
+		offset += 5;
+		Text_Paint(rect->x + offset, rect->y + (rect->h * 0.6), scale, color, "+", 0, 0, textStyle);
+
+		for ( i = WP_SHOTGUN; i < WP_NUM_WEAPONS ; i++ ) {
+			if ( !strcmp( wp, bg_weapon_abbrev[i] ) ) {
+				offset += iconsize;
+				UI_DrawHandlePic( rect->x + offset, rect->y, iconsize, iconsize, uiInfo.uiDC.Assets.weaponIconShader[i]);
+			}
+		}
+	}
+}
+
 // FIXME: table drive
 //
 static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int ownerDrawFlags2, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle) {
@@ -2166,6 +2220,13 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 		case UI_KEYBINDSTATUS:
 			UI_DrawKeyBindStatus(&rect,scale, color, textStyle);
 			break;
+		// Extend
+#ifdef UI_STARTING_WEAPONS
+		case UI_STARTING_WEAPONS:
+			UI_DrawStartingWeapon(&rect, scale, color, textStyle);
+			break;
+#endif
+
     default:
       break;
   }
@@ -2174,8 +2235,29 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 
 static qboolean UI_OwnerDrawVisible(int flags, int flags2) {
 	qboolean vis = qtrue;
+	char info[32];
 
 	while (flags) {
+// Extend
+#ifdef UI_SHOW_IF_LOADOUT_ENABLED
+		if (flags & UI_SHOW_IF_LOADOUT_ENABLED) {
+			trap_GetConfigString( CS_DISABLE_LOADOUT, info, sizeof(info) );
+			if ( atoi( info ) ) {
+				vis = qfalse;
+			}
+			flags &= ~UI_SHOW_IF_LOADOUT_ENABLED;
+		}
+#endif
+#ifdef UI_SHOW_IF_LOADOUT_DISABLED
+		if (flags & UI_SHOW_IF_LOADOUT_DISABLED) {
+			trap_GetConfigString( CS_DISABLE_LOADOUT, info, sizeof(info) );
+			if ( !atoi( info ) ) {
+				vis = qfalse;
+			}
+			flags &= ~UI_SHOW_IF_LOADOUT_DISABLED;
+		}
+#endif
+// end Extend
 
 		if (flags & UI_SHOW_FFA) {
 			if (trap_Cvar_VariableValue("g_gametype") != GT_FFA) {

@@ -633,11 +633,10 @@ void ClientWeaponSpawn( gentity_t *ent )
 	gclient_t *client;
 	weapon_t  i;
 	gitem_t *item;
-	int weapon, state, rulset;
+	int weapon, state;
 
 	client = ent->client;
 	state = level.gameMatchState;
-	rulset = g_ruleset.integer;
 
 	for ( i = 0 ; i < bg_numItems ; i++ ) {
 		if ( !itemRegistered[i] )
@@ -654,7 +653,25 @@ void ClientWeaponSpawn( gentity_t *ent )
 			continue;
 
 		client->ps.stats[STAT_WEAPONS] |= 1 << weapon;
-		client->ps.ammo[weapon] = state == IN_PROGRESS ? item->quantity : weapon_ammo_limit[weapon][rulset == RULESET_TURBO];
+		client->ps.ammo[weapon] = (state == IN_PROGRESS) ? g_startingAmmo[weapon].integer : weapon_ammo_limit[weapon][0];
+	}
+
+	if ( g_loadout.integer && state == IN_PROGRESS ) {
+		char *wp;
+		char userinfo[MAX_INFO_STRING];
+
+		trap_GetUserinfo( client->ps.clientNum, userinfo, sizeof( userinfo ));
+		wp = Info_ValueForKey( userinfo, "wp" );
+
+		for ( weapon = WP_MACHINEGUN; weapon < WP_NUM_WEAPONS; weapon++ ) {
+			if ( g_disableLoadout[weapon].integer )
+				continue;
+
+			if ( !strcmp( wp, bg_weapon_abbrev[weapon] ) ) {
+				client->ps.stats[STAT_WEAPONS] |= 1 << weapon;
+				client->ps.ammo[weapon] += g_startingAmmo[weapon].integer;
+			}
+		}
 	}
 }
 

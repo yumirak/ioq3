@@ -853,6 +853,7 @@ extern vec3_t bg_playerMaxs;
 extern size_t hitsound_value[4];
 extern gametypeDesc_t gametype_desc[];
 extern int weapon_ammo_limit[WP_NUM_WEAPONS][2];
+extern const char *bg_weapon_abbrev[WP_NUM_WEAPONS];
 
 void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
 void	BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result );

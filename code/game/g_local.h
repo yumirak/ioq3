@@ -468,6 +468,7 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace);
 void ClearRegisteredItems( void );
 void RegisterItem( gitem_t *item );
 void SaveRegisteredItems( void );
+void GetRegisteredWeapon( void );
 
 //
 // g_utils.c
@@ -794,11 +795,14 @@ extern	vmCvar_t	g_dropCmds;
 extern	vmCvar_t	g_flightThrust;
 extern	vmCvar_t	g_maxFlightFuel;
 extern	vmCvar_t	g_flightRefuelRate;
+extern	vmCvar_t	g_loadout;
 
 #if BASEQZ > 934
 extern	vmCvar_t	g_ammoPack;
 extern	vmCvar_t	g_ammoPackHack;
 #endif
+
+extern	vmCvar_t	g_disableLoadout[WP_NUM_WEAPONS];
 
 void	trap_Print( const char *text );
 void	trap_Error( const char *text ) Q_NO_RETURN;

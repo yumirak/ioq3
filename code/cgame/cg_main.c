@@ -264,8 +264,11 @@ vmCvar_t	cg_drawItemPickups;
 vmCvar_t	cg_buzzerSound;
 vmCvar_t	cg_training;
 vmCvar_t	g_gameState;
+vmCvar_t	cg_wp;
+vmCvar_t	cg_loadout;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
+vmCvar_t	cg_disableLoadout[WP_NUM_WEAPONS];
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -479,6 +482,27 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_training, "g_training", "0", CVAR_ROM},
 
 	{ &g_gameState, "g_gameState", "PRE_GAME", CVAR_SERVERINFO },
+
+	{ &cg_wp, "wp", "", CVAR_USERINFO },
+	{ &cg_loadout, "cg_loadout", "", CVAR_ROM },
+	{ &cg_disableLoadout[WP_GAUNTLET], "cg_disableLoadout_g", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_MACHINEGUN], "cg_disableLoadout_mg", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_SHOTGUN], "cg_disableLoadout_sg", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_GRENADE_LAUNCHER], "cg_disableLoadout_gl", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_ROCKET_LAUNCHER], "cg_disableLoadout_rl", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_LIGHTNING], "cg_disableLoadout_lg", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_RAILGUN], "cg_disableLoadout_rg", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_PLASMAGUN], "cg_disableLoadout_pg", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_BFG], "cg_disableLoadout_bfg", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_GRAPPLING_HOOK], "cg_disableLoadout_gh", "", CVAR_ROM},
+#ifdef MISSIONPACK
+	{ &cg_disableLoadout[WP_NAILGUN], "cg_disableLoadout_ng", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_PROX_LAUNCHER], "cg_disableLoadout_pl", "", CVAR_ROM},
+	{ &cg_disableLoadout[WP_CHAINGUN], "cg_disableLoadout_cg", "", CVAR_ROM},
+#endif
+#if BASEQZ > 934
+	{ &cg_disableLoadout[WP_HEAVY_MACHINEGUN], "cg_disableLoadout_hmg", "", CVAR_ROM},
+#endif
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 

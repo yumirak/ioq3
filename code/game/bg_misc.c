@@ -50,6 +50,16 @@ gametypeDesc_t gametype_desc[] = {
 
 size_t hitsound_value[4] = { 0, 64, 128, 192 };
 
+const char *bg_weapon_abbrev[WP_NUM_WEAPONS] =
+{ 	"", "g", "mg", "sg", "gl", "rl", "lg", "rg", "pg", "bfg", "gh",
+#ifdef MISSIONPACK
+	"ng", "pl", "cg",
+#endif
+#if BASEQZ > 934
+	"hmg",
+#endif
+};
+
 /*QUAKED item_***** ( 0 0 0 ) (-16 -16 -16) (16 16 16) suspended
 DO NOT USE THIS CLASS, IT JUST HOLDS GENERAL INFORMATION.
 The suspended flag will allow items to hang in the air, otherwise they are dropped to the next surface.
