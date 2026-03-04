@@ -2031,6 +2031,15 @@ static void UI_DrawStartingWeapon(rectDef_t *rect, float scale, vec4_t color, in
 	}
 }
 
+static void UI_DrawServerOwner(rectDef_t *rect, float scale, vec4_t color, int textStyle) {
+	char owner[MAX_INFO_STRING];
+	const char *s;
+
+	trap_GetConfigString( CS_SERVERINFO, owner, sizeof(owner) );
+	s = Info_ValueForKey( owner, "sv_owner" );
+
+	Text_Paint (rect->x, rect->y, scale, color, strlen(s) ? s : "Quake Live", 0, 0, textStyle);
+}
 // FIXME: table drive
 //
 static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y, int ownerDraw, int ownerDrawFlags, int ownerDrawFlags2, int align, float special, float scale, vec4_t color, qhandle_t shader, int textStyle) {
@@ -2224,6 +2233,11 @@ static void UI_OwnerDraw(float x, float y, float w, float h, float text_x, float
 #ifdef UI_STARTING_WEAPONS
 		case UI_STARTING_WEAPONS:
 			UI_DrawStartingWeapon(&rect, scale, color, textStyle);
+			break;
+#endif
+#ifdef UI_SERVER_OWNER
+	case UI_SERVER_OWNER:
+			UI_DrawServerOwner(&rect, scale, color, textStyle);
 			break;
 #endif
 
