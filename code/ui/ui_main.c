@@ -2271,6 +2271,33 @@ static qboolean UI_OwnerDrawVisible(int flags, int flags2) {
 			flags &= ~UI_SHOW_IF_LOADOUT_DISABLED;
 		}
 #endif
+#ifdef UI_SHOW_IF_NOT_INTERMISSION
+		if (flags & UI_SHOW_IF_NOT_INTERMISSION) {
+			trap_GetConfigString( CS_INTERMISSION, info, sizeof(info) );
+			if ( atoi( info ) ) {
+				vis = qfalse;
+			}
+			flags &= ~UI_SHOW_IF_NOT_INTERMISSION;
+		}
+#endif
+#ifdef UI_SHOW_IF_WARMUP
+		if (flags & UI_SHOW_IF_WARMUP) {
+			trap_GetConfigString( CS_WARMUP, info, sizeof(info) );
+			if ( !atoi( info ) ) {
+				vis = qfalse;
+			}
+			flags &= ~UI_SHOW_IF_WARMUP;
+		}
+#endif
+#ifdef UI_SHOW_IF_NOT_WARMUP
+		if (flags & UI_SHOW_IF_NOT_WARMUP) {
+			trap_GetConfigString( CS_WARMUP, info, sizeof(info) );
+			if ( atoi( info ) ) {
+				vis = qfalse;
+			}
+			flags &= ~UI_SHOW_IF_NOT_WARMUP;
+		}
+#endif
 // end Extend
 
 		if (flags & UI_SHOW_FFA) {
