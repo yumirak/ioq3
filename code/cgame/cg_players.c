@@ -2687,3 +2687,11 @@ void CG_ResetPlayerEntity( centity_t *cent ) {
 	}
 }
 
+// RUN EVERY FRAME
+void CG_CurrentPlayerStatus( void ) {
+	qboolean spectate = cgs.clientinfo[cg.clientNum].team == TEAM_SPECTATOR;
+	if ( cg.spectating != spectate ) {
+		cg.spectating = cgs.clientinfo[cg.clientNum].team == TEAM_SPECTATOR;
+		trap_Cvar_Set( "cg_spectating", cg.spectating ? "1": "0" );
+	}
+}

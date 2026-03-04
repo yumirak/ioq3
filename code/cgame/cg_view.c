@@ -910,6 +910,8 @@ void CG_DrawActiveFrame( int serverTime, stereoFrame_t stereoView, qboolean demo
 		}
 	}
 
+	CG_CurrentPlayerStatus();
+
 	// actually issue the rendering calls
 	CG_DrawActive( stereoView );
 

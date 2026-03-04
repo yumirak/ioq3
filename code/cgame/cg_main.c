@@ -464,7 +464,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_gametype, "cg_gametype", "0", CVAR_ROM | CVAR_ARCHIVE },
 	{ &cg_compMode, "cg_compMode", "0", CVAR_ARCHIVE },
 	{ &cg_compHud, "cg_compHud", "0", CVAR_ARCHIVE },
-	{ &cg_spectating, "cg_specOnly", "0", CVAR_ROM },
+	{ &cg_specOnly, "cg_specOnly", "0", CVAR_ROM },
 	{ &cg_spectating, "cg_spectating", "0", CVAR_ROM },
 	{ &cg_placebo, "cg_placebo", "0", CVAR_ARCHIVE },
 	{ &cg_drawSpecMessages, "cg_drawSpecMessages", "1", CVAR_ARCHIVE },
