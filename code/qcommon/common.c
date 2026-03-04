@@ -2796,10 +2796,10 @@ void Com_Init( char *commandLine ) {
 
 	// Keep for compatibility with old mods / mods that haven't updated yet.
 	if(com_legacyprotocol->integer > 0)
-		Cvar_Get("protocol", com_legacyprotocol->string, CVAR_ROM);
+		Cvar_Get("protocol", com_legacyprotocol->string, CVAR_ROM | CVAR_SERVERINFO );
 	else
 #endif
-		Cvar_Get("protocol", com_protocol->string, CVAR_ROM);
+		Cvar_Get("protocol", com_protocol->string, CVAR_ROM | CVAR_SERVERINFO );
 
 #ifndef DEDICATED
 	con_autochat = Cvar_Get("con_autochat", "1", CVAR_ARCHIVE);
