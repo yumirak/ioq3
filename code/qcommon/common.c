@@ -2753,9 +2753,8 @@ void Com_Init( char *commandLine ) {
 	// browser-driven event loop. So default throttling to off.
 	com_maxfps = Cvar_Get ("com_maxfps", "0", CVAR_ARCHIVE);
 #else
-	com_maxfps = Cvar_Get ("com_maxfps", "85", CVAR_ARCHIVE);
+	com_maxfps = Cvar_Get ("com_maxfps", "125", CVAR_ARCHIVE);
 #endif
-	com_blood = Cvar_Get ("com_blood", "1", CVAR_ARCHIVE);
 
 	com_logfile = Cvar_Get ("logfile", "0", CVAR_TEMP );
 
@@ -2802,7 +2801,7 @@ void Com_Init( char *commandLine ) {
 		Cvar_Get("protocol", com_protocol->string, CVAR_ROM | CVAR_SERVERINFO );
 
 #ifndef DEDICATED
-	con_autochat = Cvar_Get("con_autochat", "1", CVAR_ARCHIVE);
+	con_autochat = Cvar_Get("cl_allowConsoleChat", "0", CVAR_ARCHIVE);
 #endif
 
 	Sys_Init();
