@@ -1438,6 +1438,7 @@ void SV_UserinfoChanged( client_t *cl ) {
 	}
 
 	// snaps command
+#ifdef ENABLE_SNAPS
 	val = Info_ValueForKey (cl->userinfo, "snaps");
 	
 	if(strlen(val))
@@ -1453,6 +1454,9 @@ void SV_UserinfoChanged( client_t *cl ) {
 	}
 	else
 		i = 50;
+#else
+	i = 1000 / Com_Clamp( 1, 1000, sv_fps->integer );
+#endif
 
 	if(i != cl->snapshotMsec)
 	{
