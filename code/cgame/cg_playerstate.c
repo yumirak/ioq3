@@ -172,6 +172,8 @@ void CG_Respawn( void ) {
 
 	// select the weapon the server says we are using
 	cg.weaponSelect = cg.snap->ps.weapon;
+
+	trap_SendClientCommand( va("fov %i", cg_fov.integer) );
 }
 
 extern char *eventnames[];

@@ -3710,6 +3710,7 @@ void CL_Init( void ) {
 #endif
 
 	cl_demoRecordMessage = Cvar_Get( "cl_demoRecordMessage", "1", CVAR_ARCHIVE);
+	Cvar_Get ("fov", "", CVAR_USERINFO | CVAR_ROM );
 
 	// cgame might not be initialized before menu is used
 	Cvar_Get ("cg_viewsize", "100", CVAR_ARCHIVE );

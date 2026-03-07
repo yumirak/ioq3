@@ -1898,6 +1898,18 @@ void Cmd_Drop_f( gentity_t *ent, int droptype ) {
 	}
 
 }
+
+void Cmd_Fov_f (gentity_t *ent) {
+	int fov;
+
+	if ( !ent || !ent->client ) {
+		return;
+	}
+
+	fov = atoi( ConcatArgs( 1 ) );
+	ent->client->ps.fov = Com_Clamp( 10, 160, fov );
+}
+
 /*
 =================
 ClientCommand
@@ -1994,6 +2006,11 @@ void ClientCommand( int clientNum ) {
 	}
 	if( Q_stricmp( cmd, "dropflag" ) == 0 ) {
 		Cmd_Drop_f( ent, ITEMDROP_FLAG );
+		return;
+	}
+
+	if( Q_stricmp( cmd, "fov" ) == 0 ) {
+		Cmd_Fov_f( ent );
 		return;
 	}
 

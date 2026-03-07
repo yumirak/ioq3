@@ -34,6 +34,7 @@ displayContextDef_t cgDC;
 #endif
 
 int forceModelModificationCount = -1;
+int fovModificationCount = -1;
 
 void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum );
 void CG_Shutdown( void );
@@ -266,6 +267,7 @@ vmCvar_t	cg_training;
 vmCvar_t	g_gameState;
 vmCvar_t	cg_wp;
 vmCvar_t	cg_loadout;
+vmCvar_t	cg_specFov;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 vmCvar_t	cg_disableLoadout[WP_NUM_WEAPONS];
@@ -498,6 +500,7 @@ static cvarTable_t cvarTable[] = {
 #if BASEQZ > 934
 	{ &cg_disableLoadout[WP_HEAVY_MACHINEGUN], "cg_disableLoadout_hmg", "", CVAR_ROM | CVAR_SYSTEMINFO },
 #endif
+	{ &cg_specFov, "cg_specFov", "1", CVAR_ARCHIVE },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
@@ -523,6 +526,7 @@ void CG_RegisterCvars( void ) {
 	cgs.localServer = atoi( var );
 
 	forceModelModificationCount = cg_forceModel.modificationCount;
+	fovModificationCount = cg_fov.modificationCount;
 
 	trap_Cvar_Register(NULL, "model", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
 	trap_Cvar_Register(NULL, "headmodel", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
@@ -580,6 +584,11 @@ void CG_UpdateCvars( void ) {
 	if ( forceModelModificationCount != cg_forceModel.modificationCount ) {
 		forceModelModificationCount = cg_forceModel.modificationCount;
 		CG_ForceModelChange();
+	}
+
+	if ( fovModificationCount != cg_fov.modificationCount ) {
+		fovModificationCount = cg_fov.modificationCount;
+		trap_SendClientCommand( va("fov %i", cg_fov.integer) );
 	}
 }
 

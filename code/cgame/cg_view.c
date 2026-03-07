@@ -439,12 +439,16 @@ void CG_ZoomIn( void )
 {
 	cg.zoomed = qtrue;
 	cg.zoomTime = cg.time;
+	trap_SendClientCommand( va("fov %i", cg_zoomFov.integer) );
+	// trap_Cvar_Set ("fov", va("%i", cg_zoomFov.integer) ); // not working
 }
 
 void CG_ZoomOut( void )
 {
 	cg.zoomed = qfalse;
 	cg.zoomTime = cg.time;
+	trap_SendClientCommand( va("fov %i", cg_fov.integer) );
+	// trap_Cvar_Set ("fov", va("%i", cg_fov.integer));
 }
 
 void CG_ZoomDown_f( void ) { 
@@ -456,8 +460,9 @@ void CG_ZoomDown_f( void ) {
 	if ( cg.zoomed ) {
 		return;
 	}
-	cg.zoomed = qtrue;
-	cg.zoomTime = cg.time;
+	// cg.zoomed = qtrue;
+	// cg.zoomTime = cg.time;
+	CG_ZoomIn();
 }
 
 void CG_ZoomUp_f( void ) { 
@@ -468,8 +473,9 @@ void CG_ZoomUp_f( void ) {
 	if ( !cg.zoomed ) {
 		return;
 	}
-	cg.zoomed = qfalse;
-	cg.zoomTime = cg.time;
+	// cg.zoomed = qfalse;
+	// cg.zoomTime = cg.time;
+	CG_ZoomOut();
 }
 
 
@@ -526,6 +532,10 @@ static int CG_CalcFov( void ) {
 		} else { //
 			fov_x = cg.zoomed ? fov_x + f * ( zoomFov - fov_x ) : zoomFov + f * ( fov_x - zoomFov );
 		}
+	}
+
+	if ( ( cg.spectating || cg.demoPlayback ) && cg_specFov.integer && cg.predictedPlayerState.fov > 0 ) {
+		fov_x = cg.predictedPlayerState.fov;
 	}
 
 	{
