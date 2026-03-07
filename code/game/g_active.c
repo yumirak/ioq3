@@ -942,6 +942,11 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.pmove_fixed = pmove_fixed.integer | client->pers.pmoveFixed;
 	pm.pmove_msec = pmove_msec.integer;
 
+	// protocol 91
+	ent->client->ps.forwardmove = pm.cmd.forwardmove;
+	ent->client->ps.rightmove = pm.cmd.rightmove;
+	ent->client->ps.upmove = pm.cmd.upmove;
+
 	VectorCopy( client->ps.origin, client->oldOrigin );
 
 #ifdef MISSIONPACK
