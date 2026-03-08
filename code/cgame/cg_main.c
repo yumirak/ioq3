@@ -264,7 +264,6 @@ vmCvar_t	cg_crosshairHitTime;
 vmCvar_t	cg_drawItemPickups;
 vmCvar_t	cg_buzzerSound;
 vmCvar_t	cg_training;
-vmCvar_t	g_gameState;
 vmCvar_t	cg_wp;
 vmCvar_t	cg_loadout;
 vmCvar_t	cg_specFov;
@@ -477,8 +476,6 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_announcerRewardsVO, "cg_announcerRewardsVO", "1", CVAR_ARCHIVE },
 	{ &cg_buzzerSound, "cg_buzzerSound", "1", CVAR_ARCHIVE},
 	{ &cg_training, "g_training", "0", CVAR_ROM | CVAR_SYSTEMINFO },
-
-	{ &g_gameState, "g_gameState", "PRE_GAME", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
 
 	{ &cg_wp, "wp", "", CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &cg_loadout, "cg_loadout", "", CVAR_ROM },

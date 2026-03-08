@@ -265,7 +265,7 @@ static void CG_TouchItem( centity_t *cent ) {
 		return;
 	}
 
-	if( g_gameState.string[0] == 'C' )
+	if( cg.predictedPlayerState.pm_flags & PMF_NO_FIRING )
 		return;
 
 	if ( !BG_PlayerTouchesItem( &cg.predictedPlayerState, &cent->currentState, cg.time ) ) {

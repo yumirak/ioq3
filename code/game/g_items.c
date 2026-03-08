@@ -427,7 +427,7 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 		return;
 	if (other->health < 1)
 		return;		// dead people can't pickup
-	if (level.gameMatchState == COUNT_DOWN ) // if( g_gameState.string[0] == 'C' )
+	if (other->client->ps.pm_flags & PMF_NO_FIRING )
 		return;
 
 	// the same pickup rules are used for client side and server side
