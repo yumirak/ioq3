@@ -796,6 +796,7 @@ extern	vmCvar_t	g_flightThrust;
 extern	vmCvar_t	g_maxFlightFuel;
 extern	vmCvar_t	g_flightRefuelRate;
 extern	vmCvar_t	g_loadout;
+extern	vmCvar_t	pmove_cvar[PMV_NUM_MAX];
 
 #if BASEQZ > 934
 extern	vmCvar_t	g_ammoPack;

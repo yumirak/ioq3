@@ -1360,6 +1360,7 @@ extern	vmCvar_t		cg_crosshairHitTime;
 extern	vmCvar_t		cg_drawItemPickups;
 extern	vmCvar_t		cg_buzzerSound;
 extern	vmCvar_t		cg_specFov;
+extern	vmCvar_t		pmove_cvar[PMV_NUM_MAX];
 
 //
 // cg_main.c

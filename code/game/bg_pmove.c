@@ -33,17 +33,10 @@ pml_t		pml;
 // movement parameters
 float	pm_stopspeed = 100.0f;
 float	pm_duckScale = 0.25f;
-float	pm_swimScale = 0.50f;
 
-float	pm_accelerate = 10.0f;
-float	pm_airaccelerate = 1.0f;
 float	pm_wateraccelerate = 4.0f;
 float	pm_flyaccelerate = 8.0f;
-
-float	pm_friction = 6.0f;
 float	pm_waterfriction = 1.0f;
-float	pm_flightfriction = 3.0f;
-float	pm_spectatorfriction = 5.0f;
 
 int		c_pmove = 0;
 
@@ -197,7 +190,7 @@ static void PM_Friction( void ) {
 			// if getting knocked back, no friction
 			if ( ! (pm->ps->pm_flags & PMF_TIME_KNOCKBACK) ) {
 				control = speed < pm_stopspeed ? pm_stopspeed : speed;
-				drop += control*pm_friction*pml.frametime;
+				drop += control* pm->pmove_cvar[PMV_WALK_FRICTION] *pml.frametime;
 			}
 		}
 	}
@@ -215,7 +208,7 @@ static void PM_Friction( void ) {
 #endif
 
 	if ( pm->ps->pm_type == PM_SPECTATOR) {
-		drop += speed*pm_spectatorfriction*pml.frametime;
+		drop += speed*pm->pmove_cvar[PMV_WALK_FRICTION]*pml.frametime;
 	}
 
 	// scale the velocity
@@ -379,7 +372,7 @@ static qboolean PM_CheckJump( void ) {
 	pm->ps->pm_flags |= PMF_JUMP_HELD;
 
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
-	pm->ps->velocity[2] = JUMP_VELOCITY;
+	pm->ps->velocity[2] = pm->pmove_cvar[PMV_JUMP_VELOCITY];
 	PM_AddEvent( EV_JUMP );
 
 	if ( pm->cmd.forwardmove >= 0 ) {
@@ -515,8 +508,8 @@ static void PM_WaterMove( void ) {
 	VectorCopy (wishvel, wishdir);
 	wishspeed = VectorNormalize(wishdir);
 
-	if ( wishspeed > pm->ps->speed * pm_swimScale ) {
-		wishspeed = pm->ps->speed * pm_swimScale;
+	if ( wishspeed > pm->ps->speed * pm->pmove_cvar[PMV_WATER_SWIM_SCALE] ) {
+		wishspeed = pm->ps->speed * pm->pmove_cvar[PMV_WATER_SWIM_SCALE];
 	}
 
 	PM_Accelerate (wishdir, wishspeed, pm_wateraccelerate);
@@ -635,7 +628,7 @@ static void PM_AirMove( void ) {
 	wishspeed *= scale;
 
 	// not on ground, so little effect on velocity
-	PM_Accelerate (wishdir, wishspeed, pm_airaccelerate);
+	PM_Accelerate (wishdir, wishspeed, pm->pmove_cvar[PMV_AIR_ACCELERATION]);
 
 	// we may have a ground plane that is very steep, even
 	// though we don't have a groundentity
@@ -677,7 +670,7 @@ static void PM_GrappleMove( void ) {
 	if (vlen <= 100)
 		VectorScale(vel, 10 * vlen, vel);
 	else
-		VectorScale(vel, 800, vel);
+		VectorScale(vel, pm->pmove_cvar[PMV_VELOCITY_GRAPPLE], vel);
 
 	VectorCopy(vel, pm->ps->velocity);
 
@@ -762,7 +755,7 @@ static void PM_WalkMove( void ) {
 		float	waterScale;
 
 		waterScale = pm->waterlevel / 3.0;
-		waterScale = 1.0 - ( 1.0 - pm_swimScale ) * waterScale;
+		waterScale = 1.0 - ( 1.0 - pm->pmove_cvar[PMV_WATER_SWIM_SCALE] ) * waterScale;
 		if ( wishspeed > pm->ps->speed * waterScale ) {
 			wishspeed = pm->ps->speed * waterScale;
 		}
@@ -771,9 +764,9 @@ static void PM_WalkMove( void ) {
 	// when a player gets hit, they temporarily lose
 	// full control, which allows them to be moved a bit
 	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) {
-		accelerate = pm_airaccelerate;
+		accelerate = pm->pmove_cvar[PMV_AIR_ACCELERATION];
 	} else {
-		accelerate = pm_accelerate;
+		accelerate = pm->pmove_cvar[PMV_WALK_ACCELERATION];
 	}
 
 	PM_Accelerate (wishdir, wishspeed, accelerate);
@@ -862,7 +855,7 @@ static void PM_NoclipMove( void ) {
 	{
 		drop = 0;
 
-		friction = pm_friction*1.5;	// extra friction
+		friction = pm->pmove_cvar[PMV_WALK_FRICTION]*1.5;	// extra friction
 		control = speed < pm_stopspeed ? pm_stopspeed : speed;
 		drop += control*friction*pml.frametime;
 
@@ -889,7 +882,7 @@ static void PM_NoclipMove( void ) {
 	wishspeed = VectorNormalize(wishdir);
 	wishspeed *= scale;
 
-	PM_Accelerate( wishdir, wishspeed, pm_accelerate );
+	PM_Accelerate( wishdir, wishspeed, pm->pmove_cvar[PMV_WALK_ACCELERATION] );
 
 	// move
 	VectorMA (pm->ps->origin, pml.frametime, pm->ps->velocity, pm->ps->origin);
@@ -1488,7 +1481,7 @@ static void PM_BeginWeaponChange( int weapon ) {
 
 	PM_AddEvent( EV_CHANGE_WEAPON );
 	pm->ps->weaponstate = WEAPON_DROPPING;
-	pm->ps->weaponTime += 200;
+	pm->ps->weaponTime += pm->pmove_cvar[PMV_WEAPON_DROP_TIME];
 	PM_StartTorsoAnim( TORSO_DROP );
 }
 
@@ -1512,7 +1505,7 @@ static void PM_FinishWeaponChange( void ) {
 
 	pm->ps->weapon = weapon;
 	pm->ps->weaponstate = WEAPON_RAISING;
-	pm->ps->weaponTime += 250;
+	pm->ps->weaponTime += pm->pmove_cvar[PMV_WEAPON_RAISE_TIME];
 	PM_StartTorsoAnim( TORSO_RAISE );
 }
 

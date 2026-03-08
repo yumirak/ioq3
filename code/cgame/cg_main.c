@@ -270,6 +270,7 @@ vmCvar_t	cg_specFov;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 vmCvar_t	cg_disableLoadout[WP_NUM_WEAPONS];
+vmCvar_t	pmove_cvar[PMV_NUM_MAX];
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -498,6 +499,45 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_disableLoadout[WP_HEAVY_MACHINEGUN], "cg_disableLoadout_hmg", "", CVAR_ROM | CVAR_SYSTEMINFO },
 #endif
 	{ &cg_specFov, "cg_specFov", "1", CVAR_ARCHIVE },
+
+
+	{ &pmove_cvar[PMV_AIR_ACCELERATION], "pmove_AirAccel", "1.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_AIRCONTROL], "pmove_AirControl", "0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_AIRSTEP_FRICTION], "pmove_AirStepFriction", "0.03", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_AIRSTEPS], "pmove_AirSteps", "1", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_AIRSTOP_ACCEL], "pmove_AirStopAccel", "1.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_AUTOHOP], "pmove_AutoHop", "0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_BUNNYHOP], "pmove_BunnyHop", "0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_CHAINJUMP], "pmove_ChainJump", "0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_CHAINJUMP_VELOCITY], "pmove_ChainJumpVelocity", "110.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_CIRCLE_STRAFE_FRICTION], "pmove_CircleStrafeFriction", "6.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_CROUCHSLIDE], "pmove_CrouchSlide", "0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_CROUCHSLIDE_FRICTION], "pmove_CrouchSlideFriction", "0.5", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_CROUCHSLIDE_TIME], "pmove_CrouchSlideTime", "2000", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_CROUCH_STEP_JUMP], "pmove_CrouchStepJump", "1", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_DOUBLE_JUMP], "pmove_DoubleJump", "0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_JUMP_TIME_DELTA_MIN], "pmove_JumpTimeDeltaMin", "100.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_JUMP_VELOCITY], "pmove_JumpVelocity", "275.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_JUMP_VELOCITY_MAX], "pmove_JumpVelocityMax", "700.0", CVAR_SYSTEMINFO}, // Ramp Jump
+	// { &pmove_cvar[PMV_JUMP_VELOCITY_SCALE_ADD], "pmove_JumpVelocityScaleAdd", "0.4", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES], "pmove_JumpVelocityTimeThreshold", "500.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES_OFFSET], "pmove_JumpVelocityTimeThresholdOffset", "0.6", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_NO_PLAYER_CLIP], "pmove_noPlayerClip", "0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_RAMP_JUMP], "pmove_RampJump", "0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_RAMP_JUMP_SCALE], "pmove_RampJumpScale", "1.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_STEP_HEIGHT], "pmove_StepHeight", "22.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_STEP_JUMP], "pmove_StepJump", "1", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_STEP_JUMP_VELOCITY], "pmove_StepJumpVelocity", "48.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_STRAFE_ACCELERATION], "pmove_StrafeAccel", "1.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_VELOCITY_GRAPPLE], "pmove_velocity_gh", "800.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_WALK_ACCELERATION], "pmove_WalkAccel", "10.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_WALK_FRICTION], "pmove_WalkFriction", "6.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_WATER_SWIM_SCALE], "pmove_WaterSwimScale", "0.6", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_WATER_WADE_SCALE], "pmove_WaterWadeScale", "0.8", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_WEAPON_DROP_TIME], "pmove_WeaponDropTime", "200.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_WEAPON_RAISE_TIME], "pmove_WeaponRaiseTime", "200.0", CVAR_SYSTEMINFO},
+	// { &pmove_cvar[PMV_WISH_SPEED], "pmove_WishSpeed", "400.0", CVAR_SYSTEMINFO},
+
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 

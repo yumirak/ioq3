@@ -777,6 +777,7 @@ void ClientThink_real( gentity_t *ent ) {
 	int			oldEventSequence;
 	int			msec;
 	usercmd_t	*ucmd;
+	int i;
 
 	client = ent->client;
 
@@ -941,6 +942,10 @@ void ClientThink_real( gentity_t *ent ) {
 
 	pm.pmove_fixed = pmove_fixed.integer | client->pers.pmoveFixed;
 	pm.pmove_msec = pmove_msec.integer;
+
+	for ( i = 0; i < PMV_NUM_MAX; i++ ) {
+		pm.pmove_cvar[i] = fabs(pmove_cvar[i].value);
+	}
 
 	// protocol 91
 	ent->client->ps.forwardmove = pm.cmd.forwardmove;

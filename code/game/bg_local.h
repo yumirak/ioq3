@@ -57,21 +57,9 @@ extern	pmove_t		*pm;
 extern	pml_t		pml;
 
 // movement parameters
-extern	float	pm_stopspeed;
-extern	float	pm_duckScale;
-extern	float	pm_swimScale;
-
-extern	float	pm_accelerate;
-extern	float	pm_airaccelerate;
-extern	float	pm_wateraccelerate;
-extern	float	pm_flyaccelerate;
-
-extern	float	pm_friction;
-extern	float	pm_waterfriction;
-extern	float	pm_flightfriction;
-
 extern	int		c_pmove;
 
+extern	vmCvar_t	g_gravity;
 extern	vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 
 void PM_ClipVelocity( vec3_t in, vec3_t normal, vec3_t out, float overbounce );

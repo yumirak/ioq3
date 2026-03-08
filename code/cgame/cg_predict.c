@@ -424,6 +424,7 @@ void CG_PredictPlayerState( void ) {
 	qboolean	moved;
 	usercmd_t	oldestCmd;
 	usercmd_t	latestCmd;
+	int i;
 
 	cg.hyperspace = qfalse;	// will be set if touching a trigger_teleport
 
@@ -515,6 +516,10 @@ void CG_PredictPlayerState( void ) {
 
 	cg_pmove.pmove_fixed = pmove_fixed.integer;// | cg_pmove_fixed.integer;
 	cg_pmove.pmove_msec = pmove_msec.integer;
+
+	for ( i = 0; i < PMV_NUM_MAX; i++ ) {
+		cg_pmove.pmove_cvar[i] = fabs(pmove_cvar[i].value);
+	}
 
 	// run cmds
 	moved = qfalse;
