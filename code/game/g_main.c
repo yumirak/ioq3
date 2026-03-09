@@ -410,8 +410,8 @@ static cvarTable_t		gameCvarTable[] = {
 	// { &pmove_cvar[PMV_CROUCHSLIDE_FRICTION], "pmove_CrouchSlideFriction", "0.5", CVAR_SYSTEMINFO},
 	// { &pmove_cvar[PMV_CROUCHSLIDE_TIME], "pmove_CrouchSlideTime", "2000", CVAR_SYSTEMINFO},
 	// { &pmove_cvar[PMV_CROUCH_STEP_JUMP], "pmove_CrouchStepJump", "1", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_DOUBLE_JUMP], "pmove_DoubleJump", "0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_JUMP_TIME_DELTA_MIN], "pmove_JumpTimeDeltaMin", "100.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_DOUBLE_JUMP], "pmove_DoubleJump", "0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_JUMP_TIME_DELTA_MIN], "pmove_JumpTimeDeltaMin", "100.0", CVAR_SYSTEMINFO},
 	{ &pmove_cvar[PMV_JUMP_VELOCITY], "pmove_JumpVelocity", "275.0", CVAR_SYSTEMINFO},
 	// { &pmove_cvar[PMV_JUMP_VELOCITY_MAX], "pmove_JumpVelocityMax", "700.0", CVAR_SYSTEMINFO}, // Ramp Jump
 	// { &pmove_cvar[PMV_JUMP_VELOCITY_SCALE_ADD], "pmove_JumpVelocityScaleAdd", "0.4", CVAR_SYSTEMINFO},

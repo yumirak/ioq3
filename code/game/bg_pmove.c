@@ -351,6 +351,8 @@ PM_CheckJump
 =============
 */
 static qboolean PM_CheckJump( void ) {
+	qboolean customJump = qfalse;
+
 	if ( pm->ps->pm_flags & PMF_RESPAWNED ) {
 		return qfalse;		// don't allow jump until all buttons are up
 	}
@@ -367,12 +369,29 @@ static qboolean PM_CheckJump( void ) {
 		return qfalse;
 	}
 
+	if( pm->ps->jumpTime + pm->pmove_cvar[PMV_JUMP_TIME_DELTA_MIN] > pm->cmd.serverTime ) {
+		return qfalse;
+	}
+
+	if ( pm->pmove_cvar[PMV_DOUBLE_JUMP] ) {
+		if ( pm->ps->doubleJumped )
+			return qfalse;
+		if ( pm->ps->groundEntityNum == ENTITYNUM_NONE ) {
+			pm->ps->velocity[2] = MAX( pm->ps->velocity[2] + pm->pmove_cvar[PMV_JUMP_VELOCITY], pm->pmove_cvar[PMV_JUMP_VELOCITY] );
+			customJump = qtrue;
+		}
+	}
+
+	if ( !customJump ) {
+		pm->ps->velocity[2] = pm->pmove_cvar[PMV_JUMP_VELOCITY];
+	}
+
 	pml.groundPlane = qfalse;		// jumping away
 	pml.walking = qfalse;
 	pm->ps->pm_flags |= PMF_JUMP_HELD;
-
 	pm->ps->groundEntityNum = ENTITYNUM_NONE;
-	pm->ps->velocity[2] = pm->pmove_cvar[PMV_JUMP_VELOCITY];
+	pm->ps->jumpTime = pm->cmd.serverTime;
+	pm->ps->doubleJumped = qfalse;
 	PM_AddEvent( EV_JUMP );
 
 	if ( pm->cmd.forwardmove >= 0 ) {
@@ -600,6 +619,10 @@ static void PM_AirMove( void ) {
 	float		wishspeed;
 	float		scale;
 	usercmd_t	cmd;
+
+	if ( pm->pmove_cvar[PMV_DOUBLE_JUMP] && !pm->ps->doubleJumped && PM_CheckJump () ) {
+		pm->ps->doubleJumped = qtrue;
+	}
 
 	PM_Friction();
 
@@ -1189,6 +1212,11 @@ static void PM_GroundTrace( void ) {
 	}
 
 	pm->ps->groundEntityNum = trace.entityNum;
+
+	// clear doublejump when in ground
+	if ( pm->ps->doubleJumped ) {
+		pm->ps->doubleJumped = qfalse;
+	}
 
 	// don't reset the z velocity for slopes
 //	pm->ps->velocity[2] = 0;
