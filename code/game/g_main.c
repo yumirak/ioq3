@@ -413,13 +413,13 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &pmove_cvar[PMV_DOUBLE_JUMP], "pmove_DoubleJump", "0", CVAR_SYSTEMINFO},
 	{ &pmove_cvar[PMV_JUMP_TIME_DELTA_MIN], "pmove_JumpTimeDeltaMin", "100.0", CVAR_SYSTEMINFO},
 	{ &pmove_cvar[PMV_JUMP_VELOCITY], "pmove_JumpVelocity", "275.0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_JUMP_VELOCITY_MAX], "pmove_JumpVelocityMax", "700.0", CVAR_SYSTEMINFO}, // Ramp Jump
-	// { &pmove_cvar[PMV_JUMP_VELOCITY_SCALE_ADD], "pmove_JumpVelocityScaleAdd", "0.4", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES], "pmove_JumpVelocityTimeThreshold", "500.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_JUMP_VELOCITY_MAX], "pmove_JumpVelocityMax", "700.0", CVAR_SYSTEMINFO}, // Ramp Jump
+	{ &pmove_cvar[PMV_JUMP_VELOCITY_SCALE_ADD], "pmove_JumpVelocityScaleAdd", "0.4", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES], "pmove_JumpVelocityTimeThreshold", "500.0", CVAR_SYSTEMINFO},
 	// { &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES_OFFSET], "pmove_JumpVelocityTimeThresholdOffset", "0.6", CVAR_SYSTEMINFO},
 	// { &pmove_cvar[PMV_NO_PLAYER_CLIP], "pmove_noPlayerClip", "0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_RAMP_JUMP], "pmove_RampJump", "0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_RAMP_JUMP_SCALE], "pmove_RampJumpScale", "1.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_RAMP_JUMP], "pmove_RampJump", "0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_RAMP_JUMP_SCALE], "pmove_RampJumpScale", "1.0", CVAR_SYSTEMINFO},
 	{ &pmove_cvar[PMV_STEP_HEIGHT], "pmove_StepHeight", "22.0", CVAR_SYSTEMINFO},
 	// { &pmove_cvar[PMV_STEP_JUMP], "pmove_StepJump", "1", CVAR_SYSTEMINFO},
 	// { &pmove_cvar[PMV_STEP_JUMP_VELOCITY], "pmove_StepJumpVelocity", "48.0", CVAR_SYSTEMINFO},

@@ -382,6 +382,19 @@ static qboolean PM_CheckJump( void ) {
 		}
 	}
 
+	// FIXME: this always output 5~10% more velocity compared to QL Ramp Jump (demo final value affected by gravity ?)
+	if ( pm->pmove_cvar[PMV_RAMP_JUMP] ) {
+		if ( pm->ps->jumpTime + pm->pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES] > pm->cmd.serverTime ) {
+			float z_vel = pm->ps->velocity[2];
+			z_vel *= 1.0f + pm->pmove_cvar[PMV_JUMP_VELOCITY_SCALE_ADD];
+			z_vel *= pm->pmove_cvar[PMV_RAMP_JUMP_SCALE];
+			z_vel += pm->pmove_cvar[PMV_JUMP_VELOCITY];
+			z_vel = Com_Clamp( pm->pmove_cvar[PMV_JUMP_VELOCITY], pm->pmove_cvar[PMV_JUMP_VELOCITY_MAX], z_vel );
+			pm->ps->velocity[2] = z_vel;
+			customJump = qtrue;
+		}
+	}
+
 	if ( !customJump ) {
 		pm->ps->velocity[2] = pm->pmove_cvar[PMV_JUMP_VELOCITY];
 	}
@@ -1208,6 +1221,15 @@ static void PM_GroundTrace( void ) {
 			// don't allow another jump for a little while
 			pm->ps->pm_flags |= PMF_TIME_LAND;
 			pm->ps->pm_time = 250;
+		}
+
+		if ( pml.previous_velocity[2] > 0 ) {
+			if ( pm->pmove_cvar[PMV_RAMP_JUMP] ) {
+				// vertical velocity directly from PM_CheckJump is always 0
+				// when touching a ground.
+				pm->ps->velocity[2] = pml.previous_velocity[2];
+				PM_CheckJump();
+			}
 		}
 	}
 
