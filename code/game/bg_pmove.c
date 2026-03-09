@@ -32,7 +32,6 @@ pml_t		pml;
 
 // movement parameters
 float	pm_stopspeed = 100.0f;
-float	pm_duckScale = 0.25f;
 
 float	pm_wateraccelerate = 4.0f;
 float	pm_flyaccelerate = 8.0f;
@@ -190,7 +189,11 @@ static void PM_Friction( void ) {
 			// if getting knocked back, no friction
 			if ( ! (pm->ps->pm_flags & PMF_TIME_KNOCKBACK) ) {
 				control = speed < pm_stopspeed ? pm_stopspeed : speed;
-				drop += control* pm->pmove_cvar[PMV_WALK_FRICTION] *pml.frametime;
+				if ( pm->ps->crouchSlideTime && pm->ps->pm_flags & PMF_DUCKED ) {
+					drop += control* pm->pmove_cvar[PMV_CROUCHSLIDE_FRICTION] *pml.frametime;
+				} else {
+					drop += control* pm->pmove_cvar[PMV_WALK_FRICTION] *pml.frametime;
+				}
 			}
 		}
 	}
@@ -415,6 +418,10 @@ static qboolean PM_CheckJump( void ) {
 		pm->ps->pm_flags |= PMF_BACKWARDS_JUMP;
 	}
 
+	if ( pm->ps->crouchSlideTime ) {
+		pm->ps->crouchSlideTime = 0;
+	}
+
 	return qtrue;
 }
 
@@ -637,6 +644,10 @@ static void PM_AirMove( void ) {
 		pm->ps->doubleJumped = qtrue;
 	}
 
+	if ( pm->pmove_cvar[PMV_CROUCHSLIDE] && !(pm->ps->pm_flags & PMF_DUCKED) ) {
+		pm->ps->crouchSlideTime = MIN( pm->ps->crouchSlideTime + ( 6 * pml.msec ), pm->pmove_cvar[PMV_CROUCHSLIDE_TIME] );
+	}
+
 	PM_Friction();
 
 	fmove = pm->cmd.forwardmove;
@@ -781,6 +792,13 @@ static void PM_WalkMove( void ) {
 
 	// clamp the speed lower if ducking
 	if ( pm->ps->pm_flags & PMF_DUCKED ) {
+		float pm_duckScale = 0.25f;
+		if( pm->pmove_cvar[PMV_CROUCHSLIDE] ) {
+			pm_duckScale = 0.85f;
+			if ( pm->ps->crouchSlideTime ) {
+				pm->ps->crouchSlideTime = MAX( pm->ps->crouchSlideTime - pml.msec, 0 );
+			}
+		}
 		if ( wishspeed > pm->ps->speed * pm_duckScale ) {
 			wishspeed = pm->ps->speed * pm_duckScale;
 		}
@@ -1342,8 +1360,12 @@ static void PM_CheckDuck (void)
 			// try to stand up
 			pm->maxs[2] = DEFAULT_HEIGHT;
 			pm->trace (&trace, pm->ps->origin, pm->mins, pm->maxs, pm->ps->origin, pm->ps->clientNum, pm->tracemask );
-			if (!trace.allsolid)
+			if (!trace.allsolid) {
 				pm->ps->pm_flags &= ~PMF_DUCKED;
+				if ( pm->ps->crouchSlideTime ) {
+					pm->ps->crouchSlideTime = 0;
+				}
+			}
 		}
 	}
 
@@ -1821,6 +1843,13 @@ static void PM_DropTimers( void ) {
 		pm->ps->torsoTimer -= pml.msec;
 		if ( pm->ps->torsoTimer < 0 ) {
 			pm->ps->torsoTimer = 0;
+		}
+	}
+
+	if ( pm->ps->crouchSlideTime > 0 && !(pm->ps->pm_flags & PMF_DUCKED) ) {
+		pm->ps->crouchSlideTime -= pml.msec;
+		if ( pm->ps->crouchSlideTime < 0 ) {
+			pm->ps->crouchSlideTime = 0;
 		}
 	}
 }
