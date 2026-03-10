@@ -1135,6 +1135,26 @@ void SV_Frame( int msec ) {
 		SV_SetConfigstring( CS_SYSTEMINFO, Cvar_InfoString_Big( CVAR_SYSTEMINFO ) );
 		cvar_modifiedFlags &= ~CVAR_SYSTEMINFO;
 	}
+	if ( cvar_modifiedFlags & CVAR_PMOVEINFO ) {
+		SV_SetConfigstring( CS_PMOVEINFO, Cvar_InfoString_Big( CVAR_PMOVEINFO ) );
+		cvar_modifiedFlags &= ~CVAR_PMOVEINFO;
+	}
+	if ( cvar_modifiedFlags & CVAR_ARMORINFO ) {
+		SV_SetConfigstring( CS_ARMORINFO, Cvar_InfoString_Big( CVAR_ARMORINFO ) );
+		cvar_modifiedFlags &= ~CVAR_ARMORINFO;
+	}
+	if ( cvar_modifiedFlags & CVAR_WEAPONINFO ) {
+		SV_SetConfigstring( CS_WEAPONINFO, Cvar_InfoString_Big( CVAR_WEAPONINFO ) );
+		cvar_modifiedFlags &= ~CVAR_WEAPONINFO;
+	}
+	if ( cvar_modifiedFlags & CVAR_PLAYERINFO ) {
+		SV_SetConfigstring( CS_PLAYERINFO, Cvar_InfoString_Big( CVAR_PLAYERINFO ) );
+		cvar_modifiedFlags &= ~CVAR_PLAYERINFO;
+	}
+	if ( cvar_modifiedFlags & CVAR_MISCINFO ) {
+		SV_SetConfigstring( CS_MISCINFO, Cvar_InfoString_Big( CVAR_MISCINFO ) );
+		cvar_modifiedFlags &= ~CVAR_MISCINFO;
+	}
 
 	if ( com_speeds->integer ) {
 		startTime = Sys_Milliseconds ();

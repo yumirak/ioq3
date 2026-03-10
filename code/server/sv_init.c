@@ -592,6 +592,17 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	cvar_modifiedFlags &= ~CVAR_SYSTEMINFO;
 	SV_SetConfigstring( CS_SYSTEMINFO, systemInfo );
 
+	cvar_modifiedFlags &= ~CVAR_PMOVEINFO;
+	SV_SetConfigstring( CS_PMOVEINFO, Cvar_InfoString_Big( CVAR_PMOVEINFO ) );
+	cvar_modifiedFlags &= ~CVAR_WEAPONINFO;
+	SV_SetConfigstring( CS_WEAPONINFO, Cvar_InfoString_Big( CVAR_WEAPONINFO ) );
+	cvar_modifiedFlags &= ~CVAR_PLAYERINFO;
+	SV_SetConfigstring( CS_PLAYERINFO, Cvar_InfoString_Big( CVAR_PLAYERINFO ) );
+	cvar_modifiedFlags &= ~CVAR_ARMORINFO;
+	SV_SetConfigstring( CS_ARMORINFO, Cvar_InfoString_Big( CVAR_ARMORINFO ) );
+	cvar_modifiedFlags &= ~CVAR_MISCINFO;
+	SV_SetConfigstring( CS_MISCINFO, Cvar_InfoString_Big( CVAR_MISCINFO ) );
+
 	SV_SetConfigstring( CS_SERVERINFO, Cvar_InfoString( CVAR_SERVERINFO ) );
 	cvar_modifiedFlags &= ~CVAR_SERVERINFO;
 

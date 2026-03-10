@@ -246,6 +246,17 @@ void CL_ConfigstringModified( void ) {
 		CL_SystemInfoChanged();
 	}
 
+	switch(index) {
+		case CS_PMOVEINFO:
+		case CS_ARMORINFO:
+		case CS_WEAPONINFO:
+		case CS_PLAYERINFO:
+		case CS_MISCINFO:
+			CL_CvarConfigStringsChanged( index );
+			break;
+		default:
+			break;
+	}
 }
 
 

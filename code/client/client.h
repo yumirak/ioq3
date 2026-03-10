@@ -524,6 +524,7 @@ void CL_Voip_f( void );
 
 void CL_SystemInfoChanged( void );
 void CL_ParseServerMessage( msg_t *msg );
+void CL_CvarConfigStringsChanged( int configstrings );
 
 //====================================================================
 

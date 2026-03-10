@@ -1007,6 +1007,11 @@ void Cvar_List_f( void ) {
 		} else {
 			Com_Printf(" ");
 		}
+		if (var->flags & CVAR_GAMERULE) {
+			Com_Printf("G");
+		} else {
+			Com_Printf(" ");
+		}
 		if (var->flags & CVAR_USER_CREATED) {
 			Com_Printf("?");
 		} else {
@@ -1089,6 +1094,11 @@ void Cvar_ListModified_f( void ) {
 		}
 		if (var->flags & CVAR_CHEAT) {
 			Com_Printf("C");
+		} else {
+			Com_Printf(" ");
+		}
+		if (var->flags & CVAR_GAMERULE) {
+			Com_Printf("G");
 		} else {
 			Com_Printf(" ");
 		}

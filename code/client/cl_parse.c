@@ -550,6 +550,12 @@ void CL_ParseGamestate( msg_t *msg ) {
 
 	// make sure the game starts
 	Cvar_Set( "cl_paused", "0" );
+
+	CL_CvarConfigStringsChanged( CS_PMOVEINFO );
+	CL_CvarConfigStringsChanged( CS_WEAPONINFO );
+	CL_CvarConfigStringsChanged( CS_PLAYERINFO );
+	CL_CvarConfigStringsChanged( CS_ARMORINFO );
+	CL_CvarConfigStringsChanged( CS_MISCINFO );
 }
 
 
@@ -930,4 +936,39 @@ void CL_ParseServerMessage( msg_t *msg ) {
 	}
 }
 
+// Replicate configstrings containing server cvars
+void CL_CvarConfigStringsChanged( int configstrings ) {
+	const char		*s;
+	char			key[BIG_INFO_KEY];
+	char			value[BIG_INFO_KEY];
+
+	// don't set any vars when playing a demo
+	if ( clc.demoplaying ) {
+		return;
+	}
+
+	// scan through all the variables in the configstring and locally set cvars to match
+	s = cl.gameState.stringData + cl.gameState.stringOffsets[ configstrings ];
+	while ( s ) {
+		int cvar_flags;
+
+		Info_NextPair( &s, key, value );
+
+		if ( !key[0] ) {
+			break;
+		}
+
+		if( ( cvar_flags = Cvar_Flags(key) ) == CVAR_NONEXISTENT ) {
+			Cvar_Get(key, value, CVAR_SERVER_CREATED | CVAR_ROM);
+		} else {
+			// If this cvar may not be modified by a server discard the value.
+			if( ! ( cvar_flags & ( CVAR_GAMERULE | CVAR_PMOVEINFO | CVAR_ARMORINFO | CVAR_WEAPONINFO | CVAR_PLAYERINFO | CVAR_MISCINFO ) ) ) {
+				Com_Printf(S_COLOR_YELLOW "WARNING: server is not allowed to set %s to %s\n", key, value);
+				continue;
+			}
+
+			Cvar_SetSafe(key, value);
+		}
+	}
+}
 

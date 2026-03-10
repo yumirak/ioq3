@@ -918,6 +918,12 @@ default values.
 #define CVAR_SERVER_CREATED	0x0800	// cvar was created by a server the client connected to.
 #define CVAR_VM_CREATED		0x1000	// cvar was created exclusively in one of the VMs.
 #define CVAR_PROTECTED		0x2000	// prevent modifying this var from VMs or the server
+#define CVAR_GAMERULE		0x4000
+#define CVAR_PMOVEINFO		0x8000	// replicated to all clients. set CS_PMOVEINFO
+#define CVAR_ARMORINFO		0x10000	// replicated to all clients. set CS_ARMORINFO
+#define CVAR_WEAPONINFO		0x20000	// replicated to all clients. set CS_WEAPONINFO
+#define CVAR_PLAYERINFO		0x40000	// replicated to all clients. set CS_PLAYERINFO
+#define CVAR_MISCINFO		0x80000	// replicated to all clients. set CS_MISCINFO
 // These flags are only returned by the Cvar_Flags() function
 #define CVAR_MODIFIED		0x40000000	// Cvar was modified
 #define CVAR_NONEXISTENT	0x80000000	// Cvar doesn't exist.
