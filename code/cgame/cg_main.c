@@ -266,6 +266,8 @@ vmCvar_t	cg_buzzerSound;
 vmCvar_t	cg_wp;
 vmCvar_t	cg_loadout;
 vmCvar_t	cg_specFov;
+vmCvar_t	cg_chatBeep;
+vmCvar_t	cg_teamChatBeep;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 vmCvar_t	pmove_cvar[PMV_NUM_MAX];
@@ -478,6 +480,8 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_wp, "wp", "", CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &cg_loadout, "cg_loadout", "", CVAR_ROM },
 	{ &cg_specFov, "cg_specFov", "1", CVAR_ARCHIVE },
+	{ &cg_chatBeep, "cg_chatBeep", "0", CVAR_ARCHIVE },
+	{ &cg_teamChatBeep, "cg_teamChatBeep", "0", CVAR_ARCHIVE },
 
 
 	{ &pmove_cvar[PMV_AIR_ACCELERATION], "pmove_AirAccel", "1.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
@@ -622,7 +626,31 @@ int CG_LastAttacker( void ) {
 	return cg.snap->ps.persistant[PERS_ATTACKER];
 }
 
-void CG_AddChatLine (const char *line)
+int CG_GetChatClientNum( char *text, qboolean removenum ) {
+	int len;
+	int clientnum = -1;
+	char orig[MAX_STRING_CHARS];
+
+	len = strlen(text);
+	if (len < 3)
+		return -1;
+
+	// get player numbers
+	Q_strncpyz(orig, text, 3);
+	if ( isdigit( orig[0] ) && isdigit( orig[1] ) ) {
+		clientnum = atoi ( orig );
+	}
+
+	// remove player numbers
+	if ( removenum && clientnum >= 0 ) {
+		Q_strncpyz(orig, text, len);
+		Q_strncpyz(text, orig + 3, len - 3);
+	}
+
+	return clientnum;
+}
+
+void CG_AddChatLine (const char *line, int clientnum)
 {
 	int i;
 	for( i = MAX_CHAT_LINES - 1; i > 0; i-- ) {
@@ -632,19 +660,24 @@ void CG_AddChatLine (const char *line)
 
 	Q_strncpyz(cg.chatArea[0].message, line, sizeof(cg.chatArea[i].message));
 	cg.chatArea[0].time = cg.time;
+	cg.chatArea[0].clientnum = clientnum;
 }
 
-void CG_PrintToScreen ( const char *msg, ... ) {
-	va_list		argptr;
-	char		text[1024];
+void CG_PrintToScreen ( char *text ) {
+	int clientnum;
+
+	CG_RemoveNewLineChar( text );
+	clientnum = CG_GetChatClientNum ( text, qtrue );
+	CG_AddChatLine( text, clientnum );
+	CG_Printf( "%s\n", text );
+}
+
+void CG_RemoveNewLineChar ( char *text ) {
 	int i;
 
-	va_start (argptr, msg);
-	Q_vsnprintf (text, sizeof(text), msg, argptr);
-	va_end (argptr);
+	text[MAX_STRING_CHARS - 1] = '\0';
 
-	text[1023] = '\0';
-	for (i = 0;  i < 1024;  i++) {
+	for (i = 0;  i < MAX_STRING_CHARS;  i++) {
 		if ((unsigned char)text[i] >= ' ') {
 			continue;
 		}
@@ -655,8 +688,6 @@ void CG_PrintToScreen ( const char *msg, ... ) {
 
 		text[i] = ' ';
 	}
-
-	CG_AddChatLine(text);
 }
 
 void QDECL CG_Printf( const char *msg, ... ) {

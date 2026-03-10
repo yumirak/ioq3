@@ -1065,8 +1065,8 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "print" ) ) {
-		CG_Printf( "%s", CG_Argv(1) );
-		CG_PrintToScreen("%s", CG_Argv(1));
+		Q_strncpyz( text, CG_Argv(1), MAX_SAY_TEXT );
+		CG_PrintToScreen( text );
 #ifdef MISSIONPACK
 		cmd = CG_Argv(1);			// yes, this is obviously a hack, but so is the way we hear about
 									// votes passing or failing
@@ -1080,25 +1080,44 @@ static void CG_ServerCommand( void ) {
 	}
 
 	if ( !strcmp( cmd, "chat" ) ) {
+		qboolean beep = qfalse;
 		if ( cgs.gametype >= GT_TEAM && cg_teamChatsOnly.integer ) {
 			return;
 		}
 
-		trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
+		if (cg_chatBeep.integer) {
+			beep = qtrue;
+		}
+
+		if ( beep ) {
+			trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
+		}
+
 		Q_strncpyz( text, CG_Argv(1), MAX_SAY_TEXT );
 		CG_RemoveChatEscapeChar( text );
-		CG_Printf( "%s\n", text );
-		CG_PrintToScreen("%s", text);
+		CG_PrintToScreen( text );
 		return;
 	}
 
 	if ( !strcmp( cmd, "tchat" ) ) {
-		trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
+		qboolean beep = qfalse;
+		// it's a spec demo, team is other specs
+		if (cg.snap->ps.clientNum != cg.clientNum) {
+			if (cg_chatBeep.integer) {
+				beep = qtrue;
+			}
+		} else if (cg_teamChatBeep.integer) {
+			beep = qtrue;
+		}
+
+		if ( beep ) {
+			trap_S_StartLocalSound( cgs.media.talkSound, CHAN_LOCAL_SOUND );
+		}
+
 		Q_strncpyz( text, CG_Argv(1), MAX_SAY_TEXT );
 		CG_RemoveChatEscapeChar( text );
 		CG_AddToTeamChat( text );
-		CG_Printf( "%s\n", text );
-		CG_PrintToScreen("%s", text);
+		CG_PrintToScreen( text );
 		return;
 	}
 

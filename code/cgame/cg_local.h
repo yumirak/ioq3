@@ -490,6 +490,7 @@ typedef struct {
 typedef struct {
 	char	message[MAX_SAY_TEXT];
 	int		time;
+	int		clientnum;
 } newChatArea_t;
 
 typedef struct {
@@ -1360,6 +1361,9 @@ extern	vmCvar_t		cg_crosshairHitTime;
 extern	vmCvar_t		cg_drawItemPickups;
 extern	vmCvar_t		cg_buzzerSound;
 extern	vmCvar_t		cg_specFov;
+extern	vmCvar_t		cg_chatBeep;
+extern	vmCvar_t		cg_teamChatBeep;
+
 extern	vmCvar_t		pmove_cvar[PMV_NUM_MAX];
 
 //
@@ -1368,7 +1372,8 @@ extern	vmCvar_t		pmove_cvar[PMV_NUM_MAX];
 const char *CG_ConfigString( int index );
 const char *CG_Argv( int arg );
 
-void QDECL CG_PrintToScreen( const char *msg, ... ) Q_PRINTF_FUNC(1, 2);
+void CG_PrintToScreen ( char *text );
+
 void QDECL CG_Printf( const char *msg, ... ) Q_PRINTF_FUNC(1, 2);
 void QDECL CG_Error( const char *msg, ... ) Q_NO_RETURN Q_PRINTF_FUNC(1, 2);
 
@@ -1388,6 +1393,9 @@ score_t *CG_GetSelectedScore( void );
 void CG_BuildSpectatorString( void );
 
 clientInfo_t * CG_InfoFromScoreIndex(int index, int team, int *scoreIndex);
+void CG_AddChatLine (const char *line, int clientnum);
+int CG_GetChatClientNum( char *text, qboolean removenum );
+void CG_RemoveNewLineChar ( char *text );
 
 //
 // cg_view.c
