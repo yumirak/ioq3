@@ -602,8 +602,9 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	self->r.maxs[2] = DEAD_HEIGHT;
 
 	// don't allow respawn until the death anim is done
-	// g_forcerespawn may force spawning at some later time
-	self->client->respawnTime = level.time + 1700;
+	// g_respawn_delay_max may force spawning at some later time
+	// NOTE: QL has a bit of delay even when g_respawn_delay_min set to 0. not doing that here.
+	self->client->respawnTime = level.time + abs( g_respawn_delay[0].integer );
 
 	// remove powerups
 	memset( self->client->ps.powerups, 0, sizeof(self->client->ps.powerups) );

@@ -57,7 +57,6 @@ vmCvar_t	g_gravity;
 vmCvar_t	g_cheats;
 vmCvar_t	g_knockback;
 vmCvar_t	g_quadfactor;
-vmCvar_t	g_forcerespawn;
 vmCvar_t	g_inactivity;
 vmCvar_t	g_debugMove;
 vmCvar_t	g_debugDamage;
@@ -132,6 +131,8 @@ vmCvar_t	g_flightThrust;
 vmCvar_t	g_maxFlightFuel;
 vmCvar_t	g_flightRefuelRate;
 vmCvar_t	g_loadout;
+vmCvar_t	g_respawn_delay[2];
+
 vmCvar_t	pmove_cvar[PMV_NUM_MAX];
 
 #if BASEQZ > 934
@@ -188,7 +189,6 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_gravity, "g_gravity", "800", 0, 0, qtrue  },
 	{ &g_knockback, "g_knockback", "1000", 0, 0, qtrue  },
 	{ &g_quadfactor, "g_quadfactor", "3", 0, 0, qtrue  },
-	{ &g_forcerespawn, "g_forcerespawn", "20", 0, 0, qtrue },
 	{ &g_inactivity, "g_inactivity", "0", 0, 0, qtrue },
 	{ &g_debugMove, "g_debugMove", "0", 0, 0, qfalse },
 	{ &g_debugDamage, "g_debugDamage", "0", 0, 0, qfalse },
@@ -374,6 +374,8 @@ static cvarTable_t		gameCvarTable[] = {
 	{ &g_ammoPack, "g_ammoPack", "0", CVAR_LATCH, 0, qfalse },
 	{ &g_ammoPackHack, "g_ammoPackHack", "0", CVAR_LATCH, 0, qfalse },
 #endif
+	{ &g_respawn_delay[0], "g_respawn_delay_min", "2100", CVAR_GAMERULE, 0, qtrue, qfalse },
+	{ &g_respawn_delay[1], "g_respawn_delay_max", "2400", CVAR_GAMERULE, 0, qtrue, qfalse },
 
 	{ &g_loadout, "g_loadout", "0", CVAR_SERVERINFO},
 	{ &g_disableLoadout[WP_GAUNTLET], "cg_disableLoadout_g", "", CVAR_GAMERULE | CVAR_MISCINFO },

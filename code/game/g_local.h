@@ -731,7 +731,6 @@ extern	vmCvar_t	g_gravity;
 extern	vmCvar_t	g_speed;
 extern	vmCvar_t	g_knockback;
 extern	vmCvar_t	g_quadfactor;
-extern	vmCvar_t	g_forcerespawn;
 extern	vmCvar_t	g_inactivity;
 extern	vmCvar_t	g_debugMove;
 extern	vmCvar_t	g_debugAlloc;
@@ -796,6 +795,8 @@ extern	vmCvar_t	g_flightThrust;
 extern	vmCvar_t	g_maxFlightFuel;
 extern	vmCvar_t	g_flightRefuelRate;
 extern	vmCvar_t	g_loadout;
+extern	vmCvar_t	g_respawn_delay[2];
+
 extern	vmCvar_t	pmove_cvar[PMV_NUM_MAX];
 
 #if BASEQZ > 934
