@@ -263,13 +263,11 @@ vmCvar_t	cg_crosshairHitColor;
 vmCvar_t	cg_crosshairHitTime;
 vmCvar_t	cg_drawItemPickups;
 vmCvar_t	cg_buzzerSound;
-vmCvar_t	cg_training;
 vmCvar_t	cg_wp;
 vmCvar_t	cg_loadout;
 vmCvar_t	cg_specFov;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
-vmCvar_t	cg_disableLoadout[WP_NUM_WEAPONS];
 vmCvar_t	pmove_cvar[PMV_NUM_MAX];
 
 typedef struct {
@@ -439,23 +437,23 @@ static cvarTable_t cvarTable[] = {
 
 	{ &cg_levelTimerDirection, "cg_levelTimerDirection", "1", CVAR_ARCHIVE},
 
-	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_SHOTGUN], "weapon_reload_sg", "1000", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_GRENADE_LAUNCHER], "weapon_reload_gl", "800", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_ROCKET_LAUNCHER], "weapon_reload_rl", "800", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_LIGHTNING], "weapon_reload_lg", "50", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_RAILGUN], "weapon_reload_rg", "1500", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_PLASMAGUN], "weapon_reload_pg", "100", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_BFG], "weapon_reload_bfg", "300", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_GRAPPLING_HOOK], "weapon_reload_hook", "100", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
+	{ &weapon_reload[WP_GAUNTLET], "weapon_reload_gauntlet", "400", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_MACHINEGUN], "weapon_reload_mg", "100", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_SHOTGUN], "weapon_reload_sg", "1000", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_GRENADE_LAUNCHER], "weapon_reload_gl", "800", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_ROCKET_LAUNCHER], "weapon_reload_rl", "800", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_LIGHTNING], "weapon_reload_lg", "50", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_RAILGUN], "weapon_reload_rg", "1500", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_PLASMAGUN], "weapon_reload_pg", "100", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_BFG], "weapon_reload_bfg", "300", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_GRAPPLING_HOOK], "weapon_reload_hook", "100", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
 #ifdef MISSIONPACK
-	{ &weapon_reload[WP_NAILGUN], "weapon_reload_ng", "1000", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
-	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
+	{ &weapon_reload[WP_NAILGUN], "weapon_reload_ng", "1000", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_PROX_LAUNCHER], "weapon_reload_prox", "800", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
+	{ &weapon_reload[WP_CHAINGUN], "weapon_reload_cg", "50", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
 #endif
 #if BASEQZ > 934
-	{ &weapon_reload[WP_HEAVY_MACHINEGUN], "weapon_reload_hmg", "75", CVAR_SERVERINFO | CVAR_SYSTEMINFO },
+	{ &weapon_reload[WP_HEAVY_MACHINEGUN], "weapon_reload_hmg", "75", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
 #endif
 	{ &cg_premium, "cg_premium", "0", CVAR_ROM },
 	{ &cg_gametype, "cg_gametype", "0", CVAR_ROM | CVAR_ARCHIVE },
@@ -476,67 +474,48 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_drawRewardsRowSize, "cg_drawRewardsRowSize", "1", CVAR_ARCHIVE },
 	{ &cg_announcerRewardsVO, "cg_announcerRewardsVO", "1", CVAR_ARCHIVE },
 	{ &cg_buzzerSound, "cg_buzzerSound", "1", CVAR_ARCHIVE},
-	{ &cg_training, "g_training", "0", CVAR_ROM | CVAR_SYSTEMINFO },
 
 	{ &cg_wp, "wp", "", CVAR_USERINFO | CVAR_ARCHIVE },
 	{ &cg_loadout, "cg_loadout", "", CVAR_ROM },
-	{ &cg_disableLoadout[WP_GAUNTLET], "cg_disableLoadout_g", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_MACHINEGUN], "cg_disableLoadout_mg", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_SHOTGUN], "cg_disableLoadout_sg", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_GRENADE_LAUNCHER], "cg_disableLoadout_gl", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_ROCKET_LAUNCHER], "cg_disableLoadout_rl", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_LIGHTNING], "cg_disableLoadout_lg", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_RAILGUN], "cg_disableLoadout_rg", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_PLASMAGUN], "cg_disableLoadout_pg", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_BFG], "cg_disableLoadout_bfg", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_GRAPPLING_HOOK], "cg_disableLoadout_gh", "", CVAR_ROM | CVAR_SYSTEMINFO },
-#ifdef MISSIONPACK
-	{ &cg_disableLoadout[WP_NAILGUN], "cg_disableLoadout_ng", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_PROX_LAUNCHER], "cg_disableLoadout_pl", "", CVAR_ROM | CVAR_SYSTEMINFO },
-	{ &cg_disableLoadout[WP_CHAINGUN], "cg_disableLoadout_cg", "", CVAR_ROM | CVAR_SYSTEMINFO },
-#endif
-#if BASEQZ > 934
-	{ &cg_disableLoadout[WP_HEAVY_MACHINEGUN], "cg_disableLoadout_hmg", "", CVAR_ROM | CVAR_SYSTEMINFO },
-#endif
 	{ &cg_specFov, "cg_specFov", "1", CVAR_ARCHIVE },
 
 
-	{ &pmove_cvar[PMV_AIR_ACCELERATION], "pmove_AirAccel", "1.0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_AIRCONTROL], "pmove_AirControl", "0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_AIRSTEP_FRICTION], "pmove_AirStepFriction", "0.03", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_AIRSTEPS], "pmove_AirSteps", "1", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_AIRSTOP_ACCEL], "pmove_AirStopAccel", "1.0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_AUTOHOP], "pmove_AutoHop", "0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_BUNNYHOP], "pmove_BunnyHop", "0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_CHAINJUMP], "pmove_ChainJump", "0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_CHAINJUMP_VELOCITY], "pmove_ChainJumpVelocity", "110.0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_CIRCLE_STRAFE_FRICTION], "pmove_CircleStrafeFriction", "6.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_CROUCHSLIDE], "pmove_CrouchSlide", "0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_CROUCHSLIDE_FRICTION], "pmove_CrouchSlideFriction", "0.5", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_CROUCHSLIDE_TIME], "pmove_CrouchSlideTime", "2000", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_CROUCH_STEP_JUMP], "pmove_CrouchStepJump", "1", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_DOUBLE_JUMP], "pmove_DoubleJump", "0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_JUMP_TIME_DELTA_MIN], "pmove_JumpTimeDeltaMin", "100.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_JUMP_VELOCITY], "pmove_JumpVelocity", "275.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_JUMP_VELOCITY_MAX], "pmove_JumpVelocityMax", "700.0", CVAR_SYSTEMINFO}, // Ramp Jump
-	{ &pmove_cvar[PMV_JUMP_VELOCITY_SCALE_ADD], "pmove_JumpVelocityScaleAdd", "0.4", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES], "pmove_JumpVelocityTimeThreshold", "500.0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES_OFFSET], "pmove_JumpVelocityTimeThresholdOffset", "0.6", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_NO_PLAYER_CLIP], "pmove_noPlayerClip", "0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_RAMP_JUMP], "pmove_RampJump", "0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_RAMP_JUMP_SCALE], "pmove_RampJumpScale", "1.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_STEP_HEIGHT], "pmove_StepHeight", "22.0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_STEP_JUMP], "pmove_StepJump", "1", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_STEP_JUMP_VELOCITY], "pmove_StepJumpVelocity", "48.0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_STRAFE_ACCELERATION], "pmove_StrafeAccel", "1.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_VELOCITY_GRAPPLE], "pmove_velocity_gh", "800.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_WALK_ACCELERATION], "pmove_WalkAccel", "10.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_WALK_FRICTION], "pmove_WalkFriction", "6.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_WATER_SWIM_SCALE], "pmove_WaterSwimScale", "0.6", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_WATER_WADE_SCALE], "pmove_WaterWadeScale", "0.8", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_WEAPON_DROP_TIME], "pmove_WeaponDropTime", "200.0", CVAR_SYSTEMINFO},
-	{ &pmove_cvar[PMV_WEAPON_RAISE_TIME], "pmove_WeaponRaiseTime", "200.0", CVAR_SYSTEMINFO},
-	// { &pmove_cvar[PMV_WISH_SPEED], "pmove_WishSpeed", "400.0", CVAR_SYSTEMINFO},
+	{ &pmove_cvar[PMV_AIR_ACCELERATION], "pmove_AirAccel", "1.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_AIRCONTROL], "pmove_AirControl", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_AIRSTEP_FRICTION], "pmove_AirStepFriction", "0.03", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_AIRSTEPS], "pmove_AirSteps", "1", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_AIRSTOP_ACCEL], "pmove_AirStopAccel", "1.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_AUTOHOP], "pmove_AutoHop", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_BUNNYHOP], "pmove_BunnyHop", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_CHAINJUMP], "pmove_ChainJump", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_CHAINJUMP_VELOCITY], "pmove_ChainJumpVelocity", "110.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_CIRCLE_STRAFE_FRICTION], "pmove_CircleStrafeFriction", "6.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_CROUCHSLIDE], "pmove_CrouchSlide", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_CROUCHSLIDE_FRICTION], "pmove_CrouchSlideFriction", "0.5", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_CROUCHSLIDE_TIME], "pmove_CrouchSlideTime", "2000", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_CROUCH_STEP_JUMP], "pmove_CrouchStepJump", "1", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_DOUBLE_JUMP], "pmove_DoubleJump", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_JUMP_TIME_DELTA_MIN], "pmove_JumpTimeDeltaMin", "100.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_JUMP_VELOCITY], "pmove_JumpVelocity", "275.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_JUMP_VELOCITY_MAX], "pmove_JumpVelocityMax", "700.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO }, // Ramp Jump
+	{ &pmove_cvar[PMV_JUMP_VELOCITY_SCALE_ADD], "pmove_JumpVelocityScaleAdd", "0.4", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES], "pmove_JumpVelocityTimeThreshold", "500.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_JUMP_VELOCITY_TIME_TRES_OFFSET], "pmove_JumpVelocityTimeThresholdOffset", "0.6", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_NO_PLAYER_CLIP], "pmove_noPlayerClip", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_RAMP_JUMP], "pmove_RampJump", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_RAMP_JUMP_SCALE], "pmove_RampJumpScale", "1.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_STEP_HEIGHT], "pmove_StepHeight", "22.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_STEP_JUMP], "pmove_StepJump", "1", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_STEP_JUMP_VELOCITY], "pmove_StepJumpVelocity", "48.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_STRAFE_ACCELERATION], "pmove_StrafeAccel", "1.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_VELOCITY_GRAPPLE], "pmove_velocity_gh", "800.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_WALK_ACCELERATION], "pmove_WalkAccel", "10.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_WALK_FRICTION], "pmove_WalkFriction", "6.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_WATER_SWIM_SCALE], "pmove_WaterSwimScale", "0.6", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_WATER_WADE_SCALE], "pmove_WaterWadeScale", "0.8", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_WEAPON_DROP_TIME], "pmove_WeaponDropTime", "200.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	{ &pmove_cvar[PMV_WEAPON_RAISE_TIME], "pmove_WeaponRaiseTime", "200.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
+	// { &pmove_cvar[PMV_WISH_SPEED], "pmove_WishSpeed", "400.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
 
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
