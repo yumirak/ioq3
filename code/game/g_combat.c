@@ -99,6 +99,10 @@ void TossClientItems( gentity_t *self ) {
 		}
 	}
 
+	if ( g_instagib.integer ) {
+		weapon = WP_NONE;
+	}
+
 	if ( weapon >= wp_start && weapon != WP_GRAPPLING_HOOK &&
 		self->client->ps.ammo[ weapon ] ) {
 		// find the item type for this weapon
@@ -965,6 +969,13 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			return;
 		}
 		damage *= Com_Clamp( 0.01f, 1.0f, g_battleSuitDampen.value );
+	}
+
+	if ( g_instagib.integer ) {
+		if ( !self && !(dflags & DAMAGE_RADIUS) && BG_ModToWeapon( mod ) ) {
+			dflags |= DAMAGE_NO_ARMOR | DAMAGE_NO_KNOCKBACK | DAMAGE_NO_PROTECTION;
+			damage = targ->health + abs( GIB_HEALTH );
+		}
 	}
 
 	// add to the attacker's hit counter (if the target isn't a general entity like a prox mine)

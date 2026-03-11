@@ -796,6 +796,7 @@ extern	vmCvar_t	g_maxFlightFuel;
 extern	vmCvar_t	g_flightRefuelRate;
 extern	vmCvar_t	g_loadout;
 extern	vmCvar_t	g_respawn_delay[2];
+extern	vmCvar_t	g_instagib;
 
 extern	vmCvar_t	pmove_cvar[PMV_NUM_MAX];
 

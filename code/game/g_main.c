@@ -132,6 +132,7 @@ vmCvar_t	g_maxFlightFuel;
 vmCvar_t	g_flightRefuelRate;
 vmCvar_t	g_loadout;
 vmCvar_t	g_respawn_delay[2];
+vmCvar_t	g_instagib;
 
 vmCvar_t	pmove_cvar[PMV_NUM_MAX];
 
@@ -376,6 +377,7 @@ static cvarTable_t		gameCvarTable[] = {
 #endif
 	{ &g_respawn_delay[0], "g_respawn_delay_min", "2100", CVAR_GAMERULE, 0, qtrue, qfalse },
 	{ &g_respawn_delay[1], "g_respawn_delay_max", "2400", CVAR_GAMERULE, 0, qtrue, qfalse },
+	{ &g_instagib, "g_instagib", "0", CVAR_SERVERINFO, 0, qtrue, qfalse },
 
 	{ &g_loadout, "g_loadout", "0", CVAR_SERVERINFO},
 	{ &g_disableLoadout[WP_GAUNTLET], "cg_disableLoadout_g", "", CVAR_GAMERULE | CVAR_MISCINFO },

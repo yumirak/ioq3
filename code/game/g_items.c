@@ -932,6 +932,8 @@ void G_SpawnItem (gentity_t *ent, gitem_t *item) {
 			return;
 		if( !g_spawnItemType[item->giType].integer )
 			return;
+		if( g_instagib.integer )
+			return;
 	}
 
 	ent->item = item;
