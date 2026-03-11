@@ -269,6 +269,7 @@ vmCvar_t	cg_loadout;
 vmCvar_t	cg_specFov;
 vmCvar_t	cg_chatBeep;
 vmCvar_t	cg_teamChatBeep;
+vmCvar_t	cg_weaponConfig[WP_NUM_WEAPONS];
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 vmCvar_t	pmove_cvar[PMV_NUM_MAX];
@@ -485,6 +486,25 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_chatBeep, "cg_chatBeep", "0", CVAR_ARCHIVE },
 	{ &cg_teamChatBeep, "cg_teamChatBeep", "0", CVAR_ARCHIVE },
 
+	{ &cg_weaponConfig[WP_NUM_WEAPONS], "cg_weaponConfig", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_GAUNTLET], "cg_weaponConfig_g", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_MACHINEGUN], "cg_weaponConfig_mg", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_SHOTGUN], "cg_weaponConfig_sg", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_GRENADE_LAUNCHER], "cg_weaponConfig_gl", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_ROCKET_LAUNCHER], "cg_weaponConfig_rl", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_LIGHTNING], "cg_weaponConfig_lg", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_RAILGUN], "cg_weaponConfig_rg", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_PLASMAGUN], "cg_weaponConfig_pg", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_BFG], "cg_weaponConfig_bfg", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_GRAPPLING_HOOK], "cg_weaponConfig_gh", "", CVAR_ARCHIVE },
+#ifdef MISSIONPACK
+	{ &cg_weaponConfig[WP_NAILGUN], "cg_weaponConfig_ng", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_PROX_LAUNCHER], "cg_weaponConfig_pl", "", CVAR_ARCHIVE },
+	{ &cg_weaponConfig[WP_CHAINGUN], "cg_weaponConfig_cg", "", CVAR_ARCHIVE },
+#endif
+#if BASEQZ > 934
+	{ &cg_weaponConfig[WP_HEAVY_MACHINEGUN], "cg_weaponConfig_hmg", "", CVAR_ARCHIVE },
+#endif
 
 	{ &pmove_cvar[PMV_AIR_ACCELERATION], "pmove_AirAccel", "1.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
 	// { &pmove_cvar[PMV_AIRCONTROL], "pmove_AirControl", "0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },

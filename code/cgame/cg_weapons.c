@@ -1549,6 +1549,7 @@ void CG_NextWeapon_f( void ) {
 	if ( i == MAX_WEAPONS ) {
 		cg.weaponSelect = original;
 	}
+	CG_ExecuteWeaponConfig( cg.weaponSelect );
 }
 
 /*
@@ -1585,6 +1586,7 @@ void CG_PrevWeapon_f( void ) {
 	if ( i == MAX_WEAPONS ) {
 		cg.weaponSelect = original;
 	}
+	CG_ExecuteWeaponConfig( cg.weaponSelect );
 }
 
 /*
@@ -1614,6 +1616,7 @@ void CG_Weapon_f( void ) {
 		return;		// don't have the weapon
 	}
 
+	CG_ExecuteWeaponConfig( num );
 	cg.weaponSelect = num;
 }
 
@@ -2459,4 +2462,16 @@ weaponAmmoWarning_t CG_GetAmmoWarning (weapon_t weapon)
 	}
 
 	return ammoWarning;
+}
+
+void CG_ExecuteWeaponConfig( int weaponid ) {
+	if ( cg.spectating || cg.demoPlayback ) {
+		return;
+	}
+
+	if ( strlen( cg_weaponConfig[weaponid].string ) > 0 ) {
+		trap_SendConsoleCommand( va( "%s \n", cg_weaponConfig[weaponid].string ) );
+	} else {
+		trap_SendConsoleCommand( va( "%s \n", cg_weaponConfig[WP_NUM_WEAPONS].string ) );
+	}
 }

@@ -1364,6 +1364,7 @@ extern	vmCvar_t		cg_buzzerSound;
 extern	vmCvar_t		cg_specFov;
 extern	vmCvar_t		cg_chatBeep;
 extern	vmCvar_t		cg_teamChatBeep;
+extern	vmCvar_t		cg_weaponConfig[WP_NUM_WEAPONS];
 
 extern	vmCvar_t		pmove_cvar[PMV_NUM_MAX];
 
@@ -1556,6 +1557,7 @@ void CG_DrawWeaponSelect( void );
 void CG_OutOfAmmoChange( void );	// should this be in pmove?
 void CG_DrawWeaponBar (void);
 weaponAmmoWarning_t CG_GetAmmoWarning (weapon_t weapon);
+void CG_ExecuteWeaponConfig( int weaponid );
 
 //
 // cg_marks.c
