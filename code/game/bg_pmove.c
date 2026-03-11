@@ -37,6 +37,8 @@ float	pm_wateraccelerate = 4.0f;
 float	pm_flyaccelerate = 8.0f;
 float	pm_waterfriction = 1.0f;
 
+float	pm_friction = 6.0f;
+
 int		c_pmove = 0;
 
 
@@ -211,7 +213,7 @@ static void PM_Friction( void ) {
 #endif
 
 	if ( pm->ps->pm_type == PM_SPECTATOR) {
-		drop += speed*pm->pmove_cvar[PMV_WALK_FRICTION]*pml.frametime;
+		drop += speed*pm_friction*pml.frametime;
 	}
 
 	// scale the velocity
