@@ -210,6 +210,7 @@ vmCvar_t	cg_impactSparks;
 vmCvar_t	cg_impactSparksLifetime;
 vmCvar_t	cg_impactSparksSize;
 vmCvar_t	cg_impactSparksVelocity;
+vmCvar_t	cg_drawSpecHudChat;
 #endif
 
 vmCvar_t	cg_hitBeep;
@@ -393,6 +394,7 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_impactSparksLifetime, "cg_impactSparksLifetime", "250", CVAR_ARCHIVE },
 	{ &cg_impactSparksSize, "cg_impactSparksSize", "8", CVAR_ARCHIVE },
 	{ &cg_impactSparksVelocity, "cg_impactSparksVelocity", "128", CVAR_ARCHIVE },
+	{ &cg_drawSpecHudChat, "cg_drawSpecHudChat", "1", CVAR_ARCHIVE },
 #endif
 
 	{ &cg_hitBeep, "cg_hitBeep", "2", CVAR_ARCHIVE},

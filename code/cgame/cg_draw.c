@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifdef MISSIONPACK
 #include "../ui/ui_shared.h"
+#include "cg_newownerdraw.h"
 
 // used for scoreboard
 extern displayContextDef_t cgDC;
@@ -2189,11 +2190,16 @@ static void CG_DrawSpectatorHUD(void) {
 
 	if ( compHud && cg.menuCompSpectator ) {
 		Menu_Paint( cg.menuCompSpectator, qtrue );
-		return;
 	}
 
 	if ( !compHud && cg.menuSpectator[isfollow] ) {
 		Menu_Paint( cg.menuSpectator[isfollow], qtrue );
+	}
+
+	if ( cg_drawSpecHudChat.integer ) {
+		rectDef_t rect;
+		rect.x = 6; rect.y = 0; rect.w = 634; rect.y = 407;
+		CG_DrawAreaNewChat( &rect, 0, colorWhite, ITEM_TEXTSTYLE_SHADOWED );
 	}
 }
 #endif
