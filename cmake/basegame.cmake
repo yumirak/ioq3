@@ -11,6 +11,7 @@ set(CGAME_SOURCES
     ${SOURCE_DIR}/game/bg_pmove.c
     ${SOURCE_DIR}/game/bg_slidemove.c
     ${SOURCE_DIR}/game/bg_lib.c
+    ${SOURCE_DIR}/game/bg_public.c
     ${SOURCE_DIR}/cgame/cg_consolecmds.c
     ${SOURCE_DIR}/cgame/cg_draw.c
     ${SOURCE_DIR}/cgame/cg_drawtools.c
@@ -48,6 +49,7 @@ set(GAME_SOURCES
     ${SOURCE_DIR}/game/bg_pmove.c
     ${SOURCE_DIR}/game/bg_slidemove.c
     ${SOURCE_DIR}/game/bg_lib.c
+    ${SOURCE_DIR}/game/bg_public.c
     ${SOURCE_DIR}/game/g_active.c
     ${SOURCE_DIR}/game/g_arenas.c
     ${SOURCE_DIR}/game/g_bot.c
@@ -74,7 +76,7 @@ set(GAME_QVM_SOURCES ${SOURCE_DIR}/game/g_syscalls.asm)
 
 set(UI_SOURCES
     ${SOURCE_DIR}/q3_ui/ui_main.c
-    ${SOURCE_DIR}/game/bg_misc.c
+    ${SOURCE_DIR}/game/bg_public.c
     ${SOURCE_DIR}/game/bg_lib.c
     ${SOURCE_DIR}/q3_ui/ui_addbots.c
     ${SOURCE_DIR}/q3_ui/ui_atoms.c
