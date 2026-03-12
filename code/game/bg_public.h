@@ -890,6 +890,8 @@ typedef enum {
 	WP_ACC_MAX
 } weaponAccuracy_t;
 
+extern	vmCvar_t	g_gravity;
+
 extern vec3_t bg_playerMins;
 extern vec3_t bg_playerMaxs;
 

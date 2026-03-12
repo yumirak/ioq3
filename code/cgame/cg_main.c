@@ -273,6 +273,7 @@ vmCvar_t	cg_weaponConfig[WP_NUM_WEAPONS];
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 vmCvar_t	pmove_cvar[PMV_NUM_MAX];
+vmCvar_t	g_gravity;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -543,6 +544,7 @@ static cvarTable_t cvarTable[] = {
 	{ &pmove_cvar[PMV_WEAPON_RAISE_TIME], "pmove_WeaponRaiseTime", "200.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
 	// { &pmove_cvar[PMV_WISH_SPEED], "pmove_WishSpeed", "400.0", CVAR_ROM | CVAR_GAMERULE | CVAR_PMOVEINFO },
 
+	{ &g_gravity, "g_gravity", "800", CVAR_SERVERINFO },
 //	{ &cg_pmove_fixed, "cg_pmove_fixed", "0", CVAR_USERINFO | CVAR_ARCHIVE }
 };
 
