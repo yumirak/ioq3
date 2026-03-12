@@ -390,16 +390,23 @@ void G_ParseField( const char *key, const char *value, gentity_t *ent ) {
 		trap_AdjustAreaPortalState(ent, qtrue); \
 	}
 
-qboolean G_RemoveEntFromSpawn( gentity_t *ent, const char *key, char *value, const char *match, char *classname, qboolean remove_match )
+qboolean G_RemoveEntFromSpawn( gentity_t *ent, const char *key, char *value, char *match[], qboolean remove_match )
 {
-	char *s = "";
+	int i;
+	int matchnum = 0;
+	char *s;
 	qboolean found = qfalse;
 
 	if ( !ent ) {
 		return qfalse;
 	}
 
-	s = strstr( value, match );
+	for ( i = 0; i < 3; i++ ) {
+		if( s )
+			break;
+		s = strstr( value, match[i] );
+		matchnum = i;
+	}
 
 	if ( remove_match && s ) {
 		found = qtrue;
@@ -407,8 +414,9 @@ qboolean G_RemoveEntFromSpawn( gentity_t *ent, const char *key, char *value, con
 		found = qtrue;
 	}
 
+	Com_Printf( "G_RemoveEntFromSpawn: [%s] %s %s. value '%s' lookup '%s' result '%s'\n", key, ent->classname, found ? "REMOVED" : "spawn", value, match[matchnum], s );
+
 	if( found ) {
-		Com_Printf( "G_RemoveEntFromSpawn: [%s] %s removed. value '%s' is %s with '%s'\n", key, classname, value, remove_match ? "match" : "not match", s );
 		ADJUST_AREAPORTAL();
 		G_FreeEntity( ent );
 	}
@@ -426,12 +434,12 @@ level.spawnVars[], then call the class specific spawn function
 void G_SpawnGEntityFromSpawnVars( void ) {
 	int			i;
 	gentity_t	*ent;
-	char		*value, *classname;
-	const char *s = "";
+	char		*value;
+	char		*s[3];
 
 	// get the next free entity
 	ent = G_Spawn();
-	G_SpawnString( "classname", NULL, &classname );
+	s[0] = s[1] = s[2] = "NONE";
 
 	for ( i = 0 ; i < level.numSpawnVars ; i++ ) {
 		G_ParseField( level.spawnVars[i][0], level.spawnVars[i][1], ent );
@@ -440,19 +448,21 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 #if BASEQZ > 934
 	// look for ammo spawn
 	if ( !Q_stricmpn( ent->classname, "ammo_", 5 ) ) {
+		s[0] = "ammo_pack";
 		if (g_ammoPackHack.integer) { // substitute ammo_* with ammo_pack
-			if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, "ammo_pack", ent->classname, qtrue ) ) {
+			if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, s, qtrue ) ) {
 				return;
 			}
 			ent->classname = G_NewString("ammo_pack");
 		} else if (g_ammoPack.integer) { // remove all ammo except ammo_pack
+			s[0] = "ammo_";
 			if ( !Q_stricmp( ent->classname, "ammo_pack") ) {
 				// pass, add it
-			} else if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, "ammo_", ent->classname, qtrue ) ) {
+			} else if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, s, qtrue ) ) {
 				return;
 			}
 		} else { // remove all ammo_pack
-			if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, "ammo_pack", ent->classname, qtrue ) ) {
+			if ( G_RemoveEntFromSpawn( ent, "ammo_pack", ent->classname, s, qtrue ) ) {
 				return;
 			}
 		}
@@ -503,37 +513,32 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 
 	if( g_ruleset.integer >= RULESET_CLASSIC && g_ruleset.integer < RULESET_MAX ) {
 		if( G_SpawnString( "not_ruleset", NULL, &value )) {
-			if( G_RemoveEntFromSpawn( ent, "not_ruleset", value, g_ruleset.string, classname, qtrue ) )
+			s[0] = va( "%i", g_ruleset.integer );
+			if( G_RemoveEntFromSpawn( ent, "not_ruleset", value, s, qtrue ) )
 				return;
 		}
 
 		if( G_SpawnString( "ruleset", NULL, &value )) {
-			if( G_RemoveEntFromSpawn( ent, "ruleset", value, g_ruleset.string, classname, qfalse ) )
+			s[0] = va( "%i", g_ruleset.integer );
+			if( G_RemoveEntFromSpawn( ent, "ruleset", value, s, qfalse ) )
 				return;
 		}
 	}
 
 	if( G_SpawnString( "not_gametype", NULL, &value )) {
-		qboolean isDigitString = qtrue;
-		for (i = 0;  i < strlen(value);  i++) {
-			if (!isdigit(value[i])  &&  value[i] != ' ') {
-				isDigitString = qfalse;
-				break;
-			}
-		}
-		s = isDigitString ? g_gametype.string : gametype_desc[g_gametype.integer].nameshort[1];
-		if( G_RemoveEntFromSpawn( ent, "not_gametype", value, s, classname, qtrue ) )
+		s[0] = g_gametype.string;
+		s[1] = va( "%s", gametype_desc[g_gametype.integer].nameshort[0] );
+		s[2] = va( "%s", gametype_desc[g_gametype.integer].nameshort[1] );
+		if( G_RemoveEntFromSpawn( ent, "not_gametype", value, s, qtrue ) )
 			return;
 	}
 
 	if( G_SpawnString( "gametype", NULL, &value ) ) {
-		for ( i = 0 ; i < 2 ; i++ ) {
-			if ( strlen( s ) )
-				break;
-			s = gametype_desc[g_gametype.integer].nameshort[i];
-			if( G_RemoveEntFromSpawn( ent, "gametype", value, gametype_desc[g_gametype.integer].nameshort[i], classname, qfalse ) )
-				return;
-		}
+		s[0] = g_gametype.string;
+		s[1] = va( "%s", gametype_desc[g_gametype.integer].nameshort[0] );
+		s[2] = va( "%s", gametype_desc[g_gametype.integer].nameshort[1] );
+		if( G_RemoveEntFromSpawn( ent, "gametype", value, s, qfalse ) )
+			return;
 	}
 
 	// move editor origin to pos
