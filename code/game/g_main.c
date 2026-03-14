@@ -1482,10 +1482,10 @@ void CalculateMVPs( void ) {
 					for ( k = 0;  k < bg_numItems; k++ ) {
 						if( !(bg_itemlist[k].giType >= IT_ARMOR && bg_itemlist[k].giType <= IT_POWERUP) )
 							continue;
-						if( cl->pers.itemPickup[k][0] <= 0 )
+						if( cl->pers.itemPickupStat[k].count <= 0 )
 							continue;
 
-						temp += (bg_itemlist[k].quantity * cl->pers.itemPickup[k][0]) / 10;
+						temp += (bg_itemlist[k].quantity * cl->pers.itemPickupStat[k].count) / 10;
 					}
 					value = temp;
 					break;

@@ -254,7 +254,7 @@ typedef struct {
 	int		weaponKills[WP_NUM_WEAPONS];
 	int		accuracy[WP_NUM_WEAPONS][WP_ACC_MAX]; // 0 = shots, 1 = hits
 	int		bestWeapon[WP_NUM_WEAPONS][2]; // 0 = Index, 1 = Damage
-	int		itemPickup[MAX_ITEMS][3]; // 0 = Count, 1 - Last Time, 2 = Avg Time;
+	itemStat_t		itemPickupStat[MAX_ITEMS]; // 0 = Count, 1 = Avg Time;
 	qboolean		ready;
 } clientPersistant_t;
 

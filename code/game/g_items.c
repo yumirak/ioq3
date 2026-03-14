@@ -441,11 +441,11 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 	}
 
 	// track player pickup
-	other->client->pers.itemPickup[index][0]++;
-	other->client->pers.itemPickup[index][1] = level.time - level.startTime;
-	other->client->pers.itemPickup[index][2] = (
-		( other->client->pers.itemPickup[index][1] - ent->timestamp) // get time difference
-		+ other->client->pers.itemPickup[index][2]) / other->client->pers.itemPickup[index][0]; // get average with last pickup
+	other->client->pers.itemPickupStat[index].count++;
+	other->client->pers.itemPickupStat[index].time = (
+		( level.time - level.startTime - ent->timestamp) // get time difference
+		+ other->client->pers.itemPickupStat[index].time) /
+		other->client->pers.itemPickupStat[index].count; // get average with last pickup
 
 	G_LogPrintf( "Item: %i %s\n", other->s.number, ent->item->classname );
 
