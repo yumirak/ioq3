@@ -254,6 +254,7 @@ typedef struct {
 	itemStat_t		itemPickupStat[MAX_ITEMS]; // 0 = Count, 1 = Avg Time;
 	qboolean		ready;
 	weaponStat_t	wpstats[WP_NUM_WEAPONS];
+	itemStat_t		powerupStat[MAX_ITEMS];
 } clientPersistant_t;
 
 

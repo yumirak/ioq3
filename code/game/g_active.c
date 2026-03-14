@@ -421,6 +421,7 @@ Actions that happen once a second
 */
 void ClientTimerActions( gentity_t *ent, int msec ) {
 	gclient_t	*client;
+	int loop;
 #ifdef MISSIONPACK
 	int			maxHealth;
 #endif
@@ -482,6 +483,13 @@ void ClientTimerActions( gentity_t *ent, int msec ) {
 		// count down armor when over max
 		if ( client->ps.stats[STAT_ARMOR] > client->ps.stats[STAT_MAX_HEALTH] ) {
 			client->ps.stats[STAT_ARMOR]--;
+		}
+
+		// count up powerup run
+		for ( loop = 0; loop < PW_NUM_POWERUPS; loop++) {
+			if ( client->ps.powerups[loop] ) {
+				client->pers.powerupStat[loop].time++;
+			}
 		}
 	}
 #ifdef MISSIONPACK
