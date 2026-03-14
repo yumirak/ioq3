@@ -204,7 +204,7 @@ void Bullet_Fire (gentity_t *ent, float spread, int damage, int mod ) {
 			tent->s.eventParm = traceEnt->s.number;
 			if( LogAccuracyHit( traceEnt, ent ) ) {
 				ent->client->accuracy_hits++;
-				ent->client->pers.accuracy[ent->s.weapon][WP_ACC_HIT]++;
+				ent->client->pers.wpstats[ent->s.weapon].accuracy[WP_ACC_HIT]++;
 			}
 		} else {
 			tent = G_TempEntity( tr.endpos, EV_BULLET_HIT_WALL );
@@ -347,7 +347,7 @@ void ShotgunPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 		if( ShotgunPellet( origin, end, ent ) && !hitClient ) {
 			hitClient = qtrue;
 			ent->client->accuracy_hits++;
-			ent->client->pers.accuracy[WP_SHOTGUN][WP_ACC_HIT]++;
+			ent->client->pers.wpstats[WP_SHOTGUN].accuracy[WP_ACC_HIT]++;
 		}
 	}
 }
@@ -559,7 +559,7 @@ void weapon_railgun_fire (gentity_t *ent) {
 			ent->client->rewardTime = level.time + REWARD_SPRITE_TIME;
 		}
 		ent->client->accuracy_hits++;
-		ent->client->pers.accuracy[WP_RAILGUN][WP_ACC_HIT]++;
+		ent->client->pers.wpstats[WP_RAILGUN].accuracy[WP_ACC_HIT]++;
 	}
 
 }
@@ -668,7 +668,7 @@ void Weapon_LightningFire( gentity_t *ent ) {
 #endif
 			if( LogAccuracyHit( traceEnt, ent ) ) {
 				ent->client->accuracy_hits++;
-				ent->client->pers.accuracy[WP_LIGHTNING][WP_ACC_HIT]++;
+				ent->client->pers.wpstats[WP_LIGHTNING].accuracy[WP_ACC_HIT]++;
 			}
 			G_Damage( traceEnt, ent, ent, forward, tr.endpos, damage, 0, MOD_LIGHTNING);
 		}
@@ -829,14 +829,14 @@ void FireWeapon( gentity_t *ent ) {
 #ifdef MISSIONPACK
 		if( ent->s.weapon == WP_NAILGUN ) {
 			ent->client->accuracy_shots += NUM_NAILSHOTS;
-			ent->client->pers.accuracy[ent->s.weapon][WP_ACC_SHOT] += NUM_NAILSHOTS;
+			ent->client->pers.wpstats[ent->s.weapon].accuracy[WP_ACC_SHOT] += NUM_NAILSHOTS;
 		} else {
 			ent->client->accuracy_shots++;
-			ent->client->pers.accuracy[ent->s.weapon][WP_ACC_SHOT]++;
+			ent->client->pers.wpstats[ent->s.weapon].accuracy[WP_ACC_SHOT]++;
 		}
 #else
 		ent->client->accuracy_shots++;
-		ent->client->pers.accuracy[ent->s.weapon][WP_ACC_SHOT]++;
+		ent->client->pers.wpstats[ent->s.weapon].accuracy[WP_ACC_SHOT]++;
 #endif
 	}
 
@@ -1169,7 +1169,7 @@ void UpdateBestWeapon( gclient_t *client )
 	int i;
 	for( i = 1; i < WP_NUM_WEAPONS; ++i ) {
 		client->pers.bestWeapon[i][0] = i;
-		client->pers.bestWeapon[i][1] = client->pers.damage[i];
+		client->pers.bestWeapon[i][1] = client->pers.wpstats[i].damage;
 	}
 	qsort( client->pers.bestWeapon, WP_NUM_WEAPONS,
 		   sizeof( client->pers.bestWeapon[0] ), SortWPDamages );

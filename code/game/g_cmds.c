@@ -137,8 +137,8 @@ void AccMessage( gentity_t *ent ) {
 	if( !cl ) cl = ent->client;
 
 	for( i = WP_NONE; i < WP_NUM_WEAPONS; i++ ) {
-		if( cl->pers.accuracy[i][WP_ACC_SHOT] ) {
-			accuracy = cl->pers.accuracy[i][WP_ACC_HIT] * 100 / cl->pers.accuracy[i][WP_ACC_SHOT];
+		if( cl->pers.wpstats[i].accuracy[WP_ACC_SHOT] ) {
+			accuracy = cl->pers.wpstats[i].accuracy[WP_ACC_HIT] * 100 / cl->pers.wpstats[i].accuracy[WP_ACC_SHOT];
 		} else {
 			accuracy = 0;
 		}

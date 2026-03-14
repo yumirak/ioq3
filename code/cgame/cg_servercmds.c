@@ -147,7 +147,7 @@ static void CG_ParseAccuracy( void ) {
 	int		i;
 	cg.wpnStatsTime = cg.time;
 	for ( i = WP_NONE; i < WP_NUM_WEAPONS; i++ ) {
-		cg.wpnStats.accuracy[i] = atoi(CG_Argv(i + 1));
+		cg.wpstats[i].accuracy[WP_ACC_PERCENT] = atoi(CG_Argv(i + 1));
 	}
 }
 

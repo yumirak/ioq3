@@ -887,6 +887,7 @@ typedef enum {
 typedef enum {
 	WP_ACC_SHOT,
 	WP_ACC_HIT,
+	WP_ACC_PERCENT,
 	WP_ACC_MAX
 } weaponAccuracy_t;
 
@@ -895,6 +896,11 @@ typedef struct {
 	int time;
 } itemStat_t;
 
+typedef struct {
+	int damage;
+	int kills;
+	int accuracy[WP_ACC_MAX];
+} weaponStat_t;
 
 typedef struct {
 	int				client;
@@ -917,9 +923,9 @@ typedef struct {
 	int				kills, deaths;
 	int				bestWeapon, bestWeaponAcc;
 	int				damageGiven, damageTaken;
-	int				weaponAccuracy[WP_NUM_WEAPONS][WP_ACC_MAX];
 	itemStat_t		itemPickupStat[MAX_ITEMS]; // 0 = Count, 1 = Avg Time;
 	itemStat_t		powerupStat[PW_NUM_POWERUPS]; // 0 = Count, 1 = Run Time;
+	weaponStat_t	wpstat[WP_NUM_WEAPONS];
 } score_t;
 
 extern	vmCvar_t	g_gravity;

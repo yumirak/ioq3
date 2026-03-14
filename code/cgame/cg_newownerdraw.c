@@ -715,7 +715,7 @@ void CG_DrawAccuracyVertical( rectDef_t *rect, float scale, vec4_t color, int te
 		if (!cg_weapons[i].registered)
 			continue;
 
-		acc = cg.wpnStats.accuracy[i];
+		acc = cg.wpstats[i].accuracy[WP_ACC_PERCENT];
 		textRect.y = rect->y + offset;
 		CG_Text_Paint_Align( &textRect, scale, color, va("%d%%", acc), 0, 0, textStyle, align);
 		offset += rect->h;

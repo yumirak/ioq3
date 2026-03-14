@@ -480,10 +480,6 @@ typedef struct {
 } centerPrint_t;
 
 typedef struct {
-	int accuracy[WP_NUM_WEAPONS];
-} weaponStat_t;
-
-typedef struct {
 	int count;
 	int time;
 	int totaltime;
@@ -703,7 +699,7 @@ typedef struct {
 	newChatArea_t chatArea[MAX_CHAT_LINES];
 	qboolean drawAccStats;
 	int wpnStatsTime;
-	weaponStat_t wpnStats;
+	weaponStat_t wpstats[WP_NUM_WEAPONS];
 	int damageDoneTime;
 	int damageDoneTier;
 	vec4_t crossHairHitColor;

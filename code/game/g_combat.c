@@ -461,7 +461,7 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 			if( self != attacker ) {
 				int weapon = BG_ModToWeapon( meansOfDeath );
 				if( weapon != WP_NONE )
-					attacker->client->pers.weaponKills[weapon]++;
+					attacker->client->pers.wpstats[weapon].kills++;
 				attacker->client->ps.persistant[PERS_KILLS]++;
 
 				if ( attacker->client->ps.powerups[PW_BATTLESUIT] ) {
@@ -1069,7 +1069,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 				&& !OnSameTeam( targ, attacker )) {
 				int weapon = BG_ModToWeapon( mod );
 				if( weapon != WP_NONE ) {
-					attacker->client->pers.damage[weapon] += damageTaken;
+					attacker->client->pers.wpstats[weapon].damage += damageTaken;
 				}
 				attacker->client->pers.damageGiven += damageTaken;
 				UpdateBestWeapon( attacker->client );
