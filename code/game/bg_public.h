@@ -890,6 +890,44 @@ typedef enum {
 	WP_ACC_MAX
 } weaponAccuracy_t;
 
+typedef enum {
+	ITEMSTAT_COUNT,
+	ITEMSTAT_AVGTIME,
+	ITEMSTAT_MAX
+} itemStat_t;
+
+typedef enum {
+	PWSTAT_COUNT,
+	PWSTAT_RUNTIME,
+	PWSTAT_MAX
+} powerupStat_t;
+
+typedef struct {
+	int				client;
+	int				score;
+	int				ping;
+	int				time;
+	int				scoreFlags;
+	int				powerUps;
+	int				accuracy;
+	int				impressiveCount;
+	int				excellentCount;
+	int				guantletCount;
+	int				defendCount;
+	int				assistCount;
+	int				captures;
+	qboolean		perfect;
+	int				team;
+	// Extend
+	qboolean		alive;
+	int				kills, deaths;
+	int				bestWeapon, bestWeaponAcc;
+	int				damageGiven, damageTaken;
+	int				weaponAccuracy[WP_NUM_WEAPONS][WP_ACC_MAX];
+	int				itemPickupStat[MAX_ITEMS][ITEMSTAT_MAX]; // 0 = Count, 1 = Avg Time;
+	int				powerupStat[PW_NUM_POWERUPS][PWSTAT_MAX]; // 0 = Count, 1 = Run Time;
+} score_t;
+
 extern	vmCvar_t	g_gravity;
 
 extern vec3_t bg_playerMins;

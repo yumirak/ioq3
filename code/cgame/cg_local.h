@@ -301,29 +301,6 @@ typedef struct localEntity_s {
 
 //======================================================================
 
-
-typedef struct {
-	int				client;
-	int				score;
-	int				ping;
-	int				time;
-	int				scoreFlags;
-	int				powerUps;
-	int				accuracy;
-	int				impressiveCount;
-	int				excellentCount;
-	int				guantletCount;
-	int				defendCount;
-	int				assistCount;
-	int				captures;
-	qboolean	perfect;
-	int				team;
-	// Extend
-	qboolean		alive;
-	int				kills, deaths;
-	int				bestWeapon;
-} score_t;
-
 // each client has an associated clientInfo_t
 // that contains media references necessary to present the
 // client model and other color coded effects
