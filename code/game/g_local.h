@@ -424,6 +424,10 @@ typedef struct {
 	int			overtimeCount;
 } level_locals_t;
 
+typedef struct {
+	score_t scores[MAX_CLIENTS];
+	teamscores_t teamscore[TEAM_NUM_TEAMS];
+} game_locals_t;
 
 //
 // g_spawn.c
@@ -707,6 +711,7 @@ void BotTestAAS(vec3_t origin);
 
 
 extern	level_locals_t	level;
+extern	game_locals_t	game;
 extern	gentity_t		g_entities[MAX_GENTITIES];
 extern	qboolean	itemRegistered[MAX_ITEMS];
 

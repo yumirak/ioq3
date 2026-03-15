@@ -891,6 +891,22 @@ typedef enum {
 	WP_ACC_MAX
 } weaponAccuracy_t;
 
+typedef enum {
+	MID_AR_RED = 3,
+	MID_AR_YELLOW = 2,
+	MID_AR_GREEN = 4,
+	MID_MEGA_HEALTH = 8,
+	MID_MEDKIT = 28,
+	MID_QUAD = 29,
+	MID_BATTLESUIT = 30,
+	MID_HASTE = 31,
+	MID_INVIS = 32,
+	MID_REGEN = 33,
+	MID_RED_FLAG = 35,
+	MID_BLUE_FLAG = 36,
+	MID_WHITE_FLAG = 37,
+} majorItemIndex_t;
+
 typedef struct {
 	int count;
 	int time;
@@ -923,10 +939,13 @@ typedef struct {
 	int				kills, deaths;
 	int				bestWeapon, bestWeaponAcc;
 	int				damageGiven, damageTaken;
-	itemStat_t		itemPickupStat[MAX_ITEMS]; // 0 = Count, 1 = Avg Time;
-	itemStat_t		powerupStat[PW_NUM_POWERUPS]; // 0 = Count, 1 = Run Time;
 	weaponStat_t	wpstat[WP_NUM_WEAPONS];
 } score_t;
+typedef struct {
+	int				score;
+	itemStat_t		itemPickupStat[MAX_ITEMS];
+	itemStat_t		powerupStat[PW_NUM_POWERUPS]; // 0 = Count, 1 = Run Time;
+} teamscores_t;
 
 extern	vmCvar_t	g_gravity;
 

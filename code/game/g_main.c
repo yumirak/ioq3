@@ -27,6 +27,7 @@ int startingWeaponModificationCount = 0;
 int loadoutModificationCount = 0;
 
 level_locals_t	level;
+game_locals_t	game;
 
 typedef struct {
 	vmCvar_t	*vmCvar;
@@ -695,6 +696,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 
 	// set some level globals
 	memset( &level, 0, sizeof( level ) );
+	memset( &game, 0, sizeof( game ) );
 	level.time = levelTime;
 	level.startTime = levelTime;
 
@@ -1221,7 +1223,8 @@ void SendScoreboardMessageToAllClients( void ) {
 
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
 		if ( level.clients[ i ].pers.connected == CON_CONNECTED ) {
-			DeathmatchScoreboardMessage( g_entities + i );
+			// DeathmatchScoreboardMessage( g_entities + i );
+			Cmd_Score_f( g_entities + i );
 		}
 	}
 }

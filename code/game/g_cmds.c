@@ -104,7 +104,262 @@ void DeathmatchScoreboardMessage( gentity_t *ent ) {
 		string ) );
 }
 
+void Cmd_Score( gentity_t *ent, int gametype ) {
+	char		servercmd[512];
+	char		entry[1024];
+	char		string[1000];
+	int			stringlength;
+	int			i, j;
+	gclient_t	*cl;
+	int			numscores;
+	int			wp, loop;
 
+	// don't send scores to bots, they don't parse it
+	if ( ent->r.svFlags & SVF_BOT ) {
+		return;
+	}
+
+	// send the latest information on all clients
+	string[0] = entry[0] = servercmd[0] = '\0';
+	stringlength = 0;
+	memset ( game.scores, 0, sizeof ( game.scores ) );
+	memset ( game.teamscore, 0, sizeof ( game.teamscore ) );
+
+	numscores = level.numPlayingClients;
+	for ( i = 0 ; i < numscores ; i++ ) {
+		cl = &level.clients[ level.sortedClients[i] ];
+		game.scores[i].client = level.sortedClients[i];
+		game.scores[i].team = cl->sess.sessionTeam;
+		game.scores[i].score = cl->ps.persistant[PERS_SCORE];
+		game.scores[i].ping = Com_Clamp( -1, 999, cl->ps.ping );
+		game.scores[i].accuracy = cl->accuracy_shots > 0 ? cl->accuracy_hits * 100 / cl->accuracy_shots : 0;
+		game.scores[i].perfect = ( cl->ps.persistant[PERS_RANK] == 0 && cl->ps.persistant[PERS_KILLED] == 0 ) ? 1 : 0;
+		game.scores[i].time = (level.time - cl->pers.enterTime) / 60000;
+		game.scores[i].powerUps = g_entities[ level.sortedClients[i] ].s.powerups;
+		game.scores[i].impressiveCount = cl->ps.persistant[PERS_IMPRESSIVE_COUNT];
+		game.scores[i].excellentCount = cl->ps.persistant[PERS_EXCELLENT_COUNT];
+		game.scores[i].guantletCount = cl->ps.persistant[PERS_GAUNTLET_FRAG_COUNT];
+		game.scores[i].defendCount = cl->ps.persistant[PERS_DEFEND_COUNT];
+		game.scores[i].assistCount = cl->ps.persistant[PERS_ASSIST_COUNT];
+		game.scores[i].captures = cl->ps.persistant[PERS_CAPTURES];
+		game.scores[i].alive = cl->ps.pm_type == PM_NORMAL;
+		game.scores[i].kills = cl->ps.persistant[PERS_KILLS];
+		game.scores[i].deaths = cl->ps.persistant[PERS_KILLED];
+		game.scores[i].damageGiven = cl->pers.damageGiven;
+		game.scores[i].bestWeapon =  cl->pers.bestWeapon[0][1] > WP_NONE ? cl->pers.bestWeapon[0][0] : WP_MACHINEGUN;
+		game.scores[i].bestWeaponAcc = cl->pers.wpstats[game.scores[i].bestWeapon].accuracy[WP_ACC_SHOT] > 0 ?
+		cl->pers.wpstats[game.scores[i].bestWeapon].accuracy[WP_ACC_HIT] * 100 / cl->pers.wpstats[game.scores[i].bestWeapon].accuracy[WP_ACC_SHOT] : 0;
+
+		memcpy(&game.scores[i].wpstat,  cl->pers.wpstats, sizeof(game.scores[i].wpstat));
+
+		switch ( gametype ) {
+			case GT_FFA:
+			case GT_SINGLE_PLAYER:
+				break;
+			case GT_TOURNAMENT:
+				memcpy(&game.teamscore[i].itemPickupStat,  cl->pers.itemPickupStat, sizeof(game.teamscore[i].itemPickupStat));
+				break;
+			case GT_TEAM:
+			case GT_CTF:
+			case GT_1FCTF:
+				for (loop = 0 ; loop < bg_numItems ; loop++) {
+					game.teamscore[game.scores[i].team].itemPickupStat[loop].count += cl->pers.itemPickupStat[loop].count;
+				}
+				for (loop = PW_NONE; loop < PW_NUM_POWERUPS; loop++) {
+					game.teamscore[game.scores[i].team].powerupStat[loop].count += cl->pers.powerupStat[loop].count;
+					game.teamscore[game.scores[i].team].powerupStat[loop].time += cl->pers.powerupStat[loop].time;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	numscores = i;
+	game.teamscore[TEAM_RED].score = level.teamScores[TEAM_RED];
+	game.teamscore[TEAM_BLUE].score = level.teamScores[TEAM_BLUE];
+
+	switch( gametype ) {
+		case GT_SINGLE_PLAYER:
+		case GT_FFA: {
+			Com_sprintf( servercmd, sizeof(servercmd), "scores_%s %i %i %i",
+			gametype_desc[gametype].scoreboard, numscores, level.teamScores[TEAM_RED], level.teamScores[TEAM_BLUE] );
+
+			for (i = 0 ; i < numscores ; i++) {
+				Com_sprintf ( entry, sizeof(entry), " %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
+				game.scores[i].client, game.scores[i].score, game.scores[i].ping,
+				game.scores[i].time, game.scores[i].accuracy,
+				game.scores[i].impressiveCount, game.scores[i].excellentCount, game.scores[i].guantletCount,
+				game.scores[i].defendCount, game.scores[i].assistCount,
+				game.scores[i].perfect, game.scores[i].captures,
+				game.scores[i].alive, game.scores[i].kills, game.scores[i].deaths,
+				game.scores[i].bestWeapon, game.scores[i].bestWeaponAcc, game.scores[i].damageGiven );
+
+				j = strlen(entry);
+				if (stringlength + j >= sizeof(string) - strlen(servercmd) )
+					break;
+
+				strcpy (string + stringlength, entry);
+				stringlength += j;
+			}
+			break;
+		}
+		case GT_TOURNAMENT: {
+			numscores = level.numPlayingClients;
+			Com_sprintf( servercmd, sizeof(servercmd), "scores_%s %i", gametype_desc[gametype].scoreboard, numscores );
+
+			for (i = 0 ; i < numscores ; i++) {
+				Com_sprintf( entry, sizeof( entry ), " %i %i %i %i %i %i %i %i %i %i %i %i %i",
+				game.scores[i].client, game.scores[i].score, game.scores[i].ping, game.scores[i].time,
+				game.scores[i].kills, game.scores[i].deaths, game.scores[i].accuracy,
+				game.scores[i].bestWeapon, game.scores[i].damageGiven,
+				game.scores[i].impressiveCount, game.scores[i].excellentCount,
+				game.scores[i].guantletCount, game.scores[i].perfect );
+
+				Q_strcat( entry, sizeof( entry ), va(" %i %0.2f %i %0.2f %i %0.2f %i %0.2f",
+				game.teamscore[i].itemPickupStat[MID_AR_RED].count,
+				game.teamscore[i].itemPickupStat[MID_AR_RED].time / 1000.0f,
+				game.teamscore[i].itemPickupStat[MID_AR_YELLOW].count,
+				game.teamscore[i].itemPickupStat[MID_AR_YELLOW].time / 1000.0f,
+				game.teamscore[i].itemPickupStat[MID_AR_GREEN].count,
+				game.teamscore[i].itemPickupStat[MID_AR_GREEN].time / 1000.0f,
+				game.teamscore[i].itemPickupStat[MID_MEGA_HEALTH].count,
+				game.teamscore[i].itemPickupStat[MID_MEGA_HEALTH].time / 1000.0f
+				));
+
+				// protocol 90 and higher expect 14 weapons
+				for (loop = WP_GAUNTLET; loop < 15; loop++) {
+					wp = loop;
+					if ( wp >= WP_NUM_WEAPONS ) wp = WP_NONE; // dummy for basegame and old ql gamedata
+					Q_strcat( entry, sizeof( entry ), va(" %i %i %i %i %i",
+					game.scores[i].wpstat[wp].accuracy[WP_ACC_HIT], game.scores[i].wpstat[wp].accuracy[WP_ACC_SHOT],
+					game.scores[i].wpstat[wp].accuracy[WP_ACC_SHOT] > 0 ?
+					game.scores[i].wpstat[wp].accuracy[WP_ACC_HIT] * 100 / game.scores[i].wpstat[wp].accuracy[WP_ACC_SHOT] : 0,
+					game.scores[i].wpstat[wp].damage, game.scores[i].wpstat[wp].kills) );
+				}
+
+				j = strlen(entry);
+				if (stringlength + j >= sizeof(string) - strlen(servercmd) )
+					break;
+
+				strcpy (string + stringlength, entry);
+				stringlength += j;
+			}
+			break;
+		}
+		case GT_CLAN_ARENA: {
+			Com_sprintf( servercmd, sizeof( servercmd ), "scores_%s %i %i %i",
+			gametype_desc[gametype].scoreboard, numscores, game.teamscore[TEAM_RED].score, game.teamscore[TEAM_BLUE].score );
+
+			for ( i = 0 ; i < numscores ; i++ ) {
+				Com_sprintf( entry, sizeof( entry ), " %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",
+				game.scores[i].client, game.scores[i].team, game.scores[i].score,
+				game.scores[i].ping, game.scores[i].time, game.scores[i].kills,
+				game.scores[i].deaths, game.scores[i].accuracy, game.scores[i].bestWeapon,
+				game.scores[i].bestWeaponAcc, game.scores[i].damageGiven,
+				game.scores[i].impressiveCount, game.scores[i].excellentCount, game.scores[i].guantletCount,
+				game.scores[i].perfect, game.scores[i].alive );
+
+				j = strlen(entry);
+				if (stringlength + j >= sizeof(string) - strlen(servercmd) )
+					break;
+
+				strcpy (string + stringlength, entry);
+				stringlength += j;
+			}
+			break;
+		}
+		default: {
+			int flag;
+			int scoreboard = gametype;
+			if( scoreboard == GT_1FCTF )
+				scoreboard = GT_CTF; // 1f has it own scoreboard but using scores_ctf servercmd.
+
+			Com_sprintf( servercmd, sizeof( servercmd ), "scores_%s", gametype_desc[scoreboard].scoreboard );
+
+			for (i = TEAM_RED ; i <= TEAM_BLUE ; i++) {
+				Q_strcat( servercmd, sizeof( servercmd ), va( " %i %i %i %i %i %i %i %i %i",
+				game.teamscore[i].itemPickupStat[MID_AR_RED].count,
+				game.teamscore[i].itemPickupStat[MID_AR_YELLOW].count,
+				game.teamscore[i].itemPickupStat[MID_AR_GREEN].count,
+				game.teamscore[i].itemPickupStat[MID_MEGA_HEALTH].count,
+				game.teamscore[i].itemPickupStat[MID_QUAD].count,
+				game.teamscore[i].itemPickupStat[MID_BATTLESUIT].count,
+				game.teamscore[i].itemPickupStat[MID_REGEN].count,
+				game.teamscore[i].itemPickupStat[MID_HASTE].count,
+				game.teamscore[i].itemPickupStat[MID_INVIS].count ) );
+
+				switch ( gametype ) {
+					case GT_CTF: flag = (i == TEAM_RED) ? PW_BLUEFLAG : PW_REDFLAG; break;
+					case GT_1FCTF: flag = PW_NEUTRALFLAG; break;
+					default: flag = 0; break;
+				}
+				if ( flag ) {
+					Q_strcat( servercmd, sizeof( servercmd ), va( " %i %i",
+					game.teamscore[i].powerupStat[flag].count,
+					game.teamscore[i].itemPickupStat[MID_MEDKIT].count ) );
+				}
+
+				// powerupTime
+				Q_strcat( servercmd, sizeof( servercmd ), va( " %i %i %i %i %i",
+				game.teamscore[i].powerupStat[PW_QUAD].time,
+				game.teamscore[i].powerupStat[PW_BATTLESUIT].time,
+				game.teamscore[i].powerupStat[PW_REGEN].time,
+				game.teamscore[i].powerupStat[PW_HASTE].time,
+				game.teamscore[i].powerupStat[PW_INVIS].time ) );
+				if ( flag ) {
+					Q_strcat( servercmd, sizeof( servercmd ), va(" %i", game.teamscore[i].powerupStat[flag].time ) );
+				}
+			}
+
+			Q_strcat( servercmd, sizeof( servercmd ), va(" %i %i %i",
+			numscores, game.teamscore[TEAM_RED].score, game.teamscore[TEAM_BLUE].score ) );
+
+			for ( i = 0 ; i < numscores ; i++ ) {
+				Com_sprintf( entry, sizeof( entry ), " %i %i %i %i %i %i %i %i %i %i %i %i",
+				game.scores[i].client, game.scores[i].team, game.scores[i].score,
+				game.scores[i].ping, game.scores[i].time, game.scores[i].kills,
+				game.scores[i].deaths, game.scores[i].accuracy, game.scores[i].bestWeapon,
+				game.scores[i].impressiveCount, game.scores[i].excellentCount, game.scores[i].guantletCount );
+
+				switch ( gametype ) {
+					case GT_1FCTF:
+					case GT_CTF:
+						Q_strcat( entry, sizeof( entry ), va(" %i %i %i %i %i",
+						game.scores[i].defendCount,
+						game.scores[i].assistCount,
+						game.scores[i].captures,
+						game.scores[i].perfect,
+						game.scores[i].alive ) );
+						break;
+					case GT_FREEZETAG:
+						Q_strcat( entry, sizeof( entry ), va(" %i %i %i %i %i",
+						0, // thaws
+						0, // team kill score
+						0, // team kill death
+						game.scores[i].damageGiven,
+						game.scores[i].alive ) );
+						break;
+					default:
+						Q_strcat( entry, sizeof( entry ), va(" %i %i %i",
+						0, // team kill score
+						0, // team kill death
+						game.scores[i].damageGiven ) );
+						break;
+				}
+
+				j = strlen(entry);
+				if (stringlength + j >= sizeof(string) - strlen(servercmd) )
+					break;
+
+				strcpy (string + stringlength, entry);
+				stringlength += j;
+			}
+			break;
+		}
+	}
+	trap_SendServerCommand( ent-g_entities, va("%s%s", servercmd, string) );
+}
 /*
 ==================
 Cmd_Score_f
@@ -113,7 +368,8 @@ Request current scoreboard information
 ==================
 */
 void Cmd_Score_f( gentity_t *ent ) {
-	DeathmatchScoreboardMessage( ent );
+	// DeathmatchScoreboardMessage( ent );
+	Cmd_Score( ent, g_gametype.integer );
 }
 
 

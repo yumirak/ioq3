@@ -798,13 +798,14 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 }
 
 int Team_TouchEnemyFlag( gentity_t *ent, gentity_t *other, int team ) {
+	int flag;
 	gclient_t *cl = other->client;
 
 #ifdef MISSIONPACK
 	if( g_gametype.integer == GT_1FCTF ) {
 		PrintMsg (NULL, "%s" S_COLOR_WHITE " got the flag!\n", other->client->pers.netname );
 
-		cl->ps.powerups[PW_NEUTRALFLAG] = INT_MAX; // flags never expire
+		flag = PW_NEUTRALFLAG;
 
 		if( team == TEAM_RED ) {
 			Team_SetFlagStatus( TEAM_FREE, FLAG_TAKEN_RED );
@@ -818,11 +819,7 @@ int Team_TouchEnemyFlag( gentity_t *ent, gentity_t *other, int team ) {
 		PrintMsg (NULL, "%s" S_COLOR_WHITE " got the %s flag!\n",
 			other->client->pers.netname, TeamName(team));
 
-		if (team == TEAM_RED)
-			cl->ps.powerups[PW_REDFLAG] = INT_MAX; // flags never expire
-		else
-			cl->ps.powerups[PW_BLUEFLAG] = INT_MAX; // flags never expire
-
+		flag = team == TEAM_RED ? PW_REDFLAG : PW_BLUEFLAG;
 		Team_SetFlagStatus( team, FLAG_TAKEN );
 #ifdef MISSIONPACK
 	}
@@ -830,6 +827,8 @@ int Team_TouchEnemyFlag( gentity_t *ent, gentity_t *other, int team ) {
 	AddScore(other, ent->r.currentOrigin, CTF_FLAG_BONUS);
 #endif
 	cl->pers.teamState.flagsince = level.time;
+	cl->pers.powerupStat[flag].count++;
+	cl->ps.powerups[flag] = INT_MAX; // flags never expire
 	Team_TakeFlagSound( ent, team );
 
 	return -1; // Do not respawn this automatically, but do delete it if it was FL_DROPPED
