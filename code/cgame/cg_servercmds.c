@@ -112,6 +112,182 @@ static void CG_ParseScores( void ) {
 
 }
 
+static void CG_ParseScoreCmd( int gametype ) {
+	int		i;
+	int n, wp, loop, flag;
+	switch ( gametype ) {
+		case GT_FFA: {
+			cg.numScores = atoi( CG_Argv( 1 ) );
+			if ( cg.numScores > MAX_CLIENTS )
+				cg.numScores = MAX_CLIENTS;
+			cg.teamScores[0] = atoi( CG_Argv( 2 ) );
+			cg.teamScores[1] = atoi( CG_Argv( 3 ) );
+			memset( cg.scores, 0, sizeof( cg.scores ) );
+			n = 4;
+			for ( i = 0 ; i < cg.numScores ; i++ ) {
+				cg.scores[i].client = atoi(CG_Argv(n)); n++;
+				cg.scores[i].score = atoi(CG_Argv(n)); n++;
+				cg.scores[i].ping = atoi(CG_Argv(n)); n++;
+				cg.scores[i].time = atoi(CG_Argv(n)); n++;
+				cg.scores[i].accuracy = atoi(CG_Argv(n)); n++;
+				cg.scores[i].impressiveCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].excellentCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].guantletCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].defendCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].assistCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].perfect = atoi(CG_Argv(n)); n++;
+				cg.scores[i].captures = atoi(CG_Argv(n)); n++;
+				cg.scores[i].alive = atoi(CG_Argv(n)); n++;
+				cg.scores[i].kills = atoi(CG_Argv(n)); n++;
+				cg.scores[i].deaths = atoi(CG_Argv(n)); n++;
+				cg.scores[i].bestWeapon = atoi(CG_Argv(n)); n++;
+				cg.scores[i].bestWeaponAcc = atoi(CG_Argv(n)); n++;
+				cg.scores[i].damageGiven = atoi(CG_Argv(n)); n++;
+				if ( cg.scores[i].client < 0 || cg.scores[i].client >= MAX_CLIENTS )
+					cg.scores[i].client = 0;
+				cgs.clientinfo[ cg.scores[i].client ].score = cg.scores[i].score;
+				cgs.clientinfo[ cg.scores[i].client ].powerups = cg.scores[i].powerUps;
+				cg.scores[i].team = cgs.clientinfo[cg.scores[i].client].team;
+			}
+			break;
+		}
+		case GT_TOURNAMENT: {
+			cg.numScores = atoi( CG_Argv( 1 ) );
+			if ( cg.numScores >= 2 )
+				cg.numScores = 2;
+			memset( cg.scores, 0, sizeof( cg.scores ) );
+			memset( cg.teamscore, 0, sizeof( cg.teamscore ) );
+			n = 2;
+			for ( i = 0 ; i < cg.numScores ; i++ ) {
+				cg.scores[i].client = atoi(CG_Argv(n)); n++;
+				cg.scores[i].score = atoi(CG_Argv(n)); n++;
+				cg.scores[i].ping = atoi(CG_Argv(n)); n++;
+				cg.scores[i].time = atoi(CG_Argv(n)); n++;
+				cg.scores[i].kills = atoi(CG_Argv(n)); n++;
+				cg.scores[i].deaths = atoi(CG_Argv(n)); n++;
+				cg.scores[i].accuracy = atoi(CG_Argv(n)); n++;
+				cg.scores[i].bestWeapon = atoi(CG_Argv(n)); n++;
+				cg.scores[i].damageGiven = atoi(CG_Argv(n)); n++;
+				cg.scores[i].impressiveCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].excellentCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].guantletCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].perfect = atoi(CG_Argv(n)); n++;
+
+				cg.teamscore[i].itemPickupStat[MID_AR_RED].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_AR_RED].time = atoi(CG_Argv(n)) * 1000; n++;
+				cg.teamscore[i].itemPickupStat[MID_AR_YELLOW].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_AR_YELLOW].time = atoi(CG_Argv(n)) * 1000; n++;
+				cg.teamscore[i].itemPickupStat[MID_AR_GREEN].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_AR_GREEN].time = atoi(CG_Argv(n)) * 1000; n++;
+				cg.teamscore[i].itemPickupStat[MID_MEGA_HEALTH].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_MEGA_HEALTH].time = atoi(CG_Argv(n)) * 1000; n++;
+
+				for ( loop = WP_GAUNTLET; loop < 15; loop++ ) {
+					wp = loop;
+					if ( wp >= WP_NUM_WEAPONS - 1 ) wp = WP_NONE; // dummy for old gamedata without hmg
+					cg.scores[i].wpstat[wp].accuracy[WP_ACC_HIT] = atoi(CG_Argv(n)); n++;
+					cg.scores[i].wpstat[wp].accuracy[WP_ACC_SHOT] = atoi(CG_Argv(n)); n++;
+					cg.scores[i].wpstat[wp].accuracy[WP_ACC_PERCENT] = atoi(CG_Argv(n)); n++;
+					cg.scores[i].wpstat[wp].damage = atoi(CG_Argv(n)); n++;
+					cg.scores[i].wpstat[wp].kills = atoi(CG_Argv(n)); n++;
+				}
+
+				if ( cg.scores[i].client < 0 || cg.scores[i].client >= MAX_CLIENTS )
+					cg.scores[i].client = 0;
+				cgs.clientinfo[ cg.scores[i].client ].score = cg.scores[i].score;
+			}
+			break;
+		}
+		default: {
+			memset( cg.scores, 0, sizeof( cg.scores ) );
+			memset( cg.teamscore, 0, sizeof( cg.teamscore ) );
+			n = 1;
+			for (i = TEAM_RED ; i <= TEAM_BLUE ; i++) {
+				cg.teamscore[i].itemPickupStat[MID_AR_RED].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_AR_YELLOW].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_AR_GREEN].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_MEGA_HEALTH].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_QUAD].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_BATTLESUIT].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_REGEN].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_HASTE].count = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].itemPickupStat[MID_INVIS].count = atoi(CG_Argv(n)); n++;
+
+				switch ( gametype ) {
+					case GT_CTF: flag = (i == TEAM_RED) ? PW_BLUEFLAG : PW_REDFLAG; break;
+					case GT_1FCTF: flag = PW_NEUTRALFLAG; break;
+					default: flag = 0; break;
+				}
+				if ( flag ) {
+					cg.teamscore[i].powerupStat[flag].count = atoi(CG_Argv(n)); n++;
+					cg.teamscore[i].itemPickupStat[MID_MEDKIT].count = atoi(CG_Argv(n)); n++;
+				}
+
+				// powerupTime
+				cg.teamscore[i].powerupStat[PW_QUAD].time = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].powerupStat[PW_BATTLESUIT].time = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].powerupStat[PW_REGEN].time = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].powerupStat[PW_HASTE].time = atoi(CG_Argv(n)); n++;
+				cg.teamscore[i].powerupStat[PW_INVIS].time = atoi(CG_Argv(n)); n++;
+				if ( flag ) {
+					cg.teamscore[i].powerupStat[flag].time = atoi(CG_Argv(n)); n++;
+				}
+			}
+
+			cg.numScores = atoi(CG_Argv(n)); n++;
+			cg.teamScores[0] = atoi(CG_Argv(n)); n++;
+			cg.teamScores[1] = atoi(CG_Argv(n)); n++;
+
+			for ( i = 0 ; i < cg.numScores ; i++ ) {
+				cg.scores[i].client = atoi(CG_Argv(n)); n++;
+				cg.scores[i].team = atoi(CG_Argv(n)); n++;
+				cg.scores[i].score = atoi(CG_Argv(n)); n++;
+				cg.scores[i].ping = atoi(CG_Argv(n)); n++;
+				cg.scores[i].time = atoi(CG_Argv(n)); n++;
+				cg.scores[i].kills = atoi(CG_Argv(n)); n++;
+				cg.scores[i].deaths = atoi(CG_Argv(n)); n++;
+				cg.scores[i].accuracy = atoi(CG_Argv(n)); n++;
+				cg.scores[i].bestWeapon = atoi(CG_Argv(n)); n++;
+				cg.scores[i].impressiveCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].excellentCount = atoi(CG_Argv(n)); n++;
+				cg.scores[i].guantletCount = atoi(CG_Argv(n)); n++;
+
+				switch ( gametype ) {
+					case GT_1FCTF:
+					case GT_CTF:
+						cg.scores[i].defendCount = atoi(CG_Argv(n)); n++;
+						cg.scores[i].assistCount = atoi(CG_Argv(n)); n++;
+						cg.scores[i].captures = atoi(CG_Argv(n)); n++;
+						cg.scores[i].perfect = atoi(CG_Argv(n)); n++;
+						cg.scores[i].alive = atoi(CG_Argv(n)); n++;
+						break;
+					case GT_FREEZETAG:
+						n++;// thaws
+						n++;// team kill score
+						n++;// team kill death
+						cg.scores[i].damageGiven = atoi(CG_Argv(n)); n++;
+						cg.scores[i].alive = atoi(CG_Argv(n)); n++;
+						break;
+					default:
+						n++;// team kill score
+						n++;// team kill death
+						cg.scores[i].damageGiven = atoi(CG_Argv(n)); n++;
+						break;
+				}
+				if ( cg.scores[i].client < 0 || cg.scores[i].client >= MAX_CLIENTS )
+					cg.scores[i].client = 0;
+				cgs.clientinfo[ cg.scores[i].client ].score = cg.scores[i].score;
+				cgs.clientinfo[ cg.scores[i].client ].team = cg.scores[i].team;
+			}
+			break;
+		}
+	}
+	if ( n != trap_Argc())
+		CG_Printf("^1CCG_ParseScoreCmd(%i) argc (%d) != %d\n", gametype, trap_Argc(), n);
+#ifdef MISSIONPACK
+	CG_SetScoreSelection(cg.menuScoreboard);
+#endif
+}
 /*
 =================
 CG_ParseTeamInfo
@@ -1140,6 +1316,23 @@ static void CG_ServerCommand( void ) {
 
 	if ( !strcmp( cmd, "scores" ) ) {
 		CG_ParseScores();
+		return;
+	}
+
+	if ( !strcmp( cmd, "scores_ffa" ) ) {
+		CG_ParseScoreCmd( GT_FFA );
+		return;
+	}
+	if ( !strcmp( cmd, "scores_duel" ) ) {
+		CG_ParseScoreCmd( GT_TOURNAMENT );
+		return;
+	}
+	if ( !strcmp( cmd, "scores_tdm" ) ) {
+		CG_ParseScoreCmd( GT_TEAM );
+		return;
+	}
+	if ( !strcmp( cmd, "scores_ctf" ) ) {
+		CG_ParseScoreCmd( GT_CTF );
 		return;
 	}
 

@@ -706,6 +706,7 @@ typedef struct {
 
 	overtime_t overtime;
 	qboolean spectating;
+	teamscores_t teamscore[TEAM_NUM_TEAMS];
 #ifdef MISSIONPACK
 	menuDef_t *menuScoreboard;
 	menuDef_t *menuEndScoreboard;
