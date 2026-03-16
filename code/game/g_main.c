@@ -1220,8 +1220,7 @@ void CalculateRanks( void ) {
 		memset(playingName, 0, sizeof(playingName));
 
 		for ( i = 0;  i < 2; i++ ) {
-			if ( level.clients[ level.sortedClients[i] ].pers.connected == CON_CONNECTED
-			  && level.clients[ level.sortedClients[i] ].sess.sessionTeam != TEAM_SPECTATOR ) {
+			if ( i < level.numPlayingClients ) {
 				playingIndex[i] = level.sortedClients[i];
 				playingScore[i] = level.clients[level.sortedClients[i]].ps.persistant[PERS_SCORE];
 				Com_sprintf(playingName[i], sizeof(playingName[i]), "%s", level.clients[ level.sortedClients[i] ].pers.netname );
@@ -1234,7 +1233,22 @@ void CalculateRanks( void ) {
 			trap_SetConfigstring( CS_SCORE1STPLAYER + i, va("%i", playingScore[i] ) );
 			trap_SetConfigstring( CS_FIRSTPLACE + i, playingName[i] );
 			trap_SetConfigstring( CS_NAME1STPLAYER + i, playingName[i] );
-			trap_SetConfigstring( CS_CLIENTNUM1STPLAYER + i, va("%i", playingIndex[i] ) );
+			if ( g_gametype.integer != GT_TOURNAMENT ) {
+				trap_SetConfigstring( CS_CLIENTNUM1STPLAYER + i, va("%i", playingIndex[i] ) );
+			}
+		}
+
+		if ( g_gametype.integer == GT_TOURNAMENT ) {
+			int num[2];
+			num[0] = num[1] = -1;
+			for ( i = 0;  i < level.numPlayingClients; i++ ) {
+				num[i] = level.sortedPlayingClients[i];
+				Com_sprintf(playingName[i], sizeof(playingName[i]), "%s", level.clients[ num[i] ].pers.netname );
+			}
+			trap_SetConfigstring( CS_CLIENTNUM1STPLAYER, va("%i", num[0]) );
+			trap_SetConfigstring( CS_CLIENTNUM2NDPLAYER, va("%i", num[1]) );
+			trap_SetConfigstring( CS_NAME1STPLAYER, playingName[0] );
+			trap_SetConfigstring( CS_NAME2NDPLAYER, playingName[1] );
 		}
 	}
 
