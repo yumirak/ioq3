@@ -1909,17 +1909,16 @@ static int CG_FeederCount(float feederID) {
 void CG_SetScoreSelection(void *p) {
 	menuDef_t *menu = (menuDef_t*)p;
 	playerState_t *ps = &cg.snap->ps;
-	int i, red, blue;
-	red = blue = 0;
+	int i, feeder, enemyfeeder, team, index;
+	int num[TEAM_NUM_TEAMS];
+	memset( num, 0, sizeof(num) );
+
 	for (i = 0; i < cg.numScores; i++) {
-		if (cg.scores[i].team == TEAM_RED) {
-			red++;
-		} else if (cg.scores[i].team == TEAM_BLUE) {
-			blue++;
-		}
 		if (ps->clientNum == cg.scores[i].client) {
 			cg.selectedScore = i;
+			index = num[cg.scores[i].team]; // get selectedplayer score index in team game
 		}
+		num[cg.scores[i].team]++;
 	}
 
 	if (menu == NULL) {
@@ -1927,16 +1926,18 @@ void CG_SetScoreSelection(void *p) {
 		return;
 	}
 
-	if ( cgs.gametype >= GT_TEAM ) {
-		int feeder = FEEDER_REDTEAM_LIST;
-		i = red;
-		if (cg.scores[cg.selectedScore].team == TEAM_BLUE) {
-			feeder = FEEDER_BLUETEAM_LIST;
-			i = blue;
-		}
-		Menu_SetFeederSelection(menu, feeder, i, NULL);
+	team = cg.scores[cg.selectedScore].team;
+	switch(team) {
+		case TEAM_RED: feeder = FEEDER_REDTEAM_LIST; enemyfeeder = FEEDER_BLUETEAM_LIST; break;
+		case TEAM_BLUE: feeder = FEEDER_BLUETEAM_LIST; enemyfeeder = FEEDER_REDTEAM_LIST; break;
+		default: feeder = FEEDER_SCOREBOARD; break;
+	}
+
+	if ( feeder == FEEDER_SCOREBOARD ) {
+		Menu_SetFeederSelection(menu, feeder, cg.selectedScore, NULL);
 	} else {
-		Menu_SetFeederSelection(menu, FEEDER_SCOREBOARD, cg.selectedScore, NULL);
+		Menu_SetFeederSelection(menu, feeder, index, NULL);
+		Menu_SetFeederSelection(menu, enemyfeeder, -1, NULL); // don't highlight enemy team player
 	}
 }
 
