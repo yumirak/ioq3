@@ -1062,6 +1062,49 @@ int QDECL SortRanks( const void *a, const void *b ) {
 	return 0;
 }
 
+// only sort non-playing client to bottom
+int QDECL SortClientNum( const void *a, const void *b ) {
+	gclient_t	*ca, *cb;
+
+	ca = &level.clients[*(int *)a];
+	cb = &level.clients[*(int *)b];
+
+	// sort special clients last
+	if ( ca->sess.spectatorState == SPECTATOR_SCOREBOARD || ca->sess.spectatorClient < 0 ) {
+		return 1;
+	}
+	if ( cb->sess.spectatorState == SPECTATOR_SCOREBOARD || cb->sess.spectatorClient < 0  ) {
+		return -1;
+	}
+
+	// then connecting clients
+	if ( ca->pers.connected == CON_CONNECTING ) {
+		return 1;
+	}
+	if ( cb->pers.connected == CON_CONNECTING ) {
+		return -1;
+	}
+
+
+	// then spectators
+	if ( ca->sess.sessionTeam == TEAM_SPECTATOR && cb->sess.sessionTeam == TEAM_SPECTATOR ) {
+		if ( ca->sess.spectatorNum > cb->sess.spectatorNum ) {
+			return -1;
+		}
+		if ( ca->sess.spectatorNum < cb->sess.spectatorNum ) {
+			return 1;
+		}
+		return 0;
+	}
+	if ( ca->sess.sessionTeam == TEAM_SPECTATOR ) {
+		return 1;
+	}
+	if ( cb->sess.sessionTeam == TEAM_SPECTATOR ) {
+		return -1;
+	}
+
+	return 0;
+}
 /*
 ============
 CalculateRanks
@@ -1091,6 +1134,7 @@ void CalculateRanks( void ) {
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
 		if ( level.clients[i].pers.connected != CON_DISCONNECTED ) {
 			level.sortedClients[level.numConnectedClients] = i;
+			level.sortedPlayingClients[level.numConnectedClients] = i;
 			level.numConnectedClients++;
 
 			if ( level.clients[i].sess.sessionTeam != TEAM_SPECTATOR ) {
@@ -1118,6 +1162,8 @@ void CalculateRanks( void ) {
 
 	qsort( level.sortedClients, level.numConnectedClients, 
 		sizeof(level.sortedClients[0]), SortRanks );
+	qsort( level.sortedPlayingClients, level.numConnectedClients,
+		   sizeof(level.sortedPlayingClients[0]), SortClientNum );
 
 	// set the rank value for all clients that are connected and not spectators
 	if ( g_gametype.integer >= GT_TEAM ) {
