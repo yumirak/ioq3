@@ -461,7 +461,7 @@ static cvarTable_t cvarTable[] = {
 #if BASEQZ > 934
 	{ &weapon_reload[WP_HEAVY_MACHINEGUN], "weapon_reload_hmg", "75", CVAR_ROM | CVAR_GAMERULE | CVAR_WEAPONINFO },
 #endif
-	{ &cg_premium, "cg_premium", "0", CVAR_ROM },
+	{ &cg_premium, "cg_premium", "1", CVAR_LATCH | CVAR_ARCHIVE },
 	{ &cg_gametype, "cg_gametype", "0", CVAR_ROM | CVAR_ARCHIVE },
 	{ &cg_compMode, "cg_compMode", "0", CVAR_ARCHIVE },
 	{ &cg_compHud, "cg_compHud", "0", CVAR_ARCHIVE },
@@ -1962,9 +1962,8 @@ clientInfo_t * CG_InfoFromScoreIndex(int index, int team, int *scoreIndex) {
 #ifdef BASEQZ
 static const char *CG_FeederItemText(float feederID, int index, int column, qhandle_t *handle) {
 	// FIXME: newer client has different column structure
-	switch ( cg.scoreboardPremium ) {
-		case qfalse: return CG_FeederItemText_NonPremium(feederID, index, column, handle);
-		default: return CG_FeederItemText_Premium(feederID, index, column, handle);
+	if ( feederID == FEEDER_REDTEAM_LIST || feederID == FEEDER_BLUETEAM_LIST || feederID == FEEDER_SCOREBOARD  ) {
+		return CG_ScoreboardFeederItemText( feederID, index, column, handle );
 	}
 	return "";
 }
