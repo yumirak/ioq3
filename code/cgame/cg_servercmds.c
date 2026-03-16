@@ -175,13 +175,13 @@ static void CG_ParseScoreCmd( int gametype ) {
 				cg.scores[i].perfect = atoi(CG_Argv(n)); n++;
 
 				cg.duelscore[i].itemPickupStat[MID_AR_RED].count = atoi(CG_Argv(n)); n++;
-				cg.duelscore[i].itemPickupStat[MID_AR_RED].time = atoi(CG_Argv(n)) * 1000; n++;
+				cg.duelscore[i].itemPickupStat[MID_AR_RED].time = atof(CG_Argv(n)) * 1000; n++;
 				cg.duelscore[i].itemPickupStat[MID_AR_YELLOW].count = atoi(CG_Argv(n)); n++;
-				cg.duelscore[i].itemPickupStat[MID_AR_YELLOW].time = atoi(CG_Argv(n)) * 1000; n++;
+				cg.duelscore[i].itemPickupStat[MID_AR_YELLOW].time = atof(CG_Argv(n)) * 1000; n++;
 				cg.duelscore[i].itemPickupStat[MID_AR_GREEN].count = atoi(CG_Argv(n)); n++;
-				cg.duelscore[i].itemPickupStat[MID_AR_GREEN].time = atoi(CG_Argv(n)) * 1000; n++;
+				cg.duelscore[i].itemPickupStat[MID_AR_GREEN].time = atof(CG_Argv(n)) * 1000; n++;
 				cg.duelscore[i].itemPickupStat[MID_MEGA_HEALTH].count = atoi(CG_Argv(n)); n++;
-				cg.duelscore[i].itemPickupStat[MID_MEGA_HEALTH].time = atoi(CG_Argv(n)) * 1000; n++;
+				cg.duelscore[i].itemPickupStat[MID_MEGA_HEALTH].time = atof(CG_Argv(n)) * 1000; n++;
 
 				for ( loop = WP_GAUNTLET; loop < 15; loop++ ) {
 					wp = loop;
