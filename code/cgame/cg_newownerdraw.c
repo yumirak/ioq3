@@ -1040,3 +1040,72 @@ void CG_DrawPlayerMVPs( rectDef_t *rect, int configserver )
 	CG_Text_Paint_Align(&textRect, 0.16f, colorWhite, cgs.clientinfo[clientNum].name, 0, 0, ITEM_TEXTSTYLE_SHADOWED, ITEM_ALIGN_RIGHT);
 #endif
 }
+
+void CG_DrawTeamMapPickups ( rectDef_t *rect, float scale, int textStyle, vec4_t color, int team)
+{
+	float x, y, w, h;
+	int i, xoffset, count, itemcount;
+	int time;
+	rectDef_t textRect;
+	const char *s = "";
+	int itemindex[5] = { MID_AR_RED, MID_AR_YELLOW, MID_AR_GREEN, MID_MEGA_HEALTH, MID_MEDKIT };
+	int pwitemindex[8] = { MID_QUAD, MID_BATTLESUIT, MID_HASTE, MID_INVIS, MID_REGEN, MID_RED_FLAG, MID_BLUE_FLAG, MID_WHITE_FLAG };
+	int pwindex[8] = { PW_QUAD, PW_BATTLESUIT, PW_HASTE, PW_INVIS, PW_REGEN, PW_REDFLAG, PW_BLUEFLAG, PW_NEUTRALFLAG };
+
+	x = textRect.x = rect->x;
+	y = textRect.y = rect->y;
+	w = textRect.w = rect->w;
+	h = textRect.h = rect->h;
+
+	xoffset = w;
+	count = 0;
+	itemcount = 4;
+	//  medkit in flag game
+	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_1FCTF )
+		itemcount = 5;
+
+	for ( i = 0; i < itemcount; i++ ) {
+		if ( cg.teamscore[team].itemPickupStat[ itemindex[i] ].count ) {
+			// icon
+			CG_DrawPic(x, y, w, h, cgs.media.itemIcon[ itemindex[i] ]);
+
+			// count
+			s = va("%d", cg.teamscore[team].itemPickupStat[ itemindex[i] ].count);
+			textRect.x = x + w;
+			textRect.y = y + h;
+			CG_Text_Paint(textRect.x, textRect.y, scale, color, s, 0, 0, textStyle);
+
+			x += xoffset + (w * 0.5);
+			count++;
+		}
+	}
+
+	x += (w * 1.5) * (itemcount - 1 - count);
+
+	itemcount = 5;
+	//  flag in flag game
+	if ( cgs.gametype == GT_CTF || cgs.gametype == GT_1FCTF )
+		itemcount = 8;
+
+	for ( i = 0; i < itemcount; i++ ) {
+		if ( cg.teamscore[team].itemPickupStat[ pwitemindex[i] ].count ) {
+			// icon
+			CG_DrawPic(x, y - (h / 2), w, h, cgs.media.itemIcon[ pwitemindex[i] ]);
+
+			// count
+			s = va("%d", cg.teamscore[team].itemPickupStat[ pwitemindex[i] ].count);
+			textRect.x = x + w;
+			textRect.y = y + (h / 2);
+			CG_Text_Paint(textRect.x, textRect.y, scale, color, s, 0, 0, textStyle);
+
+			// time
+			time = cg.teamscore[team].powerupStat[ pwindex[i] ].time;
+			s = va("%d:%02d", time / 60, time % 60);
+			textRect.x = x;
+			textRect.y = y + h;
+			CG_Text_Paint(textRect.x, textRect.y, scale, color, s, 0, 0, textStyle);
+
+			x += xoffset + (w * 0.5);
+		}
+	}
+}

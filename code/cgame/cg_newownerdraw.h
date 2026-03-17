@@ -29,3 +29,4 @@ void CG_DrawDuelItemPickup( int ownerdraw, rectDef_t *rect, float scale, vec4_t 
 void CG_DrawDuelMedal( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
 void CG_DrawDuelPlayerReady( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align );
 void CG_DrawPlayerMVPs( rectDef_t *rect, int configserver );
+void CG_DrawTeamMapPickups ( rectDef_t *rect, float scale, int textStyle, vec4_t color, int team);

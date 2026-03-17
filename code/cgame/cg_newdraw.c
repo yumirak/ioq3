@@ -2269,6 +2269,16 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 		CG_DrawPlayerMVPs( &rect, CS_MOST_VALUABLE_DEFENSIVE_PLYR );
 		break;
 #endif
+#ifdef CG_RED_TEAM_MAP_PICKUPS
+	case CG_RED_TEAM_MAP_PICKUPS:
+		CG_DrawTeamMapPickups(&rect, scale, textStyle, color, TEAM_RED);
+		break;
+#endif
+#ifdef CG_BLUE_TEAM_MAP_PICKUPS
+	case CG_BLUE_TEAM_MAP_PICKUPS:
+		CG_DrawTeamMapPickups(&rect, scale, textStyle, color, TEAM_BLUE);
+		break;
+#endif
 
 #ifdef CG_1ST_PLYR
 	case CG_1ST_PLYR:
