@@ -749,3 +749,294 @@ void CG_DrawPlayerKey( rectDef_t *rect )
 		CG_DrawPic( rect->x, rect->y, rect->w, rect->h, cg_items[ value ].icon );
 	}
 }
+
+void CG_DrawDuelScore( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align ) {
+#ifdef CG_1ST_PLYR
+	const char *s = "";
+	int s1, s2;
+	s1 = cgs.cs[CS_CLIENTNUM1STPLAYER].integer;
+	s2 = cgs.cs[CS_CLIENTNUM2NDPLAYER].integer;
+	switch ( ownerdraw ) {
+
+		case CG_1ST_PLYR: s = va( "%s", cgs.clientinfo[s1].name ); break;
+		case CG_1ST_PLYR_SCORE: s = va( "%d", cg.scores[s1].score ); break;
+		case CG_1ST_PLYR_FRAGS: s = va( "%d", cg.scores[s1].kills ); break;
+		case CG_1ST_PLYR_DEATHS: s = va( "%d", cg.scores[s1].deaths ); break;
+		case CG_1ST_PLYR_DMG: s = va( "%d", cg.scores[s1].damageGiven ); break;
+		case CG_1ST_PLYR_TIME: s = va( "%d", cg.scores[s1].time ); break;
+		case CG_1ST_PLYR_PING: s = va( "%d", cg.scores[s1].ping ); break;
+		case CG_1ST_PLYR_WINS: s = va( "%d/%d", cgs.clientinfo[s1].wins, cgs.clientinfo[s1].losses ); break;
+		case CG_1ST_PLYR_ACC: s = va( "%d%%", cg.scores[s1].accuracy ); break;
+
+		case CG_2ND_PLYR: s = va( "%s", cgs.clientinfo[s2].name ); break;
+		case CG_2ND_PLYR_SCORE: s = va( "%d", cg.scores[s2].score ); break;
+		case CG_2ND_PLYR_FRAGS: s = va( "%d", cg.scores[s2].kills ); break;
+		case CG_2ND_PLYR_DEATHS: s = va( "%d", cg.scores[s2].deaths ); break;
+		case CG_2ND_PLYR_DMG: s = va( "%d", cg.scores[s2].damageGiven ); break;
+		case CG_2ND_PLYR_TIME: s = va( "%d", cg.scores[s2].time ); break;
+		case CG_2ND_PLYR_PING: s = va( "%d", cg.scores[s2].ping ); break;
+		case CG_2ND_PLYR_WINS: s = va( "%d/%d", cgs.clientinfo[s2].wins, cgs.clientinfo[s2].losses ); break;
+		case CG_2ND_PLYR_ACC: s = va( "%d%%", cg.scores[s2].accuracy ); break;
+		default: return;
+	}
+
+	CG_Text_Paint_Align( rect, scale, color, s, 0, 0, textStyle, align );
+#endif
+}
+
+void CG_DrawDuelWeaponStat( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align ) {
+	const char *s = "";
+	int i, od;
+	int s1, s2;
+	s1 = cgs.cs[CS_CLIENTNUM1STPLAYER].integer;
+	s2 = cgs.cs[CS_CLIENTNUM2NDPLAYER].integer;
+
+	for ( i = WP_GAUNTLET; i < WP_NUM_WEAPONS; i++ ) {
+		if ( i == WP_GRAPPLING_HOOK )
+			continue;
+#ifdef CG_1ST_PLYR_FRAGS_G
+		od = CG_1ST_PLYR_FRAGS_G - WP_GAUNTLET + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d", cg.scores[s1].wpstat[i].kills );
+			break;
+		}
+		od = CG_2ND_PLYR_FRAGS_G - WP_GAUNTLET + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d", cg.scores[s2].wpstat[i].kills );
+			break;
+		}
+#endif
+		if ( i == WP_GAUNTLET )
+			continue;
+
+#ifdef CG_1ST_PLYR_SHOTS_MG
+		od = CG_1ST_PLYR_SHOTS_MG - WP_MACHINEGUN + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d", cg.scores[s1].wpstat[i].accuracy[WP_ACC_SHOT] );
+			break;
+		}
+		od = CG_2ND_PLYR_SHOTS_MG - WP_MACHINEGUN + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d", cg.scores[s2].wpstat[i].accuracy[WP_ACC_SHOT] );
+			break;
+		}
+#endif
+#ifdef CG_1ST_PLYR_HITS_MG
+		od = CG_1ST_PLYR_HITS_MG - WP_MACHINEGUN + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d", cg.scores[s1].wpstat[i].accuracy[WP_ACC_HIT] );
+			break;
+		}
+		od = CG_2ND_PLYR_HITS_MG - WP_MACHINEGUN + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d", cg.scores[s2].wpstat[i].accuracy[WP_ACC_HIT] );
+			break;
+		}
+#endif
+#ifdef CG_1ST_PLYR_DMG_MG
+		od = CG_1ST_PLYR_DMG_MG - WP_MACHINEGUN + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d", cg.scores[s1].wpstat[i].damage );
+			break;
+		}
+		od = CG_2ND_PLYR_DMG_MG - WP_MACHINEGUN + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d", cg.scores[s2].wpstat[i].damage );
+			break;
+		}
+#endif
+#ifdef CG_1ST_PLYR_ACC_MG
+		od = CG_1ST_PLYR_ACC_MG - WP_MACHINEGUN + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d%%", cg.scores[s1].wpstat[i].accuracy[WP_ACC_PERCENT] );
+			if ( cg.scores[s1].wpstat[i].accuracy[WP_ACC_PERCENT] > cg.scores[s2].wpstat[i].accuracy[WP_ACC_PERCENT] ) {
+				Vector4Copy( colorWhite, color );
+			}
+			break;
+		}
+		od = CG_2ND_PLYR_ACC_MG - WP_MACHINEGUN + i;
+		if ( ownerdraw == od ) {
+			s = va( "%d%%", cg.scores[s2].wpstat[i].accuracy[WP_ACC_PERCENT] );
+			if ( cg.scores[s2].wpstat[i].accuracy[WP_ACC_PERCENT] > cg.scores[s1].wpstat[i].accuracy[WP_ACC_PERCENT] ) {
+				Vector4Copy( colorWhite, color );
+			}
+			break;
+		}
+#endif
+	}
+
+	CG_Text_Paint_Align( rect, scale, color, s, 0, 0, textStyle, align );
+}
+
+// unused ??
+void CG_DrawDuelPickupStat( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align ) {
+#ifdef CG_1ST_PLYR
+	const char *s = "";
+	int i, od;
+	int s1, s2;
+	s1 = cgs.cs[CS_CLIENTNUM1STPLAYER].integer;
+	s2 = cgs.cs[CS_CLIENTNUM2NDPLAYER].integer;
+	switch ( ownerdraw ) {
+		case CG_1ST_PLYR_PICKUPS_RA: s = va( "%d", cg.duelscore[s1].itemPickupStat[MID_AR_RED].count ); break;
+		case CG_1ST_PLYR_PICKUPS_YA: s = va( "%d", cg.duelscore[s1].itemPickupStat[MID_AR_YELLOW].count ); break;
+		case CG_1ST_PLYR_PICKUPS_GA: s = va( "%d", cg.duelscore[s1].itemPickupStat[MID_AR_GREEN].count ); break;
+		case CG_1ST_PLYR_PICKUPS_MH: s = va( "%d", cg.duelscore[s1].itemPickupStat[MID_MEGA_HEALTH].count ); break;
+		case CG_1ST_PLYR_AVG_PICKUP_TIME_RA: s = va( "%0.2f", cg.duelscore[s1].itemPickupStat[MID_AR_RED].time / 1000.0f ); break;
+		case CG_1ST_PLYR_AVG_PICKUP_TIME_YA: s = va( "%0.2f", cg.duelscore[s1].itemPickupStat[MID_AR_YELLOW].time / 1000.0f ); break;
+		case CG_1ST_PLYR_AVG_PICKUP_TIME_GA: s = va( "%0.2f", cg.duelscore[s1].itemPickupStat[MID_AR_GREEN].time / 1000.0f ); break;
+		case CG_1ST_PLYR_AVG_PICKUP_TIME_MH: s = va( "%0.2f", cg.duelscore[s1].itemPickupStat[MID_MEGA_HEALTH].time / 1000.0f ); break;
+
+		case CG_2ND_PLYR_PICKUPS_RA: s = va( "%d", cg.duelscore[s2].itemPickupStat[MID_AR_RED].count ); break;
+		case CG_2ND_PLYR_PICKUPS_YA: s = va( "%d", cg.duelscore[s2].itemPickupStat[MID_AR_YELLOW].count ); break;
+		case CG_2ND_PLYR_PICKUPS_GA: s = va( "%d", cg.duelscore[s2].itemPickupStat[MID_AR_GREEN].count ); break;
+		case CG_2ND_PLYR_PICKUPS_MH: s = va( "%d", cg.duelscore[s2].itemPickupStat[MID_MEGA_HEALTH].count ); break;
+		case CG_2ND_PLYR_AVG_PICKUP_TIME_RA: s = va( "%0.2f", cg.duelscore[s2].itemPickupStat[MID_AR_RED].time / 1000.0f ); break;
+		case CG_2ND_PLYR_AVG_PICKUP_TIME_YA: s = va( "%0.2f", cg.duelscore[s2].itemPickupStat[MID_AR_YELLOW].time / 1000.0f ); break;
+		case CG_2ND_PLYR_AVG_PICKUP_TIME_GA: s = va( "%0.2f", cg.duelscore[s2].itemPickupStat[MID_AR_GREEN].time / 1000.0f ); break;
+		case CG_2ND_PLYR_AVG_PICKUP_TIME_MH: s = va( "%0.2f", cg.duelscore[s2].itemPickupStat[MID_MEGA_HEALTH].time / 1000.0f ); break;
+		default: return;
+	}
+
+	CG_Text_Paint_Align( rect, scale, color, s, 0, 0, textStyle, align );
+#endif
+}
+
+void CG_DrawDuelItemPickup ( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+#ifdef CG_1ST_PLYR_PICKUPS
+	int i;
+	float x, y, w, h;
+	const char *s;
+	float yoffset;
+	float countoffset, timeoffset;
+	rectDef_t textRect;
+	int clientNum;
+	qboolean leftside;
+	int itemindex[4] = { MID_AR_RED, MID_AR_YELLOW, MID_AR_GREEN, MID_MEGA_HEALTH };
+
+	x = textRect.x = rect->x;
+	y = textRect.y = rect->y;
+	w = textRect.w = rect->w;
+	h = textRect.h = rect->h;
+
+	yoffset = h;
+
+	switch ( ownerdraw ) {
+		case CG_1ST_PLYR_PICKUPS:
+			clientNum = cgs.cs[CS_CLIENTNUM1STPLAYER].integer;
+			leftside = qtrue;
+			break;
+		case CG_2ND_PLYR_PICKUPS:
+			clientNum = cgs.cs[CS_CLIENTNUM2NDPLAYER].integer;
+			leftside = qfalse;
+			break;
+		default: return;
+	}
+
+	countoffset = leftside ? w : 0;
+	timeoffset = leftside ? w : -w;
+
+	for ( i = 0; i < 4; i++ ) {
+		if ( cg.duelscore[clientNum].itemPickupStat[ itemindex[i] ].count ) {
+			CG_DrawPic(x, y, w, h, cgs.media.itemIcon[ itemindex[i] ]);
+			// count
+			s = va("%d", cg.duelscore[clientNum].itemPickupStat[ itemindex[i] ].count);
+			textRect.x = x + countoffset;
+			textRect.y = y + h;
+			CG_Text_Paint_Align(&textRect, scale, color, s, 0, 0, textStyle, align);
+			// time
+			s = va("%.2f", cg.duelscore[clientNum].itemPickupStat[ itemindex[i] ].time / 1000.0f);
+			textRect.x = x + countoffset + timeoffset;
+			textRect.y = y + h;
+			CG_Text_Paint_Align(&textRect, scale, color, s, 0, 0, textStyle, align);
+
+			y += yoffset;
+		}
+	}
+#endif
+}
+
+void CG_DrawDuelMedal( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align )
+{
+#ifdef CG_1ST_PLYR_EXCELLENT
+	int s1, s2;
+	const char *s = "";
+	s1 = cgs.cs[CS_CLIENTNUM1STPLAYER].integer;
+	s2 = cgs.cs[CS_CLIENTNUM2NDPLAYER].integer;
+
+	switch ( ownerdraw ) {
+		case CG_1ST_PLYR_EXCELLENT: s = va("%d", cg.scores[s1].excellentCount); break;
+		case CG_1ST_PLYR_IMPRESSIVE: s = va("%d", cg.scores[s1].impressiveCount); break;
+		case CG_1ST_PLYR_HUMILIATION: s = va("%d", cg.scores[s1].guantletCount); break;
+
+		case CG_2ND_PLYR_EXCELLENT: s = va("%d", cg.scores[s2].excellentCount); break;
+		case CG_2ND_PLYR_IMPRESSIVE: s = va("%d", cg.scores[s2].impressiveCount); break;
+		case CG_2ND_PLYR_HUMILIATION: s = va("%d", cg.scores[s2].guantletCount); break;
+		default: return;
+	}
+	CG_Text_Paint_Align( rect, scale, color, s, 0, 0, textStyle, align);
+#endif
+}
+
+void CG_DrawDuelPlayerReady( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align )
+{
+#ifdef CG_1ST_PLYR_READY
+	playerDuelStatus_t status = 0;
+	const char *textStatus[5] = { "NOT READY", "READY", "TIED", "LEADS", "TRAILS" };
+	rectDef_t textRect;
+	int s1, s2;
+	s1 = cgs.cs[CS_CLIENTNUM1STPLAYER].integer;
+	s2 = cgs.cs[CS_CLIENTNUM2NDPLAYER].integer;
+
+	switch ( ownerdraw ) {
+		case CG_1ST_PLYR_READY: {
+			status = CG_GetDuelClientReadyStatus( s1, s2 );
+			shader = cgs.media.duelReadyShader[0][status];
+
+			if ( shader )
+				CG_DrawPic(rect->x, rect->y, rect->w, rect->h, shader);
+
+			textRect.x = rect->x + 16;
+			textRect.y = rect->y + 16;
+			textRect.w = rect->w;
+			textRect.h = rect->h;
+			CG_Text_Paint_Align(&textRect, 0.16f, colorWhite, textStatus[status], 0, 0, ITEM_TEXTSTYLE_SHADOWED, ITEM_ALIGN_LEFT);
+			break;
+		}
+		case CG_2ND_PLYR_READY: {
+			status = CG_GetDuelClientReadyStatus( s2, s1 );
+			shader = cgs.media.duelReadyShader[1][status];
+
+			if ( shader )
+				CG_DrawPic(rect->x, rect->y, rect->w, rect->h, shader);
+
+			textRect.x = rect->x + 164;
+			textRect.y = rect->y + 16;
+			textRect.w = rect->w;
+			textRect.h = rect->h;
+			CG_Text_Paint_Align(&textRect, 0.16f, colorWhite, textStatus[status], 0, 0, ITEM_TEXTSTYLE_SHADOWED, ITEM_ALIGN_RIGHT);
+			break;
+		}
+	}
+#endif
+}
+
+void CG_DrawPlayerMVPs( rectDef_t *rect, int configserver )
+{
+	rectDef_t textRect;
+	int clientNum = cgs.cs[configserver].integer;
+	if ( clientNum < 0 || clientNum >= MAX_CLIENTS )
+		return;
+
+	rect->w = rect->h = 16; // ignore width and height.
+	rect->y -= rect->h / 2;
+	CG_DrawPic( rect->x - rect->w, rect->y, rect->w, rect->h, cgs.clientinfo[clientNum].modelIcon );
+
+#if 0
+	textRect.x = rect->x - rect->w - (rect->w / 2);
+	textRect.y = rect->y + rect->h;
+	textRect.w = rect->w;
+	textRect.h = rect->h;
+	CG_Text_Paint_Align(&textRect, 0.16f, colorWhite, cgs.clientinfo[clientNum].name, 0, 0, ITEM_TEXTSTYLE_SHADOWED, ITEM_ALIGN_RIGHT);
+#endif
+}

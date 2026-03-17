@@ -1153,6 +1153,7 @@ static qboolean CG_PlayerIsFirstPlace( void )
 
 static qboolean CG_OwnerDrawVisible2 (int flags)
 {
+	int wp = WP_NONE;
 	int clientNum = cg.snap->ps.clientNum;
 	int team = cgs.clientinfo[cg.snap->ps.clientNum].team;
 
@@ -1196,6 +1197,28 @@ static qboolean CG_OwnerDrawVisible2 (int flags)
 #ifdef CG_SHOW_IF_2ND_PLYR_FOLLOWED
 	if (flags & CG_SHOW_IF_2ND_PLYR_FOLLOWED)
 		return cgs.cs[CS_CLIENTNUM2NDPLAYER].integer == clientNum;
+#endif
+
+#ifdef CG_SHOW_IF_G_FIRED
+	if (flags & CG_SHOW_IF_G_FIRED) wp = WP_GAUNTLET;
+	if (flags & CG_SHOW_IF_MG_FIRED) wp = WP_MACHINEGUN;
+	if (flags & CG_SHOW_IF_SG_FIRED) wp = WP_SHOTGUN;
+	if (flags & CG_SHOW_IF_GL_FIRED) wp = WP_GRENADE_LAUNCHER;
+	if (flags & CG_SHOW_IF_RL_FIRED) wp = WP_ROCKET_LAUNCHER;
+	if (flags & CG_SHOW_IF_LG_FIRED) wp = WP_LIGHTNING;
+	if (flags & CG_SHOW_IF_RG_FIRED) wp = WP_RAILGUN;
+	if (flags & CG_SHOW_IF_PG_FIRED) wp = WP_PLASMAGUN;
+	if (flags & CG_SHOW_IF_BFG_FIRED) wp = WP_BFG;
+	if (flags & CG_SHOW_IF_CG_FIRED) wp = WP_CHAINGUN;
+	if (flags & CG_SHOW_IF_NG_FIRED) wp = WP_NAILGUN;
+	if (flags & CG_SHOW_IF_PL_FIRED) wp = WP_PROX_LAUNCHER;
+#if BASEQZ > 934
+	if (flags & CG_SHOW_IF_HMG_FIRED) wp = WP_HEAVY_MACHINEGUN;
+#endif
+	if ( wp ) {
+		return ( cg.scores[cgs.cs[CS_CLIENTNUM1STPLAYER].integer].wpstat[wp].accuracy[WP_ACC_SHOT]
+			  || cg.scores[cgs.cs[CS_CLIENTNUM2NDPLAYER].integer].wpstat[wp].accuracy[WP_ACC_SHOT] );
+	}
 #endif
 
 	Com_Printf("^3CG_OwnerDrawVisible2: FIXME ownerdrawflag2 0x%08x\n", flags);
@@ -2214,6 +2237,243 @@ void CG_OwnerDraw(float x, float y, float w, float h, float text_x, float text_y
 #ifdef CG_PLAYER_HASKEY
 	case CG_PLAYER_HASKEY:
 		CG_DrawPlayerKey( &rect );
+		break;
+#endif
+#ifdef CG_MOST_DAMAGEDEALT_PLYR
+	case CG_MOST_DAMAGEDEALT_PLYR:
+		CG_DrawPlayerMVPs( &rect, CS_MOST_DAMAGEDEALT_PLYR );
+		break;
+#endif
+#ifdef CG_MOST_ACCURATE_PLYR
+	case CG_MOST_ACCURATE_PLYR:
+		CG_DrawPlayerMVPs( &rect, CS_MOST_ACCURATE_PLYR );
+		break;
+#endif
+#ifdef CG_BEST_ITEMCONTROL_PLYR
+	case CG_BEST_ITEMCONTROL_PLYR:
+		CG_DrawPlayerMVPs( &rect, CS_BEST_ITEMCONTROL_PLYR );
+		break;
+#endif
+#ifdef CG_MOST_VALUABLE_PLYR
+	case CG_MOST_VALUABLE_PLYR:
+		CG_DrawPlayerMVPs( &rect, CS_MOST_VALUABLE_PLYR );
+		break;
+#endif
+#ifdef CG_MOST_VALUABLE_OFFENSIVE_PLYR
+	case CG_MOST_VALUABLE_OFFENSIVE_PLYR:
+		CG_DrawPlayerMVPs( &rect, CS_MOST_VALUABLE_OFFENSIVE_PLYR );
+		break;
+#endif
+#ifdef CG_MOST_VALUABLE_DEFENSIVE_PLYR
+	case CG_MOST_VALUABLE_DEFENSIVE_PLYR:
+		CG_DrawPlayerMVPs( &rect, CS_MOST_VALUABLE_DEFENSIVE_PLYR );
+		break;
+#endif
+
+#ifdef CG_1ST_PLYR
+	case CG_1ST_PLYR:
+	case CG_1ST_PLYR_SCORE:
+	case CG_1ST_PLYR_FRAGS:
+	case CG_1ST_PLYR_DEATHS:
+	case CG_1ST_PLYR_DMG:
+	case CG_1ST_PLYR_TIME:
+	case CG_1ST_PLYR_PING:
+	case CG_1ST_PLYR_WINS:
+	case CG_1ST_PLYR_ACC:
+	case CG_2ND_PLYR:
+	case CG_2ND_PLYR_SCORE:
+	case CG_2ND_PLYR_FRAGS:
+	case CG_2ND_PLYR_DEATHS:
+	case CG_2ND_PLYR_DMG:
+	case CG_2ND_PLYR_TIME:
+	case CG_2ND_PLYR_PING:
+	case CG_2ND_PLYR_WINS:
+	case CG_2ND_PLYR_ACC:
+		CG_DrawDuelScore( ownerDraw, &rect, scale, color, textStyle, align );
+		break;
+#endif
+
+#ifdef CG_1ST_PLYR_FRAGS_G
+	case CG_1ST_PLYR_FRAGS_G:
+	case CG_1ST_PLYR_FRAGS_MG:
+	case CG_1ST_PLYR_FRAGS_SG:
+	case CG_1ST_PLYR_FRAGS_GL:
+	case CG_1ST_PLYR_FRAGS_RL:
+	case CG_1ST_PLYR_FRAGS_LG:
+	case CG_1ST_PLYR_FRAGS_RG:
+	case CG_1ST_PLYR_FRAGS_PG:
+	case CG_1ST_PLYR_FRAGS_BFG:
+	case CG_1ST_PLYR_FRAGS_CG:
+	case CG_1ST_PLYR_FRAGS_NG:
+	case CG_1ST_PLYR_FRAGS_PL:
+
+	case CG_1ST_PLYR_HITS_MG:
+	case CG_1ST_PLYR_HITS_SG:
+	case CG_1ST_PLYR_HITS_GL:
+	case CG_1ST_PLYR_HITS_RL:
+	case CG_1ST_PLYR_HITS_LG:
+	case CG_1ST_PLYR_HITS_RG:
+	case CG_1ST_PLYR_HITS_PG:
+	case CG_1ST_PLYR_HITS_BFG:
+	case CG_1ST_PLYR_HITS_CG:
+	case CG_1ST_PLYR_HITS_NG:
+	case CG_1ST_PLYR_HITS_PL:
+
+	case CG_1ST_PLYR_SHOTS_MG:
+	case CG_1ST_PLYR_SHOTS_SG:
+	case CG_1ST_PLYR_SHOTS_GL:
+	case CG_1ST_PLYR_SHOTS_RL:
+	case CG_1ST_PLYR_SHOTS_LG:
+	case CG_1ST_PLYR_SHOTS_RG:
+	case CG_1ST_PLYR_SHOTS_PG:
+	case CG_1ST_PLYR_SHOTS_BFG:
+	case CG_1ST_PLYR_SHOTS_CG:
+	case CG_1ST_PLYR_SHOTS_NG:
+	case CG_1ST_PLYR_SHOTS_PL:
+
+	case CG_1ST_PLYR_DMG_G:
+	case CG_1ST_PLYR_DMG_MG:
+	case CG_1ST_PLYR_DMG_SG:
+	case CG_1ST_PLYR_DMG_GL:
+	case CG_1ST_PLYR_DMG_RL:
+	case CG_1ST_PLYR_DMG_LG:
+	case CG_1ST_PLYR_DMG_RG:
+	case CG_1ST_PLYR_DMG_PG:
+	case CG_1ST_PLYR_DMG_BFG:
+	case CG_1ST_PLYR_DMG_CG:
+	case CG_1ST_PLYR_DMG_NG:
+	case CG_1ST_PLYR_DMG_PL:
+
+	case CG_1ST_PLYR_ACC_MG:
+	case CG_1ST_PLYR_ACC_SG:
+	case CG_1ST_PLYR_ACC_GL:
+	case CG_1ST_PLYR_ACC_RL:
+	case CG_1ST_PLYR_ACC_LG:
+	case CG_1ST_PLYR_ACC_RG:
+	case CG_1ST_PLYR_ACC_PG:
+	case CG_1ST_PLYR_ACC_BFG:
+	case CG_1ST_PLYR_ACC_CG:
+	case CG_1ST_PLYR_ACC_NG:
+	case CG_1ST_PLYR_ACC_PL:
+#if BASEQZ > 934
+	case CG_1ST_PLYR_FRAGS_HMG:
+	case CG_1ST_PLYR_HITS_HMG:
+	case CG_1ST_PLYR_SHOTS_HMG:
+	case CG_1ST_PLYR_DMG_HMG:
+	case CG_1ST_PLYR_ACC_HMG:
+#endif
+
+	case CG_2ND_PLYR_FRAGS_G:
+	case CG_2ND_PLYR_FRAGS_MG:
+	case CG_2ND_PLYR_FRAGS_SG:
+	case CG_2ND_PLYR_FRAGS_GL:
+	case CG_2ND_PLYR_FRAGS_RL:
+	case CG_2ND_PLYR_FRAGS_LG:
+	case CG_2ND_PLYR_FRAGS_RG:
+	case CG_2ND_PLYR_FRAGS_PG:
+	case CG_2ND_PLYR_FRAGS_BFG:
+	case CG_2ND_PLYR_FRAGS_CG:
+	case CG_2ND_PLYR_FRAGS_NG:
+	case CG_2ND_PLYR_FRAGS_PL:
+
+	case CG_2ND_PLYR_HITS_MG:
+	case CG_2ND_PLYR_HITS_SG:
+	case CG_2ND_PLYR_HITS_GL:
+	case CG_2ND_PLYR_HITS_RL:
+	case CG_2ND_PLYR_HITS_LG:
+	case CG_2ND_PLYR_HITS_RG:
+	case CG_2ND_PLYR_HITS_PG:
+	case CG_2ND_PLYR_HITS_BFG:
+	case CG_2ND_PLYR_HITS_CG:
+	case CG_2ND_PLYR_HITS_NG:
+	case CG_2ND_PLYR_HITS_PL:
+
+	case CG_2ND_PLYR_SHOTS_MG:
+	case CG_2ND_PLYR_SHOTS_SG:
+	case CG_2ND_PLYR_SHOTS_GL:
+	case CG_2ND_PLYR_SHOTS_RL:
+	case CG_2ND_PLYR_SHOTS_LG:
+	case CG_2ND_PLYR_SHOTS_RG:
+	case CG_2ND_PLYR_SHOTS_PG:
+	case CG_2ND_PLYR_SHOTS_BFG:
+	case CG_2ND_PLYR_SHOTS_CG:
+	case CG_2ND_PLYR_SHOTS_NG:
+	case CG_2ND_PLYR_SHOTS_PL:
+
+	case CG_2ND_PLYR_DMG_G:
+	case CG_2ND_PLYR_DMG_MG:
+	case CG_2ND_PLYR_DMG_SG:
+	case CG_2ND_PLYR_DMG_GL:
+	case CG_2ND_PLYR_DMG_RL:
+	case CG_2ND_PLYR_DMG_LG:
+	case CG_2ND_PLYR_DMG_RG:
+	case CG_2ND_PLYR_DMG_PG:
+	case CG_2ND_PLYR_DMG_BFG:
+	case CG_2ND_PLYR_DMG_CG:
+	case CG_2ND_PLYR_DMG_NG:
+	case CG_2ND_PLYR_DMG_PL:
+
+	case CG_2ND_PLYR_ACC_MG:
+	case CG_2ND_PLYR_ACC_SG:
+	case CG_2ND_PLYR_ACC_GL:
+	case CG_2ND_PLYR_ACC_RL:
+	case CG_2ND_PLYR_ACC_LG:
+	case CG_2ND_PLYR_ACC_RG:
+	case CG_2ND_PLYR_ACC_PG:
+	case CG_2ND_PLYR_ACC_BFG:
+	case CG_2ND_PLYR_ACC_CG:
+	case CG_2ND_PLYR_ACC_NG:
+	case CG_2ND_PLYR_ACC_PL:
+#if BASEQZ > 934
+	case CG_2ND_PLYR_FRAGS_HMG:
+	case CG_2ND_PLYR_HITS_HMG:
+	case CG_2ND_PLYR_SHOTS_HMG:
+	case CG_2ND_PLYR_DMG_HMG:
+	case CG_2ND_PLYR_ACC_HMG:
+#endif
+		CG_DrawDuelWeaponStat( ownerDraw, &rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_1ST_PLYR_PICKUPS_RA // unused ??
+	case CG_1ST_PLYR_PICKUPS_RA:
+	case CG_1ST_PLYR_PICKUPS_YA:
+	case CG_1ST_PLYR_PICKUPS_GA:
+	case CG_1ST_PLYR_PICKUPS_MH:
+	case CG_1ST_PLYR_AVG_PICKUP_TIME_RA:
+	case CG_1ST_PLYR_AVG_PICKUP_TIME_YA:
+	case CG_1ST_PLYR_AVG_PICKUP_TIME_GA:
+	case CG_1ST_PLYR_AVG_PICKUP_TIME_MH:
+	case CG_2ND_PLYR_PICKUPS_RA:
+	case CG_2ND_PLYR_PICKUPS_YA:
+	case CG_2ND_PLYR_PICKUPS_GA:
+	case CG_2ND_PLYR_PICKUPS_MH:
+	case CG_2ND_PLYR_AVG_PICKUP_TIME_RA:
+	case CG_2ND_PLYR_AVG_PICKUP_TIME_YA:
+	case CG_2ND_PLYR_AVG_PICKUP_TIME_GA:
+	case CG_2ND_PLYR_AVG_PICKUP_TIME_MH:
+		CG_DrawDuelPickupStat( ownerDraw, &rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_1ST_PLYR_PICKUPS
+	case CG_1ST_PLYR_PICKUPS:
+	case CG_2ND_PLYR_PICKUPS:
+		CG_DrawDuelItemPickup( ownerDraw, &rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_1ST_PLYR_EXCELLENT
+	case CG_1ST_PLYR_EXCELLENT:
+	case CG_1ST_PLYR_IMPRESSIVE:
+	case CG_1ST_PLYR_HUMILIATION:
+	case CG_2ND_PLYR_EXCELLENT:
+	case CG_2ND_PLYR_IMPRESSIVE:
+	case CG_2ND_PLYR_HUMILIATION:
+		CG_DrawDuelMedal( ownerDraw, &rect, scale, color, textStyle, align );
+		break;
+#endif
+#ifdef CG_1ST_PLYR_READY
+	case CG_1ST_PLYR_READY:
+	case CG_2ND_PLYR_READY:
+		CG_DrawDuelPlayerReady( ownerDraw, &rect, scale, color, shader, textStyle, align );
 		break;
 #endif
 

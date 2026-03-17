@@ -22,3 +22,10 @@ void CG_DrawWeaponVertical( rectDef_t *rect, float scale, vec4_t color, int text
 void CG_DrawAccuracyVertical( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
 void CG_DrawOvertime( rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
 void CG_DrawPlayerKey( rectDef_t *rect );
+void CG_DrawDuelScore( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
+void CG_DrawDuelWeaponStat( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
+void CG_DrawDuelPickupStat( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
+void CG_DrawDuelItemPickup( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
+void CG_DrawDuelMedal( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, int textStyle, int align );
+void CG_DrawDuelPlayerReady( int ownerdraw, rectDef_t *rect, float scale, vec4_t color, qhandle_t shader, int textStyle, int align );
+void CG_DrawPlayerMVPs( rectDef_t *rect, int configserver );

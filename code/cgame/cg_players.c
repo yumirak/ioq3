@@ -2695,3 +2695,50 @@ void CG_CurrentPlayerStatus( void ) {
 		trap_Cvar_Set( "cg_spectating", cg.spectating ? "1": "0" );
 	}
 }
+
+qboolean CG_ClientInfoValid ( int clientNum )
+{
+	if ( clientNum == -1 ) {
+		return qfalse;
+	}
+
+	if ( clientNum < 0 || clientNum >= MAX_CLIENTS ) {
+		return qfalse;
+	}
+
+	if ( !cgs.clientinfo[clientNum].infoValid ) {
+		return qfalse;
+	}
+
+	return qtrue;
+}
+
+playerDuelStatus_t CG_GetDuelClientReadyStatus ( int s1, int s2 )
+{
+	playerDuelStatus_t status = DUEL_NOT_READY;
+	if ( s1 == s2 ) {
+		return DUEL_NOT_READY;
+	}
+	if ( cg.warmup ) {
+		if ( CG_ClientInfoValid( s1 ) && cgs.clientinfo[ s1 ].ready ) {
+			status = DUEL_READY;
+		} else {
+			status = DUEL_NOT_READY;
+		}
+	} else {
+		if ( !CG_ClientInfoValid(s1) && !CG_ClientInfoValid(s2)) {
+			status = DUEL_TIED;
+		} else if (CG_ClientInfoValid(s1)  &&  !CG_ClientInfoValid(s2)) {
+			status = DUEL_LEADS;
+		} else if (!CG_ClientInfoValid(s1)) {
+			status = DUEL_TRAILS;
+		} else if (cgs.clientinfo[s1].score > cgs.clientinfo[s2].score) {
+			status = DUEL_LEADS;
+		} else if (cgs.clientinfo[s1].score < cgs.clientinfo[s2].score) {
+			status = DUEL_TRAILS;
+		} else {
+			status = DUEL_TIED;
+		}
+	}
+	return status;
+}

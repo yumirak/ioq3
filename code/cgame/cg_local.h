@@ -130,6 +130,14 @@ typedef enum {
 	WP_BAR_LEGACY
 } weaponBarType_t;
 
+typedef enum {
+	DUEL_NOT_READY = 0,
+	DUEL_READY,
+	DUEL_TIED,
+	DUEL_LEADS,
+	DUEL_TRAILS,
+	DUEL_STATUS_MAX
+} playerDuelStatus_t;
 //=================================================
 
 // player entities need to track more information
@@ -1056,6 +1064,7 @@ typedef struct {
 	sfxHandle_t ghostShader;
 	qhandle_t	infiniteAmmo;
 	qhandle_t	gametypeIcon[GT_MAX_GAME_TYPE];
+	qhandle_t	duelReadyShader[2][DUEL_STATUS_MAX]; // 0 - playerpos; 1 - player status;
 #endif
 #ifdef MISSIONPACK
 	qhandle_t   worldDeathShader;
@@ -1066,6 +1075,7 @@ typedef struct {
 	qhandle_t	weaplit;
 	sfxHandle_t	buzzer;
 	sfxHandle_t klaxon2;
+	qhandle_t	itemIcon[MAX_ITEMS];
 } cgMedia_t;
 
 
@@ -1471,6 +1481,8 @@ void CG_AddRefEntityWithPowerups( refEntity_t *ent, entityState_t *state, int te
 void CG_NewClientInfo( int clientNum );
 sfxHandle_t	CG_CustomSound( int clientNum, const char *soundName );
 void CG_CurrentPlayerStatus( void );
+qboolean CG_ClientInfoValid ( int clientNum );
+playerDuelStatus_t CG_GetDuelClientReadyStatus ( int s1, int s2 );
 
 //
 // cg_predict.c

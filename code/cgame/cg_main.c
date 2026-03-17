@@ -1421,6 +1421,14 @@ static void CG_RegisterGraphics( void ) {
 	if(!cgs.media.weaplit)
 		cgs.media.weaplit = cgs.media.backTileShader;
 
+	for( i = 1; i < bg_numItems; i++ ) {
+		gitem_t *item = &bg_itemlist[ i ];
+
+		if( item && item->icon ) {
+			cgs.media.itemIcon[i] = trap_R_RegisterShader( item->icon );
+		}
+	}
+
 #ifdef MISSIONPACK
 	cgs.media.worldDeathShader = trap_R_RegisterShader("icons/icon_frag");
 	if(!cgs.media.worldDeathShader)
@@ -1450,6 +1458,18 @@ static void CG_RegisterGraphics( void ) {
 	for( i = 0; i < GT_MAX_GAME_TYPE; i++ ) {
 		if(!cgs.media.gametypeIcon[i]) cgs.media.gametypeIcon[i] = trap_R_RegisterShader("ui/assets/hud/dm");
 	}
+
+	cgs.media.duelReadyShader[0][DUEL_NOT_READY] = trap_R_RegisterShaderNoMip("ui/assets/score/1st_plyr_notready");
+	cgs.media.duelReadyShader[0][DUEL_READY] = trap_R_RegisterShaderNoMip("ui/assets/score/1st_plyr_ready");
+	cgs.media.duelReadyShader[0][DUEL_TIED] = trap_R_RegisterShaderNoMip("ui/assets/score/1st_plyr_tied");
+	cgs.media.duelReadyShader[0][DUEL_LEADS] = trap_R_RegisterShaderNoMip("ui/assets/score/1st_plyr_leads");
+	cgs.media.duelReadyShader[0][DUEL_TRAILS] = trap_R_RegisterShaderNoMip("ui/assets/score/1st_plyr_trails");
+	cgs.media.duelReadyShader[1][DUEL_NOT_READY] = trap_R_RegisterShaderNoMip("ui/assets/score/2nd_plyr_notready");
+	cgs.media.duelReadyShader[1][DUEL_READY] = trap_R_RegisterShaderNoMip("ui/assets/score/2nd_plyr_ready");
+	cgs.media.duelReadyShader[1][DUEL_TIED] = trap_R_RegisterShaderNoMip("ui/assets/score/2nd_plyr_tied");
+	cgs.media.duelReadyShader[1][DUEL_LEADS] = trap_R_RegisterShaderNoMip("ui/assets/score/2nd_plyr_leads");
+	cgs.media.duelReadyShader[1][DUEL_TRAILS] = trap_R_RegisterShaderNoMip("ui/assets/score/2nd_plyr_trails");
+
 #endif
 	CG_ClearParticles ();
 /*
