@@ -215,12 +215,12 @@ static void CG_ParseScoreCmd( int gametype ) {
 				cg.teamscore[i].itemPickupStat[MID_INVIS].count = atoi(CG_Argv(n)); n++;
 
 				switch ( gametype ) {
-					case GT_CTF: flag = (i == TEAM_RED) ? PW_BLUEFLAG : PW_REDFLAG; break;
-					case GT_1FCTF: flag = PW_NEUTRALFLAG; break;
+					case GT_CTF: flag = (i == TEAM_RED) ? MID_BLUE_FLAG : MID_RED_FLAG; break;
+					case GT_1FCTF: flag = MID_WHITE_FLAG; break;
 					default: flag = 0; break;
 				}
 				if ( flag ) {
-					cg.teamscore[i].powerupStat[flag].count = atoi(CG_Argv(n)); n++;
+					cg.teamscore[i].itemPickupStat[flag].count = atoi(CG_Argv(n)); n++;
 					cg.teamscore[i].itemPickupStat[MID_MEDKIT].count = atoi(CG_Argv(n)); n++;
 				}
 
@@ -230,6 +230,11 @@ static void CG_ParseScoreCmd( int gametype ) {
 				cg.teamscore[i].powerupStat[PW_REGEN].time = atoi(CG_Argv(n)); n++;
 				cg.teamscore[i].powerupStat[PW_HASTE].time = atoi(CG_Argv(n)); n++;
 				cg.teamscore[i].powerupStat[PW_INVIS].time = atoi(CG_Argv(n)); n++;
+				switch ( gametype ) {
+					case GT_CTF: flag = (i == TEAM_RED) ? PW_BLUEFLAG : PW_REDFLAG; break;
+					case GT_1FCTF: flag = PW_NEUTRALFLAG; break;
+					default: flag = 0; break;
+				}
 				if ( flag ) {
 					cg.teamscore[i].powerupStat[flag].time = atoi(CG_Argv(n)); n++;
 				}
