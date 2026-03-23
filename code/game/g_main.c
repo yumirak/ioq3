@@ -1134,7 +1134,7 @@ void CalculateRanks( void ) {
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
 		if ( level.clients[i].pers.connected != CON_DISCONNECTED ) {
 			level.sortedClients[level.numConnectedClients] = i;
-			level.sortedPlayingClients[level.numConnectedClients] = i;
+			level.unsortedPlayingClients[level.numConnectedClients] = i;
 			level.numConnectedClients++;
 
 			if ( level.clients[i].sess.sessionTeam != TEAM_SPECTATOR ) {
@@ -1162,8 +1162,8 @@ void CalculateRanks( void ) {
 
 	qsort( level.sortedClients, level.numConnectedClients, 
 		sizeof(level.sortedClients[0]), SortRanks );
-	qsort( level.sortedPlayingClients, level.numConnectedClients,
-		   sizeof(level.sortedPlayingClients[0]), SortClientNum );
+	qsort( level.unsortedPlayingClients, level.numConnectedClients,
+		   sizeof(level.unsortedPlayingClients[0]), SortClientNum );
 
 	// set the rank value for all clients that are connected and not spectators
 	if ( g_gametype.integer >= GT_TEAM ) {
@@ -1242,7 +1242,7 @@ void CalculateRanks( void ) {
 			int num[2];
 			num[0] = num[1] = -1;
 			for ( i = 0;  i < level.numPlayingClients; i++ ) {
-				num[i] = level.sortedPlayingClients[i];
+				num[i] = level.unsortedPlayingClients[i];
 				Com_sprintf(playingName[i], sizeof(playingName[i]), "%s", level.clients[ num[i] ].pers.netname );
 			}
 			trap_SetConfigstring( CS_CLIENTNUM1STPLAYER, va("%i", num[0]) );

@@ -422,7 +422,7 @@ typedef struct {
 	int			gameMatchState;
 
 	int			overtimeCount;
-	int			sortedPlayingClients[MAX_CLIENTS];		// sorted by playing index without spectator
+	int			unsortedPlayingClients[MAX_CLIENTS];		// unsorted playing client (sorted spectator)
 } level_locals_t;
 
 typedef struct {

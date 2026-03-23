@@ -127,15 +127,20 @@ void Cmd_Score( gentity_t *ent, int gametype ) {
 
 	numscores = level.numPlayingClients;
 	for ( i = 0 ; i < numscores ; i++ ) {
-		cl = &level.clients[ level.sortedPlayingClients[i] ];
-		game.scores[i].client = level.sortedPlayingClients[i];
+		if ( g_gametype.integer == GT_TOURNAMENT ) {
+			j = level.unsortedPlayingClients[i]; // unsorted playing client (sorted out spectator)
+		} else {
+			j = level.sortedClients[i];
+		}
+		cl = &level.clients[ j ];
+		game.scores[i].client = j;
 		game.scores[i].team = cl->sess.sessionTeam;
 		game.scores[i].score = cl->ps.persistant[PERS_SCORE];
 		game.scores[i].ping = Com_Clamp( -1, 999, cl->ps.ping );
 		game.scores[i].accuracy = cl->accuracy_shots > 0 ? cl->accuracy_hits * 100 / cl->accuracy_shots : 0;
 		game.scores[i].perfect = ( cl->ps.persistant[PERS_RANK] == 0 && cl->ps.persistant[PERS_KILLED] == 0 ) ? 1 : 0;
 		game.scores[i].time = (level.time - cl->pers.enterTime) / 60000;
-		game.scores[i].powerUps = g_entities[ level.sortedPlayingClients[i] ].s.powerups;
+		game.scores[i].powerUps = g_entities[ j ].s.powerups;
 		game.scores[i].impressiveCount = cl->ps.persistant[PERS_IMPRESSIVE_COUNT];
 		game.scores[i].excellentCount = cl->ps.persistant[PERS_EXCELLENT_COUNT];
 		game.scores[i].guantletCount = cl->ps.persistant[PERS_GAUNTLET_FRAG_COUNT];
