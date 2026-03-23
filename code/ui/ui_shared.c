@@ -5411,6 +5411,34 @@ qboolean ItemParse_ownerdrawFlag2( itemDef_t *item, int handle ) {
 	return qtrue;
 }
 
+qboolean ItemParse_widescreen (itemDef_t *item, int handle)
+{
+	if (!PC_Int_Parse(handle, &item->widescreen)) {
+		return qfalse;
+	}
+
+	if (item->widescreen < 0  ||  item->widescreen > 3) {
+		item->widescreen = 0;
+	}
+
+	return qtrue;
+}
+
+qboolean ItemParse_precision( itemDef_t *item, int handle ) {
+	if (!PC_Int_Parse(handle, &item->precision)) {
+		return qfalse;
+	}
+	return qtrue;
+}
+
+qboolean ItemParse_cellId( itemDef_t *item, int handle ) {
+	int i;
+	if (!PC_Int_Parse(handle, &i)) {
+		return qfalse;
+	}
+	return qtrue;
+}
+
 keywordHash_t itemParseKeywords[] = {
 	{"name", ItemParse_name, NULL},
 	{"text", ItemParse_text, NULL},
@@ -5486,6 +5514,12 @@ keywordHash_t itemParseKeywords[] = {
 	{"defaultContent", ItemParse_background, NULL},
 	{"backgroundreset", ItemParse_backgroundReset, NULL},
 	{"ownerdrawFlag2", ItemParse_ownerdrawFlag2, NULL},
+	{"precision", ItemParse_precision, NULL},
+	{"widescreen", ItemParse_widescreen, NULL},
+	{"cellId", ItemParse_cellId, NULL},
+	{"cvarTest2", ItemParse_cvarTest, NULL},
+	{"showCvar2", ItemParse_showCvar, NULL},
+	{"hideCvar2", ItemParse_hideCvar, NULL},
 
 	{NULL, 0, NULL}
 };
@@ -6055,6 +6089,28 @@ qboolean MenuParse_ownerdrawFlag2( itemDef_t *item, int handle ) {
 	return qtrue;
 }
 
+qboolean MenuParse_backgroundSize( itemDef_t *item, int handle ) {
+	menuDef_t *menu = (menuDef_t*)item;
+	if (!PC_Rect_Parse(handle, &menu->window.backgroundSize)) {
+		return qfalse;
+	}
+	return qtrue;
+}
+
+static qboolean MenuParse_widescreen( itemDef_t *item, int handle ) {
+	menuDef_t *menu = (menuDef_t*)item;
+
+	if (!PC_Int_Parse(handle, &menu->widescreen)) {
+		return qfalse;
+	}
+
+	if (menu->widescreen < 0  ||  menu->widescreen > 3) {
+		menu->widescreen = 0;
+	}
+
+	return qtrue;
+}
+
 keywordHash_t menuParseKeywords[] = {
 	{"font", MenuParse_font, NULL},
 	{"name", MenuParse_name, NULL},
@@ -6086,6 +6142,8 @@ keywordHash_t menuParseKeywords[] = {
 	{"fadeAmount", MenuParse_fadeAmount, NULL},
 
 	{"ownerdrawFlag2", MenuParse_ownerdrawFlag2, NULL},
+	{"backgroundSize", MenuParse_backgroundSize, NULL},
+	{"widescreen", MenuParse_widescreen, NULL},
 
 	{NULL, 0, NULL}
 };

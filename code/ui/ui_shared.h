@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define MAX_MENUDEFFILE 4096
 #define MAX_MENUFILE 32768
 #define MAX_MENUS 64 * 4 // 128 in Quake Live
-#define MAX_MENUITEMS 96 * 8
+#define MAX_MENUITEMS 128 * 8
 #define MAX_COLOR_RANGES 10
 #define MAX_OPEN_MENUS 16 * 4
 
@@ -140,6 +140,7 @@ typedef struct {
   qhandle_t background;           // background asset  
   // Extend
   int ownerDrawFlags2;
+  Rectangle backgroundSize;
 } windowDef_t;
 
 typedef windowDef_t Window;
@@ -160,7 +161,7 @@ typedef struct {
 // the benefits of c++ in DOOM will greatly help crap like this
 // FIXME: need to put a type ptr that points to specific type info per type
 // 
-#define MAX_LB_COLUMNS 16
+#define MAX_LB_COLUMNS 32
 
 typedef struct columnInfo_s {
 	int pos;
@@ -250,6 +251,9 @@ typedef struct itemDef_s {
 	float special;								 // used for feeder id's etc.. diff per type
   int cursorPos;                 // cursor position in characters
 	void *typeData;								 // type specific data ptr's	
+	// Extend
+	int precision;
+    int widescreen;
 } itemDef_t;
 
 typedef struct {
@@ -270,6 +274,7 @@ typedef struct {
   vec4_t focusColor;								// focus color for items
   vec4_t disableColor;							// focus color for items
   itemDef_t *items[MAX_MENUITEMS];	// items this menu contains   
+  int widescreen;
 } menuDef_t;
 
 typedef struct {
