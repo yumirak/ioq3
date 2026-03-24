@@ -23,6 +23,7 @@ option(BUILD_BASEGAME "Build Quake 3 Arena" ON)
 option(BUILD_MISSIONPACK "Build Quake 3 Team Arena" ON)
 option(BUILD_BASEQZ "Build Quake Live" ON)
 
+option(USE_ARCHLESS_FILENAMES "Don't include the architecture in binary filenames" OFF)
 option(USE_RENDERER_DLOPEN "Dynamically load the renderer(s)" ON)
 option(USE_OPENAL "OpenAL audio" ON)
 option(USE_OPENAL_DLOPEN "Dynamically load OpenAL" ON)
