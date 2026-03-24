@@ -95,7 +95,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #if defined(__x86_64__) || defined(_M_X64)
 #undef idx64
 #define idx64 1
-#define ARCH_STRING "x86_64"
+#define ARCH_STRING "x64"
 #define HAVE_VM_COMPILED
 #elif defined(__aarch64__) || defined(__ARM64__) || defined (_M_ARM64)
 #define ARCH_STRING "arm64"
@@ -114,7 +114,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define QCALL __stdcall
 
 #if defined( _MSC_VER )
-#define OS_STRING "win_msvc"
+#define OS_STRING "win"
 #elif defined __MINGW32__
 #define OS_STRING "win_mingw"
 #endif
@@ -155,7 +155,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #elif defined __x86_64__
 #undef idx64
 #define idx64 1
-#define ARCH_STRING "x86_64"
+#define ARCH_STRING "x64"
 #define Q3_LITTLE_ENDIAN
 #define HAVE_VM_COMPILED
 #elif defined __aarch64__
@@ -186,10 +186,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define PATH_SEP '/'
 
 #if defined(__x86_64__) || defined(__amd64__)
-# define ARCH_STRING "x86_64"
+# define ARCH_STRING "x64"
 # define HAVE_VM_COMPILED
 #elif defined(__i386__)
-# define ARCH_STRING "x86"
+# define ARCH_STRING "i386"
 # define HAVE_VM_COMPILED
 #elif defined(__aarch64__)
 # define ARCH_STRING "arm64"
@@ -249,7 +249,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #elif defined __amd64__
 #undef idx64
 #define idx64 1
-#define ARCH_STRING "x86_64"
+#define ARCH_STRING "x64"
 #define HAVE_VM_COMPILED
 #elif defined __axp__
 #define ARCH_STRING "alpha"

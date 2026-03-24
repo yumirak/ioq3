@@ -6,7 +6,7 @@ endif()
 
 include(utils/arch)
 
-if(ARCH MATCHES "x86" OR ARCH MATCHES "x86_64")
+if(ARCH MATCHES "x86" OR ARCH MATCHES "x64")
     enable_language(ASM_MASM)
 
     set(ASM_SOURCES
@@ -15,7 +15,7 @@ if(ARCH MATCHES "x86" OR ARCH MATCHES "x86_64")
     )
 endif()
 
-if(ARCH MATCHES "x86_64")
+if(ARCH MATCHES "x64")
     list(APPEND ASM_SOURCES ${SOURCE_DIR}/asm/vm_x86_64.asm)
     set_source_files_properties(
         ${ASM_SOURCES}

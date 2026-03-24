@@ -24,7 +24,7 @@ if(USE_INTERNAL_SDL AND HAVE_INTERNAL_SDL)
     list(APPEND RENDERER_DEFINITIONS USE_INTERNAL_SDL_HEADERS)
 
     if(WIN32)
-        if(ARCH STREQUAL "x86_64")
+        if(ARCH STREQUAL "x64")
             set(LIB_DIR ${SOURCE_DIR}/thirdparty/libs/win64)
         elseif(ARCH STREQUAL "x86")
             set(LIB_DIR ${SOURCE_DIR}/thirdparty/libs/win32)
