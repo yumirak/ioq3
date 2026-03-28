@@ -138,6 +138,13 @@ typedef enum {
 	DUEL_TRAILS,
 	DUEL_STATUS_MAX
 } playerDuelStatus_t;
+
+typedef enum {
+	COLOR_HEAD,
+	COLOR_UPPER,
+	COLOR_LOWER,
+	COLOR_MODEL_MAX
+} playerModelColor_t;
 //=================================================
 
 // player entities need to track more information
@@ -716,6 +723,8 @@ typedef struct {
 	qboolean spectating;
 	teamscores_t teamscore[TEAM_NUM_TEAMS];
 	teamscores_t duelscore[MAX_CLIENTS];
+	vec4_t enemyModelColors[COLOR_MODEL_MAX];
+	vec4_t teamModelColors[COLOR_MODEL_MAX];
 #ifdef MISSIONPACK
 	menuDef_t *menuScoreboard;
 	menuDef_t *menuEndScoreboard;
@@ -1350,6 +1359,8 @@ extern	vmCvar_t		cg_specFov;
 extern	vmCvar_t		cg_chatBeep;
 extern	vmCvar_t		cg_teamChatBeep;
 extern	vmCvar_t		cg_weaponConfig[WP_NUM_WEAPONS];
+extern	vmCvar_t		cg_enemyColor[COLOR_MODEL_MAX];
+extern	vmCvar_t		cg_teamColor[COLOR_MODEL_MAX];
 
 extern	vmCvar_t		pmove_cvar[PMV_NUM_MAX];
 
@@ -1383,6 +1394,8 @@ clientInfo_t * CG_InfoFromScoreIndex(int index, int team, int *scoreIndex);
 void CG_AddChatLine (const char *line, int clientnum);
 int CG_GetChatClientNum( char *text, qboolean removenum );
 void CG_RemoveNewLineChar ( char *text );
+void CG_EnemyColorChange( void );
+void CG_TeamColorChange( void );
 
 //
 // cg_view.c

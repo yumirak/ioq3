@@ -35,6 +35,8 @@ displayContextDef_t cgDC;
 
 int forceModelModificationCount = -1;
 int fovModificationCount = -1;
+int teamColorModificationCount = -1;
+int enemyColorModificationCount = -1;
 
 void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum );
 void CG_Shutdown( void );
@@ -270,6 +272,8 @@ vmCvar_t	cg_specFov;
 vmCvar_t	cg_chatBeep;
 vmCvar_t	cg_teamChatBeep;
 vmCvar_t	cg_weaponConfig[WP_NUM_WEAPONS];
+vmCvar_t	cg_enemyColor[COLOR_MODEL_MAX];
+vmCvar_t	cg_teamColor[COLOR_MODEL_MAX];
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 vmCvar_t	pmove_cvar[PMV_NUM_MAX];
@@ -487,6 +491,13 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_chatBeep, "cg_chatBeep", "0", CVAR_ARCHIVE },
 	{ &cg_teamChatBeep, "cg_teamChatBeep", "0", CVAR_ARCHIVE },
 
+	{ &cg_enemyColor[COLOR_HEAD], "cg_enemyHeadColor", "0x2a8000FF", CVAR_ARCHIVE},
+	{ &cg_enemyColor[COLOR_UPPER], "cg_enemyUpperColor", "0x2a8000FF", CVAR_ARCHIVE},
+	{ &cg_enemyColor[COLOR_LOWER], "cg_enemyLowerColor", "0x2a8000FF", CVAR_ARCHIVE},
+	{ &cg_teamColor[COLOR_HEAD], "cg_teamHeadColor", "0x808080FF", CVAR_ARCHIVE},
+	{ &cg_teamColor[COLOR_UPPER], "cg_teamUpperColor", "0x808080FF", CVAR_ARCHIVE},
+	{ &cg_teamColor[COLOR_LOWER], "cg_teamLowerColor", "0x808080FF", CVAR_ARCHIVE},
+
 	{ &cg_weaponConfig[WP_NUM_WEAPONS], "cg_weaponConfig", "", CVAR_ARCHIVE },
 	{ &cg_weaponConfig[WP_GAUNTLET], "cg_weaponConfig_g", "", CVAR_ARCHIVE },
 	{ &cg_weaponConfig[WP_MACHINEGUN], "cg_weaponConfig_mg", "", CVAR_ARCHIVE },
@@ -571,6 +582,11 @@ void CG_RegisterCvars( void ) {
 
 	forceModelModificationCount = cg_forceModel.modificationCount;
 	fovModificationCount = cg_fov.modificationCount;
+	teamColorModificationCount = (cg_teamColor[COLOR_HEAD].modificationCount + cg_teamColor[COLOR_UPPER].modificationCount + cg_teamColor[COLOR_LOWER].modificationCount);
+	enemyColorModificationCount = (cg_enemyColor[COLOR_HEAD].modificationCount + cg_enemyColor[COLOR_UPPER].modificationCount + cg_enemyColor[COLOR_LOWER].modificationCount);
+
+	CG_EnemyColorChange();
+	CG_TeamColorChange();
 
 	trap_Cvar_Register(NULL, "model", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
 	trap_Cvar_Register(NULL, "headmodel", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
@@ -597,6 +613,28 @@ static void CG_ForceModelChange( void ) {
 	}
 }
 
+// Alternative: Use CG_ColorFromString instead of SC_ParseVec3FromStr.
+void CG_TeamColorChange( void )
+{
+	int i = 0;
+	for(i = 0; i < COLOR_MODEL_MAX; i++)
+		Q_Vec4ColorFromCvar(cg.teamModelColors[i], &cg_teamColor[i]);
+
+	teamColorModificationCount = (cg_teamColor[COLOR_HEAD].modificationCount
+	+ cg_teamColor[COLOR_UPPER].modificationCount
+	+ cg_teamColor[COLOR_LOWER].modificationCount);
+}
+
+void CG_EnemyColorChange( void )
+{
+	int i = 0;
+	for(i = 0; i < COLOR_MODEL_MAX; i++)
+		Q_Vec4ColorFromCvar(cg.enemyModelColors[i], &cg_enemyColor[i]);
+
+	enemyColorModificationCount = (cg_enemyColor[COLOR_HEAD].modificationCount
+	+ cg_enemyColor[COLOR_UPPER].modificationCount
+	+ cg_enemyColor[COLOR_LOWER].modificationCount);
+}
 /*
 =================
 CG_UpdateCvars
@@ -633,6 +671,20 @@ void CG_UpdateCvars( void ) {
 	if ( fovModificationCount != cg_fov.modificationCount ) {
 		fovModificationCount = cg_fov.modificationCount;
 		trap_SendClientCommand( va("fov %i", cg_fov.integer) );
+	}
+
+	// if team color changed
+	if ( teamColorModificationCount != (cg_teamColor[COLOR_HEAD].modificationCount
+		+ cg_teamColor[COLOR_UPPER].modificationCount
+		+ cg_teamColor[COLOR_LOWER].modificationCount) ) {
+		CG_TeamColorChange();
+	}
+
+	// if enemy color changed
+	if ( enemyColorModificationCount != (cg_enemyColor[COLOR_HEAD].modificationCount
+		+ cg_enemyColor[COLOR_UPPER].modificationCount
+		+ cg_enemyColor[COLOR_LOWER].modificationCount) ) {
+		CG_EnemyColorChange();
 	}
 }
 

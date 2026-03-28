@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // cg_players.c -- handle the media and animation for player entities
 #include "cg_local.h"
+#include "cg_utils.h"
 
 char	*cg_customSoundNames[MAX_CUSTOM_SOUNDS] = {
 	"*death1.wav",
@@ -2287,6 +2288,23 @@ int CG_LightVerts( vec3_t normal, int numVerts, polyVert_t *verts )
 	return qtrue;
 }
 
+
+void CG_CheckForModelChange (const centity_t *cent, clientInfo_t *ci, refEntity_t *legs, refEntity_t *torso, refEntity_t *head)
+{
+	switch(CG_IsEnemy(ci))
+	{
+		case qfalse:
+			Q_SetByteColorFromVec4(head->shaderRGBA, cg.teamModelColors[0]);
+			Q_SetByteColorFromVec4(torso->shaderRGBA, cg.teamModelColors[1]);
+			Q_SetByteColorFromVec4(legs->shaderRGBA, cg.teamModelColors[2]);
+			break;
+		case qtrue:
+			Q_SetByteColorFromVec4(head->shaderRGBA, cg.enemyModelColors[0]);
+			Q_SetByteColorFromVec4(torso->shaderRGBA, cg.enemyModelColors[1]);
+			Q_SetByteColorFromVec4(legs->shaderRGBA, cg.enemyModelColors[2]);
+			break;
+	}
+}
 /*
 ===============
 CG_Player
@@ -2341,6 +2359,8 @@ void CG_Player( centity_t *cent ) {
 	memset( &legs, 0, sizeof(legs) );
 	memset( &torso, 0, sizeof(torso) );
 	memset( &head, 0, sizeof(head) );
+
+	CG_CheckForModelChange(cent, ci, &legs, &torso, &head);
 
 	// get the rotation information
 	CG_PlayerAngles( cent, legs.axis, torso.axis, head.axis );
