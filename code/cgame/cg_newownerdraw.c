@@ -1080,7 +1080,7 @@ void CG_DrawTeamMapPickups ( rectDef_t *rect, float scale, int textStyle, vec4_t
 		}
 	}
 
-	x += (w * 1.5) * (itemcount - 1 - count);
+	x += (w * 1.5) * (itemcount - count);
 
 	itemcount = 5;
 	//  flag in flag game
