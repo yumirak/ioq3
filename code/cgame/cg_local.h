@@ -725,6 +725,7 @@ typedef struct {
 	teamscores_t duelscore[MAX_CLIENTS];
 	vec4_t enemyModelColors[COLOR_MODEL_MAX];
 	vec4_t teamModelColors[COLOR_MODEL_MAX];
+	vec4_t grenadeColor;
 #ifdef MISSIONPACK
 	menuDef_t *menuScoreboard;
 	menuDef_t *menuEndScoreboard;
@@ -1361,6 +1362,9 @@ extern	vmCvar_t		cg_teamChatBeep;
 extern	vmCvar_t		cg_weaponConfig[WP_NUM_WEAPONS];
 extern	vmCvar_t		cg_enemyColor[COLOR_MODEL_MAX];
 extern	vmCvar_t		cg_teamColor[COLOR_MODEL_MAX];
+extern	vmCvar_t		cg_forceEnemyWeaponColor;
+extern	vmCvar_t		cg_forceTeamWeaponColor;
+extern	vmCvar_t		cg_weaponColor_grenade;
 
 extern	vmCvar_t		pmove_cvar[PMV_NUM_MAX];
 
@@ -1396,6 +1400,7 @@ int CG_GetChatClientNum( char *text, qboolean removenum );
 void CG_RemoveNewLineChar ( char *text );
 void CG_EnemyColorChange( void );
 void CG_TeamColorChange( void );
+void CG_GrenadeColorChange( void );
 
 //
 // cg_view.c

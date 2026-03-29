@@ -217,6 +217,8 @@ void CG_RailTrail (clientInfo_t *ci, vec3_t start, vec3_t end) {
 	vec3_t axis[36], move, move2, vec, temp;
 	float  len;
 	int    i, j, skip;
+	vec4_t custom_color1, custom_color2;
+	qboolean use_custom_color = qfalse;
  
 	localEntity_t *le;
 	refEntity_t   *re;
@@ -224,6 +226,24 @@ void CG_RailTrail (clientInfo_t *ci, vec3_t start, vec3_t end) {
 #define RADIUS   4
 #define ROTATION 1
 #define SPACING  5
+	Q_SetColorVec4(custom_color1, ci->color1);
+	Q_SetColorVec4(custom_color2, ci->color2);
+
+	if(cg_forceEnemyWeaponColor.integer && CG_IsEnemy(ci)) {
+		Q_SetColorVec4(custom_color1, cg.enemyModelColors[COLOR_HEAD]);
+		Q_SetColorVec4(custom_color2, cg.enemyModelColors[COLOR_HEAD]);
+		use_custom_color = qtrue;
+	}
+	if(cg_forceTeamWeaponColor.integer && !CG_IsEnemy(ci)) {
+		Q_SetColorVec4(custom_color1, cg.teamModelColors[COLOR_HEAD]);
+		Q_SetColorVec4(custom_color2, cg.teamModelColors[COLOR_HEAD]);
+		use_custom_color = qtrue;
+	}
+	if(use_custom_color)
+	{
+		Vector4Scale(custom_color1, 0.004, custom_color1);
+		Vector4Scale(custom_color2, 0.004, custom_color2);
+	}
  
 	start[2] -= 4;
  
@@ -242,14 +262,14 @@ void CG_RailTrail (clientInfo_t *ci, vec3_t start, vec3_t end) {
 	VectorCopy(start, re->origin);
 	VectorCopy(end, re->oldorigin);
  
-	re->shaderRGBA[0] = ci->color1[0] * 255;
-	re->shaderRGBA[1] = ci->color1[1] * 255;
-	re->shaderRGBA[2] = ci->color1[2] * 255;
+	re->shaderRGBA[0] = custom_color1[0] * 255;
+	re->shaderRGBA[1] = custom_color1[1] * 255;
+	re->shaderRGBA[2] = custom_color1[2] * 255;
 	re->shaderRGBA[3] = 255;
 
-	le->color[0] = ci->color1[0] * 0.75;
-	le->color[1] = ci->color1[1] * 0.75;
-	le->color[2] = ci->color1[2] * 0.75;
+	le->color[0] = custom_color1[0] * 0.75;
+	le->color[1] = custom_color1[1] * 0.75;
+	le->color[2] = custom_color1[2] * 0.75;
 	le->color[3] = 1.0f;
 
 	AxisClear( re->axis );
@@ -295,14 +315,14 @@ void CG_RailTrail (clientInfo_t *ci, vec3_t start, vec3_t end) {
 			re->radius = 1.1f;
 			re->customShader = cgs.media.railRingsShader;
 
-			re->shaderRGBA[0] = ci->color2[0] * 255;
-			re->shaderRGBA[1] = ci->color2[1] * 255;
-			re->shaderRGBA[2] = ci->color2[2] * 255;
+			re->shaderRGBA[0] = custom_color2[0] * 255;
+			re->shaderRGBA[1] = custom_color2[1] * 255;
+			re->shaderRGBA[2] = custom_color2[2] * 255;
 			re->shaderRGBA[3] = 255;
 
-			le->color[0] = ci->color2[0] * 0.75;
-			le->color[1] = ci->color2[1] * 0.75;
-			le->color[2] = ci->color2[2] * 0.75;
+			le->color[0] =  custom_color2[0] * 0.75;
+			le->color[1] =  custom_color2[1] * 0.75;
+			le->color[2] =  custom_color2[2] * 0.75;
 			le->color[3] = 1.0f;
 
 			le->pos.trType = TR_LINEAR;

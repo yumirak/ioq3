@@ -37,6 +37,7 @@ int forceModelModificationCount = -1;
 int fovModificationCount = -1;
 int teamColorModificationCount = -1;
 int enemyColorModificationCount = -1;
+int grenadeColorModificationCount = -1;
 
 void CG_Init( int serverMessageNum, int serverCommandSequence, int clientNum );
 void CG_Shutdown( void );
@@ -274,6 +275,9 @@ vmCvar_t	cg_teamChatBeep;
 vmCvar_t	cg_weaponConfig[WP_NUM_WEAPONS];
 vmCvar_t	cg_enemyColor[COLOR_MODEL_MAX];
 vmCvar_t	cg_teamColor[COLOR_MODEL_MAX];
+vmCvar_t	cg_forceEnemyWeaponColor;
+vmCvar_t	cg_forceTeamWeaponColor;
+vmCvar_t	cg_weaponColor_grenade;
 
 vmCvar_t	weapon_reload[WP_NUM_WEAPONS];
 vmCvar_t	pmove_cvar[PMV_NUM_MAX];
@@ -497,6 +501,9 @@ static cvarTable_t cvarTable[] = {
 	{ &cg_teamColor[COLOR_HEAD], "cg_teamHeadColor", "0x808080FF", CVAR_ARCHIVE},
 	{ &cg_teamColor[COLOR_UPPER], "cg_teamUpperColor", "0x808080FF", CVAR_ARCHIVE},
 	{ &cg_teamColor[COLOR_LOWER], "cg_teamLowerColor", "0x808080FF", CVAR_ARCHIVE},
+	{ &cg_forceEnemyWeaponColor, "cg_forceEnemyWeaponColor", "0", CVAR_ARCHIVE},
+	{ &cg_forceTeamWeaponColor, "cg_forceTeamWeaponColor", "0", CVAR_ARCHIVE},
+	{ &cg_weaponColor_grenade, "cg_weaponColor_grenade", "0x007000FF", CVAR_ARCHIVE},
 
 	{ &cg_weaponConfig[WP_NUM_WEAPONS], "cg_weaponConfig", "", CVAR_ARCHIVE },
 	{ &cg_weaponConfig[WP_GAUNTLET], "cg_weaponConfig_g", "", CVAR_ARCHIVE },
@@ -584,9 +591,11 @@ void CG_RegisterCvars( void ) {
 	fovModificationCount = cg_fov.modificationCount;
 	teamColorModificationCount = (cg_teamColor[COLOR_HEAD].modificationCount + cg_teamColor[COLOR_UPPER].modificationCount + cg_teamColor[COLOR_LOWER].modificationCount);
 	enemyColorModificationCount = (cg_enemyColor[COLOR_HEAD].modificationCount + cg_enemyColor[COLOR_UPPER].modificationCount + cg_enemyColor[COLOR_LOWER].modificationCount);
+	grenadeColorModificationCount = cg_weaponColor_grenade.modificationCount;
 
 	CG_EnemyColorChange();
 	CG_TeamColorChange();
+	CG_GrenadeColorChange();
 
 	trap_Cvar_Register(NULL, "model", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
 	trap_Cvar_Register(NULL, "headmodel", DEFAULT_MODEL, CVAR_USERINFO | CVAR_ARCHIVE );
@@ -634,6 +643,11 @@ void CG_EnemyColorChange( void )
 	enemyColorModificationCount = (cg_enemyColor[COLOR_HEAD].modificationCount
 	+ cg_enemyColor[COLOR_UPPER].modificationCount
 	+ cg_enemyColor[COLOR_LOWER].modificationCount);
+}
+void CG_GrenadeColorChange( void )
+{
+	Q_Vec4ColorFromCvar(cg.grenadeColor, &cg_weaponColor_grenade);
+	grenadeColorModificationCount = cg_weaponColor_grenade.modificationCount;
 }
 /*
 =================
@@ -685,6 +699,11 @@ void CG_UpdateCvars( void ) {
 		+ cg_enemyColor[COLOR_UPPER].modificationCount
 		+ cg_enemyColor[COLOR_LOWER].modificationCount) ) {
 		CG_EnemyColorChange();
+	}
+
+	// if grenade color changed
+	if ( grenadeColorModificationCount != cg_weaponColor_grenade.modificationCount ) {
+		CG_GrenadeColorChange();
 	}
 }
 

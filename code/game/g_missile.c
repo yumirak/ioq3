@@ -547,6 +547,7 @@ gentity_t *fire_plasma (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_PLASMAGUN;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
@@ -589,6 +590,7 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->s.weapon = WP_GRENADE_LAUNCHER;
 	bolt->s.eFlags = EF_BOUNCE_HALF;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
@@ -630,6 +632,7 @@ gentity_t *fire_bfg (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_BFG;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
@@ -670,6 +673,7 @@ gentity_t *fire_rocket (gentity_t *self, vec3_t start, vec3_t dir) {
 	bolt->r.svFlags = SVF_USE_CURRENT_ORIGIN;
 	bolt->s.weapon = WP_ROCKET_LAUNCHER;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;
@@ -751,6 +755,7 @@ gentity_t *fire_nail( gentity_t *self, vec3_t start, vec3_t forward, vec3_t righ
 	bolt->s.weapon = WP_NAILGUN;
 	bolt->s.eFlags = EF_BOUNCE;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->methodOfDeath = MOD_NAIL;
@@ -803,6 +808,7 @@ gentity_t *fire_prox( gentity_t *self, vec3_t start, vec3_t dir ) {
 	bolt->s.weapon = WP_PROX_LAUNCHER;
 	bolt->s.eFlags = 0;
 	bolt->r.ownerNum = self->s.number;
+	bolt->s.otherEntityNum = self->s.number;
 	bolt->parent = self;
 	bolt->damage = g_damage[bolt->s.weapon].integer;
 	bolt->splashDamage = g_splashdamage[bolt->s.weapon].integer;

@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // cg_ents.c -- present snapshot entities, happens every single frame
 
 #include "cg_local.h"
+#include "cg_utils.h"
 
 
 /*
@@ -442,12 +443,14 @@ static void CG_Missile( centity_t *cent ) {
 	entityState_t		*s1;
 	const weaponInfo_t		*weapon;
 //	int	col;
+	clientInfo_t		*ci;
 
 	s1 = &cent->currentState;
 	if ( s1->weapon >= WP_NUM_WEAPONS ) {
 		s1->weapon = 0;
 	}
 	weapon = &cg_weapons[s1->weapon];
+	ci = &cgs.clientinfo[ s1->otherEntityNum ];
 
 	// calculate the axis
 	VectorCopy( s1->angles, cent->lerpAngles);
@@ -535,6 +538,13 @@ static void CG_Missile( centity_t *cent ) {
 			RotateAroundDirection( ent.axis, s1->time );
 		}
 	}
+
+	Q_SetByteColorFromVec4(ent.shaderRGBA, cg.grenadeColor);
+
+	if(cg_forceEnemyWeaponColor.integer && CG_IsEnemy(ci))
+		Q_SetByteColorFromVec4(ent.shaderRGBA, cg.enemyModelColors[COLOR_HEAD]);
+	if(cg_forceTeamWeaponColor.integer && !CG_IsEnemy(ci))
+		Q_SetByteColorFromVec4(ent.shaderRGBA, cg.teamModelColors[COLOR_HEAD]);
 
 	// add to refresh list, possibly with quad glow
 	CG_AddRefEntityWithPowerups( &ent, s1, TEAM_FREE );
